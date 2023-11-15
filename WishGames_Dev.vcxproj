@@ -152,6 +152,14 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dark.h" />
+    <ClInclude Include="flre.h" />
+    <ClInclude Include="interface.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="thunder.h" />
+    <ClInclude Include="wind.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="packages\directxtex_desktop_win10.2023.10.31.1\build\native\directxtex_desktop_win10.targets" Condition="Exists('packages\directxtex_desktop_win10.2023.10.31.1\build\native\directxtex_desktop_win10.targets')" />
