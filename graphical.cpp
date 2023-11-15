@@ -1,7 +1,7 @@
 #include "graphical.h"
 #include "sprite.h"
 
-WIN::Window Graphical::window;
+OrigialWindow Graphical::window;
 DX::DX11::Device3D Graphical::device;
 DX::DX11::Renderer Graphical::renderer;
 

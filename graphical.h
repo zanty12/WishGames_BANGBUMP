@@ -1,11 +1,12 @@
 #pragma once
 #include "lib/dxlib.h"
 #include "lib/winlib.h"
+#include "original_window.h"
 #pragma comment(lib, "lib/lib.lib")
 
 class Graphical {
 private:
-	static WIN::Window window;
+	static OrigialWindow window;
 	static DX::DX11::Device3D device;
 	static DX::DX11::Renderer renderer;
 

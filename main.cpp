@@ -6,22 +6,12 @@
 #include "lib/winlib.h"
 
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 
-class OrigialWindow : public WIN::Window {
-	LRESULT Proc(UINT message, WPARAM wParam, LPARAM lParam) override {
-		if (ImGui_ImplWin32_WndProcHandler(hwnd, message, wParam, lParam))
-			return true;
 
-	}
-};
 
 int main()
 {
-	OrigialWindow window;
-	window.Create(L"App", L"App", GetModuleHandle(nullptr), Vector2(100, 100), Vector2(100, 100));
-	window.Show();
 	Graphical::Initialize(960, 540);
 #ifdef _DEBUG
 	DebugUI::Initialize();
