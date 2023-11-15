@@ -13,10 +13,59 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="A1">
+      <UniqueIdentifier>{6b00bda2-916c-467d-bd30-3ce9f10577e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="A1\ソースファイル">
+      <UniqueIdentifier>{1f30805d-019a-4334-8d75-00f9e9d51126}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="A1\ヘッダーファイル">
+      <UniqueIdentifier>{a527bdea-5012-435b-899a-a2989c0e2bdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="A1\リソースファイル">
+      <UniqueIdentifier>{e667dd84-b77d-4c5b-877a-3258164a0752}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="graphical.cpp">
+      <Filter>A1\ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="sprite.cpp">
+      <Filter>A1\ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>A1\ソースファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>A1\ソースファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="graphical.h">
+      <Filter>A1\ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="sprite.h">
+      <Filter>A1\ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>A1\ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>A1\ヘッダーファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="color-shader.hlsl">
+      <Filter>A1\リソースファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="texture-shader.hlsl">
+      <Filter>A1\リソースファイル</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
