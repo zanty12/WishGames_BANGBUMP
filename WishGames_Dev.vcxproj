@@ -129,6 +129,14 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dark.h" />
+    <ClInclude Include="flre.h" />
+    <ClInclude Include="interface.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="thunder.h" />
+    <ClInclude Include="wind.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
