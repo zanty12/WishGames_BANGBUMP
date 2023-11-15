@@ -48,6 +48,7 @@
 ------------------------------------------------------------------------------*/
 void InitSprite(void);
 void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color);
+void DrawLine(Vector2 startPosition, Vector2 endPosition);
 void ReleaseSprite(void);
 
 

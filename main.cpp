@@ -2,6 +2,8 @@
 #include "sprite.h"
 #include <iostream>
 
+
+
 int main()
 {
 	Graphical::Initialize(1920, 1080);
@@ -21,7 +23,7 @@ int main()
 		}
 		else {
 			Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
-			DrawSprite(texNo, Vector2(0, 0), 0, Vector2(100, 100), Color(1, 1, 1));
+			DrawSprite(texNo, Vector2(100, 100), 0, Vector2(100, 100), Color(1, 1, 1));
 			Graphical::Present();
 		}
 	}
