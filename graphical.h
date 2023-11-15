@@ -16,4 +16,6 @@ public:
 	static void Clear(Color color);
 	static void Present(void);
 	static const WIN::Window &GetHwnd(void) { return window; }
+	static const DX::DX11::Device3D &GetDevice(void) { return device; }
+	static const DX::DX11::Renderer &GetRenderer(void) { return renderer; }
 };
