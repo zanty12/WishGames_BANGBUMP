@@ -42,6 +42,9 @@
     <ClCompile Include="shader.cpp">
       <Filter>A1\ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>A1\ソースファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphical.h">
@@ -54,6 +57,9 @@
       <Filter>A1\ヘッダーファイル</Filter>
     </ClInclude>
     <ClInclude Include="shader.h">
+      <Filter>A1\ヘッダーファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
       <Filter>A1\ヘッダーファイル</Filter>
     </ClInclude>
   </ItemGroup>

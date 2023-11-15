@@ -50,7 +50,5 @@ void InitSprite(void);
 void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color);
 void ReleaseSprite(void);
 
-void ViewUpdate(Vector2 pos);
-void ProjectionUpdate(int screenWidth, int screenHeight);
 
 #endif

@@ -15,5 +15,5 @@ public:
 
 	static void Clear(Color color);
 	static void Present(void);
-	static const WIN::Window &GetHwnd(void) { return window; }
+	static WIN::Window &GetHwnd(void) { return window; }
 };
