@@ -22,6 +22,7 @@
 #include <windows.h>
 #include "win_input.h"
 #include "stdlib.h"
+#include "debugUI.h"
 
 /*------------------------------------------------------------------------------
 * define宣言
@@ -31,7 +32,7 @@
 /*------------------------------------------------------------------------------
 * extern宣言
 ------------------------------------------------------------------------------*/
-
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 /*------------------------------------------------------------------------------
 * prototype宣言
@@ -56,6 +57,9 @@ namespace WIN {
 	private:
 		static LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
 			Window *pThis = nullptr;
+			
+			if (ImGui_ImplWin32_WndProcHandler(hwnd, message, wParam, lParam))
+				return true;
 
 			// オリジナルウィンドウプロシージャの登録
 			if (message == WM_CREATE) {
