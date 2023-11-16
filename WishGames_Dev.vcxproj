@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cell.cpp" />
     <ClCompile Include="debugUI.cpp" />
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />
     <ClInclude Include="graphical.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
@@ -173,8 +175,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dark.h" />
-    <ClInclude Include="flre.h" />
-    <ClInclude Include="interface.h" />
+    <ClInclude Include="fire.h" />
+    <ClInclude Include="attribute.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="thunder.h" />
     <ClInclude Include="wind.h" />
