@@ -37,7 +37,7 @@ int main()
 			{
 				ImGui::Begin("Hello, world!");
 				//ImGui::Text(u8"テキスト");
-				if (ImGui::Button(u8"ボタンだ"))
+				if (ImGui::Button(u8"ボタン"))
 				{
 					std::cout << "ボタン押したよ" << std::endl;
 				}
