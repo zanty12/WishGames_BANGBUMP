@@ -25,6 +25,16 @@
     <Filter Include="A1\リソースファイル">
       <UniqueIdentifier>{e667dd84-b77d-4c5b-877a-3258164a0752}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{4786ecf8-49b3-4cb7-a99f-06c106899ac5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\ヘッダー ファイル">
+      <UniqueIdentifier>{3b08ad8d-c322-4f41-89e4-f1dc41f4cc9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\ソース ファイル">
+      <UniqueIdentifier>{6e480247-d82d-4bf7-896a-5681e380cfac}</UniqueIdentifier>
+      <Extensions>.cpp</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -42,6 +52,36 @@
     <ClCompile Include="shader.cpp">
       <Filter>A1\ソースファイル</Filter>
     </ClCompile>
+    <ClCompile Include="lib\imgui\imgui.cpp">
+      <Filter>ImGui\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_demo.cpp">
+      <Filter>ImGui\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_draw.cpp">
+      <Filter>ImGui\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_impl_dx11.cpp">
+      <Filter>ImGui\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_impl_win32.cpp">
+      <Filter>ImGui\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_tables.cpp">
+      <Filter>ImGui\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\imgui\imgui_widgets.cpp">
+      <Filter>ImGui\ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="original_window.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="cell.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="debugUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphical.h">
@@ -56,6 +96,39 @@
     <ClInclude Include="shader.h">
       <Filter>A1\ヘッダーファイル</Filter>
     </ClInclude>
+    <ClInclude Include="lib\imgui\imconfig.h">
+      <Filter>ImGui\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui.h">
+      <Filter>ImGui\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_impl_dx11.h">
+      <Filter>ImGui\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_impl_win32.h">
+      <Filter>ImGui\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imgui_internal.h">
+      <Filter>ImGui\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_rectpack.h">
+      <Filter>ImGui\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_textedit.h">
+      <Filter>ImGui\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\imgui\imstb_truetype.h">
+      <Filter>ImGui\ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="debugUI.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="original_window.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="cell.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -67,5 +140,25 @@
     <FxCompile Include="texture-shader.hlsl">
       <Filter>A1\リソースファイル</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="player.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="attribute.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="fire.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="wind.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="thunder.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="dark.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
