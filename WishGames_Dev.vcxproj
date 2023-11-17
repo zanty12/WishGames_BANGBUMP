@@ -145,6 +145,7 @@
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gameobject.h" />
     <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />
     <ClInclude Include="graphical.h" />
@@ -157,6 +158,8 @@
     <ClInclude Include="lib\imgui\imstb_textedit.h" />
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
     <ClInclude Include="original_window.h" />
+    <ClInclude Include="movableobj.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
@@ -179,7 +182,6 @@
     <ClInclude Include="dark.h" />
     <ClInclude Include="fire.h" />
     <ClInclude Include="attribute.h" />
-    <ClInclude Include="player.h" />
     <ClInclude Include="thunder.h" />
     <ClInclude Include="wind.h" />
   </ItemGroup>
