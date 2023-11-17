@@ -141,6 +141,7 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debugUI.h" />
@@ -157,6 +158,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="xinput.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
