@@ -139,6 +139,7 @@
     <ClCompile Include="lib\imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="original_window.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
