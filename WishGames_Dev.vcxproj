@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="cell.cpp" />
     <ClCompile Include="debugUI.cpp" />
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
@@ -143,6 +144,8 @@
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="gameobject.h" />
+    <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />
     <ClInclude Include="graphical.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
@@ -154,6 +157,8 @@
     <ClInclude Include="lib\imgui\imstb_textedit.h" />
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
     <ClInclude Include="original_window.h" />
+    <ClInclude Include="movableobj.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
@@ -173,9 +178,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dark.h" />
-    <ClInclude Include="flre.h" />
-    <ClInclude Include="interface.h" />
-    <ClInclude Include="player.h" />
+    <ClInclude Include="fire.h" />
+    <ClInclude Include="attribute.h" />
     <ClInclude Include="thunder.h" />
     <ClInclude Include="wind.h" />
   </ItemGroup>

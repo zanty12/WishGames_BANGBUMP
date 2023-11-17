@@ -1,5 +1,5 @@
 #pragma once
-#include "interface.h"
+#include "attribute.h"
 
 class DARK : public Attribute
 {
