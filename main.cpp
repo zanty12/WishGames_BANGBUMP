@@ -4,13 +4,6 @@
 #include "DebugUI.h"
 #include "xinput.h"
 
-#include "lib/winlib.h"
-
-
-
-
-
-
 int main()
 {
 	Graphical::Initialize(960, 540);
@@ -19,7 +12,6 @@ int main()
 #endif
 	MSG msg;
 	int texNo = LoadTexture("player.jpg");
-
 	while (true) {
 		// メッセージ
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {

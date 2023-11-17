@@ -4,6 +4,7 @@
 #include "cloud.h"
 #include "floor.h"
 #include "penfloor.h"
+#include "skillorb.h"
 #include "thundercloud.h"
 #include "wall.h"
 
@@ -13,10 +14,8 @@ void Map::PutCell(int x, int y, int cell_type)
 		return;
 	switch (cell_type)
 	{
-	case CELL_TYPE_NONE:
-		break;
 	case CELL_TYPE_WALL:
-		map_[y * width_ + x] = new Wall(x,y);
+		map_[y * width_ + x] = new Wall(x, y);
 		break;
 	case CELL_TYPE_FLOOR:
 		map_[y * width_ + x] = new Floor(x, y);
@@ -34,7 +33,13 @@ void Map::PutCell(int x, int y, int cell_type)
 		map_[y * width_ + x] = new ThunderCloud(x, y);
 		break;
 	case CELL_TYPE_ORB_SMALL:
-		map_[y * width_ + x] = new SkillOrb(x, y);
+		map_[y * width_ + x] = new SkillOrb(x, y, CELL_TYPE_ORB_SMALL);
+		break;
+	case CELL_TYPE_ORB_MID:
+		map_[y * width_ + x] = new SkillOrb(x, y, CELL_TYPE_ORB_MID);
+		break;
+	case CELL_TYPE_ORB_BIG:
+		map_[y * width_ + x] = new SkillOrb(x, y, CELL_TYPE_ORB_BIG);
 		break;
 	default:
 		break;
