@@ -5,13 +5,14 @@ class MapMngr
 {
 private:
 	Map* map_;
+	Vector2 spawn_;
 public:
 	MapMngr() = delete;
-	MapMngr(const char* filename);
+	MapMngr(const char* file_name);
 	~MapMngr()
 	{
 		delete map_;
 	};
 private:
-	void Read(const char* filename);
+	bool Read(const char* file_name);
 };
