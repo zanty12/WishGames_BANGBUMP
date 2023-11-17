@@ -2,6 +2,7 @@
 #include "sprite.h"
 #include <iostream>
 #include "DebugUI.h"
+#include "xinput.h"
 
 #include "lib/winlib.h"
 
