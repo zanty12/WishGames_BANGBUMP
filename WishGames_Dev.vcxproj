@@ -145,6 +145,7 @@
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />
@@ -157,12 +158,16 @@
     <ClInclude Include="lib\imgui\imstb_rectpack.h" />
     <ClInclude Include="lib\imgui\imstb_textedit.h" />
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="original_window.h" />
     <ClInclude Include="movableobj.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="Prep.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="Title.h" />
     <ClInclude Include="xinput.h" />
   </ItemGroup>
   <ItemGroup>
