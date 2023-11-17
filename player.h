@@ -49,7 +49,7 @@ public:
 	//HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
 	void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
-	void Update(void) override {}
+	void Update(void) override;
 	void Draw(void) override { DrawSprite(GetTexNo(), GetPos(), GetRot(), scale_, color_); }
 
 };

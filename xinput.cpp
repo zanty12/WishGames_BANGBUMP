@@ -59,6 +59,20 @@ Vector2 Input::GetStickLeft(int index) {
     return to_vector2(x, y);
 }
 
+Vector2 Input::GetPreviousStickRight(int index) {
+    SHORT x = previous[index].Gamepad.sThumbRX;
+    SHORT y = previous[index].Gamepad.sThumbRY;
+
+    return to_vector2(x, y);
+}
+
+Vector2 Input::GetPreviousStickLeft(int index) {
+    SHORT x = previous[index].Gamepad.sThumbLX;
+    SHORT y = previous[index].Gamepad.sThumbLY;
+
+    return to_vector2(x, y);
+}
+
 bool Input::GetKey(int index, KeyCode code) {
     if (index < 0 || MAX_NUM <= index) return false;
     return GetKey(state[index].Gamepad, code);

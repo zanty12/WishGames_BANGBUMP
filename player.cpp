@@ -21,3 +21,9 @@ bool Player::UseSkillPoint(void)
 
 	return false;
 }
+
+void Player::Update(void)
+{
+
+
+}

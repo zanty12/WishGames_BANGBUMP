@@ -127,7 +127,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="cell.cpp" />
     <ClCompile Include="debugUI.cpp" />
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
@@ -138,15 +137,21 @@
     <ClCompile Include="lib\imgui\imgui_tables.cpp" />
     <ClCompile Include="lib\imgui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="map.cpp" />
+    <ClCompile Include="mapmngr.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="wind.cpp" />
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="block.h" />
+    <ClInclude Include="cloud.h" />
+    <ClInclude Include="floor.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />
@@ -160,16 +165,23 @@
     <ClInclude Include="lib\imgui\imstb_textedit.h" />
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="map.h" />
+    <ClInclude Include="mapmngr.h" />
     <ClInclude Include="original_window.h" />
     <ClInclude Include="movableobj.h" />
+    <ClInclude Include="penfloor.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="Prep.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="skillorb.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="xinput.h" />
+    <ClInclude Include="thundercloud.h" />
+    <ClInclude Include="wall.h" />
+
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
