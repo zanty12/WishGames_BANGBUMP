@@ -180,7 +180,6 @@
     <ClInclude Include="dark.h" />
     <ClInclude Include="fire.h" />
     <ClInclude Include="attribute.h" />
-    <ClInclude Include="player.h" />
     <ClInclude Include="thunder.h" />
     <ClInclude Include="wind.h" />
   </ItemGroup>
