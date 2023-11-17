@@ -1,13 +1,19 @@
 #pragma once
+#include "lib/vector.h"
+#include "player.h"
 
+class Player;
 class Attribute
 {
-
+protected:
+	Player &player_;
 
 public:
+	Attribute() = delete;
+	Attribute(Player &player) : player_(player) { }
+	
 
-
-	virtual void Move() = 0;
+	virtual Vector2 Move() = 0;
 
 	virtual void Action() = 0;
 
