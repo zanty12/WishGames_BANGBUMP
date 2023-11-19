@@ -1,24 +1,20 @@
 #pragma once
 #include "attribute.h"
 
-class DARK : public Attribute
+class Dark : public Attribute
 {
+
+	bool is_trigger_;
+
+	bool is_press_;
 
 
 public:
 
+	Dark(Player& player) : Attribute(player){}
 
-	void Move() override
-	{
+	Vector2 Move() override;
 
-
-	}
-
-	void Action() override
-	{
-
-
-	}
-
-
+	void Action() override;
+	
 };

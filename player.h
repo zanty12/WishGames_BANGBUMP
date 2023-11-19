@@ -26,4 +26,5 @@ public:
 	void Update(void) override {}
 	void Draw(void) override {}
 	void AddVel(Vector2 vel) override {}
+	void AddPos(Vector2 pos) override {}
 };
