@@ -41,6 +41,8 @@ bool Input::GetKey(XINPUT_GAMEPAD gamepad, KeyCode code) {
     case Input::South: return button & XINPUT_GAMEPAD_Y;
     case Input::L: return button & XINPUT_GAMEPAD_LEFT_SHOULDER;
     case Input::R: return button & XINPUT_GAMEPAD_RIGHT_SHOULDER;
+    case Input::LThumb: return button & XINPUT_GAMEPAD_LEFT_THUMB;
+    case Input::RThumb: return button & XINPUT_GAMEPAD_RIGHT_THUMB;
     default: return false;
     }
 }
@@ -57,6 +59,15 @@ Vector2 Input::GetStickLeft(int index) {
     SHORT y = state[index].Gamepad.sThumbLY;
 
     return to_vector2(x, y);
+}
+
+float Input::GetTriggerRight(int index) {
+    return state[index].Gamepad.bRightTrigger / 255.0f;
+}
+
+float Input::GetTriggerLeft(int index) {
+    return state[index].Gamepad.bLeftTrigger / 255.0f;
+
 }
 
 bool Input::GetKey(int index, KeyCode code) {
