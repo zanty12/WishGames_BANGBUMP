@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="debugUI.cpp" />
+    <ClCompile Include="enemymngr.cpp" />
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
@@ -147,6 +148,8 @@
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemymngr.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="block.h" />
     <ClInclude Include="cloud.h" />
@@ -163,6 +166,7 @@
     <ClInclude Include="lib\imgui\imstb_rectpack.h" />
     <ClInclude Include="lib\imgui\imstb_textedit.h" />
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
+    <ClInclude Include="mapenum.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="mapmngr.h" />

@@ -3,6 +3,7 @@
 #include <iostream>
 #include "DebugUI.h"
 #include "xinput.h"
+#include "mapmngr.h"
 
 int main()
 {
@@ -12,6 +13,8 @@ int main()
 #endif
 	MSG msg;
 	int texNo = LoadTexture("player.jpg");
+	MapMngr map_mngr("data/MAP/1.csv");
+	Cell* cell = map_mngr.GetMap()->GetCell(0, 0);
 	while (true) {
 		// メッセージ
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
