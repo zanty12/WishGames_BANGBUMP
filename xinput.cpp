@@ -68,7 +68,7 @@ float Input::GetTriggerRight(int index) {
 
 float Input::GetTriggerLeft(int index) {
     return state[index].Gamepad.bLeftTrigger / 255.0f;
-
+}
 
 Vector2 Input::GetPreviousStickRight(int index) {
     SHORT x = previous[index].Gamepad.sThumbRX;
