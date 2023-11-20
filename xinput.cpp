@@ -61,12 +61,27 @@ Vector2 Input::GetStickLeft(int index) {
     return to_vector2(x, y);
 }
 
+
 float Input::GetTriggerRight(int index) {
     return state[index].Gamepad.bRightTrigger / 255.0f;
 }
 
 float Input::GetTriggerLeft(int index) {
     return state[index].Gamepad.bLeftTrigger / 255.0f;
+
+
+Vector2 Input::GetPreviousStickRight(int index) {
+    SHORT x = previous[index].Gamepad.sThumbRX;
+    SHORT y = previous[index].Gamepad.sThumbRY;
+
+    return to_vector2(x, y);
+}
+
+Vector2 Input::GetPreviousStickLeft(int index) {
+    SHORT x = previous[index].Gamepad.sThumbLX;
+    SHORT y = previous[index].Gamepad.sThumbLY;
+
+    return to_vector2(x, y);
 
 }
 

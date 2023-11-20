@@ -25,10 +25,19 @@ private:
 			{
 				delete map_[i];
 			}
-		})
+		}
 	}
 	void Draw();
 	void Update();
 	void PutCell(int x, int y, int cell_type);
-	Cell* GetCell(int x, int y);
+	Cell* GetCell (int x, int y) const
+	{
+		return map_[y * width_ + x];
+	}
+	Cell* GetCell(float x, float y) const
+	{
+		const int idx = (x - GameObject::size_ / 2) / GameObject::size_;
+		const int idy = (y - GameObject::size_ / 2) / GameObject::size_;
+		return map_[idy * width_ + idx];
+	}
 };

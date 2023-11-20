@@ -143,6 +143,7 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="wind.cpp" />
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +172,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="Prep.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="scenemngr.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
     <ClInclude Include="sprite.h" />
@@ -179,7 +181,6 @@
     <ClInclude Include="xinput.h" />
     <ClInclude Include="thundercloud.h" />
     <ClInclude Include="wall.h" />
-
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

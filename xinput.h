@@ -42,6 +42,11 @@ public:
 	static bool GetKey(XINPUT_GAMEPAD gamepad, KeyCode code);
 	static Vector2 GetStickRight(int index);
 	static Vector2 GetStickLeft(int index);
+
 	static float GetTriggerRight(int index);
 	static float GetTriggerLeft(int index);
+
+	static Vector2 GetPreviousStickRight(int index);
+	static Vector2 GetPreviousStickLeft(int index);
+
 };
