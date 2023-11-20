@@ -5,7 +5,7 @@
 // 作成者 根本賢
 // 
 // 作成日		2023/11/16
-// 最終更新日	2023/11/17
+// 最終更新日	2023/11/20
 // 
 //--------------------------------------------------------------------------------
 
@@ -22,12 +22,13 @@ class Player : public MovableObj
 private:
 	const int SKILL_GAUGE_MAX_ = 10;	//所持スキルポイントの上限
 	const int HP_MAX_ = 1000;			//HPの上限
+	const float GRAVITY_SCALE_ = 6.0f;	//重力（仮）
 
 	Vector2 dir_;		//向き
 	Vector2 scale_;		//大きさ（未定）
 	Color color_;
 
-	Attribute* attribute_;
+	class Attribute* attribute_ = nullptr;
 	int hp_;
 	int skillpt_;
 
@@ -39,6 +40,7 @@ public:
 	void SetDir(Vector2 dir) { dir_ = dir; }	//向きのセット
 	Vector2 GetDir(void) const { return dir_; }	//向きのゲット
 	int GetHp(void) const { return hp_; }		//HPのゲット
+	void SetAttribute(Attribute* attribute) { attribute_ = attribute; }	//アトリビュートポインタのセット（何も操作していないときはnullptrをセット）
 
 	//スキルポイントの使用（使えるとき=true 使うとスキルポイントは0になる）
 	bool UseSkillPoint(void);
@@ -51,5 +53,9 @@ public:
 
 	void Update(void) override;
 	void Draw(void) override { DrawSprite(GetTexNo(), GetPos(), GetRot(), scale_, color_); }
+
+private:
+	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）
+	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
 
 };
