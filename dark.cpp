@@ -6,7 +6,6 @@ Vector2 Dark::Move()
 {
 
 
-
 	if (GetPressStickLeft(0))
 	{
 		if (!is_press_)
