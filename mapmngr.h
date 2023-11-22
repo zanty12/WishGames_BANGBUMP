@@ -27,6 +27,8 @@ public:
 	{
 		map_->Draw();
 	}
+	void DebugMenu();
 private:
 	bool Read(const char* file_name);
+	void ArrangeBlkTex() const;
 };
