@@ -6,7 +6,7 @@ Vector2 Dark::Move()
 {
 
 
-	if (GetPressStickLeft(0))
+	if (Input::GetKey(0,Input::LThumb))
 	{
 		if (!is_press_)
 		{
