@@ -7,14 +7,13 @@
 
 int main()
 {
-	Graphical::Initialize(960, 540);
+	Graphical::Initialize(1600, 900);
 #ifdef _DEBUG
 	DebugUI::Initialize();
 #endif
 	MSG msg;
 	int texNo = LoadTexture("player.jpg");
 	MapMngr map_mngr("data/MAP/1.csv");
-	Cell* cell = map_mngr.GetMap()->GetCell(0, 0);
 	while (true) {
 		// メッセージ
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -41,8 +40,8 @@ int main()
 				ImGui::End();
 			}
 #endif
-			DrawSprite(texNo, Vector2(100, 100), 0, Vector2(100, 100), Color(1, 1, 1));
-
+			//DrawSprite(texNo, Vector2(100, 100), 0, Vector2(100, 100), Color(1, 1, 1));
+			map_mngr.Draw();
 #ifdef _DEBUG
 			DebugUI::EndDraw();
 #endif

@@ -1,5 +1,6 @@
 #pragma once
 #include "cell.h"
+#include "texture.h"
 class PenFloor :
     public Cell
 {

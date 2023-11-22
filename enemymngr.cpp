@@ -18,7 +18,7 @@ void EnemyMngr::Draw () const
 
 void EnemyMngr::Spawn(int x, int y, int type)
 {
-    Enemy* enemy = nullptr; //TODO: ã“ã“ã§æ•µã‚’ç”Ÿæˆã™ã‚‹
+    Enemy* enemy = nullptr; //TODO: ‚±‚±‚Å“G‚ğ¶¬‚·‚é
     enemies_.push_back(enemy);
 }
 

@@ -1,3 +1,10 @@
+/**
+ * @file mapmngr.cpp
+ * @brief MapMngrクラスを実装します。
+ * @author Cheung To Hung
+ * @date 2023/11/22
+ */
+
 #include "mapmngr.h"
 #include "map.h"
 #include <fstream>
@@ -5,10 +12,23 @@
 #include <string>
 #include "mapenum.h"
 
+/**
+ * @brief MapMngrクラスのコンストラクタ。
+ * @param file_name マップデータを読み込むファイルの名前。
+ */
+
 MapMngr::MapMngr(const char* file_name)
 {
 	Read(file_name);
 }
+
+/**
+ * @brief 指定したファイルからマップデータを読み込みます。
+ * @param file_name マップデータを読み込むファイルの名前。
+ * @return マップデータの読み込みが成功した場合はtrue、それ以外の場合はfalse。
+ *
+ * マップファイルを読み込み、マップを構築します。
+ */
 
 bool MapMngr::Read(const char* file_name)
 {
