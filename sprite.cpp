@@ -24,15 +24,15 @@ void InitSprite(void) {
 
 
 	Vertex v[] = {
-		{ Vector3(-0.5f, +0.5f), Vector2(1.0f, 1.0f) },
-		{ Vector3(+0.5f, +0.5f), Vector2(0.0f, 1.0f) },
-		{ Vector3(-0.5f, -0.5f), Vector2(1.0f, 0.0f) },
-		{ Vector3(+0.5f, -0.5f), Vector2(0.0f, 0.0f) },
+		{ Vector3(-0.5f, +0.5f), Vector2(0.0f, 1.0f) },
+		{ Vector3(+0.5f, +0.5f), Vector2(1.0f, 1.0f) },
+		{ Vector3(-0.5f, -0.5f), Vector2(0.0f, 0.0f) },
+		{ Vector3(+0.5f, -0.5f), Vector2(1.0f, 0.0f) },
 	};
-	// ƒXƒvƒ‰ƒCƒg‚Ìì¬
+	// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®ä½œæˆ
 	g_Square.Create(v, 4, nullptr, 0, PRIMITIVE_SET_TYPE_COPY);
 
-	// ’è”ƒoƒbƒtƒ@‚Ìì¬
+	// å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®ä½œæˆ
 	g_WorldBuffer.Create(sizeof(DX::MATRIX), Device3D::Get());
 	g_ViewBuffer.Create(sizeof(DX::MATRIX), Device3D::Get());
 	g_ProjectionBuffer.Create(sizeof(DX::MATRIX), Device3D::Get());
@@ -43,21 +43,22 @@ void InitSprite(void) {
 	Device3D::SetConstantBuffer(3, 1, g_ColorBuffer);
 
 	ViewUpdate(Vector2::Zero);
-	ProjectionUpdate(1920, 1080);
+	ProjectionUpdate(Graphical::GetWidth(), Graphical::GetHeight());
 }
 
 void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 	using namespace DX;
 	using namespace DX::DX11;
 
-	// ƒgƒ|ƒƒW‚Ìİ’è
+	// ãƒˆãƒãƒ­ã‚¸ã®è¨­å®š
 	Device3D::SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	// ƒeƒNƒXƒ`ƒƒ‚Ìİ’è
+	// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®è¨­å®š
 	auto texture = GetTexture(texNo);
 	Device3D::SetResource(*GetTexture(texNo));
 
-	// ƒAƒtƒBƒ“•ÏŠ·
+	// ã‚¢ãƒ•ã‚£ãƒ³å¤‰æ›
 	MATRIX translation, rotation, scaler, transform;
+	pos.y = -pos.y + Graphical::GetHeight();
 	translation.SetTranslation(pos);
 	rotation.SetRotation(Vector3(0.0f, 0.0f, rot));
 	scaler.SetScaling(scale);
@@ -65,12 +66,12 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 	transform = translation * transform;
 	g_WorldMatrix = transform;
 
-	// ƒVƒF[ƒ_[‚Ìİ’è
+	// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼ã®è¨­å®š
 	ShaderManager::SetTextureMode();
-	// ’è”ƒoƒbƒtƒ@‚Ìİ’è
+	// å®šæ•°ãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
 	Device3D::UpdateConstantBuffer(&g_WorldMatrix, g_WorldBuffer);
 	Device3D::UpdateConstantBuffer(&color, g_ColorBuffer);
-	// •`‰æ
+	// æç”»
 	Device3D::Draw(
 		g_Square.GetVertexBuffer(), g_Square.GetVertexCount(), g_Square.GetVertexStructByteSize(),
 		g_Square.GetIndexBuffer(), g_Square.GetIndexCount(), g_Square.GetIndexStructByteSize()
@@ -85,14 +86,14 @@ void ReleaseSprite(void) {
 
 void ViewUpdate(Vector2 pos) {
 	using namespace DX::DX11;
-	// ƒrƒ…[•ÏŠ·
+	// ãƒ“ãƒ¥ãƒ¼å¤‰æ›
 	g_ViewMatrix.SetTranslation(-pos);
 	Device3D::UpdateConstantBuffer(&g_ViewMatrix, g_ViewBuffer);
 }
 
 void ProjectionUpdate(int screenWidth, int screenHeight) {
 	using namespace DX::DX11;
-	// ƒvƒƒWƒFƒNƒVƒ‡ƒ“•ÏŠ·
+	// ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ã‚·ãƒ§ãƒ³å¤‰æ›
 	g_ProjectionMatrix.SetWorldViewProjection(screenWidth, screenHeight);
 	Device3D::UpdateConstantBuffer(&g_ProjectionMatrix, g_ProjectionBuffer);
 }
