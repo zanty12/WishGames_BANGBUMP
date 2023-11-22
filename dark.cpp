@@ -33,16 +33,38 @@ Vector2 Dark::Move()
 	{
 		Vector2 vel = player_.GetVel();
 		Vector2 stick = Input::GetStickLeft(0);
-		player_.AddPos(stick * 20);
+		Vector2 pos = player_.GetPos();
+		player_.SetPos(pos + stick * 20);
 	}
 	is_trigger_ = false;
 
-
+	return player_.GetPos();
 };
 
 void Dark::Action()
 {
-	
+
+
+	/*if (Input::GetKey(0,Input::RThumb))
+	{
+		if (is_press_)
+		{
+		}
+
+		is_press_ = true;
+
+	}
+	else
+	{
+		is_press_ = false;
+	}
+
+	if (is_trigger_)
+	{
+		
+	}
+	is_trigger_ = false;*/
+
 
 	using namespace PHYSICS;
 
