@@ -5,7 +5,7 @@
 // 作成者 根本賢
 // 
 // 作成日		2023/11/16
-// 最終更新日	2023/11/16
+// 最終更新日	2023/11/17
 // 
 //--------------------------------------------------------------------------------
 
@@ -27,7 +27,7 @@ public:
 	void SetVel(Vector2 vel) { vel_ = vel; }		//速度セット
 	Vector2 GetVel(void) const { return vel_; }		//速度ゲット
 
-	virtual void AddVel(Vector2 vel) = 0;			//速度をオブジェクトに足す
+	void AddVel(Vector2 vel) { SetPos(GetPos() + vel); }	//速度をオブジェクトに足す
 
 	virtual void AddPos(Vector2 pos) = 0;
 

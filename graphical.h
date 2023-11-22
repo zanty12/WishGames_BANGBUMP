@@ -9,6 +9,8 @@ private:
 	static OrigialWindow window;
 	static DX::DX11::Device3D device;
 	static DX::DX11::Renderer renderer;
+	static int width;
+	static int height;
 
 public:
 	static void Initialize(int width, int height);
@@ -19,4 +21,6 @@ public:
 	static const WIN::Window &GetHwnd(void) { return window; }
 	static const DX::DX11::Device3D &GetDevice(void) { return device; }
 	static const DX::DX11::Renderer &GetRenderer(void) { return renderer; }
+	static int GetWidth(void) { return width; }
+	static int GetHeight(void) { return height; }
 };
