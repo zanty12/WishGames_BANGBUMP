@@ -15,7 +15,7 @@ int main()
     MSG msg;
     int texNo = LoadTexture("player.jpg");
     MapMngr map_mngr("data/MAP/mariomaker.csv");
-    Player player(Vector2(500.0f, 500.0f),0.0f,LoadTexture("player.jpg"),Vector2(0.0f,0.0f));
+    Player player(map_mngr.,0.0f,LoadTexture("player.jpg"),Vector2(0.0f,0.0f));
     while (true)
     {
         // メッセージ
