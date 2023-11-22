@@ -4,6 +4,7 @@
 #include "DebugUI.h"
 #include "xinput.h"
 #include "mapmngr.h"
+#include "player.h"
 
 bool debug_mode = false;
 
@@ -14,6 +15,7 @@ int main()
     MSG msg;
     int texNo = LoadTexture("player.jpg");
     MapMngr map_mngr("data/MAP/mariomaker.csv");
+    Player player(Vector2(500.0f, 500.0f),0.0f,LoadTexture("player.jpg"),Vector2(0.0f,0.0f));
     while (true)
     {
         // メッセージ
@@ -53,7 +55,9 @@ int main()
             }
 
             //DrawSprite(texNo, Vector2(100, 100), 0, Vector2(100, 100), Color(1, 1, 1));
+            player.Update();
             map_mngr.Draw();
+            player.Draw();
 
 
             DebugUI::EndDraw();
