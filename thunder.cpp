@@ -13,7 +13,11 @@
 
 Vector2 Thunder::Move()
 {
-	
+	//if()
+	Vector2 vel = player_.GetVel();
+	Vector2 stick = Input::GetStickLeft(0);
+	//Vector2 
+
 	
 }
 
