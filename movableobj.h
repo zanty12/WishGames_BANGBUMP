@@ -19,7 +19,6 @@ class MovableObj : public GameObject
 {
 private:
 	Vector2 vel_;
-	Vector2 pos_;
 
 public:
 	MovableObj(Vector2 pos,float rot,int tex_number,Vector2 vel)
@@ -29,9 +28,6 @@ public:
 	Vector2 GetVel(void) const { return vel_; }		//速度ゲット
 
 	virtual void AddVel(Vector2 vel) = 0;			//速度をオブジェクトに足す
-
-	void SetPos(Vector2 pos) { pos_ = pos; }		//ポジションセット
-	Vector2 GetPos(void) const { return pos_; }		//ポジションゲット
 
 	virtual void AddPos(Vector2 pos) = 0;
 
