@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="debugUI.cpp" />
+    <ClCompile Include="fire.cpp" />
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
@@ -180,7 +181,6 @@
     <ClInclude Include="xinput.h" />
     <ClInclude Include="thundercloud.h" />
     <ClInclude Include="wall.h" />
-
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
