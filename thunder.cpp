@@ -1,25 +1,22 @@
 //--------------------------------------------------------------------------------
 // 
-// サンダー[thunder.h]
+// サンダー[thunder.cpp]
 // 
 // 作成者 趙潤博
 // 
 // 最終更新日	2023/11/22
 // 
 //--------------------------------------------------------------------------------
-#pragma once
-#include "attribute.h"
+#include "thunder.h"
+#include"xinput.h"
+#include"lib/collider2d.h"
 
-class Thunder : public Attribute
+Vector2 Thunder::Move()
 {
+	
+	
+}
 
-
-
-public:
-   
-    Thunder(Player& player) : Attribute(player) {}
-    Vector2 Move() override;
-    void Action() override;
-
-};
-
+void Thunder::Action()
+{
+}
