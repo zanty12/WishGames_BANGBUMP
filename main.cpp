@@ -13,7 +13,7 @@ int main()
     DebugUI::Initialize();
     MSG msg;
     int texNo = LoadTexture("player.jpg");
-    MapMngr map_mngr("data/MAP/1.csv");
+    MapMngr map_mngr("data/MAP/mariomaker.csv");
     while (true)
     {
         // メッセージ
@@ -54,6 +54,7 @@ int main()
 
             //DrawSprite(texNo, Vector2(100, 100), 0, Vector2(100, 100), Color(1, 1, 1));
             map_mngr.Draw();
+
 
             DebugUI::EndDraw();
             Graphical::Present();

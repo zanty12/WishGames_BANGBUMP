@@ -9,5 +9,6 @@ public:
         this->SetTexNo(LoadTexture("data/TEXTURE/cloud.png"));
     }
     virtual ~Cloud() override = default;
+    MAP_READ GetCellType() const override { return MAP_READ_CLOUD; }
 };
 

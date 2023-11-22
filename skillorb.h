@@ -42,4 +42,19 @@ public:
     }
 
     virtual ~SkillOrb() override = default;
+
+    MAP_READ GetCellType() const override
+    {
+        switch (type_)
+        {
+        case (ORB_SMALL):
+            return MAP_READ_ORB_SMALL;
+        case (ORB_MID):
+            return MAP_READ_ORB_MID;
+        case (ORB_BIG):
+            return MAP_READ_ORB_BIG;
+        default:
+            return MAP_READ_ORB_SMALL;
+        }
+    }
 };

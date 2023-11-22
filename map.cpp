@@ -32,10 +32,12 @@ void Map::PutCell(int x, int y, int MAP_READ) const
 		return;
 	switch (MAP_READ)
 	{
+	case MAP_READ_NONE:
+		break;
 	case MAP_READ_WALL:
 		map_[y * width_ + x] = new Wall(x, y);
 		break;
-	case MAP_READ_FLOOR:
+	case MAP_READ_FLOOR:{}
 		map_[y * width_ + x] = new Floor(x, y);
 		break;
 	case MAP_READ_PENFLOOR:
@@ -62,4 +64,18 @@ void Map::PutCell(int x, int y, int MAP_READ) const
 	default:
 		break;
 	}
+}
+/**
+  * @brief マップ内のすべてのセルを更新します。
+  *
+  * このメソッドは、マップ内の各セルでUpdateメソッドを呼び出します。
+  */
+void Map::Update ()
+{
+	for (int i = 0; i < width_ * height_; i++)
+	{
+		if(map_[i] != nullptr)
+		map_[i]->Update();
+	}
+
 }

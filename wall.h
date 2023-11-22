@@ -10,5 +10,6 @@ public:
         this->SetTexNo(LoadTexture("data/TEXTURE/wall.png"));
     }
     virtual ~Wall() override = default;
+    MAP_READ GetCellType() const override { return MAP_READ_WALL; }
 };
 

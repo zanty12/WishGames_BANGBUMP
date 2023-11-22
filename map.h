@@ -58,19 +58,12 @@ public:
             }
         }
     }
-
     /**
       * @brief マップ内のすべてのセルを更新します。
       *
       * このメソッドは、マップ内の各セルでUpdateメソッドを呼び出します。
       */
-    void Update()
-    {
-        for (int i = 0; i < width_ * height_; i++)
-        {
-            map_[i]->Update();
-        }
-    }
+    void Update();
 
     /**
      * @brief マップ内のすべてのセルを描画します。
@@ -115,5 +108,13 @@ public:
         const int idx = std::floor((x - GameObject::size_ / 2) / GameObject::size_);
         const int idy = std::floor((y - GameObject::size_ / 2) / GameObject::size_);
         return map_[idy * width_ + idx];
+    }
+    int GetWidth() const
+    {
+        return width_;
+    }
+    int GetHeight() const
+    {
+        return height_;
     }
 };
