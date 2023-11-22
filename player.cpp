@@ -25,14 +25,19 @@ bool Player::UseSkillPoint(void)
 void Player::Update(void)
 {
 
-	if (attribute_ != nullptr)
+	if (move_attribute_ != nullptr)
 	{
-		SetVel(attribute_->Move());
+		SetVel(move_attribute_->Move());
 	}
 	else
-	{
+	{//‰½‚à‘€ì‚µ‚È‚¯‚ê‚Î—‚¿‚é
 		if (GetVel().y <= GRAVITY_SCALE_)
-			SetVel(Vector2(GetVel().x, GetVel().y + 0.05f));
+			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));
+	}
+
+	if (attack_attribute_ != nullptr)
+	{
+		attack_attribute_->Action();
 	}
 
 	AddVel(GetVel());

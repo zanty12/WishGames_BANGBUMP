@@ -28,7 +28,9 @@ private:
 	Vector2 scale_;		//大きさ（未定）
 	Color color_;
 
-	class Attribute* attribute_ = nullptr;
+	class Attribute* move_attribute_ = nullptr;		//動く用のアトリビュート
+	class Attribute* attack_attribute_ = nullptr;	//攻撃用のアトリビュート
+
 	int hp_;
 	int skillpt_;
 
@@ -40,7 +42,10 @@ public:
 	void SetDir(Vector2 dir) { dir_ = dir; }	//向きのセット
 	Vector2 GetDir(void) const { return dir_; }	//向きのゲット
 	int GetHp(void) const { return hp_; }		//HPのゲット
-	void SetAttribute(Attribute* attribute) { attribute_ = attribute; }	//アトリビュートポインタのセット（何も操作していないときはnullptrをセット）
+	void SetAttribute(Attribute* move_attribute) { move_attribute_ = move_attribute; }				//ムーブアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
+	void SetAttackAttribute(Attribute* attack_attribute) { attack_attribute_ = attack_attribute; }	//アタックアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
+	Attribute* GetAttribute(void) { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
+	Attribute* GetAttackAttribute(void) { return attack_attribute_; }	//アタックアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
 
 	//スキルポイントの使用（使えるとき=true 使うとスキルポイントは0になる）
 	bool UseSkillPoint(void);
