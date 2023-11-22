@@ -24,10 +24,10 @@ void InitSprite(void) {
 
 
 	Vertex v[] = {
-		{ Vector3(-0.5f, +0.5f), Vector2(1.0f, 1.0f) },
-		{ Vector3(+0.5f, +0.5f), Vector2(0.0f, 1.0f) },
-		{ Vector3(-0.5f, -0.5f), Vector2(1.0f, 0.0f) },
-		{ Vector3(+0.5f, -0.5f), Vector2(0.0f, 0.0f) },
+		{ Vector3(-0.5f, +0.5f), Vector2(0.0f, 1.0f) },
+		{ Vector3(+0.5f, +0.5f), Vector2(1.0f, 1.0f) },
+		{ Vector3(-0.5f, -0.5f), Vector2(0.0f, 0.0f) },
+		{ Vector3(+0.5f, -0.5f), Vector2(1.0f, 0.0f) },
 	};
 	// スプライトの作成
 	g_Square.Create(v, 4, nullptr, 0, PRIMITIVE_SET_TYPE_COPY);
@@ -43,7 +43,7 @@ void InitSprite(void) {
 	Device3D::SetConstantBuffer(3, 1, g_ColorBuffer);
 
 	ViewUpdate(Vector2::Zero);
-	ProjectionUpdate(1920, 1080);
+	ProjectionUpdate(Graphical::GetWidth(), Graphical::GetHeight());
 }
 
 void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
@@ -58,6 +58,7 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 
 	// アフィン変換
 	MATRIX translation, rotation, scaler, transform;
+	pos.y = -pos.y + Graphical::GetHeight();
 	translation.SetTranslation(pos);
 	rotation.SetRotation(Vector3(0.0f, 0.0f, rot));
 	scaler.SetScaling(scale);

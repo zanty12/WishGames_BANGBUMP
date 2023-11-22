@@ -4,9 +4,14 @@
 OrigialWindow Graphical::window;
 DX::DX11::Device3D Graphical::device;
 DX::DX11::Renderer Graphical::renderer;
+int Graphical::width = 0;
+int Graphical::height = 0;
 
 void Graphical::Initialize(int width, int height) {
 	using namespace DX::DX11;
+	Graphical::width = width;
+	Graphical::height = height;
+
 	HINSTANCE hInstance = GetModuleHandle(nullptr);
 
 	// ウィンドウの作成
