@@ -18,8 +18,8 @@ void ShaderManager::Initialize(void) {
 		desc.descNum = 2;
 		desc.vertexEntryPoint = "VS";
 		desc.pixelEntryPoint = "PS";
-		desc.vertexPath = desc.pixelPath = L"texture-shader.hlsl";
-		texShader.Create(desc);	
+		desc.vertexPath = desc.pixelPath = L"color-shader.hlsl";
+		colShader.Create(desc);
 	}
 	{
 		D3D11_INPUT_ELEMENT_DESC elmDesc[] = {
@@ -31,8 +31,8 @@ void ShaderManager::Initialize(void) {
 		desc.descNum = 2;
 		desc.vertexEntryPoint = "VS";
 		desc.pixelEntryPoint = "PS";
-		desc.vertexPath = desc.pixelPath = L"color-shader.hlsl";
-		colShader.Create(desc);	
+		desc.vertexPath = desc.pixelPath = L"texture-shader.hlsl";
+		texShader.Create(desc);	
 	}
 }
 
