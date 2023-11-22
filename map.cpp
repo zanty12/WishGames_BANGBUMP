@@ -7,39 +7,40 @@
 #include "skillorb.h"
 #include "thundercloud.h"
 #include "wall.h"
+#include "mapenum.h"
 
-void Map::PutCell(int x, int y, int cell_type)
+void Map::PutCell(int x, int y, int MAP_READ)
 {
 	if (x < 0 || x >= width_ || y < 0 || y >= height_)
 		return;
-	switch (cell_type)
+	switch (MAP_READ)
 	{
-	case CELL_TYPE_WALL:
+	case MAP_READ_WALL:
 		map_[y * width_ + x] = new Wall(x, y);
 		break;
-	case CELL_TYPE_FLOOR:
+	case MAP_READ_FLOOR:
 		map_[y * width_ + x] = new Floor(x, y);
 		break;
-	case CELL_TYPE_PENFLOOR:
+	case MAP_READ_PENFLOOR:
 		map_[y * width_ + x] = new PenFloor(x, y);
 		break;
-	case CELL_TYPE_BLOCK:
+	case MAP_READ_BLOCK:
 		map_[y * width_ + x] = new Block(x, y);
 		break;
-	case CELL_TYPE_CLOUD:
+	case MAP_READ_CLOUD:
 		map_[y * width_ + x] = new Cloud(x, y);
 		break;
-	case CELL_TYPE_THUNDERCLOUD:
+	case MAP_READ_THUNDERCLOUD:
 		map_[y * width_ + x] = new ThunderCloud(x, y);
 		break;
-	case CELL_TYPE_ORB_SMALL:
-		map_[y * width_ + x] = new SkillOrb(x, y, CELL_TYPE_ORB_SMALL);
+	case MAP_READ_ORB_SMALL:
+		map_[y * width_ + x] = new SkillOrb(x, y, MAP_READ_ORB_SMALL);
 		break;
-	case CELL_TYPE_ORB_MID:
-		map_[y * width_ + x] = new SkillOrb(x, y, CELL_TYPE_ORB_MID);
+	case MAP_READ_ORB_MID:
+		map_[y * width_ + x] = new SkillOrb(x, y, MAP_READ_ORB_MID);
 		break;
-	case CELL_TYPE_ORB_BIG:
-		map_[y * width_ + x] = new SkillOrb(x, y, CELL_TYPE_ORB_BIG);
+	case MAP_READ_ORB_BIG:
+		map_[y * width_ + x] = new SkillOrb(x, y, MAP_READ_ORB_BIG);
 		break;
 	default:
 		break;

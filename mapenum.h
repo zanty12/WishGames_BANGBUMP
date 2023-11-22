@@ -1,0 +1,18 @@
+#pragma once
+
+typedef enum {
+    MAP_READ_NONE,
+    MAP_READ_WALL,
+    MAP_READ_FLOOR,
+    MAP_READ_PENFLOOR,
+    MAP_READ_CLOUD,
+    MAP_READ_THUNDERCLOUD,
+    MAP_READ_BLOCK,
+    MAP_READ_ORB_SMALL,
+    MAP_READ_ORB_MID,
+    MAP_READ_ORB_BIG,
+    //âpåÍñºïWèÄ
+    MAP_READ_KOOPA, //ÉmÉRÉmÉR
+    MAP_READ_HAMMERBRO,
+    MAP_READ_PHANTOM,
+}MAP_READ;
