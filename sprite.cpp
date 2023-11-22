@@ -4,9 +4,7 @@
 
 struct Vertex {
 	Vector3 position;
-	Vector3 rotation;
-	Vector3 scale;
-	Color color;
+	Vector2 uv;
 };
 
 DX::DX11::CORE::ConstantBuffer g_WorldBuffer;
@@ -26,10 +24,10 @@ void InitSprite(void) {
 
 
 	Vertex v[] = {
-		{ Vector3(-0.5f, +0.5f), Vector3::Zero, Vector3::One, Color::White },
-		{ Vector3(+0.5f, +0.5f), Vector3::Zero, Vector3::One, Color::White },
-		{ Vector3(-0.5f, -0.5f), Vector3::Zero, Vector3::One, Color::White },
-		{ Vector3(+0.5f, -0.5f), Vector3::Zero, Vector3::One, Color::White },
+		{ Vector3(-0.5f, +0.5f), Vector2(1.0f, 1.0f) },
+		{ Vector3(+0.5f, +0.5f), Vector2(0.0f, 1.0f) },
+		{ Vector3(-0.5f, -0.5f), Vector2(1.0f, 0.0f) },
+		{ Vector3(+0.5f, -0.5f), Vector2(0.0f, 0.0f) },
 	};
 	// スプライトの作成
 	g_Square.Create(v, 4, nullptr, 0, PRIMITIVE_SET_TYPE_COPY);
@@ -67,11 +65,11 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 	transform = translation * transform;
 	g_WorldMatrix = transform;
 
+	// シェーダーの設定
+	ShaderManager::SetTextureMode();
 	// 定数バッファの設定
 	Device3D::UpdateConstantBuffer(&g_WorldMatrix, g_WorldBuffer);
 	Device3D::UpdateConstantBuffer(&color, g_ColorBuffer);
-	// シェーダーの設定
-	ShaderManager::SetTextureMode();
 	// 描画
 	Device3D::Draw(
 		g_Square.GetVertexBuffer(), g_Square.GetVertexCount(), g_Square.GetVertexStructByteSize(),
