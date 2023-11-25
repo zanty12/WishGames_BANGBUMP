@@ -7,7 +7,7 @@ class Koopa : public Enemy
 public:
     Koopa() = delete;
     ~Koopa() override = default;
-    Koopa(int x, int y) : Enemy(x, y)
+    Koopa(int x, int y,EnemyMngr* enemy_mngr) : Enemy(x, y,enemy_mngr)
     {
         SetTexNo(LoadTexture("data/texture/koopa.png"));
     }

@@ -19,9 +19,10 @@
  * @param file_name マップデータを読み込むファイルの名前。
  */
 
-MapMngr::MapMngr(const char* file_name)
+MapMngr::MapMngr(const char* file_name,Game* game)
 {
-    enemy_mngr_ = new EnemyMngr();
+    enemy_mngr_ = new EnemyMngr(this);
+    game_ = game;
     Read(file_name);
 }
 
@@ -80,6 +81,17 @@ bool MapMngr::Read(const char* file_name)
     }
     file.close();
     return true;
+}
+
+void MapMngr::Update() const
+{
+    map_->Update();
+    enemy_mngr_->Update();
+}
+void MapMngr::Draw() const
+{
+    map_->Draw();
+    enemy_mngr_->Draw();
 }
 
 void MapMngr::DebugMenu()

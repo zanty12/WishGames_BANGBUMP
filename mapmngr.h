@@ -2,15 +2,23 @@
 #include "map.h"
 #include "mapmngr.h"
 #include "enemymngr.h"
+
+#include "game.h"
+
+class EnemyMngr;
+class Game;
+
 class MapMngr
 {
 private:
 	Map* map_;
 	Vector2 spawn_;
 	EnemyMngr* enemy_mngr_;
+
+	Game* game_; //‚ ‚½‚è”»’è—p
 public:
 	MapMngr() = delete;
-	MapMngr(const char* file_name);
+	MapMngr(const char* file_name,Game* game);
 	~MapMngr()
 	{
 		delete map_;
@@ -19,22 +27,24 @@ public:
 	{
 		return map_;
 	}
-	void Update() const
-	{
-		map_->Update();
-		enemy_mngr_->Update();
-	}
-	void Draw() const
-	{
-		map_->Draw();
-		enemy_mngr_->Draw();
-	}
+	void Update() const;
+	void Draw() const;
 
 	void DebugMenu();
 
 	Vector2 GetPlayerSpawn() const
 	{
 		return spawn_;
+	}
+
+	EnemyMngr* GetEnemyMngr() const
+	{
+		return enemy_mngr_;
+	}
+
+	Game* GetGame() const
+	{
+		return game_;
 	}
 private:
 	bool Read(const char* file_name);

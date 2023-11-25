@@ -3,6 +3,7 @@
 #include "player.h"
 #include "mapmngr.h"
 
+class MapMngr;
 class Game :public Scene
 {
 private:
@@ -10,23 +11,15 @@ private:
 	MapMngr* mapmngr_;
 
 public:
-	Game() {
-		mapmngr_ = new MapMngr("data/map/1.csv");
-		player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("player.jpg"), Vector2(0.0f, 0.0f));
-
-	}
+	Game();
 	~Game() override {
 		delete mapmngr_;
 		delete player_;
 	}
-	void Update()override {
-		mapmngr_->Update();
-		player_->Update();
+	void Update()override;
+	void Draw()override;
 
+	Player* GetPlayer() const {
+		return player_;
 	}
-	void Draw()override{
-		mapmngr_->Draw();
-		player_->Draw();
-	}
-
 };

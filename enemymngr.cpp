@@ -23,7 +23,7 @@ void EnemyMngr::Spawn(int x, int y, int type)
     switch (type)
     {
     case(MAP_READ_KOOPA):
-        enemies_.push_back(new Koopa(x, y));
+        enemies_.push_back(new Koopa(x, y,this));
         break;
     case(MAP_READ_HAMMERBRO):
         break;

@@ -130,6 +130,7 @@
     <ClCompile Include="dark.cpp" />
     <ClCompile Include="debugUI.cpp" />
     <ClCompile Include="enemymngr.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="koopa.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
