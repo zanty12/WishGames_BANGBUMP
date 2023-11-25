@@ -10,8 +10,20 @@ private:
 	MapMngr* mapmngr_;
 
 public:
+	Game() {
+		mapmngr_ = new MapMngr("data/MAP/mariomaker.csv");
+		player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("player.jpg"), Vector2(0.0f, 0.0f));
 
-	void Update()override{}
-	void Draw()override{}
+	}
+	~Game(){}
+	void Update()override {
+		mapmngr_->Update();
+		player_->Update();
+
+	}
+	void Draw()override{
+		mapmngr_->Draw();
+		player_->Draw();
+	}
 
 };
