@@ -60,12 +60,12 @@ namespace PHYSICS {
 	public:
 		Vector2 a, b;
 		Vertex2(Vector2 a, Vector2 b) : a(a), b(b), a_b(b - a) { }
-		/*Vertex3 Translate(Vector2 pos) {
+		Vertex2 Translate(Vector2 pos) {
 			a += pos;
 			b += pos;
 			a_b = b - a;
 		}
-		Vertex3 Rotate(float rad) {
+		Vertex2 Rotate(float rad) {
 			float s_ = sinf(rad);
 			float c_ = cosf(rad);
 			a.x = a.x * +c_ + a.y * -s_;
@@ -74,13 +74,13 @@ namespace PHYSICS {
 			b.y = b.x * +s_ + b.y * +c_;
 			a_b = b - a;
 		}
-		Vertex3 Scale(Vector2 scl) {
+		Vertex2 Scale(Vector2 scl) {
 			a.x *= scl.x;
 			a.y *= scl.y;
 			b.x *= scl.x;
 			b.y *= scl.y;
 			a_b = b - a;
-		}*/
+		}
 	};
 	struct Vertex3 {
 	protected:
