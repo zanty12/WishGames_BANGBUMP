@@ -17,6 +17,7 @@ public:
         {
             delete enemy;
         }
+        enemies_.clear();
     }
     void Update() const;
     void Draw() const;

@@ -1,4 +1,5 @@
 #pragma once
+#include "attribute.h"
 
 enum SCENE
 {
@@ -11,9 +12,9 @@ enum SCENE
 
 class Scene
 {
-
 public:
-
+	Scene() = default;
+	virtual ~Scene() = default;
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 };

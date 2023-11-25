@@ -131,6 +131,7 @@
     <ClCompile Include="debugUI.cpp" />
     <ClCompile Include="enemymngr.cpp" />
     <ClCompile Include="graphical.cpp" />
+    <ClCompile Include="koopa.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
     <ClCompile Include="lib\imgui\imgui_draw.cpp" />
@@ -143,7 +144,7 @@
     <ClCompile Include="mapmngr.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="SceneMngr.cpp" />
+    <ClCompile Include="scenemngr.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -153,7 +154,7 @@
   <ItemGroup>
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemymngr.h" />
-    <ClInclude Include="Game.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="block.h" />
     <ClInclude Include="cloud.h" />
     <ClInclude Include="floor.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />
     <ClInclude Include="graphical.h" />
+    <ClInclude Include="koopa.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />
     <ClInclude Include="lib\imgui\imgui_impl_dx11.h" />
@@ -170,21 +172,21 @@
     <ClInclude Include="lib\imgui\imstb_textedit.h" />
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
     <ClInclude Include="mapenum.h" />
-    <ClInclude Include="Menu.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="mapmngr.h" />
     <ClInclude Include="original_window.h" />
     <ClInclude Include="movableobj.h" />
     <ClInclude Include="penfloor.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="Prep.h" />
-    <ClInclude Include="Scene.h" />
+    <ClInclude Include="prep.h" />
+    <ClInclude Include="scene.h" />
     <ClInclude Include="scenemngr.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
-    <ClInclude Include="Title.h" />
+    <ClInclude Include="title.h" />
     <ClInclude Include="xinput.h" />
     <ClInclude Include="thundercloud.h" />
     <ClInclude Include="wall.h" />
