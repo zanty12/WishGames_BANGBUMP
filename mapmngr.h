@@ -22,11 +22,14 @@ public:
 	void Update() const
 	{
 		map_->Update();
+		enemy_mngr_->Update();
 	}
 	void Draw() const
 	{
 		map_->Draw();
+		enemy_mngr_->Draw();
 	}
+
 	void DebugMenu();
 
 	Vector2 GetPlayerSpawn() const

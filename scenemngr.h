@@ -1,5 +1,5 @@
 #pragma once
-#include "Scene.h"
+#include "scene.h"
 class SceneMngr
 {
 private:
@@ -7,16 +7,19 @@ private:
 
 public:
 	SceneMngr() = delete;
-	SceneMngr(SCENE scene);
+	explicit SceneMngr(SCENE scene);
 	~SceneMngr() {
 		delete scene_;
 	}
-	void Update() {
+	void Update() const{
 		scene_->Update();
 	}
-	void Draw() {
+	void Draw() const{
 		scene_->Draw();
 	}
-	void ChangeScene(){}
+	void ChangeScene(SCENE scene);
 
+	Scene* GetScene() const{
+		return scene_;
+	}
 };

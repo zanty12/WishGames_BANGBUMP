@@ -21,6 +21,7 @@
 
 MapMngr::MapMngr(const char* file_name)
 {
+    enemy_mngr_ = new EnemyMngr();
     Read(file_name);
 }
 
@@ -85,7 +86,7 @@ void MapMngr::DebugMenu()
 {
     ImGui::Begin("Map");
     ImGui::Text("Spawn: %f, %f", spawn_.x, spawn_.y);
-    ImGui::BeginTable("map", map_->GetWidth());
+    /*ImGui::BeginTable("map", map_->GetWidth());
     for (int row = 0; row < map_->GetHeight(); row++)
     {
         ImGui::TableNextRow();
@@ -94,7 +95,7 @@ void MapMngr::DebugMenu()
             ImGui::TableSetColumnIndex(column);
         }
     }
-    ImGui::EndTable();
+    ImGui::EndTable();*/
     ImGui::End();
 }
 

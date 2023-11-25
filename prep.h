@@ -1,5 +1,5 @@
 #pragma once
-#include "Scene.h"
+#include "scene.h"
 #include "player.h"
 
 class Prep :public Scene
