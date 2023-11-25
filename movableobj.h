@@ -29,4 +29,5 @@ public:
 
 	void AddVel(Vector2 vel) { SetPos(GetPos() + vel); }	//速度をオブジェクトに足す
 
+
 };
