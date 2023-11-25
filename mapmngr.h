@@ -27,6 +27,13 @@ public:
 	{
 		map_->Draw();
 	}
+	void DebugMenu();
+
+	Vector2 GetPlayerSpawn() const
+	{
+		return spawn_;
+	}
 private:
 	bool Read(const char* file_name);
+	void ArrangeBlkTex() const;
 };
