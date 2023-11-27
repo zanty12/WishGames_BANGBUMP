@@ -17,6 +17,8 @@ class Dark : public Attribute
 
 	bool is_press_;
 
+	bool is_atk;
+
 
 public:
 
