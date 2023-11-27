@@ -13,11 +13,14 @@
 
 Vector2 Thunder::Move()
 {
+	
+	Vector2 vel = player_.GetVel();
+	Vector2 stick = Input::GetStickLeft(0);
+	Vector2 pstick = Input::GetPreviousStickLeft(0);
+
 	if (Input::GetPreviousStickLeft(0) != Vector2(0, 0) && Input::GetStickLeft(0) == Vector2(0, 0))
 	{
-		Vector2 vel = player_.GetVel();
-		Vector2 stick = Input::GetStickLeft(0);
-		//Vector2 
+		player_.SetVel(-stick);
 	}
 
 	
@@ -25,4 +28,5 @@ Vector2 Thunder::Move()
 
 void Thunder::Action()
 {
+
 }
