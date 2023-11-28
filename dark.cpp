@@ -81,7 +81,7 @@ void Dark::Action()
 
 
 
-	bool isTouch = Collider2D::Touch(enemy, square);
+	//bool isTouch = Collider2D::Touch(enemy, square);
 
 
 };
