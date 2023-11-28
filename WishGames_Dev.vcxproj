@@ -127,9 +127,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dark.cpp" />
     <ClCompile Include="debugUI.cpp" />
-    <ClCompile Include="fire.cpp" />
+    <ClCompile Include="enemymngr.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="graphical.cpp" />
+    <ClCompile Include="koopa.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
     <ClCompile Include="lib\imgui\imgui_draw.cpp" />
@@ -141,6 +144,8 @@
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapmngr.cpp" />
     <ClCompile Include="original_window.cpp" />
+    <ClCompile Include="player.cpp" />
+    <ClCompile Include="scenemngr.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -148,7 +153,9 @@
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.h" />
+    <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemymngr.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="block.h" />
     <ClInclude Include="cloud.h" />
     <ClInclude Include="floor.h" />
@@ -156,6 +163,7 @@
     <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />
     <ClInclude Include="graphical.h" />
+    <ClInclude Include="koopa.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />
     <ClInclude Include="lib\imgui\imgui_impl_dx11.h" />
@@ -164,20 +172,22 @@
     <ClInclude Include="lib\imgui\imstb_rectpack.h" />
     <ClInclude Include="lib\imgui\imstb_textedit.h" />
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
-    <ClInclude Include="Menu.h" />
+    <ClInclude Include="mapenum.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="mapmngr.h" />
     <ClInclude Include="original_window.h" />
     <ClInclude Include="movableobj.h" />
     <ClInclude Include="penfloor.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="Prep.h" />
-    <ClInclude Include="Scene.h" />
+    <ClInclude Include="prep.h" />
+    <ClInclude Include="scene.h" />
+    <ClInclude Include="scenemngr.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
-    <ClInclude Include="Title.h" />
+    <ClInclude Include="title.h" />
     <ClInclude Include="xinput.h" />
     <ClInclude Include="thundercloud.h" />
     <ClInclude Include="wall.h" />
@@ -201,6 +211,22 @@
     <ClInclude Include="attribute.h" />
     <ClInclude Include="thunder.h" />
     <ClInclude Include="wind.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="data\map\1.csv" />
+    <Content Include="data\map\mariomaker.csv" />
+    <Content Include="data\map\mariomaker.xlsx" />
+    <Content Include="data\texture\block.png" />
+    <Content Include="data\texture\cloud.png" />
+    <Content Include="data\texture\floor.png" />
+    <Content Include="data\texture\floor_end.png" />
+    <Content Include="data\texture\floor_start.png" />
+    <Content Include="data\texture\koopa.png" />
+    <Content Include="data\texture\NotoSansJP-Bold.ttf" />
+    <Content Include="data\texture\penfloor.png" />
+    <Content Include="data\texture\skillorb.png" />
+    <Content Include="data\texture\thundercloud.png" />
+    <Content Include="data\texture\wall.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
