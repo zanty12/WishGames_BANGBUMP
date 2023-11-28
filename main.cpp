@@ -3,62 +3,70 @@
 #include <iostream>
 #include "DebugUI.h"
 #include "xinput.h"
+#include "mapmngr.h"
+#include "player.h"
+#include "scenemngr.h"
 
-#include "lib/winlib.h"
-
-
-
-
-
+bool debug_mode = false;
 
 int main()
 {
-	Graphical::Initialize(960, 540);
-#ifdef _DEBUG
-	DebugUI::Initialize();
-#endif
-	MSG msg;
-	int texNo = LoadTexture("player.jpg");
+    Graphical::Initialize(1600, 900);
+    DebugUI::Initialize();
+    MSG msg;
+    int texNo = LoadTexture("player.jpg");
+    SceneMngr* scene_mngr = new SceneMngr(SCENE_GAME);
+    while (true)
+    {
+        // メッセージ
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+        {
+            if (msg.message == WM_QUIT)
+            {
+                break;
+            }
+            else
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+        else{
+            Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+            //デバッグモード
+            { if (GetKeyState(VK_F1) & 0x8000)
+                debug_mode = !debug_mode;
+                DebugUI::BeginDraw();
+                if (debug_mode)
+                {
+                    bool show_demo_window = true;
+                    ImGui::ShowDemoWindow(&show_demo_window);
+                    ImGuiIO& io = ImGui::GetIO();
+                    ImGui::Begin("Debug");
+                    ImGui::Text("FPS:%.1f", io.Framerate);
+                    ImGui::End();
+                    ImGui::Begin("Hello, world!");
+                    //ImGui::Text(u8"テキスト");
+                    if (ImGui::Button(u8"ボタン"))
+                    {
+                        std::cout << "ボタン押したよ" << std::endl;
+                    }
+                    ImGui::End();
+                }
+            }
 
-	while (true) {
-		// メッセージ
-		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-			if (msg.message == WM_QUIT) {
-				break;
-			}
-			else {
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
-		}
-		else {
-			Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
-#ifdef _DEBUG
-			DebugUI::BeginDraw();
-			{
-				ImGui::Begin("Hello, world!");
-				//ImGui::Text(u8"テキスト");
-				if (ImGui::Button(u8"ボタン"))
-				{
-					std::cout << "ボタン押したよ" << std::endl;
-				}
+            //DrawSprite(texNo, Vector2(100, 100), 0, Vector2(100, 100), Color(1, 1, 1));
+            scene_mngr->Update();
+            scene_mngr->Draw();
 
-				ImGui::End();
-			}
-#endif
-			DrawSprite(texNo, Vector2(100, 100), 0, Vector2(100, 100), Color(1, 1, 1));
+            DebugUI::EndDraw();
+            Graphical::Present();
+        }
+    }
 
-#ifdef _DEBUG
-			DebugUI::EndDraw();
-#endif
-			Graphical::Present();
-		}
-	}
+    Graphical::Release();
+    DebugUI::Release();
 
-	Graphical::Release();
-#ifdef DEBUG
-	DebugUI::Release();
-#endif // DEBUG
 
-	std::cout << "Hello World!\n";//基本
+    std::cout << "Hello World!\n"; //基本
 }
