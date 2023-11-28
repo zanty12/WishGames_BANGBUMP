@@ -20,7 +20,7 @@ Vector2 Thunder::Move()
 
 	if (Input::GetPreviousStickLeft(0) != Vector2(0, 0) && Input::GetStickLeft(0) == Vector2(0, 0))
 	{
-		player_.SetVel(-stick);
+		player_.SetVel(-stick * 10);
 	}
 
 	
