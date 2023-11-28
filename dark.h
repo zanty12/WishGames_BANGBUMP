@@ -1,24 +1,31 @@
+//--------------------------------------------------------------------------------
+// 
+// ワープ[fark.h]
+// 
+// 作成者 趙潤博
+// 
+// 最終更新日	2023/11/22
+// 
+//--------------------------------------------------------------------------------
 #pragma once
 #include "attribute.h"
 
-class DARK : public Attribute
+class Dark : public Attribute
 {
+
+	bool is_trigger_;
+
+	bool is_press_;
+
+	bool is_atk;
 
 
 public:
 
+	Dark(Player& player) : Attribute(player){}
 
-	void Move() override
-	{
+	Vector2 Move() override;
 
-
-	}
-
-	void Action() override
-	{
-
-
-	}
-
-
+	void Action() override;
+	
 };

@@ -24,6 +24,10 @@ typedef enum {
     MAP_READ_ORB_SMALL, ///< 小スキル玉セルを表します。
     MAP_READ_ORB_MID, ///< 中スキル玉セルを表します。
     MAP_READ_ORB_BIG, ///< 大スキル玉セルを表します。
+    MAP_READ_SPIKE_LEFT, ///< 左向きのトゲセルを表します。
+    MAP_READ_SPIKE_RIGHT, ///< 右向きのトゲセルを表します。
+    MAP_READ_SPIKE_UP, ///< 上向きのトゲセルを表します。
+    MAP_READ_SPIKE_DOWN, ///< 下向きのトゲセルを表します。
     // 英語名標準
     MAP_READ_KOOPA, // ノコノコ
     MAP_READ_HAMMERBRO,
