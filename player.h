@@ -18,6 +18,7 @@
 #include "attribute.h"
 #include "mapmngr.h"
 
+class MapMngr;
 class Player : public MovableObj
 {
 private:
@@ -50,6 +51,7 @@ public:
 	void SetAttackAttribute(Attribute* attack_attribute) { attack_attribute_ = attack_attribute; }	//アタックアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
 	Attribute* GetAttribute(void) { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
 	Attribute* GetAttackAttribute(void) { return attack_attribute_; }	//アタックアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
+	MapMngr* GetMapMngr(void) { return map_mangr_; }	//MapMngrのポインタをゲット
 
 	//スキルポイントの使用（使えるとき=true 使うとスキルポイントは0になる）
 	bool UseSkillPoint(void);
@@ -68,6 +70,8 @@ private:
 	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
 
 	//当たり判定（バウンディングボックス）
-	
+	bool CollisionBB(Vector2 others_pos,float others_size);
 
+	//当たり判定（マップ）
+	void CollisionMap(void);
 };
