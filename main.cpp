@@ -61,7 +61,6 @@ int main()
             Time::Update();
             scene_mngr->Update();
             scene_mngr->Draw();
-            std::cout << Time::GetDeltaTime() << std::endl;
 
             DebugUI::EndDraw();
             Graphical::Present();

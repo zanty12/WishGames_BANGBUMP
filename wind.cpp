@@ -1,5 +1,6 @@
 #include "wind.h"
 #include "xinput.h"
+#include "lib/collider2d.h"
 
 Vector2 Wind::Move(void) {
 	Vector2 vel = player_.GetVel();
@@ -28,6 +29,11 @@ Vector2 Wind::Move(void) {
 }
 
 void Wind::Action(void) {
+	using namespace PHYSICS;
+	Vertex4 player = Vertex4(player_.GetPos(), 0, Vector2(100, 100));
+	Vertex4 enemy = Vertex4(player_.GetPos(), 0, Vector2(1, 1));
 
-
+	if (Collider2D::Touch(player, enemy)) {
+		std::cout << "Touch-----------------------------" << std::endl;
+	}
 }
