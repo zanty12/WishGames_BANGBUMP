@@ -8,6 +8,8 @@ Vector2 Fire::Move(){
     Vector2 preStick = Input::GetPreviousStickLeft(0);
     Vector2 s = Input::GetStickLeft(0);
     player_.AddVel(-s);
+
+    return -s;
 };
 
 void Fire::Action() {

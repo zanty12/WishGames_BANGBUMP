@@ -1,10 +1,10 @@
 //--------------------------------------------------------------------------------
 // 
-// ƒ[ƒv[fark.cpp]
+// ãƒ¯ãƒ¼ãƒ—[fark.cpp]
 // 
-// ì¬Ò æâ”
+// ä½œæˆè€… è¶™æ½¤åš
 // 
-// ÅIXV“ú	2023/11/22
+// æœ€çµ‚æ›´æ–°æ—¥	2023/11/22
 // 
 //--------------------------------------------------------------------------------
 #include"dark.h"
@@ -43,11 +43,9 @@ Vector2 Dark::Move()
 
 void Dark::Action()
 {
-
-
 	if (Input::GetKey(0,Input::RThumb))
 	{
-		if (is_press_)
+		if (!is_press_)
 		{
 			is_trigger_ = true;
 		}
@@ -60,7 +58,6 @@ void Dark::Action()
 		is_press_ = false;
 	}
 
-
 	if (is_trigger_)
 	{
 		player_.SetVel(Vector2(0, 0));
@@ -70,8 +67,6 @@ void Dark::Action()
 	Vector2 stick = Input::GetStickRight(0);
 
 	float rad = atan2f(stick.y, stick.x);
-
-
 
 	using namespace PHYSICS;
 
