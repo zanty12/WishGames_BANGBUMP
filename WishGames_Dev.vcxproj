@@ -212,6 +212,7 @@
     <ClInclude Include="wind.h" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include=".gitignore" />
     <Content Include="data\map\1.csv" />
     <Content Include="data\map\mariomaker.csv" />
     <Content Include="data\map\mariomaker.xlsx" />
