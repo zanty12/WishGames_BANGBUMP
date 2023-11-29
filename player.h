@@ -16,6 +16,7 @@
 #include "sprite.h"
 #include "movableobj.h"
 #include "attribute.h"
+#include "mapmngr.h"
 
 class Player : public MovableObj
 {
@@ -34,10 +35,13 @@ private:
 	int hp_;
 	int skillpt_;
 
+	MapMngr* map_mangr_;
+
 public:
-	Player(Vector2 pos,float rot, int tex_number,Vector2 vel)
+	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
 		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),
-		dir_(Vector2(0.0f,0.0f)), scale_(Vector2(100.0f,100.0f/*未定とりあえず100*/)),color_(Color(1.0f, 1.0f, 1.0f, 1.0f)) {}
+		dir_(Vector2(0.0f,0.0f)), scale_(Vector2(100.0f,100.0f/*未定とりあえず100*/)),color_(Color(1.0f, 1.0f, 1.0f, 1.0f))
+		,map_mangr_(map_mangr) {}
 
 	void SetDir(Vector2 dir) { dir_ = dir; }	//向きのセット
 	Vector2 GetDir(void) const { return dir_; }	//向きのゲット
@@ -62,5 +66,8 @@ public:
 private:
 	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）
 	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
+
+	//当たり判定（バウンディングボックス）
+	
 
 };
