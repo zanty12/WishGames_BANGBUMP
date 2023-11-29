@@ -94,6 +94,8 @@ public:
      */
     Cell* GetCell(int x, int y) const
     {
+        if(x< 0 || y < 0 || x >= width_ || y >= height_)
+            return nullptr;
         return map_[y * width_ + x];
     }
 
@@ -107,7 +109,7 @@ public:
     {
         const int idx = std::floor((x - GameObject::size_ / 2) / GameObject::size_);
         const int idy = std::floor((y - GameObject::size_ / 2) / GameObject::size_);
-        return map_[idy * width_ + idx];
+        return GetCell(idx,idy);
     }
     int GetWidth() const
     {
