@@ -5,6 +5,7 @@
 #include "xinput.h"
 #include "mapmngr.h"
 #include "player.h"
+#include "scenemngr.h"
 
 bool debug_mode = false;
 
@@ -14,8 +15,7 @@ int main()
     DebugUI::Initialize();
     MSG msg;
     int texNo = LoadTexture("player.jpg");
-    MapMngr map_mngr("data/MAP/mariomaker.csv");
-    Player player(Vector2(500.0f, 500.0f),0.0f,LoadTexture("player.jpg"),Vector2(0.0f,0.0f));
+    SceneMngr* scene_mngr = new SceneMngr(SCENE_GAME);
     while (true)
     {
         // メッセージ
@@ -31,34 +31,33 @@ int main()
                 DispatchMessage(&msg);
             }
         }
-        else
-        {
-            if (GetKeyState(VK_F1) & 0x8000)
-                debug_mode = !debug_mode;
+        else{
             Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
-            DebugUI::BeginDraw();
-            if (debug_mode)
-            {
-                bool show_demo_window = true;
-                ImGui::ShowDemoWindow(&show_demo_window);
-                ImGuiIO& io = ImGui::GetIO();
-                ImGui::Begin("Debug");
-                ImGui::Text("FPS:%.1f", io.Framerate);
-                ImGui::End();
-                ImGui::Begin("Hello, world!");
-                //ImGui::Text(u8"テキスト");
-                if (ImGui::Button(u8"ボタン"))
+            //デバッグモード
+            { if (GetKeyState(VK_F1) & 0x8000)
+                debug_mode = !debug_mode;
+                DebugUI::BeginDraw();
+                if (debug_mode)
                 {
-                    std::cout << "ボタン押したよ" << std::endl;
+                    bool show_demo_window = true;
+                    ImGui::ShowDemoWindow(&show_demo_window);
+                    ImGuiIO& io = ImGui::GetIO();
+                    ImGui::Begin("Debug");
+                    ImGui::Text("FPS:%.1f", io.Framerate);
+                    ImGui::End();
+                    ImGui::Begin("Hello, world!");
+                    //ImGui::Text(u8"テキスト");
+                    if (ImGui::Button(u8"ボタン"))
+                    {
+                        std::cout << "ボタン押したよ" << std::endl;
+                    }
+                    ImGui::End();
                 }
-                ImGui::End();
             }
 
             //DrawSprite(texNo, Vector2(100, 100), 0, Vector2(100, 100), Color(1, 1, 1));
-            player.Update();
-            map_mngr.Draw();
-            player.Draw();
-
+            scene_mngr->Update();
+            scene_mngr->Draw();
 
             DebugUI::EndDraw();
             Graphical::Present();

@@ -8,7 +8,7 @@ class Floor :
 public:
     Floor(int x, int y) : Cell(x, y, 0)
     {
-        this->SetTexNo(LoadTexture("data/TEXTURE/floor.png"));
+        this->SetTexNo(LoadTexture("data/texture/floor.png"));
     }
     virtual ~Floor() override = default;
     MAP_READ GetCellType() const override { return MAP_READ_FLOOR; }

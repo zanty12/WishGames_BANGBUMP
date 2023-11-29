@@ -1,13 +1,11 @@
 #pragma once
-#include "Scene.h"
+#include "scene.h"
 #include "player.h"
-#include "mapmngr.h"
 
-class Game :public Scene
+class Prep :public Scene
 {
 private:
 	Player* player_;
-	MapMngr* mapmngr_;
 
 public:
 

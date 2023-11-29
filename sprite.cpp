@@ -64,13 +64,14 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 	scaler.SetScaling(scale);
 	transform = scaler * rotation;
 	transform = translation * transform;
-	g_WorldMatrix = transform;
+	g_WorldMatrix = transform;	
 
 	// シェーダーの設定
 	ShaderManager::SetTextureMode();
 	// 定数バッファの設定
 	Device3D::UpdateConstantBuffer(&g_WorldMatrix, g_WorldBuffer);
 	Device3D::UpdateConstantBuffer(&color, g_ColorBuffer);
+
 	// 描画
 	Device3D::Draw(
 		g_Square.GetVertexBuffer(), g_Square.GetVertexCount(), g_Square.GetVertexStructByteSize(),

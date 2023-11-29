@@ -1,10 +1,10 @@
 //--------------------------------------------------------------------------------
 // 
-// ƒ[ƒv[fark.cpp]
+// ãƒ¯ãƒ¼ãƒ—[fark.cpp]
 // 
-// ì¬Ò æâ”
+// ä½œæˆè€… è¶™æ½¤åš
 // 
-// ÅIXV“ú	2023/11/22
+// æœ€çµ‚æ›´æ–°æ—¥	2023/11/22
 // 
 //--------------------------------------------------------------------------------
 #include"dark.h"
@@ -43,12 +43,11 @@ Vector2 Dark::Move()
 
 void Dark::Action()
 {
-
-
-	/*if (Input::GetKey(0,Input::RThumb))
+	if (Input::GetKey(0,Input::RThumb))
 	{
-		if (is_press_)
+		if (!is_press_)
 		{
+			is_trigger_ = true;
 		}
 
 		is_press_ = true;
@@ -61,18 +60,23 @@ void Dark::Action()
 
 	if (is_trigger_)
 	{
-		
+		player_.SetVel(Vector2(0, 0));
 	}
-	is_trigger_ = false;*/
+	is_trigger_ = false;
 
+	Vector2 stick = Input::GetStickRight(0);
+
+	float rad = atan2f(stick.y, stick.x);
 
 	using namespace PHYSICS;
 
 	Vertex4 square(Vector2(0, 1), Vector2(1, 1), Vector2(1, -1), Vector2(0, -1));
 
-	Vertex1 enemy(Vector2(0, 0),2.0f);
+	square.Rotate(rad);
 
-	bool isTouch = Collider2D::Touch(enemy, square);
+
+
+	//bool isTouch = Collider2D::Touch(enemy, square);
 
 
 };

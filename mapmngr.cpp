@@ -19,8 +19,10 @@
  * @param file_name マップデータを読み込むファイルの名前。
  */
 
-MapMngr::MapMngr(const char* file_name)
+MapMngr::MapMngr(const char* file_name,Game* game)
 {
+    enemy_mngr_ = new EnemyMngr(this);
+    game_ = game;
     Read(file_name);
 }
 
@@ -81,11 +83,22 @@ bool MapMngr::Read(const char* file_name)
     return true;
 }
 
+void MapMngr::Update() const
+{
+    map_->Update();
+    enemy_mngr_->Update();
+}
+void MapMngr::Draw() const
+{
+    map_->Draw();
+    enemy_mngr_->Draw();
+}
+
 void MapMngr::DebugMenu()
 {
     ImGui::Begin("Map");
     ImGui::Text("Spawn: %f, %f", spawn_.x, spawn_.y);
-    ImGui::BeginTable("map", map_->GetWidth());
+    /*ImGui::BeginTable("map", map_->GetWidth());
     for (int row = 0; row < map_->GetHeight(); row++)
     {
         ImGui::TableNextRow();
@@ -94,7 +107,7 @@ void MapMngr::DebugMenu()
             ImGui::TableSetColumnIndex(column);
         }
     }
-    ImGui::EndTable();
+    ImGui::EndTable();*/
     ImGui::End();
 }
 
