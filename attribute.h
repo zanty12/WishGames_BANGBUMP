@@ -6,12 +6,12 @@ class Player;
 class Attribute
 {
 protected:
-	Player &player_;
+	Player *player_;
 
 public:
 	Attribute() = delete;
-	Attribute(Player &player) : player_(player) { }
-	
+	Attribute(Player *player) : player_(player) { }
+
 
 	virtual Vector2 Move() = 0;
 

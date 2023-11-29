@@ -9,8 +9,8 @@ class Player;
 class Game :public Scene
 {
 private:
-	Player* player_;
-	MapMngr* mapmngr_;
+	Player *player_;
+	MapMngr *mapmngr_;
 
 public:
 	Game();
@@ -21,7 +21,7 @@ public:
 	void Update()override;
 	void Draw()override;
 
-	Player* GetPlayer() const {
+	Player *GetPlayer() const {
 		return player_;
 	}
 };

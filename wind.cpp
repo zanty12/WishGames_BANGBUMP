@@ -1,8 +1,9 @@
 #include "wind.h"
 #include "xinput.h"
+#include "lib/collider2d.h"
 
 Vector2 Wind::Move(void) {
-	Vector2 vel = player_.GetVel();
+	Vector2 vel = player_->GetVel();
 	Vector2 stick = Input::GetStickLeft(0);
 	Vector2 preStick = Input::GetPreviousStickLeft(0);
 
@@ -13,21 +14,24 @@ Vector2 Wind::Move(void) {
 	float rotSpeed = Vector2::Cross(stick, preStick);
 
 	// ˆÚ“®’†
-	if (rotInputJudgeMin < MATH::Abs(Vector2::Cross(stick, preStick))&&
+	if (rotInputJudgeMin < MATH::Abs(Vector2::Cross(stick, preStick)) &&
 		0.9f < stickDistance * preStickDistance) {
-		power_ += rotSpeed;
-		if (maxPower_ < power_) power_ = maxPower_;		
+		power_ += rotSpeed * rotSpeed * rotInputFriction;
+		if (maxPower_ < power_) power_ = maxPower_;
 	}
-	
+
 	// —Ž‰º’†‚Ìˆ—
 	else if (0 < Vector2::Dot(Vector2::Down, vel)) {
 		power_ *= friction_;
 	}
 
-	return Vector2::Zero;
+	vel += Vector2::Up * power_;
+	player_->AddVel(vel);
+	return vel;
 }
 
 void Wind::Action(void) {
+	using namespace PHYSICS;
 
 
 }

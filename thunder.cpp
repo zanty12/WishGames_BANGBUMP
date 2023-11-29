@@ -13,16 +13,25 @@
 
 Vector2 Thunder::Move()
 {
-	Vector2 vel = player_.GetVel();
 	Vector2 stick = Input::GetStickLeft(0);
-	Vector2 pstick = Input::GetPreviousStickLeft(0);
+	Vector2 previousStick = Input::GetPreviousStickLeft(0);
+	stick.y *= -1;
+	previousStick.y *= -1;
+	float distance = stick.Distance();
 
-	if (Input::GetPreviousStickLeft(0) != Vector2(0, 0) && Input::GetStickLeft(0) == Vector2(0, 0))
-	{
-		player_.SetVel(-stick * 10);
+
+	if (responseMinStickDistance <= distance) {
+		charge += distance;
+		if (maxChage < charge) charge = maxChage;
 	}
 
-	return Vector2::Zero;
+	if (previousStick != Vector2::Zero && stick == Vector2::Zero && responseMinOneFrameDistance < (stick - previousStick).Distance()) {
+
+		Vector2 direction = -previousStick * charge;
+		return direction;
+	}
+
+	return player_->GetVel();
 }
 
 void Thunder::Action()

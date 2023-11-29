@@ -160,6 +160,20 @@ namespace PHYSICS {
 			Vector2 v[4];
 		};
 
+		Vertex4() { }
+		Vertex4(Vector2 position, float rot, Vector2 scale) {
+			Vertex4 vertex4 = Vertex4(
+				Vector2(-1.0f, +1.0f),
+				Vector2(+1.0f, +1.0f),
+				Vector2(+1.0f, -1.0f),
+				Vector2(-1.0f, -1.0f)
+			);
+
+			vertex4 = vertex4.Scale(scale);
+			vertex4 = vertex4.Rotate(rot);
+			vertex4 = vertex4.Translate(position);
+			*this = vertex4;
+		}
 		Vertex4(Vector2 a, Vector2 b, Vector2 c, Vector2 d) : a(a), b(b), c(c), d(d), a_b(b - a), b_c(c - b), c_d(d - c), d_a(a - d) { }
 		Vertex4 Translate(Vector2 pos) {
 			a += pos;
@@ -232,6 +246,64 @@ namespace PHYSICS {
 		static bool Touch(Vertex2 a, Vertex3 b, RayHit *hit = nullptr);
 		static bool Touch(Vertex2 a, Vertex4 b, RayHit *hit = nullptr);
 		static bool Touch(Vertex2 a, VertexN b, RayHit *hit = nullptr);
+		static bool Touch(Vertex3 a, Vertex1 b) {
+			Vector2 vertexA[] = { a.a, a.b, a.c };
+			return Touch(b, VertexN(vertexA, 3));
+		}
+		static bool Touch(Vertex3 a, Vertex2 b) {
+			Vector2 vertexA[] = { a.a, a.b, a.c };
+			return Touch(b, VertexN(vertexA, 3));
+		}
+		static bool Touch(Vertex3 a, Vertex3 b) {
+			Vector2 vertexA[] = { a.a, a.b, a.c };
+			Vector2 vertexB[] = { b.a, b.b, b.c };
+			return Touch(VertexN(vertexA, 3), VertexN(vertexB, 3));
+		}
+		static bool Touch(Vertex3 a, Vertex4 b) {
+			Vector2 vertexA[] = { a.a, a.b, a.c };
+			Vector2 vertexB[] = { b.a, b.b, b.c, b.d };
+			return Touch(VertexN(vertexA, 3), VertexN(vertexB, 4));
+		}
+		static bool Touch(Vertex4 a, Vertex1 b) {
+			Vector2 vertexA[] = { a.a, a.b, a.c, a.d };
+			return Touch(b, VertexN(vertexA, 4));
+		}
+		static bool Touch(Vertex4 a, Vertex2 b) {
+			Vector2 vertexA[] = { a.a, a.b, a.c, a.d };
+			return Touch(b, VertexN(vertexA, 4));
+		}
+		static bool Touch(Vertex4 a, Vertex3 b) {
+			Vector2 vertexA[] = { a.a, a.b, a.c, a.d };
+			Vector2 vertexB[] = { b.a, b.b, b.c };
+			return Touch(VertexN(vertexA, 4), VertexN(vertexB, 3));
+		}
+		static bool Touch(Vertex4 a, Vertex4 b) {
+			Vector2 vertexA[] = { a.a, a.b, a.c, a.d };
+			Vector2 vertexB[] = { b.a, b.b, b.c, b.d };
+			return Touch(VertexN(vertexA, 4), VertexN(vertexB, 4));
+		}
+		static bool Touch(VertexN a, VertexN b) {
+			for (int i = 0; i < a.num; i++) {
+				Vector2 startA = a.v[i];
+				Vector2 endA = a.v[(i + 1) % a.num];
+				Vertex2 sa_ea(startA, endA);
+
+				Vertex1 pointA(startA);
+				if (Touch(pointA, b)) return true;
+
+				for (int j = 0; j < b.num; j++) {
+					Vector2 startB = b.v[i];
+					Vector2 endB = b.v[(i + 1) % b.num];
+					Vertex2 sb_eb(startB, endB);
+
+					Vertex1 pointB(startB);
+					if (Touch(pointB, a)) return true;
+					if (Touch(sa_ea, sb_eb)) return true;
+				}
+			}
+
+			return false;
+		}
 	};
 }
 
