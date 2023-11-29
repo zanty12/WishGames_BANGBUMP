@@ -1,4 +1,7 @@
-﻿#include "koopa.h"
+#include "koopa.h"
+#include "Cell.h"
+#include "MapMngr.h"
+#include "lib/collider2d.h"
 
 void Koopa::Update()
 {
@@ -19,3 +22,28 @@ void Koopa::Update()
     this->AddVel(GetVel());
 }
 
+
+void Koopa::GetNearCells() const
+{
+    Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
+    Cell* up = map->GetCell(GetPos().x, GetPos().y+size_);
+    Cell* down = map->GetCell(GetPos().x, GetPos().y-size_);
+    Cell* left = map->GetCell(GetPos().x-size_, GetPos().y);
+    Cell* right = map->GetCell(GetPos().x+size_, GetPos().y);
+
+}
+
+bool Koopa::CellCollision(Cell* cell) const
+{
+    using namespace PHYSICS;
+    Vertex4 Self = Vertex4(Vector2(GetPos().x - size_ / 2,GetPos().y + size_ / 2),
+                            Vector2(GetPos().x + size_ / 2,GetPos().y + size_ / 2),
+                            Vector2(GetPos().x + size_ / 2,GetPos().y - size_ / 2),
+                            Vector2(GetPos().x - size_ / 2,GetPos().y - size_ / 2));
+    Vertex4 other  = Vertex4(Vector2(cell->GetPos().x - size_ / 2,cell->GetPos().y + size_ / 2),
+                            Vector2(cell->GetPos().x + size_ / 2,cell->GetPos().y + size_ / 2),
+                            Vector2(cell->GetPos().x + size_ / 2,cell->GetPos().y - size_ / 2),
+                            Vector2(cell->GetPos().x - size_ / 2,cell->GetPos().y - size_ / 2));
+
+    return false;
+}
