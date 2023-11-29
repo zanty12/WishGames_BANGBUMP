@@ -16,7 +16,9 @@
 #include "sprite.h"
 #include "movableobj.h"
 #include "attribute.h"
+#include "mapmngr.h"
 
+class MapMngr;
 class Player : public MovableObj
 {
 private:
@@ -28,19 +30,28 @@ private:
 	Vector2 scale_;		//大きさ（未定）
 	Color color_;
 
-	class Attribute* attribute_ = nullptr;
+	class Attribute* move_attribute_ = nullptr;		//動く用のアトリビュート
+	class Attribute* attack_attribute_ = nullptr;	//攻撃用のアトリビュート
+
 	int hp_;
 	int skillpt_;
 
+	MapMngr* map_mangr_;
+
 public:
-	Player(Vector2 pos,float rot, int tex_number,Vector2 vel)
+	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
 		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),
-		dir_(Vector2(0.0f,0.0f)), scale_(Vector2(100.0f,100.0f/*未定とりあえず100*/)),color_(Color(1.0f, 1.0f, 1.0f, 1.0f)) {}
+		dir_(Vector2(0.0f,0.0f)), scale_(Vector2(100.0f,100.0f/*未定とりあえず100*/)),color_(Color(1.0f, 1.0f, 1.0f, 1.0f))
+		,map_mangr_(map_mangr) {}
 
 	void SetDir(Vector2 dir) { dir_ = dir; }	//向きのセット
 	Vector2 GetDir(void) const { return dir_; }	//向きのゲット
 	int GetHp(void) const { return hp_; }		//HPのゲット
-	void SetAttribute(Attribute* attribute) { attribute_ = attribute; }	//アトリビュートポインタのセット（何も操作していないときはnullptrをセット）
+	void SetAttribute(Attribute* move_attribute) { move_attribute_ = move_attribute; }				//ムーブアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
+	void SetAttackAttribute(Attribute* attack_attribute) { attack_attribute_ = attack_attribute; }	//アタックアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
+	Attribute* GetAttribute(void) { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
+	Attribute* GetAttackAttribute(void) { return attack_attribute_; }	//アタックアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
+	MapMngr* GetMapMngr(void) { return map_mangr_; }	//MapMngrのポインタをゲット
 
 	//スキルポイントの使用（使えるとき=true 使うとスキルポイントは0になる）
 	bool UseSkillPoint(void);
@@ -58,4 +69,9 @@ private:
 	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）
 	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
 
+	//当たり判定（バウンディングボックス）
+	bool CollisionBB(Vector2 others_pos,float others_size);
+
+	//当たり判定（マップ）
+	void CollisionMap(void);
 };
