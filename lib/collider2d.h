@@ -64,6 +64,7 @@ namespace PHYSICS {
 			a += pos;
 			b += pos;
 			a_b = b - a;
+			return *this;
 		}
 		Vertex2 Rotate(float rad) {
 			float s_ = sinf(rad);
@@ -73,6 +74,7 @@ namespace PHYSICS {
 			b.x = b.x * +c_ + b.y * -s_;
 			b.y = b.x * +s_ + b.y * +c_;
 			a_b = b - a;
+			return *this;
 		}
 		Vertex2 Scale(Vector2 scl) {
 			a.x *= scl.x;
@@ -80,6 +82,7 @@ namespace PHYSICS {
 			b.x *= scl.x;
 			b.y *= scl.y;
 			a_b = b - a;
+			return *this;
 		}
 	};
 	struct Vertex3 {
@@ -108,6 +111,7 @@ namespace PHYSICS {
 			a_b = b - a;
 			b_c = c - b;
 			c_a = a - c;
+			return *this;
 		}
 		Vertex3 Rotate(float rad) {
 			float s_ = sinf(rad);
@@ -121,6 +125,7 @@ namespace PHYSICS {
 			a_b = b - a;
 			b_c = c - b;
 			c_a = a - c;
+			return *this;
 		}
 		Vertex3 Scale(Vector2 scl) {
 			a.x *= scl.x;
@@ -132,6 +137,7 @@ namespace PHYSICS {
 			a_b = b - a;
 			b_c = c - b;
 			c_a = a - c;
+			return *this;
 		}
 	};
 	struct Vertex4 {
@@ -164,6 +170,7 @@ namespace PHYSICS {
 			b_c = c - b;
 			c_d = d - c;
 			d_a = a - d;
+			return *this;
 		}
 		Vertex4 Rotate(float rad) {
 			float s_ = sinf(rad);
@@ -180,6 +187,7 @@ namespace PHYSICS {
 			b_c = c - b;
 			c_d = d - c;
 			d_a = a - d;
+			return *this;
 		}
 		Vertex4 Scale(Vector2 scl) {
 			a.x *= scl.x;
@@ -194,6 +202,7 @@ namespace PHYSICS {
 			b_c = c - b;
 			c_d = d - c;
 			d_a = a - d;
+			return *this;
 		}
 	};
 	struct VertexN {

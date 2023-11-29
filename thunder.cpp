@@ -21,6 +21,8 @@ Vector2 Thunder::Move()
 	{
 		player_.SetVel(-stick * 10);
 	}
+
+	return Vector2::Zero;
 }
 
 void Thunder::Action()
