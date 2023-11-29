@@ -6,6 +6,7 @@
 #include "mapmngr.h"
 #include "player.h"
 #include "scenemngr.h"
+#include "time.h"
 
 bool debug_mode = false;
 
@@ -16,6 +17,7 @@ int main()
     MSG msg;
     int texNo = LoadTexture("player.jpg");
     SceneMngr* scene_mngr = new SceneMngr(SCENE_GAME);
+    Time::Initialize();
     while (true)
     {
         // メッセージ
@@ -65,8 +67,10 @@ int main()
             Input::Update();
 
             //DrawSprite(texNo, Vector2(100, 100), 0, Vector2(100, 100), Color(1, 1, 1));
+            Time::Update();
             scene_mngr->Update();
             scene_mngr->Draw();
+            std::cout << Time::GetDeltaTime() << std::endl;
 
             DebugUI::EndDraw();
             Graphical::Present();
@@ -75,6 +79,7 @@ int main()
 
     Graphical::Release();
     DebugUI::Release();
+    Time::Release();
 
 
     std::cout << "Hello World!\n"; //基本

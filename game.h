@@ -4,6 +4,8 @@
 #include "mapmngr.h"
 
 class MapMngr;
+class Player;
+
 class Game :public Scene
 {
 private:
