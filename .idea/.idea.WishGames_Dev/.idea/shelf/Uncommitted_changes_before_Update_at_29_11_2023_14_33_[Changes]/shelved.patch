@@ -1,0 +1,56 @@
+Index: thunder.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>//--------------------------------------------------------------------------------\r\n// \r\n// サンダー[thunder.cpp]\r\n// \r\n// 作成者 趙潤博\r\n// \r\n// 最終更新日\t2023/11/22\r\n// \r\n//--------------------------------------------------------------------------------\r\n#include \"thunder.h\"\r\n#include\"xinput.h\"\r\n#include\"lib/collider2d.h\"\r\n\r\nVector2 Thunder::Move()\r\n{\r\n\tVector2 vel = player_.GetVel();\r\n\tVector2 stick = Input::GetStickLeft(0);\r\n\tVector2 pstick = Input::GetPreviousStickLeft(0);\r\n\r\n\tif (Input::GetPreviousStickLeft(0) != Vector2(0, 0) && Input::GetStickLeft(0) == Vector2(0, 0))\r\n\t{\r\n\t\tplayer_.SetVel(-stick * 10);\r\n\t}\r\n}\r\n\r\nvoid Thunder::Action()\r\n{\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>windows-31j
+===================================================================
+diff --git a/thunder.cpp b/thunder.cpp
+--- a/thunder.cpp	(revision c8cb0a3b52d415f43eabb644faeca552253a25f8)
++++ b/thunder.cpp	(date 1701233893971)
+@@ -21,6 +21,7 @@
+ 	{
+ 		player_.SetVel(-stick * 10);
+ 	}
++	return Vector2(0, 0); //FIXME: 移動する量を返す
+ }
+ 
+ void Thunder::Action()
+Index: koopa.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#pragma once\r\n#include \"enemy.h\"\r\n#include \"sprite.h\"\r\n\r\nclass Koopa : public Enemy\r\n{\r\npublic:\r\n    Koopa() = delete;\r\n    ~Koopa() override = default;\r\n    Koopa(int x, int y,EnemyMngr* enemy_mngr) : Enemy(x, y,enemy_mngr)\r\n    {\r\n        SetTexNo(LoadTexture(\"data/texture/koopa.png\"));\r\n    }\r\n    void Update() override;\r\n    void Draw() override\r\n    {\r\n        DrawSprite(GetTexNo(), GetPos(), GetRot(), Vector2(size_,size_), Color(1.0f, 1.0f, 1.0f, 1.0f));\r\n    };\r\n};\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/koopa.h b/koopa.h
+--- a/koopa.h	(revision c8cb0a3b52d415f43eabb644faeca552253a25f8)
++++ b/koopa.h	(date 1701233562281)
+@@ -4,6 +4,9 @@
+ 
+ class Koopa : public Enemy
+ {
++private:
++    const float x_spd_ = 0.5f;
++    const float y_spd_ = 0.5f;
+ public:
+     Koopa() = delete;
+     ~Koopa() override = default;
+Index: fire.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>#include\"fire.h\"\r\n#include\"xinput.h\"\r\n#include\"lib/collider2d.h\"\r\n\r\nVector2 Fire::Move(){\r\n    Vector2 vel = player_.GetVel();\r\n    Vector2 stick = Input::GetStickLeft(0);\r\n    Vector2 preStick = Input::GetPreviousStickLeft(0);\r\n    Vector2 s = Input::GetStickLeft(0);\r\n    player_.AddVel(-s);\r\n};\r\n\r\nvoid Fire::Action() {\r\n    Vector2 stick = Input::GetStickRight(0);\r\n\r\n    using namespace PHYSICS;\r\n\r\n    Vertex4 square(Vector2(0, 1), Vector2(1, 1), Vector2(1, -1), Vector2(0, -1));\r\n        //Vertex1=円　Vertex2=線（・と・）　Vertex3=三角形　VertexN=四角形\r\n\r\n    Vertex1 enemy(Vector2(0, 0),2.0f);\r\n\r\n    bool isTouch = Collider2D::Touch(enemy, square);\r\n\r\n};\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>windows-31j
+===================================================================
+diff --git a/fire.cpp b/fire.cpp
+--- a/fire.cpp	(revision c8cb0a3b52d415f43eabb644faeca552253a25f8)
++++ b/fire.cpp	(date 1701233912142)
+@@ -8,6 +8,7 @@
+     Vector2 preStick = Input::GetPreviousStickLeft(0);
+     Vector2 s = Input::GetStickLeft(0);
+     player_.AddVel(-s);
++    return s; //FIXME: 移動する量を返す
+ };
+ 
+ void Fire::Action() {

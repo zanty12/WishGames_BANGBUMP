@@ -15,5 +15,8 @@ public:
     void Draw() override
     {
         DrawSprite(GetTexNo(), GetPos(), GetRot(), Vector2(size_,size_), Color(1.0f, 1.0f, 1.0f, 1.0f));
-    };
+    }
+private:
+    void GetNearCells() const;
+    bool CellCollision(Cell* cell) const;
 };

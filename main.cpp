@@ -46,14 +46,23 @@ int main()
                     ImGui::Text("FPS:%.1f", io.Framerate);
                     ImGui::End();
                     ImGui::Begin("Hello, world!");
-                    //ImGui::Text(u8"テキスト");
                     if (ImGui::Button(u8"ボタン"))
                     {
                         std::cout << "ボタン押したよ" << std::endl;
                     }
                     ImGui::End();
+                    //test controller
+                    ImGui::Begin("Controller");
+                    ImGui::Text("Left Stick");
+                    ImGui::Text("X:%.2f", Input::GetStickLeft(0).x);
+                    ImGui::Text("Y:%.2f", Input::GetStickLeft(0).y);
+                    ImGui::Text("Right Stick");
+                    ImGui::Text("X:%.2f", Input::GetStickRight(0).x);
+                    ImGui::Text("Y:%.2f", Input::GetStickRight(0).y);
+                    ImGui::End();
                 }
             }
+            Input::Update();
 
             //DrawSprite(texNo, Vector2(100, 100), 0, Vector2(100, 100), Color(1, 1, 1));
             scene_mngr->Update();
