@@ -10,17 +10,17 @@ Vector2 Wind::Move(void) {
 	float stickDistance = stick.Distance();
 	float preStickDistance = preStick.Distance();
 
-	// ‰ñ“]‚ÌƒXƒs[ƒh‚ğæ“¾
+	// å›è»¢ã®ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚’å–å¾—
 	float rotSpeed = Vector2::Cross(stick, preStick);
 
-	// ˆÚ“®’†
+	// ç§»å‹•ä¸­
 	if (rotInputJudgeMin < MATH::Abs(Vector2::Cross(stick, preStick)) &&
 		0.9f < stickDistance * preStickDistance) {
 		power_ += rotSpeed * rotSpeed * rotInputFriction;
 		if (maxPower_ < power_) power_ = maxPower_;
 	}
 
-	// —‰º’†‚Ìˆ—
+	// è½ä¸‹ä¸­ã®å‡¦ç†
 	else if (0 < Vector2::Dot(Vector2::Down, vel)) {
 		power_ *= friction_;
 	}
@@ -32,6 +32,4 @@ Vector2 Wind::Move(void) {
 
 void Wind::Action(void) {
 	using namespace PHYSICS;
-
-
 }
