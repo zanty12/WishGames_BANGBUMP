@@ -5,7 +5,7 @@
 class Koopa : public Enemy
 {
 private:
-    const float x_spd_ = 0.5f;
+    const float x_spd_ = 96.0f;
     const float y_spd_ = 0.5f;
 public:
     Koopa() = delete;

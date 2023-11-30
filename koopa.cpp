@@ -2,29 +2,51 @@
 #include "Cell.h"
 #include "MapMngr.h"
 #include "lib/collider2d.h"
+#include "time.h"
 
 void Koopa::Update()
 {
     Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //正直これのメモリ操作多すぎ
+
+    float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //初期化時のエラーを回避する
+
     //重力
-    SetVel(Vector2(GetVel().x, GetVel().y - 0.01f));
+    SetVel(Vector2(GetVel().x, GetVel().y - y_spd_ * dt));
+
     //プレイヤー追従
     if (player->GetPos().x < GetPos().x)
     {
-        SetVel(Vector2(-0.5f, GetVel().y));
+        SetVel(Vector2(-x_spd_ * dt, GetVel().y));
     }
     else if (player->GetPos().x > GetPos().x)
     {
-        SetVel(Vector2(0.5f, GetVel().y));
+        SetVel(Vector2(x_spd_ * dt, GetVel().y));
     }
     else
     {
         SetVel(Vector2(0.0f, GetVel().y));
     }
-    //壁判定
-    CellActions();
 
     this->AddVel(GetVel());
+
+    //壁判定
+    CellActions();
+    //プレイヤーとの当たり判定
+    if (Collision(player))
+    {
+        player->HpDown(1);
+        Die();
+    }
+    //他の敵との当たり判定
+    for (auto& enemy : GetEnemyMngr()->GetEnemies())
+    {
+        if (enemy == this || enemy == nullptr)
+            continue;
+        if (Collision(enemy))
+        {
+            //enemy->SetVel(Vector2(enemy->GetVel().x, 0.5f));
+        }
+    }
 }
 
 void Koopa::CellActions()

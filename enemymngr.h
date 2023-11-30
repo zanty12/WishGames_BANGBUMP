@@ -25,7 +25,7 @@ public:
         }
         enemies_.clear();
     }
-    void Update() const;
+    void Update();
     void Draw() const;
     void Spawn(int x,int y,int type);
     void PutEnemy(Enemy* enemy)
@@ -33,4 +33,5 @@ public:
         enemies_.push_back(enemy);
     }
     MapMngr* GetMapMngr() const { return map_mngr_; }
+    std::vector<Enemy*> GetEnemies() const { return enemies_; }
 };
