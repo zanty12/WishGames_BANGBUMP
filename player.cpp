@@ -43,6 +43,7 @@ void Player::Update(void)
 
 	AddVel(GetVel());
 	UpdateDir();
+	CollisionMap();
 	using namespace PHYSICS;
 
 	Vertex4 square(Vector2(-1, 1), Vector2(1, 1), Vector2(1, -1), Vector2(-1, -1));
@@ -57,41 +58,24 @@ void Player::Update(void)
 // ↓パブリック関数↓
 //================================================================================
 
-bool Player::CollisionBB(Vector2 others_pos, float others_size)
-{
-	using namespace PHYSICS;
-
-	Vector2 left_head = Vector2(GetPos().x - scale_.x / 2, GetPos().y + scale_.y / 2);
-	Vector2 right_head = Vector2(GetPos().x + scale_.x / 2, GetPos().y + scale_.y / 2);
-	Vector2 left_bottom= Vector2(GetPos().x - scale_.x / 2, GetPos().y - scale_.y / 2);
-	Vector2 right_bottom = Vector2(GetPos().x + scale_.x / 2, GetPos().y - scale_.y / 2);
-
-	Vertex4 player_box(left_head, right_bottom, left_bottom, right_bottom);
-
-	Vertex1 others_point(others_pos, others_size);
-
-	if (Collider2D::Touch(others_point, player_box))
-	{
-		return true;
-	}
-
-	return false;
-}
 
 void Player::CollisionMap(void)
 {
-	Vector2 top(GetPos().x, GetPos().y + size_);
-	Vector2 under(GetPos().x, GetPos().y - size_);
-	Vector2 right(GetPos().x + size_, GetPos().y);
-	Vector2 left(GetPos().x - size_, GetPos().y);
-
-	Cell* map_cell;
-
-	//頭の判定
-	map_cell = map_mangr_->GetMap()->GetCell(top.x, top.y);
-
-
-
+	Map* map = GetMapMngr()->GetMap();
+	Cell* cells[4] = {nullptr, nullptr, nullptr, nullptr};
+	int idx = std::floor(GetPos().x / size_);
+	int idy = std::floor(GetPos().y / size_);
+	cells[0] = map->GetCell(idx, idy + 1);
+	cells[1] = map->GetCell(idx, idy - 1);
+	cells[2] = map->GetCell(idx - 1, idy);
+	cells[3] = map->GetCell(idx + 1, idy);
+	for (int i = 0; i < 4; i++)
+	{
+		if (cells[i] == nullptr)
+			continue;
+		if (Collision(cells[i]))
+			MapCellInteract(cells[i]);
+	}
 }
 /*
 MAP_READ_NONE, ///< 空のセルを表します。

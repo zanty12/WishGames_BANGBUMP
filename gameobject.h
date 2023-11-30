@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "sprite.h"
 #include "lib/dxlib.h"
 
 class GameObject
@@ -19,7 +20,8 @@ private:
 	Vector2 pos_;
 	float rot_;
 	int tex_;
-	
+	Vector2 scale_ =  Vector2{size_,size_}; //大きさ
+	Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
 
 public:
 	static constexpr float size_ = 96.0f; //１マスの標準サイズ
@@ -32,8 +34,13 @@ public:
 	float GetRot(void) const { return rot_; }				//回転ゲット
 	void SetTexNo(int tex_number) { tex_ = tex_number; }	//テクスチャセット
 	int GetTexNo(void) const { return tex_; }				//テクスチャゲット
+	void SetScale(Vector2 scale) { scale_ = scale; }		//大きさセット
+	Vector2 GetScale(void) const { return scale_; }			//大きさゲット
+	void SetColor(Color color) { color_ = color; }			//色セット
+	Color GetColor(void) const { return color_; }			//色ゲット
+
 
 	virtual void Update(void) = 0;
-	virtual void Draw(void) = 0;
+	virtual void Draw(void) {DrawSprite(GetTexNo(), GetPos(), GetRot(), scale_, color_);}
 
 };

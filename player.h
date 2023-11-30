@@ -27,8 +27,6 @@ private:
 	const float GRAVITY_SCALE_ = 6.0f;	//重力（仮）
 
 	Vector2 dir_;		//向き
-	Vector2 scale_;		//大きさ（未定）
-	Color color_;
 
 	class Attribute* move_attribute_ = nullptr;		//動く用のアトリビュート
 	class Attribute* attack_attribute_ = nullptr;	//攻撃用のアトリビュート
@@ -41,8 +39,7 @@ private:
 public:
 	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
 		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),
-		dir_(Vector2(0.0f,0.0f)), scale_(Vector2(100.0f,100.0f/*未定とりあえず100*/)),color_(Color(1.0f, 1.0f, 1.0f, 1.0f))
-		,map_mangr_(map_mangr) {}
+		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) {}
 
 	void SetDir(Vector2 dir) { dir_ = dir; }	//向きのセット
 	Vector2 GetDir(void) const { return dir_; }	//向きのゲット
@@ -63,14 +60,10 @@ public:
 	void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
 	void Update(void) override;
-	void Draw(void) override { DrawSprite(GetTexNo(), GetPos(), GetRot(), scale_, color_); }
 
 private:
 	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）
 	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
-
-	//当たり判定（バウンディングボックス）
-	bool CollisionBB(Vector2 others_pos,float others_size);
 
 	//当たり判定（マップ）
 	void CollisionMap(void);
