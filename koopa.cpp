@@ -32,30 +32,16 @@ void Koopa::CellActions()
     Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
     Cell* cells[4] = {nullptr, nullptr, nullptr, nullptr};
     int idx = std::floor(GetPos().x / size_);
-    int idy = std::floor(GetPos().y  / size_);
+    int idy = std::floor(GetPos().y / size_);
     cells[0] = map->GetCell(idx, idy + 1);
     cells[1] = map->GetCell(idx, idy - 1);
     cells[2] = map->GetCell(idx - 1, idy);
     cells[3] = map->GetCell(idx + 1, idy);
     for (int i = 0; i < 4; i++)
     {
-        if (cells[i] != nullptr)
-        {
-            if (Collision(cells[i]) && i < 2)
-            {
-                SetVel(Vector2(GetVel().x, 0.0f));
-                SetPos(Vector2(GetPos().x, cells[i]->GetPos().y + size_));
-            }
-            else if (Collision(cells[i]) && i >= 2)
-            {
-                SetVel(Vector2(0.0f, GetVel().y));
-                if (i == 2)
-                    SetPos(Vector2(cells[i]->GetPos().x + size_, GetPos().y));
-                else
-                {
-                    SetPos(Vector2(cells[i]->GetPos().x - size_, GetPos().y));
-                }
-            }
-        }
+        if (cells[i] == nullptr)
+            continue;
+        if (Collision(cells[i]))
+            MapCellInteract(cells[i]);
     }
 }
