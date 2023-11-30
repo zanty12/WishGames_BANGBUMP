@@ -41,36 +41,21 @@ void Koopa::CellActions()
     {
         if (cells[i] != nullptr)
         {
-            if (CellCollision(cells[i]) && i < 2)
+            if (Collision(cells[i]) && i < 2)
             {
                 SetVel(Vector2(GetVel().x, 0.0f));
                 SetPos(Vector2(GetPos().x, cells[i]->GetPos().y + size_));
             }
-            else if (CellCollision(cells[i]) && i >= 2)
+            else if (Collision(cells[i]) && i >= 2)
             {
                 SetVel(Vector2(0.0f, GetVel().y));
-                /*if (i == 2)
-                    SetPos(Vector2(GetPos().x + size_, GetPos().y));
+                if (i == 2)
+                    SetPos(Vector2(cells[i]->GetPos().x + size_, GetPos().y));
                 else
                 {
-                    SetPos(Vector2(GetPos().x - size_, GetPos().y));
-                }*/
+                    SetPos(Vector2(cells[i]->GetPos().x - size_, GetPos().y));
+                }
             }
         }
     }
-}
-
-bool Koopa::CellCollision(Cell* cell) const
-{
-    using namespace PHYSICS;
-    Vertex4 Self = Vertex4(Vector2(GetPos().x - size_ / 2, GetPos().y + size_ / 2),
-                           Vector2(GetPos().x + size_ / 2, GetPos().y + size_ / 2),
-                           Vector2(GetPos().x + size_ / 2, GetPos().y - size_ / 2),
-                           Vector2(GetPos().x - size_ / 2, GetPos().y - size_ / 2));
-    Vertex4 other = Vertex4(Vector2(cell->GetPos().x - size_ / 2, cell->GetPos().y + size_ / 2),
-                            Vector2(cell->GetPos().x + size_ / 2, cell->GetPos().y + size_ / 2),
-                            Vector2(cell->GetPos().x + size_ / 2, cell->GetPos().y - size_ / 2),
-                            Vector2(cell->GetPos().x - size_ / 2, cell->GetPos().y - size_ / 2));
-
-    return Collider2D::Touch(Self, other);
 }

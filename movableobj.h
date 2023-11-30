@@ -29,5 +29,6 @@ public:
 
 	void AddVel(Vector2 vel) { SetPos(GetPos() + vel); }	//速度をオブジェクトに足す
 
+	bool Collision(const GameObject* obj) const;	//当たり判定
 
 };
