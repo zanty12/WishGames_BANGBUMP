@@ -8,14 +8,13 @@
 #include "scenemngr.h"
 #include "time.h"
 
-bool debug_mode = false;
+bool debug_mode = true;
 
 int main()
 {
     Graphical::Initialize(1600, 900);
     DebugUI::Initialize();
     MSG msg;
-    int texNo = LoadTexture("player.jpg");
     SceneMngr* scene_mngr = new SceneMngr(SCENE_GAME);
     Time::Initialize();
     while (true)
@@ -41,27 +40,25 @@ int main()
                 DebugUI::BeginDraw();
                 if (debug_mode)
                 {
-                    bool show_demo_window = true;
-                    ImGui::ShowDemoWindow(&show_demo_window);
+                    //bool show_demo_window = true;
+                    //ImGui::ShowDemoWindow(&show_demo_window);
                     ImGuiIO& io = ImGui::GetIO();
-                    ImGui::Begin("Debug");
+                    ImGui::Begin("Main System");
                     ImGui::Text("FPS:%.1f", io.Framerate);
-                    ImGui::End();
-                    ImGui::Begin("Hello, world!");
-                    if (ImGui::Button(u8"ボタン"))
-                    {
-                        std::cout << "ボタン押したよ" << std::endl;
-                    }
-                    ImGui::End();
+
                     //test controller
-                    ImGui::Begin("Controller");
+                    ImGui::Text(u8"コントローラー");
                     ImGui::Text("Left Stick");
-                    ImGui::Text("X:%.2f", Input::GetStickLeft(0).x);
-                    ImGui::Text("Y:%.2f", Input::GetStickLeft(0).y);
+                    ImGui::Text("X:%.2f, Y:%.2f", Input::GetStickLeft(0).x,Input::GetStickLeft(0).y);
                     ImGui::Text("Right Stick");
-                    ImGui::Text("X:%.2f", Input::GetStickRight(0).x);
-                    ImGui::Text("Y:%.2f", Input::GetStickRight(0).y);
+                    ImGui::Text("X:%.2f, Y:%.2f", Input::GetStickRight(0).x, Input::GetStickRight(0).y);
+
+                    //Time
+                    ImGui::Text("Time");
+                    ImGui::Text("DeltaTime:%.4f", Time::GetDeltaTime());
                     ImGui::End();
+
+                    scene_mngr->DebugMenu();
                 }
             }
             Input::Update();

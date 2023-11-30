@@ -34,3 +34,7 @@ void SceneMngr::ChangeScene(SCENE scene) {
 		break;
 	}
 }
+
+void SceneMngr::DebugMenu() {
+	scene_->DebugMenu();
+}
