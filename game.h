@@ -24,4 +24,5 @@ public:
 	Player *GetPlayer() const {
 		return player_;
 	}
+	void DebugMenu() override;
 };

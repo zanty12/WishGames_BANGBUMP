@@ -22,4 +22,5 @@ public:
 	Scene* GetScene() const{
 		return scene_;
 	}
+	void DebugMenu();
 };
