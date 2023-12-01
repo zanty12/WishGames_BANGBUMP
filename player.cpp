@@ -35,6 +35,7 @@ void Player::Update(void)
 	{//‰½‚à‘€ì‚µ‚È‚¯‚ê‚Î—‚¿‚é
 		if (GetVel().y <= GRAVITY_SCALE_)
 			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));
+		player_state_ = FALL;
 	}
 
 	if (attack_attribute_ != nullptr)
@@ -43,13 +44,19 @@ void Player::Update(void)
 	}
 
 
-	AddVel(GetVel());
 	UpdateDir();
-	CollisionMap();
 
 	CollisionSpike();
 
+	AddVel(GetVel());
 
+	CollisionMap();
+
+	//ã‚Éã‚ª‚Á‚Ä‚¢‚é
+	if (GetVel().y > 0.0f)
+	{
+		player_state_ = MOVE_UP;
+	}
 
 }
 
@@ -62,8 +69,8 @@ void Player::CollisionMap(void)
 {
 	Map* map = GetMapMngr()->GetMap();
 	Cell* cells[4] = {nullptr, nullptr, nullptr, nullptr};
-	int idx = std::floor(GetPos().x / size_);
-	int idy = std::floor(GetPos().y / size_);
+	int idx = std::floor((GetPos().x / size_));
+	int idy = std::floor((GetPos().y / size_));
 	cells[0] = map->GetCell(idx, idy + 1);
 	cells[1] = map->GetCell(idx, idy - 1);
 	cells[2] = map->GetCell(idx - 1, idy);
@@ -74,14 +81,25 @@ void Player::CollisionMap(void)
 			continue;
 		if (Collision(cells[i]))
 			MapCellInteract(cells[i]);
+
+		//’n–Ê‚Ì‚Ìˆ—
+		if (Collision(cells[i]))
+		{
+			MAP_READ cell_type = cells[i]->GetCellType();
+			if (cell_type == MAP_READ_WALL && cell_type == MAP_READ_FLOOR)
+			{
+				player_state_ = TOUCH_GROUND;
+				break;
+			}
+		}
 	}
 }
 void Player::CollisionSpike(void)
 {
 	Map* map = GetMapMngr()->GetMap();
 	Cell* cells[4] = { nullptr };
-	int idx = std::floor(GetPos().x / size_);
-	int idy = std::floor(GetPos().y / size_);
+	int idx = std::floor(GetPos().x / size_ + GetVel().x);
+	int idy = std::floor(GetPos().y / size_ + GetVel().y);
 	cells[0] = map->GetCell(idx, idy + 1);	//“ª
 	cells[1] = map->GetCell(idx, idy - 1);	//‘«
 	cells[2] = map->GetCell(idx - 1, idy);	//¶
