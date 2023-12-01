@@ -30,8 +30,8 @@ bool Thunder::StickTrigger(Vector2 stick, Vector2 previousStick) {
 }
 
 Vector2 Thunder::Move() {
-	Vector2 stick = Input::GetStickRight(0);
-	Vector2 previousStick = Input::GetPreviousStickRight(0);
+	Vector2 stick = Input::GetStickLeft(0);
+	Vector2 previousStick = Input::GetPreviousStickLeft(0);
 	stick.y *= -1;
 	previousStick.y *= -1;
 	float distance = stick.Distance();

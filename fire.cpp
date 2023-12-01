@@ -24,9 +24,9 @@ void Fire::Action() {
     bool isDraw = false;
 
     if (responseMinStickDistance < stick.Distance()) {
-        Vector2 direction = stick * speed;
+        attackDirection = stick * speed;
         auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
-        attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + direction * attackInjectionLength, attackWidthLength);
+        auto attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + attackDirection * attackInjectionLength, attackWidthLength);
 
         isDraw = true;
         
@@ -42,6 +42,8 @@ void Fire::Action() {
     }
 }
 void Fire::Draw(Vector2 offset) {
-    DrawCollider(attackCollider, Color::Green, offset);
+    if (isDraw) {
+        auto attackCollider = PHYSICS::Vertex4(player_->GetPos(), player_->GetPos() + attackDirection * attackInjectionLength, attackWidthLength);
+        DrawCollider(attackCollider, Color::Green, offset);
+    }
 }
-

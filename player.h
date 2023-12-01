@@ -28,7 +28,7 @@ class Player : public MovableObj
 {
 private:
 	const int SKILL_GAUGE_MAX_ = 10;	//所持スキルポイントの上限
-	const int HP_MAX_ = 10000;			//HPの上限
+	const int HP_MAX_ = 10000000;		//HPの上限
 	const float GRAVITY_SCALE_ = 6.0f;	//重力（仮）
 	const int SPIKE_SURPRISE_ = 15;		//トゲに当たってノックバックするフレーム数
 
