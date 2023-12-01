@@ -9,12 +9,12 @@ class Fire :public Attribute
 	const float attackWidthLength = 5.0f;			// 炎の幅の長さ
 	const float responseMinStickDistance = 0.2f;	// スティックの傾けたときに判定する最小値
 
-	PHYSICS::Vertex4 attackCollider;
+	Vector2 attackDirection;
 	bool isDraw = false;
 
 public:
 	Fire(Player *player) : Attribute(player) { }
-	Vector2 Move()override;
-	void Action()override;
+	Vector2 Move() override;
+	void Action() override;
 	void Draw(Vector2 offset)override;
 };

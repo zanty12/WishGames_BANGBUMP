@@ -66,8 +66,8 @@ void Dark::Action()
 		Vector2 maxAttackDirection = normalize * 1000.0f;		// 最大射程
 		RayHit screenEndPoint;									// スクリーンにぶつかった場所を格納
 
-
-		attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + maxAttackDirection, attackWidthLength);
+		Vector2 attackDirection = maxAttackDirection;
+		auto attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + maxAttackDirection, attackWidthLength);
 		isDraw = true;
 
 		for (auto enemy : enemies) {
@@ -103,6 +103,8 @@ void Dark::Action()
 	}
 }
 void Dark::Draw(Vector2 offset) {
-	DrawCollider(attackCollider, Color::Green, offset);
+	if (isDraw) {
+		auto attackCollider = PHYSICS::Vertex4(player_->GetPos(), player_->GetPos() + attackDirection, attackWidthLength);
+		DrawCollider(attackCollider, Color::Green, offset);
+	}
 }
-;
