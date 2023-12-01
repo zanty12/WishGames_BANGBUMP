@@ -5,7 +5,7 @@
 // 作成者 根本賢
 // 
 // 作成日		2023/11/16
-// 最終更新日	2023/11/20
+// 最終更新日	2023/11/30
 // 
 //--------------------------------------------------------------------------------
 
@@ -18,6 +18,13 @@
 #include "attribute.h"
 #include "mapmngr.h"
 
+enum PLAYER_STATE
+{
+	MOVE_UP,		//上に移動
+	FALL,			//落ちる
+	TOUCH_GROUND,	//地面にいる
+};
+
 class MapMngr;
 class Player : public MovableObj
 {
@@ -25,10 +32,9 @@ private:
 	const int SKILL_GAUGE_MAX_ = 10;	//所持スキルポイントの上限
 	const int HP_MAX_ = 1000;			//HPの上限
 	const float GRAVITY_SCALE_ = 6.0f;	//重力（仮）
+	const int SPIKE_SURPRISE_ = 15;		//トゲに当たってノックバックするフレーム数
 
 	Vector2 dir_;		//向き
-	Vector2 scale_;		//大きさ（未定）
-	Color color_;
 
 	class Attribute* move_attribute_ = nullptr;		//動く用のアトリビュート
 	class Attribute* attack_attribute_ = nullptr;	//攻撃用のアトリビュート
@@ -38,11 +44,16 @@ private:
 
 	MapMngr* map_mangr_;
 
+	int clash_spike_;		//トゲに衝突したら15フレームの間ノックバック
+	int knock_back_dir_;	//トゲに衝突した方向
+
+	PLAYER_STATE player_state_;
+
 public:
 	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
 		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),
-		dir_(Vector2(0.0f,0.0f)), scale_(Vector2(100.0f,100.0f/*未定とりあえず100*/)),color_(Color(1.0f, 1.0f, 1.0f, 1.0f))
-		,map_mangr_(map_mangr) {}
+		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0)
+		,player_state_(TOUCH_GROUND) {}
 
 	void SetDir(Vector2 dir) { dir_ = dir; }	//向きのセット
 	Vector2 GetDir(void) const { return dir_; }	//向きのゲット
@@ -52,6 +63,7 @@ public:
 	Attribute* GetAttribute(void) { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
 	Attribute* GetAttackAttribute(void) { return attack_attribute_; }	//アタックアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
 	MapMngr* GetMapMngr(void) { return map_mangr_; }	//MapMngrのポインタをゲット
+	PLAYER_STATE GetPlayerState(void) { return player_state_; }	//プレイヤーのステータスをゲット
 
 	//スキルポイントの使用（使えるとき=true 使うとスキルポイントは0になる）
 	bool UseSkillPoint(void);
@@ -63,15 +75,14 @@ public:
 	void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
 	void Update(void) override;
-	void Draw(void) override { DrawSprite(GetTexNo(), GetPos(), GetRot(), scale_, color_); }
 
 private:
 	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）
 	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
 
-	//当たり判定（バウンディングボックス）
-	bool CollisionBB(Vector2 others_pos,float others_size);
-
 	//当たり判定（マップ）
 	void CollisionMap(void);
+
+	//当たり判定（トゲ）
+	void CollisionSpike(void);
 };

@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="dark.cpp" />
     <ClCompile Include="debugUI.cpp" />
     <ClCompile Include="enemymngr.cpp" />
@@ -144,6 +145,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapmngr.cpp" />
+    <ClCompile Include="movableobj.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="scenemngr.cpp" />
@@ -156,6 +158,7 @@
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemymngr.h" />
     <ClInclude Include="game.h" />
@@ -188,6 +191,7 @@
     <ClInclude Include="scenemngr.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
+    <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="time.h" />
