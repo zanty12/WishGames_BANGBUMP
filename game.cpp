@@ -45,6 +45,7 @@ void Game::DebugMenu()
     ImGui::Text(u8"カメラ座標");
     ImGui::Text("x:%f, y: %f", camera_->GetPos().x, camera_->GetPos().y);
     static std::string preview = u8"無属性";
+    static std::string preview_atk = u8"無属性";
     if (ImGui::BeginCombo(u8"プレイヤー移動属性", preview.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
@@ -69,26 +70,26 @@ void Game::DebugMenu()
         }
         ImGui::EndCombo();
     }
-    if (ImGui::BeginCombo(u8"プレイヤー攻撃属性", preview.c_str()))
+    if (ImGui::BeginCombo(u8"プレイヤー攻撃属性", preview_atk.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
         {
-            preview = "Fire";
+            preview_atk = "Fire";
             player_->SetAttackAttribute(new Fire(player_));
         }
         if (ImGui::Selectable("Wind", false))
         {
-            preview = "Wind";
+            preview_atk = "Wind";
             player_->SetAttackAttribute(new Wind(player_));
         }
         if (ImGui::Selectable("Thunder", false))
         {
-            preview = "Thunder";
+            preview_atk = "Thunder";
             player_->SetAttackAttribute(new Thunder(player_));
         }
         if (ImGui::Selectable("Dark", false))
         {
-            preview = "Dark";
+            preview_atk = "Dark";
             player_->SetAttackAttribute(new Dark(player_));
         }
         ImGui::EndCombo();
