@@ -3,6 +3,8 @@
 #include "player.h"
 #include "mapmngr.h"
 
+#include "scenemngr.h"
+
 class MapMngr;
 class Player;
 
@@ -12,8 +14,11 @@ private:
 	Player *player_;
 	MapMngr *mapmngr_;
 
+	SceneMngr* scene_mngr_;
+
 public:
-	Game();
+	Game() = delete;
+	Game(SceneMngr* scene_mngr);
 	~Game() override {
 		delete mapmngr_;
 		delete player_;

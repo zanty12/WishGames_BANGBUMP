@@ -3,13 +3,13 @@
 #include "scene.h"
 #include "scenemngr.h"
 
-class Title :public Scene
+class Result :public Scene
 {
 private:
 	SceneMngr* scene_mngr_;
 public:
-	Title(SceneMngr* scene_mngr);
-	~Title();
+	Result(SceneMngr* scene_mngr);
+	~Result();
 	void Update()override;
 	void Draw()override;
 	void DebugMenu() override {}

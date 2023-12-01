@@ -5,8 +5,10 @@
 #include "mapmngr.h"
 #include "thunder.h"
 #include "wind.h"
+#include "game.h"
 
-Game::Game()
+Game::Game(SceneMngr* scene_mngr)
+    :scene_mngr_(scene_mngr)
 {
     mapmngr_ = new MapMngr("data/map/1.csv", this);
     player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("player.jpg"), Vector2(0.0f, 0.0f), mapmngr_);
@@ -18,6 +20,10 @@ void Game::Update()
 {
     mapmngr_->Update();
     player_->Update();
+    if (player_->GetChangeSceneFlag())
+    {
+        scene_mngr_->ChangeScene(SCENE_RESULT);
+    }
 }
 
 void Game::Draw()

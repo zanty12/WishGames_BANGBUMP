@@ -27,6 +27,12 @@ bool Player::UseSkillPoint(void)
 void Player::Update(void)
 {
 
+	//HP‚ª0‚É‚È‚Á‚½‚çƒŠƒUƒ‹ƒg‚ÉˆÚ‚é
+	if (hp_ <= 0)
+	{
+		change_scene_ = true;
+	}
+
 	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
 		SetVel(move_attribute_->Move());
