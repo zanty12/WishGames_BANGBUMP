@@ -41,6 +41,7 @@ void Player::Update(void)
 	{//何も操作しなければ落ちる
 		if (GetVel().y <= GRAVITY_SCALE_)
 			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));
+		player_state_ = FALL;
 	}
 
 	if (attack_attribute_ != nullptr)
@@ -49,13 +50,19 @@ void Player::Update(void)
 	}
 
 
-	AddVel(GetVel());
 	UpdateDir();
+
+	AddVel(GetVel());
+
 	CollisionMap();
 
 	CollisionSpike();
 
-
+	//上に上がっている
+	if (GetVel().y > 0.0f)
+	{
+		player_state_ = MOVE_UP;
+	}
 
 }
 
@@ -68,8 +75,8 @@ void Player::CollisionMap(void)
 {
 	Map* map = GetMapMngr()->GetMap();
 	Cell* cells[4] = {nullptr, nullptr, nullptr, nullptr};
-	int idx = std::floor(GetPos().x / size_);
-	int idy = std::floor(GetPos().y / size_);
+	int idx = std::floor((GetPos().x / size_));
+	int idy = std::floor((GetPos().y / size_));
 	cells[0] = map->GetCell(idx, idy + 1);
 	cells[1] = map->GetCell(idx, idy - 1);
 	cells[2] = map->GetCell(idx - 1, idy);
@@ -80,6 +87,17 @@ void Player::CollisionMap(void)
 			continue;
 		if (Collision(cells[i]))
 			MapCellInteract(cells[i]);
+
+		//地面の時の処理
+		if (Collision(cells[i]))
+		{
+			MAP_READ cell_type = cells[i]->GetCellType();
+			if (cell_type == MAP_READ_WALL && cell_type == MAP_READ_FLOOR)
+			{
+				player_state_ = TOUCH_GROUND;
+				break;
+			}
+		}
 	}
 }
 void Player::CollisionSpike(void)
@@ -106,6 +124,23 @@ void Player::CollisionSpike(void)
 			{
 				knock_back_dir_ = i;
 				clash_spike_ = SPIKE_SURPRISE_;
+				switch (knock_back_dir_)
+				{
+				case 0:	//頭
+					dir_.y = -1;
+					break;
+				case 1:	//足
+					dir_.y = +1;
+					break;
+				case 2:	//左
+					dir_.x = +1;
+					break;
+				case 3:	//右
+					dir_.x = -1;
+					break;
+				default:
+					break;
+				}
 				break;
 			}
 		}
@@ -114,18 +149,18 @@ void Player::CollisionSpike(void)
 	Vector2 clash_vel(0.0f,0.0f);	//クラッシュしたときの速度
 	if (clash_spike_ > 0)
 	{
-		float knock_back = 5.0f * clash_spike_;
+		float knock_back = 2.0f * clash_spike_;
 		
 		switch (knock_back_dir_)
 		{
 		case 0:	//頭
-			clash_vel = Vector2(GetVel().x, -dir_.y * knock_back);
+			clash_vel = Vector2(GetVel().x, dir_.y * knock_back);
 			break;
 		case 1:	//足
-			clash_vel = Vector2(GetVel().x, +dir_.y * knock_back);
+			clash_vel = Vector2(GetVel().x, dir_.y * knock_back);
 			break;
 		case 2:	//左
-			clash_vel = Vector2(-dir_.x * knock_back, GetVel().y);
+			clash_vel = Vector2(dir_.x * knock_back, GetVel().y);
 			break;
 		case 3:	//右
 			clash_vel = Vector2(dir_.x * knock_back, GetVel().y);
