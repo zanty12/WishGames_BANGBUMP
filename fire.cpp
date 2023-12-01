@@ -21,7 +21,7 @@ void Fire::Action() {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
     float distance = stick.Distance();
-    bool isDraw = false;
+    isDraw = false;
 
     if (responseMinStickDistance < stick.Distance()) {
         attackDirection = stick * speed;
@@ -41,6 +41,7 @@ void Fire::Action() {
         }
     }
 }
+
 void Fire::Draw(Vector2 offset) {
     if (isDraw) {
         auto attackCollider = PHYSICS::Vertex4(player_->GetPos(), player_->GetPos() + attackDirection * attackInjectionLength, attackWidthLength);

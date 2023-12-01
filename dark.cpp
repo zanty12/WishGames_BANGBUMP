@@ -66,7 +66,7 @@ void Dark::Action()
 		Vector2 maxAttackDirection = normalize * 1000.0f;		// 最大射程
 		RayHit screenEndPoint;									// スクリーンにぶつかった場所を格納
 
-		Vector2 attackDirection = maxAttackDirection;
+		attackDirection = maxAttackDirection;
 		auto attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + maxAttackDirection, attackWidthLength);
 		isDraw = true;
 
