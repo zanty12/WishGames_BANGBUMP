@@ -58,6 +58,7 @@ public:
 	void SetDir(Vector2 dir) { dir_ = dir; }	//向きのセット
 	Vector2 GetDir(void) const { return dir_; }	//向きのゲット
 	int GetHp(void) const { return hp_; }		//HPのゲット
+	void SetHp(int hp) { hp_ = hp; }			//HPのセット
 	void SetAttribute(Attribute* move_attribute) {delete move_attribute_; move_attribute_ = move_attribute; }				//ムーブアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
 	void SetAttackAttribute(Attribute* attack_attribute) {delete attack_attribute_; attack_attribute_ = attack_attribute; }	//アタックアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
 	Attribute* GetAttribute(void) { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
