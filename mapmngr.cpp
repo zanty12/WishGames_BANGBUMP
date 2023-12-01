@@ -92,7 +92,7 @@ void MapMngr::Update() const
 void MapMngr::Draw(Camera* camera) const
 {
     map_->Draw(camera);
-    enemy_mngr_->Draw();
+    enemy_mngr_->Draw(camera);
 }
 
 void MapMngr::DebugMenu()

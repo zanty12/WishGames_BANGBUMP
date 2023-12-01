@@ -17,6 +17,7 @@ public:
     }
     virtual ~Enemy() = default;
     virtual void Update() = 0;
+    virtual void Draw(Camera* camera);
     EnemyMngr* GetEnemyMngr() const { return enemy_mngr_; }
     bool IsDead() const { return dead; }
     void Die(){ this->dead = true; }

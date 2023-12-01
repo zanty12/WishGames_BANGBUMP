@@ -2,6 +2,7 @@
 #include "gameobject.h"
 #include "player.h"
 
+class Player;
 class Camera : public GameObject
 {
 private:

@@ -11,9 +11,6 @@
 
 #pragma once
 
-#include "lib/dxlib.h"
-
-#include "sprite.h"
 #include "movableobj.h"
 #include "attribute.h"
 #include "mapmngr.h"

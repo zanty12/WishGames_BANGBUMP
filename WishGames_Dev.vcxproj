@@ -130,6 +130,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="dark.cpp" />
     <ClCompile Include="debugUI.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemymngr.cpp" />
     <ClCompile Include="fire.cpp" />
     <ClCompile Include="game.cpp" />
