@@ -76,6 +76,5 @@ int main()
     DebugUI::Release();
     Time::Release();
 
-
     std::cout << "Hello World!\n"; //基本
 }
