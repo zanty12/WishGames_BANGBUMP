@@ -13,8 +13,11 @@
 class Dark : public Attribute
 {
 	Vector2 warpPosition;
-	float maxSpeedFalling = 0.5f;		// 落下中のスピード
-	float warpDistance = 800.0f;			// ワープ距離
+	Vector2 attackDirection;						// 攻撃する向き
+	const float maxSpeedFalling = 0.5f;				// 落下中のスピード
+	const float warpDistance = 800.0f;				// ワープ距離
+	const float attackWidthLength = 5.0f;			// レーザーの幅の長さ
+	const float responseMinStickDistance = 0.2f;	// スティックの傾けたときに判定する最小値
 
 public:
 

@@ -14,7 +14,7 @@ int main()
     Graphical::Initialize(1600, 900);
     DebugUI::Initialize();
     MSG msg;
-    SceneMngr* scene_mngr = new SceneMngr(SCENE_GAME);
+    SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
     Time::Initialize();
     while (true)
     {
