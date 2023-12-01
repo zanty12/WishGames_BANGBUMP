@@ -7,7 +7,7 @@
 #include "wind.h"
 
 Game::Game() {
-    mapmngr_ = new MapMngr("data/map/1.csv",this);
+    mapmngr_ = new MapMngr("data/map/mariomaker.csv",this);
     player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("player.jpg"), Vector2(0.0f, 0.0f), mapmngr_);
 }
 
@@ -43,6 +43,26 @@ void Game::DebugMenu()
         if (ImGui::Selectable("Dark", false)) {
             preview = "Dark";
             player_->SetAttribute(new Dark(player_));
+        }
+        ImGui::EndCombo();
+    }
+    if(ImGui::BeginCombo(u8"ƒvƒŒƒCƒ„[UŒ‚‘®«", preview.c_str()))
+    {
+        if (ImGui::Selectable("Fire", false)) {
+            preview = "Fire";
+            player_->SetAttackAttribute(new Fire(player_));
+        }
+        if (ImGui::Selectable("Wind", false)) {
+            preview = "Wind";
+            player_->SetAttackAttribute(new Wind(player_));
+        }
+        if (ImGui::Selectable("Thunder", false)) {
+            preview = "Thunder";
+            player_->SetAttackAttribute(new Thunder(player_));
+        }
+        if (ImGui::Selectable("Dark", false)) {
+            preview = "Dark";
+            player_->SetAttackAttribute(new Dark(player_));
         }
         ImGui::EndCombo();
     }

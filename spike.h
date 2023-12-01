@@ -49,10 +49,8 @@ public:
         {
         case SPIKE_UP:
             return MAP_READ_SPIKE_UP;
-
         case SPIKE_RIGHT:
             return MAP_READ_SPIKE_RIGHT;
-
         case SPIKE_DOWN:
             return MAP_READ_SPIKE_DOWN;
         case SPIKE_LEFT:

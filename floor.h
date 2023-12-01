@@ -10,7 +10,7 @@ public:
     {
         this->SetTexNo(LoadTexture("data/texture/floor.png"));
     }
-    virtual ~Floor() override = default;
+    ~Floor() override = default;
     MAP_READ GetCellType() const override { return MAP_READ_FLOOR; }
 };
 
