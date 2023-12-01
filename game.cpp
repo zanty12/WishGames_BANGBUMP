@@ -9,7 +9,7 @@
 Game::Game()
 {
     mapmngr_ = new MapMngr("data/map/1.csv", this);
-    player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("player.jpg"), Vector2(0.0f, 0.0f), mapmngr_);
+    player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("data/texture/player.png"), Vector2(0.0f, 0.0f), mapmngr_);
     player_->SetScale(Vector2(player_->GetScale().x, player_->GetScale().y * 2));
     player_->SetPos(Vector2(player_->GetPos().x, player_->GetPos().y + player_->GetScale().y / 2));
 }
@@ -29,10 +29,10 @@ void Game::Draw()
 void Game::DebugMenu()
 {
     ImGui::Begin("Game");
-    ImGui::Text(u8"ƒvƒŒƒCƒ„[À•W");
+    ImGui::Text(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åº§æ¨™");
     ImGui::Text("x:%f, y: %f", player_->GetPos().x, player_->GetPos().y);
-    static std::string preview = u8"–³‘®«";
-    if (ImGui::BeginCombo(u8"ƒvƒŒƒCƒ„[ˆÚ“®‘®«", preview.c_str()))
+    static std::string preview = u8"ç„¡å±æ€§";
+    if (ImGui::BeginCombo(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç§»å‹•å±æ€§", preview.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
         {
@@ -56,7 +56,7 @@ void Game::DebugMenu()
         }
         ImGui::EndCombo();
     }
-    if (ImGui::BeginCombo(u8"ƒvƒŒƒCƒ„[UŒ‚‘®«", preview.c_str()))
+    if (ImGui::BeginCombo(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ”»æ’ƒå±æ€§", preview.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
         {
