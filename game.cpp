@@ -29,10 +29,10 @@ void Game::Draw()
 void Game::DebugMenu()
 {
     ImGui::Begin("Game");
-    ImGui::Text(u8"ƒvƒŒƒCƒ„[À•W");
+    ImGui::Text(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åº§æ¨™");
     ImGui::Text("x:%f, y: %f", player_->GetPos().x, player_->GetPos().y);
-    static std::string preview = u8"–³‘®«";
-    if (ImGui::BeginCombo(u8"ƒvƒŒƒCƒ„[ˆÚ“®‘®«", preview.c_str()))
+    static std::string preview = u8"ç„¡å±æ€§";
+    if (ImGui::BeginCombo(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç§»å‹•å±æ€§", preview.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
         {
@@ -56,7 +56,7 @@ void Game::DebugMenu()
         }
         ImGui::EndCombo();
     }
-    if (ImGui::BeginCombo(u8"ƒvƒŒƒCƒ„[UŒ‚‘®«", preview.c_str()))
+    if (ImGui::BeginCombo(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ”»æ’ƒå±æ€§", preview.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
         {
