@@ -4,7 +4,6 @@
 #include "DebugUI.h"
 #include "xinput.h"
 #include "mapmngr.h"
-#include "player.h"
 #include "scenemngr.h"
 #include "time.h"
 

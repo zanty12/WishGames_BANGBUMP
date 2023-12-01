@@ -6,13 +6,17 @@
 // 
 // 作成日		2023/11/16
 // 最終更新日	2023/11/16
-// 
+//
+//  Update:
+//  2023/11/16 [根本賢] ゲームオブジェクトのインターフェースを作成
+// 2023/11/30 Cheung To Hung 描画とscale,colorを追加
 //--------------------------------------------------------------------------------
 
 #pragma once
 
 #include "sprite.h"
 #include "lib/dxlib.h"
+#include "graphical.h"
 
 class GameObject
 {
@@ -41,6 +45,11 @@ public:
 
 
 	virtual void Update(void) = 0;
-	virtual void Draw(void) {DrawSprite(GetTexNo(), GetPos(), GetRot(), scale_, color_);}
+	virtual void Draw(void)
+	{
+		const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
+		const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
+		DrawSprite(GetTexNo(), Vector2(GetPos().x * scale_x,GetPos().y * scale_y), GetRot(), Vector2(scale_.x * scale_x,scale_.y * scale_y), color_);
+	}
 
 };
