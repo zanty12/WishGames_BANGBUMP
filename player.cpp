@@ -27,7 +27,7 @@ bool Player::UseSkillPoint(void)
 void Player::Update(void)
 {
 
-	if (move_attribute_ != nullptr)
+	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
 		SetVel(move_attribute_->Move());
 	}
