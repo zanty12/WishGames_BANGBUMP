@@ -8,22 +8,26 @@
 
 Game::Game()
 {
-    mapmngr_ = new MapMngr("data/map/1.csv", this);
+    mapmngr_ = new MapMngr("data/map/mariomaker.csv", this);
     player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("player.jpg"), Vector2(0.0f, 0.0f), mapmngr_);
     player_->SetScale(Vector2(player_->GetScale().x, player_->GetScale().y * 2));
     player_->SetPos(Vector2(player_->GetPos().x, player_->GetPos().y + player_->GetScale().y / 2));
+    camera_ = new Camera(player_);
 }
 
 void Game::Update()
 {
     mapmngr_->Update();
     player_->Update();
+    camera_->Update();
 }
 
 void Game::Draw()
 {
-    mapmngr_->Draw();
-    player_->Draw();
+    camera_->Draw();
+    mapmngr_->Draw(camera_);
+    player_->Draw(camera_);
+
 }
 
 void Game::DebugMenu()
@@ -31,6 +35,10 @@ void Game::DebugMenu()
     ImGui::Begin("Game");
     ImGui::Text(u8"プレイヤー座標");
     ImGui::Text("x:%f, y: %f", player_->GetPos().x, player_->GetPos().y);
+    ImGui::Text(u8"プレイヤー状態");
+    ImGui::Text("%d", player_->GetPlayerState());
+    ImGui::Text(u8"カメラ座標");
+    ImGui::Text("x:%f, y: %f", camera_->GetPos().x, camera_->GetPos().y);
     static std::string preview = u8"無属性";
     if (ImGui::BeginCombo(u8"プレイヤー移動属性", preview.c_str()))
     {

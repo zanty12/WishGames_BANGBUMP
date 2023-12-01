@@ -57,8 +57,19 @@ void Player::Update(void)
 	{
 		player_state_ = MOVE_UP;
 	}
+	//落ちている
+	else if (GetVel().y < 0.0f)
+	{
+		player_state_ = FALL;
+	}
 
 }
+
+void Player::Draw(Camera* camera)
+{
+	GameObject::Draw(camera->GetCameraOffset());
+}
+
 
 //================================================================================
 // ↓パブリック関数↓
@@ -83,10 +94,10 @@ void Player::CollisionMap(void)
 			MapCellInteract(cells[i]);
 
 		//地面の時の処理
-		if (Collision(cells[i]))
+		if (Collision(cells[i]) && i == 1)
 		{
 			MAP_READ cell_type = cells[i]->GetCellType();
-			if (cell_type == MAP_READ_WALL && cell_type == MAP_READ_FLOOR)
+			if (cell_type == MAP_READ_WALL || cell_type == MAP_READ_FLOOR)
 			{
 				player_state_ = TOUCH_GROUND;
 				break;

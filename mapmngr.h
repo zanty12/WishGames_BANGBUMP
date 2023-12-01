@@ -1,4 +1,5 @@
 #pragma once
+#include "camera.h"
 #include "map.h"
 #include "mapmngr.h"
 #include "enemymngr.h"
@@ -7,6 +8,7 @@
 
 class EnemyMngr;
 class Game;
+class Camera;
 
 class MapMngr
 {
@@ -28,7 +30,7 @@ public:
 		return map_;
 	}
 	void Update() const;
-	void Draw() const;
+	void Draw(Camera* camera) const;
 
 	void DebugMenu();
 

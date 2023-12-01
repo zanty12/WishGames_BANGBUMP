@@ -26,6 +26,7 @@ enum PLAYER_STATE
 };
 
 class MapMngr;
+class Camera;
 class Player : public MovableObj
 {
 private:
@@ -75,6 +76,7 @@ public:
 	void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
 	void Update(void) override;
+	void Draw(Camera* camera);
 
 private:
 	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）

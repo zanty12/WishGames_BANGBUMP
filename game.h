@@ -5,18 +5,22 @@
 
 class MapMngr;
 class Player;
+class Camera;
 
 class Game :public Scene
 {
 private:
 	Player *player_;
 	MapMngr *mapmngr_;
+	Camera* camera_;
 
 public:
 	Game();
-	~Game() override {
+	~Game() override
+	{
 		delete mapmngr_;
 		delete player_;
+		delete camera_;
 	}
 	void Update()override;
 	void Draw()override;
