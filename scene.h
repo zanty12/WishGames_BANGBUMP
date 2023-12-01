@@ -6,6 +6,7 @@ enum SCENE
 	SCENE_MENU,
 	SCENE_PREP,
 	SCENE_GAME,
+	SCENE_RESULT,
 	
 };
 

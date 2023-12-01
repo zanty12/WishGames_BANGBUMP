@@ -1,4 +1,5 @@
 #pragma once
+#include "sprite.h"
 #include "scene.h"
 
 class Title :public Scene
@@ -6,16 +7,7 @@ class Title :public Scene
 public:
 	Title();
 	~Title();
-
-	void Update()override {}
-
-	void Draw()override {}
+	void Update()override;
+	void Draw()override;
 };
 
-Title::Title()
-{
-}
-
-Title::~Title()
-{
-}

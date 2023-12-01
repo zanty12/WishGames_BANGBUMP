@@ -154,6 +154,7 @@
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="thunder.cpp" />
     <ClCompile Include="time.cpp" />
+    <ClCompile Include="title.cpp" />
     <ClCompile Include="wind.cpp" />
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
