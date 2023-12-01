@@ -14,6 +14,7 @@ private:
 public:
 	Wind(Player *player) : Attribute(player) { }
 
+	bool StickTrigger(Vector2 stick, Vector2 previousStick);
 	Vector2 Move(void) override;
 	void Action(void) override;
 };
