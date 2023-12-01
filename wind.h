@@ -9,6 +9,8 @@ private:
 	const float rotInputJudgeMin = 0.1f;	// ‚Ü‚í‚·‚ğ”»’è‚·‚é
 	const float friction_ = 0.95f;			// –€C
 
+	const float attackRadius = 100.0f;		// UŒ‚”ÍˆÍ
+
 public:
 	Wind(Player *player) : Attribute(player) { }
 
