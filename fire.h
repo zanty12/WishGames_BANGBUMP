@@ -5,6 +5,7 @@ class Fire :public Attribute
 {
 	float speed = 10.0f;		// スピード
 	float friction = 0.88f;		// 摩擦定数
+	float attackInjectionLength = 10.0f;	// 炎の射出長さ
 	const float responseMinStickDistance = 0.2f;	// スティックの傾けたときに判定する最小値
 
 public:

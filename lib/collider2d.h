@@ -174,6 +174,24 @@ namespace PHYSICS {
 			vertex4 = vertex4.Translate(position);
 			*this = vertex4;
 		}
+		Vertex4(Vector2 startPosition, Vector2 endPosition, float width) {
+			Vertex4 vertex4 = Vertex4(
+				Vector2(-0.0f, +1.0f),
+				Vector2(+1.0f, +1.0f),
+				Vector2(+1.0f, -1.0f),
+				Vector2(-0.0f, -1.0f)
+			);
+
+			Vector2 direction = endPosition - startPosition;
+			float distance = direction.Distance();
+			Vector2 scale = Vector2(width, distance);
+			float rot = atan2f(direction.x, direction.y);
+
+			vertex4 = vertex4.Scale(scale);
+			vertex4 = vertex4.Rotate(rot);
+			vertex4 = vertex4.Translate(startPosition);
+			*this = vertex4;
+		}
 		Vertex4(Vector2 a, Vector2 b, Vector2 c, Vector2 d) : a(a), b(b), c(c), d(d), a_b(b - a), b_c(c - b), c_d(d - c), d_a(a - d) { }
 		Vertex4 Translate(Vector2 pos) {
 			a += pos;

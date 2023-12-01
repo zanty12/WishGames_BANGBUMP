@@ -1,5 +1,6 @@
-#include"fire.h"
-#include"xinput.h"
+#include "fire.h"
+#include "xinput.h"
+#include "sprite.h"
 #include"lib/collider2d.h"
 
 Vector2 Fire::Move() {
@@ -17,16 +18,31 @@ Vector2 Fire::Move() {
 };
 
 void Fire::Action() {
-    Vector2 stick = Input::GetStickRight(0);
-
     using namespace PHYSICS;
+    Vector2 stick = Input::GetStickRight(0);
+    float distance = stick.Distance();
 
-    Vertex4 square(Vector2(0, 1), Vector2(1, 1), Vector2(1, -1), Vector2(0, -1));
     //Vertex1=円　Vertex2=線（・と・）　Vertex3=三角形　VertexN=四角形
 
-    Vertex1 enemy(Vector2(0, 0), 2.0f);
 
-    bool isTouch = Collider2D::Touch(enemy, square);
+    if (responseMinStickDistance < stick.Distance()) {
+        Vector2 direction = -stick * speed;
+        auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
+        Vertex4 attackCollider(player_->GetPos(), direction * attackInjectionLength, 100);
+
+        //DrawLine
+
+        for (auto enemy : enemies) {            
+            Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
+
+            if (Collider2D::Touch(attackCollider, enemyCollider)) {
+                enemy->Die();
+            }
+        }
+    }
+    else {
+
+    }
 
 };
 
