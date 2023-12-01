@@ -5,12 +5,13 @@
 // 作成者 根本賢
 // 
 // 作成日		2023/11/17
-// 最終更新日	2023/11/20
+// 最終更新日	2023/11/30
 // 
 //--------------------------------------------------------------------------------
 
 #include "player.h"
 #include "lib/collider2d.h"
+#include "spike.h"
 
 bool Player::UseSkillPoint(void)
 {
@@ -26,11 +27,11 @@ bool Player::UseSkillPoint(void)
 void Player::Update(void)
 {
 
-	if (move_attribute_ != nullptr)
+	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
 		SetVel(move_attribute_->Move());
 	}
-	else
+	else if(clash_spike_ == 0)
 	{//何も操作しなければ落ちる
 		if (GetVel().y <= GRAVITY_SCALE_)
 			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));
@@ -41,14 +42,12 @@ void Player::Update(void)
 		attack_attribute_->Action();
 	}
 
+
 	AddVel(GetVel());
 	UpdateDir();
 	CollisionMap();
-	using namespace PHYSICS;
 
-	Vertex4 square(Vector2(-1, 1), Vector2(1, 1), Vector2(1, -1), Vector2(-1, -1));
-	Vertex1 point(Vector2(0, 0), 100);
-	Collider2D::Touch(point, square);
+	CollisionSpike();
 
 
 
@@ -77,6 +76,69 @@ void Player::CollisionMap(void)
 			MapCellInteract(cells[i]);
 	}
 }
+void Player::CollisionSpike(void)
+{
+	Map* map = GetMapMngr()->GetMap();
+	Cell* cells[4] = { nullptr };
+	int idx = std::floor(GetPos().x / size_);
+	int idy = std::floor(GetPos().y / size_);
+	cells[0] = map->GetCell(idx, idy + 1);	//頭
+	cells[1] = map->GetCell(idx, idy - 1);	//足
+	cells[2] = map->GetCell(idx - 1, idy);	//左
+	cells[3] = map->GetCell(idx + 1, idy);	//右
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (cells[i] == nullptr)
+			continue;
+
+		//トゲの時の処理
+		if (Collision(cells[i]))
+		{
+			MAP_READ cell_type = cells[i]->GetCellType();
+			if (cell_type >= MAP_READ_SPIKE_LEFT && cell_type <= MAP_READ_SPIKE_DOWN)
+			{
+				knock_back_dir_ = i;
+				clash_spike_ = SPIKE_SURPRISE_;
+				break;
+			}
+		}
+	}
+
+	Vector2 clash_vel(0.0f,0.0f);	//クラッシュしたときの速度
+	if (clash_spike_ > 0)
+	{
+		float knock_back = 5.0f * clash_spike_;
+		
+		switch (knock_back_dir_)
+		{
+		case 0:	//頭
+			clash_vel = Vector2(GetVel().x, -dir_.y * knock_back);
+			break;
+		case 1:	//足
+			clash_vel = Vector2(GetVel().x, +dir_.y * knock_back);
+			break;
+		case 2:	//左
+			clash_vel = Vector2(-dir_.x * knock_back, GetVel().y);
+			break;
+		case 3:	//右
+			clash_vel = Vector2(dir_.x * knock_back, GetVel().y);
+			break;
+		default:
+			break;
+		}
+
+		SetVel(clash_vel);
+		clash_spike_--;
+	}
+
+
+}
+
+//上に移動
+//落ちる
+//地面にいる
+
 /*
 MAP_READ_NONE, ///< 空のセルを表します。
 MAP_READ_WALL, ///< 壁セルを表します。
