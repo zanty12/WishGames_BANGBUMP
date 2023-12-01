@@ -26,7 +26,7 @@ Vector2 Wind::Move(void) {
 	}
 
 	vel += Vector2::Up * power_;
-	player_->AddVel(vel);
+	player_->SetVel(vel);
 	return vel;
 }
 

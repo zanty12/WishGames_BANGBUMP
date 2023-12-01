@@ -28,7 +28,7 @@ void Fire::Action() {
     if (responseMinStickDistance < stick.Distance()) {
         Vector2 direction = -stick * speed;
         auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
-        Vertex4 attackCollider(player_->GetPos(), player_->GetPos() + direction * attackInjectionLength, 100);
+        Vertex4 attackCollider(player_->GetPos(), player_->GetPos() + direction * attackInjectionLength, attackWidthLength);
 
         float linewidth = 10.0f;
         DrawLine(attackCollider.a, attackCollider.b, Color::Green, linewidth);
