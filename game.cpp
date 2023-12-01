@@ -9,8 +9,8 @@
 Game::Game(SceneMngr* scene_mngr)
     :scene_mngr_(scene_mngr)
 {
-    mapmngr_ = new MapMngr("data/map/mariomaker.csv", this);
-    player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("player.jpg"), Vector2(0.0f, 0.0f), mapmngr_);
+    mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
+    player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("data/texture/player.png"), Vector2(0.0f, 0.0f), mapmngr_);
     player_->SetScale(Vector2(player_->GetScale().x, player_->GetScale().y * 2));
     player_->SetPos(Vector2(player_->GetPos().x, player_->GetPos().y + player_->GetScale().y / 2));
     camera_ = new Camera(player_);
