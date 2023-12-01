@@ -1,11 +1,11 @@
 //--------------------------------------------------------------------------------
 // 
-// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼[player.cpp]
+// ƒvƒŒƒCƒ„[[player.cpp]
 // 
-// ä½œæˆè€… æ ¹æœ¬è³¢
+// ì¬Ò ª–{Œ«
 // 
-// ä½œæˆæ—¥		2023/11/17
-// æœ€çµ‚æ›´æ–°æ—¥	2023/11/30
+// ì¬“ú		2023/11/17
+// ÅIXV“ú	2023/11/30
 // 
 //--------------------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ void Player::Update(void)
 		SetVel(move_attribute_->Move());
 	}
 	else if(clash_spike_ == 0)
-	{//ä½•ã‚‚æ“ä½œã—ãªã‘ã‚Œã°è½ã¡ã‚‹
+	{//‰½‚à‘€ì‚µ‚È‚¯‚ê‚Î—‚¿‚é
 		if (GetVel().y <= GRAVITY_SCALE_)
 			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));
 		player_state_ = FALL;
@@ -44,16 +44,15 @@ void Player::Update(void)
 	}
 
 
+	UpdateDir();
 
 	AddVel(GetVel());
-	UpdateDir();
+
 	CollisionMap();
 
 	CollisionSpike();
 
-	CollisionMap();
-
-	//ä¸Šã«ä¸ŠãŒã£ã¦ã„ã‚‹
+	//ã‚Éã‚ª‚Á‚Ä‚¢‚é
 	if (GetVel().y > 0.0f)
 	{
 		player_state_ = MOVE_UP;
@@ -62,7 +61,7 @@ void Player::Update(void)
 }
 
 //================================================================================
-// â†“ãƒ‘ãƒ–ãƒªãƒƒã‚¯é–¢æ•°â†“
+// «ƒpƒuƒŠƒbƒNŠÖ”«
 //================================================================================
 
 
@@ -83,7 +82,7 @@ void Player::CollisionMap(void)
 		if (Collision(cells[i]))
 			MapCellInteract(cells[i]);
 
-		//åœ°é¢ã®æ™‚ã®å‡¦ç†
+		//’n–Ê‚Ì‚Ìˆ—
 		if (Collision(cells[i]))
 		{
 			MAP_READ cell_type = cells[i]->GetCellType();
@@ -99,19 +98,19 @@ void Player::CollisionSpike(void)
 {
 	Map* map = GetMapMngr()->GetMap();
 	Cell* cells[4] = { nullptr };
-	int idx = std::floor(GetPos().x / size_ + GetVel().x);
-	int idy = std::floor(GetPos().y / size_ + GetVel().y);
-	cells[0] = map->GetCell(idx, idy + 1);	//é ­
-	cells[1] = map->GetCell(idx, idy - 1);	//è¶³
-	cells[2] = map->GetCell(idx - 1, idy);	//å·¦
-	cells[3] = map->GetCell(idx + 1, idy);	//å³
+	int idx = std::floor(GetPos().x / size_);
+	int idy = std::floor(GetPos().y / size_);
+	cells[0] = map->GetCell(idx, idy + 1);	//“ª
+	cells[1] = map->GetCell(idx, idy - 1);	//‘«
+	cells[2] = map->GetCell(idx - 1, idy);	//¶
+	cells[3] = map->GetCell(idx + 1, idy);	//‰E
 
 	for (int i = 0; i < 4; i++)
 	{
 		if (cells[i] == nullptr)
 			continue;
 
-		//ãƒˆã‚²ã®æ™‚ã®å‡¦ç†
+		//ƒgƒQ‚Ì‚Ìˆ—
 		if (Collision(cells[i]))
 		{
 			MAP_READ cell_type = cells[i]->GetCellType();
@@ -119,28 +118,45 @@ void Player::CollisionSpike(void)
 			{
 				knock_back_dir_ = i;
 				clash_spike_ = SPIKE_SURPRISE_;
+				switch (knock_back_dir_)
+				{
+				case 0:	//“ª
+					dir_.y = -1;
+					break;
+				case 1:	//‘«
+					dir_.y = +1;
+					break;
+				case 2:	//¶
+					dir_.x = +1;
+					break;
+				case 3:	//‰E
+					dir_.x = -1;
+					break;
+				default:
+					break;
+				}
 				break;
 			}
 		}
 	}
 
-	Vector2 clash_vel(0.0f,0.0f);	//ã‚¯ãƒ©ãƒƒã‚·ãƒ¥ã—ãŸã¨ãã®é€Ÿåº¦
+	Vector2 clash_vel(0.0f,0.0f);	//ƒNƒ‰ƒbƒVƒ…‚µ‚½‚Æ‚«‚Ì‘¬“x
 	if (clash_spike_ > 0)
 	{
-		float knock_back = 5.0f * clash_spike_;
+		float knock_back = 2.0f * clash_spike_;
 		
 		switch (knock_back_dir_)
 		{
-		case 0:	//é ­
-			clash_vel = Vector2(GetVel().x, -dir_.y * knock_back);
+		case 0:	//“ª
+			clash_vel = Vector2(GetVel().x, dir_.y * knock_back);
 			break;
-		case 1:	//è¶³
-			clash_vel = Vector2(GetVel().x, +dir_.y * knock_back);
+		case 1:	//‘«
+			clash_vel = Vector2(GetVel().x, dir_.y * knock_back);
 			break;
-		case 2:	//å·¦
-			clash_vel = Vector2(-dir_.x * knock_back, GetVel().y);
+		case 2:	//¶
+			clash_vel = Vector2(dir_.x * knock_back, GetVel().y);
 			break;
-		case 3:	//å³
+		case 3:	//‰E
 			clash_vel = Vector2(dir_.x * knock_back, GetVel().y);
 			break;
 		default:
@@ -154,23 +170,23 @@ void Player::CollisionSpike(void)
 
 }
 
-//ä¸Šã«ç§»å‹•
-//è½ã¡ã‚‹
-//åœ°é¢ã«ã„ã‚‹
+//ã‚ÉˆÚ“®
+//—‚¿‚é
+//’n–Ê‚É‚¢‚é
 
 /*
-MAP_READ_NONE, ///< ç©ºã®ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_WALL, ///< å£ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_FLOOR, ///< åºŠã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_PENFLOOR, ///< è²«é€šå¯èƒ½ãªåºŠã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_CLOUD, ///< é›²ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_THUNDERCLOUD, ///< é›·é›²ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_BLOCK, ///< ãƒ–ãƒ­ãƒƒã‚¯ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_ORB_SMALL, ///< å°ã‚¹ã‚­ãƒ«ç‰ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_ORB_MID, ///< ä¸­ã‚¹ã‚­ãƒ«ç‰ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_ORB_BIG, ///< å¤§ã‚¹ã‚­ãƒ«ç‰ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_SPIKE_LEFT, ///< å·¦å‘ãã®ãƒˆã‚²ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_SPIKE_RIGHT, ///< å³å‘ãã®ãƒˆã‚²ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_SPIKE_UP, ///< ä¸Šå‘ãã®ãƒˆã‚²ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
-MAP_READ_SPIKE_DOWN, ///< ä¸‹å‘ãã®ãƒˆã‚²ã‚»ãƒ«ã‚’è¡¨ã—ã¾ã™ã€‚
+MAP_READ_NONE, ///< ‹ó‚ÌƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_WALL, ///< •ÇƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_FLOOR, ///< °ƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_PENFLOOR, ///< ŠÑ’Ê‰Â”\‚È°ƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_CLOUD, ///< ‰_ƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_THUNDERCLOUD, ///< —‹‰_ƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_BLOCK, ///< ƒuƒƒbƒNƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_ORB_SMALL, ///< ¬ƒXƒLƒ‹‹ÊƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_ORB_MID, ///< ’†ƒXƒLƒ‹‹ÊƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_ORB_BIG, ///< ‘åƒXƒLƒ‹‹ÊƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_SPIKE_LEFT, ///< ¶Œü‚«‚ÌƒgƒQƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_SPIKE_RIGHT, ///< ‰EŒü‚«‚ÌƒgƒQƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_SPIKE_UP, ///< ãŒü‚«‚ÌƒgƒQƒZƒ‹‚ğ•\‚µ‚Ü‚·B
+MAP_READ_SPIKE_DOWN, ///< ‰ºŒü‚«‚ÌƒgƒQƒZƒ‹‚ğ•\‚µ‚Ü‚·B
 */
