@@ -11,9 +11,7 @@
 #include"xinput.h"
 #include"lib/collider2d.h"
 
-bool Thunder::StickTrigger() {
-	Vector2 stick = Input::GetStickLeft(0);
-	Vector2 previousStick = Input::GetPreviousStickLeft(0);
+bool Thunder::StickTrigger(Vector2 stick, Vector2 previousStick) {
 	stick.y *= -1;
 	previousStick.y *= -1;
 	float distance = stick.Distance();
@@ -39,7 +37,7 @@ Vector2 Thunder::Move() {
 	float distance = stick.Distance();
 
 
-	if (StickTrigger()) {
+	if (StickTrigger(stick, previousStick)) {
 		Vector2 direction = -previousStick * charge * movePower;
 		charge = 0.0f;
 		return direction;
@@ -50,42 +48,55 @@ Vector2 Thunder::Move() {
 
 void Thunder::Action() {
 	using namespace PHYSICS;
-	Vector2 stick = Input::GetStickLeft(0);
-	Vector2 previousStick = Input::GetPreviousStickLeft(0);
+	Vector2 stick = Input::GetStickRight(0);
+	Vector2 previousStick = Input::GetPreviousStickRight(0);
 
-	if (StickTrigger()) {
+	if (StickTrigger(stick, previousStick)) {
 		previousStick.y *= -1.0f;
 		Vector2 direction = -previousStick * charge;
 		charge = 0.0f;
 
-		arrows_.push_back({ player_->GetPos(), direction });
+		for (int i = 0; i < _countof(arrows_); i++)
+			if (!arrows_[i].isVisible) arrows_[i] = { player_->GetPos(), direction, true };
 	}
 
-	auto arrow = arrows_.begin();
-	for (int i = 0; i < arrows_.size(); i++) {
-		float rad = atan2f(arrow->velocity.y, arrow->velocity.x);
-		Vertex4 attackCollider = Vertex4(arrow->position, rad, arrowSize);
+	for (int i = 0; i < _countof(arrows_); i++) {
+		auto &arrow = arrows_[i];
+		if (!arrow.isVisible) continue;
 
-		DrawCollider(attackCollider, Color::Green);
+
 		auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
 
+		if (3000 < Vector2::Distance(player_->GetPos(), arrow.position)) {
+			arrows_[i].isVisible = false;
+			continue;
+		}
 		for (auto enemy : enemies) {
 			if (enemy) {
 				Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
-
+				float rad = atan2f(arrow.velocity.y, arrow.velocity.x);
+				auto attackCollider = PHYSICS::Vertex4(arrow.position, rad, arrowSize);
 				if (Collider2D::Touch(attackCollider, enemyCollider)) {
 					enemy->Die();
-					auto previousArrow = arrow;
-					--arrow;
-					arrows_.erase(previousArrow);
+					arrows_[i].isVisible = false;
 					break;
 				}
 			}
 		}
 
-		arrow->position += arrow->velocity * attackPower;
-		arrow->velocity += Vector2::Down * arrowGravity;
+		arrow.position += arrow.velocity * attackPower;
+		arrow.velocity += Vector2::Down * arrowGravity;
+	}
+}
 
-		arrow++;
+void Thunder::Draw(Vector2 offset) {
+
+	for (int i = 0; i < 3; i++) {
+		auto arrow = arrows_[i];
+		float rad = atan2f(arrow.velocity.y, arrow.velocity.x);
+		if (arrow.isVisible) {
+			auto attackCollider = PHYSICS::Vertex4(arrow.position, rad, arrowSize);
+			DrawCollider(attackCollider, Color::Green, offset);
+		}
 	}
 }

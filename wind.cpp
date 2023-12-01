@@ -41,15 +41,16 @@ void Wind::Action(void) {
 	using namespace PHYSICS;
 	Vector2 stick = Input::GetStickRight(0);
 	Vector2 previousStick = Input::GetPreviousStickRight(0);
+	isDraw = false;
 
 	// 回転のスピードを取得
 	float rotSpeed = Vector2::Cross(stick, previousStick);
 
 	// 攻撃中
 	if (StickTrigger(stick, previousStick)) {
-		Vertex1 attackCollider = Vertex1(player_->GetPos(), attackRadius);
+		attackCollider = Vertex1(player_->GetPos(), attackRadius);
 
-		DrawCollider(attackCollider, Color::Green);
+		isDraw = true;
 		auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
 
 		for (auto enemy : enemies) {
@@ -62,4 +63,8 @@ void Wind::Action(void) {
 			}
 		}
 	}
+}
+
+void Wind::Draw(Vector2 offset) {
+	if (isDraw) DrawCollider(attackCollider, Color::Green, offset);
 }
