@@ -9,7 +9,17 @@ private:
 
 public:
 
+	Prep();
+	~Prep();
 	void Update()override{}
 	void Draw()override{}
 
 };
+
+Prep::Prep()
+{
+}
+
+Prep::~Prep()
+{
+}
