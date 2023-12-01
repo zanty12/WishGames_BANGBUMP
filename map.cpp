@@ -14,6 +14,7 @@
 #include "thundercloud.h"
 #include "wall.h"
 #include "mapenum.h"
+#include "spike.h"
 
 /**
  * @brief 指定した位置にセルを配置します。
@@ -60,6 +61,18 @@ void Map::PutCell(int x, int y, int MAP_READ) const
 		break;
 	case MAP_READ_ORB_BIG:
 		map_[y * width_ + x] = new SkillOrb(x, y, MAP_READ_ORB_BIG);
+		break;
+	case MAP_READ_SPIKE_UP:
+		map_[y * width_ + x] = new Spike(x, y, MAP_READ_SPIKE_UP);
+		break;
+	case MAP_READ_SPIKE_DOWN:
+		map_[y * width_ + x] = new Spike(x, y, MAP_READ_SPIKE_DOWN);
+		break;
+	case MAP_READ_SPIKE_LEFT:
+		map_[y * width_ + x] = new Spike(x, y, MAP_READ_SPIKE_LEFT);
+		break;
+	case MAP_READ_SPIKE_RIGHT:
+		map_[y * width_ + x] = new Spike(x, y, MAP_READ_SPIKE_RIGHT);
 		break;
 	default:
 		break;

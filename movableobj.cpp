@@ -50,23 +50,23 @@ void MovableObj::SolidCellInteract(Cell* cell)
 
     if (x == 0 && y == 1) //マスの下
     {
-        SetPos(Vector2(GetPos().x, cell->GetPos().y - size_));
+        SetPos(Vector2(GetPos().x, cell->GetPos().y - cell->GetScale().y / 2 - GetScale().y / 2));
         SetVel(Vector2(GetVel().x, 0.0f));
     }
     else if (x == 0 && y == -1) //マスの上
     {
-        SetPos(Vector2(GetPos().x, cell->GetPos().y + size_));
+        SetPos(Vector2(GetPos().x, cell->GetPos().y + cell->GetScale().y / 2 + GetScale().y / 2));
         SetVel(Vector2(GetVel().x, 0.0f));
     }
-    else if (x == 1 && y == 0) //マスの右
+    else if (x == 1 && y == 0) //マスの左
     {
-        SetPos(Vector2(cell->GetPos().x - size_, GetPos().y));
-        if(vel_.x < 0.0f)
+        SetPos(Vector2(cell->GetPos().x - cell->GetScale().x / 2 - GetScale().x / 2, GetPos().y));
+        if (vel_.x < 0.0f)
             SetVel(Vector2(0.0f, GetVel().y));
     }
-    else if (x == -1 && y == 0) //マスの左
+    else if (x == -1 && y == 0) //マスの右
     {
-        SetPos(Vector2(cell->GetPos().x + size_, GetPos().y));
+        SetPos(Vector2(cell->GetPos().x + cell->GetScale().x / 2 + GetScale().x / 2, GetPos().y));
         if (vel_.x > 0.0f)
             SetVel(Vector2(0.0f, GetVel().y));
     }
@@ -86,18 +86,18 @@ void MovableObj::PenCellInteract(Cell* cell)
     }
     else if (x == 0 && y == -1) //マスの上
     {
-        SetPos(Vector2(GetPos().x, cell->GetPos().y + size_));
+        SetPos(Vector2(GetPos().x, cell->GetPos().y + cell->GetScale().y / 2 + GetScale().y / 2));
         SetVel(Vector2(GetVel().x, 0.0f));
     }
     else if (x == 1 && y == 0) //マスの右
     {
-        SetPos(Vector2(cell->GetPos().x - size_, GetPos().y));
-        if(vel_.x < 0.0f)
+        SetPos(Vector2(cell->GetPos().x + cell->GetScale().x / 2 + GetScale().x / 2, GetPos().y));
+        if (vel_.x < 0.0f)
             SetVel(Vector2(0.0f, GetVel().y));
     }
     else if (x == -1 && y == 0) //マスの左
     {
-        SetPos(Vector2(cell->GetPos().x + size_, GetPos().y));
+        SetPos(Vector2(cell->GetPos().x - cell->GetScale().x / 2 - GetScale().x / 2, GetPos().y));
         if (vel_.x > 0.0f)
             SetVel(Vector2(0.0f, GetVel().y));
     }

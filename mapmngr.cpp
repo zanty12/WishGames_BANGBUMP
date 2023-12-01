@@ -68,7 +68,8 @@ bool MapMngr::Read(const char* file_name)
             if (item2 == "S")
                 spawn_ = Vector2(x * GameObject::size_ + GameObject::size_ / 2,
                                  y * GameObject::size_ + GameObject::size_ / 2);
-            else if (stoi(item2) <= MAP_READ_ORB_BIG)
+            else if (stoi(item2) < MAP_READ_KOOPA
+                )
                 map_->PutCell(x, y, stoi(item2));
             else
             {

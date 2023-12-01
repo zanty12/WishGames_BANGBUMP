@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="dark.cpp" />
     <ClCompile Include="debugUI.cpp" />
     <ClCompile Include="enemymngr.cpp" />
@@ -158,7 +158,7 @@
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="camera.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemymngr.h" />
     <ClInclude Include="game.h" />
@@ -230,7 +230,9 @@
     <Content Include="data\texture\koopa.png" />
     <Content Include="data\texture\NotoSansJP-Bold.ttf" />
     <Content Include="data\texture\penfloor.png" />
+    <Content Include="data\texture\player.png" />
     <Content Include="data\texture\skillorb.png" />
+    <Content Include="data\texture\spike.png" />
     <Content Include="data\texture\thundercloud.png" />
     <Content Include="data\texture\wall.png" />
   </ItemGroup>
