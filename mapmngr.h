@@ -28,7 +28,6 @@ public:
 		return map_;
 	}
 	void Update() const;
-	void Draw() const;
 
 	void DebugMenu();
 
