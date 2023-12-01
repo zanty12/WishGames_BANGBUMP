@@ -205,7 +205,7 @@ namespace PHYSICS {
 			Vector2 direction = endPosition - startPosition;
 			float distance = direction.Distance();
 			Vector2 scale = Vector2(width, distance);
-			float rot = atan2f(direction.x, direction.y);
+			float rot = atan2f(-direction.x, -direction.y);
 
 			vertex4 = vertex4.Scale(scale);
 			vertex4 = vertex4.Rotate(rot);
@@ -354,6 +354,33 @@ namespace PHYSICS {
 			}
 
 			return false;
+		}
+
+		static bool TouchLine(Vertex2 a, VertexN b, RayHit *hit = nullptr) {
+			if (b.num < 1) return false;
+			float minDistance = -1.0f;
+
+			for (int i = 0; i < b.num; i++) {
+				Vector2 startPosition = b.v[i];
+				Vector2 endPosition = b.v[(i + 1) % b.num];
+				RayHit tmpHit;
+
+				if (Touch(a, Vertex2(startPosition, endPosition), &tmpHit)) {
+					if (hit) {
+						float distance = Vector2::Distance(a.a, tmpHit.position);
+						if (distance < minDistance || minDistance < 0.0f) {
+							minDistance = distance;
+							*hit = tmpHit;
+						}
+					}
+					else return true;
+				}
+
+				startPosition = endPosition;
+			}
+
+			if (hit) return 0.0f <= minDistance;
+			else return false;
 		}
 	};
 }

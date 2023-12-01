@@ -22,31 +22,22 @@ void Fire::Action() {
     Vector2 stick = Input::GetStickRight(0);
     float distance = stick.Distance();
 
-    //Vertex1=円　Vertex2=線（・と・）　Vertex3=三角形　VertexN=四角形
-
-
     if (responseMinStickDistance < stick.Distance()) {
-        Vector2 direction = -stick * speed;
+        Vector2 direction = stick * speed;
         auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
         Vertex4 attackCollider(player_->GetPos(), player_->GetPos() + direction * attackInjectionLength, attackWidthLength);
 
-        float linewidth = 10.0f;
-        DrawLine(attackCollider.a, attackCollider.b, Color::Green, linewidth);
-        DrawLine(attackCollider.b, attackCollider.c, Color::Green, linewidth);
-        DrawLine(attackCollider.c, attackCollider.d, Color::Green, linewidth);
-        DrawLine(attackCollider.d, attackCollider.a, Color::Green, linewidth);
+        DrawCollider(attackCollider, Color::Green);
 
-       /* for (auto enemy : enemies) {
-            Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
+        for (auto enemy : enemies) {
+            if (enemy) {
+                Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
 
-            if (Collider2D::Touch(attackCollider, enemyCollider)) {
-                enemy->Die();
+                if (Collider2D::Touch(attackCollider, enemyCollider)) {
+                    enemy->Die();
+                }
             }
-        }*/
+        }
     }
-    else {
-
-    }
-
 };
 
