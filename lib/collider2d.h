@@ -67,12 +67,20 @@ namespace PHYSICS {
 			return *this;
 		}
 		Vertex2 Rotate(float rad) {
-			float s_ = sinf(rad);
 			float c_ = cosf(rad);
-			a.x = a.x * +c_ + a.y * -s_;
-			a.y = a.x * +s_ + a.y * +c_;
-			b.x = b.x * +c_ + b.y * -s_;
-			b.y = b.x * +s_ + b.y * +c_;
+			float d_ = sinf(rad);
+			{
+				float x_ = a.x;
+				float y_ = a.y;
+				a.x = x_ * c_ - y_ * d_;
+				a.y = x_ * d_ + c_ * y_;
+			}
+			{
+				float x_ = b.x;
+				float y_ = b.y;
+				b.x = x_ * c_ - y_ * d_;
+				b.y = x_ * d_ + c_ * y_;
+			}
 			a_b = b - a;
 			return *this;
 		}
@@ -114,14 +122,26 @@ namespace PHYSICS {
 			return *this;
 		}
 		Vertex3 Rotate(float rad) {
-			float s_ = sinf(rad);
 			float c_ = cosf(rad);
-			a.x = a.x * +c_ + a.y * -s_;
-			a.y = a.x * +s_ + a.y * +c_;
-			b.x = b.x * +c_ + b.y * -s_;
-			b.y = b.x * +s_ + b.y * +c_;
-			c.x = c.x * +c_ + c.y * -s_;
-			c.y = c.x * +s_ + c.y * +c_;
+			float d_ = sinf(rad);
+			{
+				float x_ = a.x;
+				float y_ = a.y;
+				a.x = x_ * c_ - y_ * d_;
+				a.y = x_ * d_ + c_ * y_;
+			}
+			{
+				float x_ = b.x;
+				float y_ = b.y;
+				b.x = x_ * c_ - y_ * d_;
+				b.y = x_ * d_ + c_ * y_;
+			}
+			{
+				float x_ = c.x;
+				float y_ = c.y;
+				c.x = x_ * c_ - y_ * d_;
+				c.y = x_ * d_ + c_ * y_;
+			}
 			a_b = b - a;
 			b_c = c - b;
 			c_a = a - c;
@@ -174,6 +194,24 @@ namespace PHYSICS {
 			vertex4 = vertex4.Translate(position);
 			*this = vertex4;
 		}
+		Vertex4(Vector2 startPosition, Vector2 endPosition, float width) {
+			Vertex4 vertex4 = Vertex4(
+				Vector2(-1.0f, +0.0f),
+				Vector2(-1.0f, +1.0f),
+				Vector2(+1.0f, +1.0f),
+				Vector2(+1.0f, +0.0f)
+			);
+
+			Vector2 direction = endPosition - startPosition;
+			float distance = direction.Distance();
+			Vector2 scale = Vector2(width, distance);
+			float rot = atan2f(-direction.x, -direction.y);
+
+			vertex4 = vertex4.Scale(scale);
+			vertex4 = vertex4.Rotate(rot);
+			vertex4 = vertex4.Translate(startPosition);
+			*this = vertex4;
+		}
 		Vertex4(Vector2 a, Vector2 b, Vector2 c, Vector2 d) : a(a), b(b), c(c), d(d), a_b(b - a), b_c(c - b), c_d(d - c), d_a(a - d) { }
 		Vertex4 Translate(Vector2 pos) {
 			a += pos;
@@ -187,20 +225,33 @@ namespace PHYSICS {
 			return *this;
 		}
 		Vertex4 Rotate(float rad) {
-			float s_ = sinf(rad);
 			float c_ = cosf(rad);
-			a.x = a.x * +c_ + a.y * -s_;
-			a.y = a.x * +s_ + a.y * +c_;
-			b.x = b.x * +c_ + b.y * -s_;
-			b.y = b.x * +s_ + b.y * +c_;
-			c.x = c.x * +c_ + c.y * -s_;
-			c.y = c.x * +s_ + c.y * +c_;
-			d.x = d.x * +c_ + d.y * -s_;
-			d.y = d.x * +s_ + d.y * +c_;
-			a_b = b - a;
-			b_c = c - b;
-			c_d = d - c;
-			d_a = a - d;
+			float d_ = sinf(rad);
+			{
+				float x_ = a.x;
+				float y_ = a.y;
+				a.x = x_ * c_ - y_ * d_;
+				a.y = x_ * d_ + c_ * y_;
+			}
+			{
+				float x_ = b.x;
+				float y_ = b.y;
+				b.x = x_ * c_ - y_ * d_;
+				b.y = x_ * d_ + c_ * y_;
+			}
+			{
+				float x_ = c.x;
+				float y_ = c.y;
+				c.x = x_ * c_ - y_ * d_;
+				c.y = x_ * d_ + c_ * y_;
+			}
+			{
+				float x_ = d.x;
+				float y_ = d.y;
+				d.x = x_ * c_ - y_ * d_;
+				d.y = x_ * d_ + c_ * y_;
+			}
+
 			return *this;
 		}
 		Vertex4 Scale(Vector2 scl) {
@@ -303,6 +354,33 @@ namespace PHYSICS {
 			}
 
 			return false;
+		}
+
+		static bool TouchLine(Vertex2 a, VertexN b, RayHit *hit = nullptr) {
+			if (b.num < 1) return false;
+			float minDistance = -1.0f;
+
+			for (int i = 0; i < b.num; i++) {
+				Vector2 startPosition = b.v[i];
+				Vector2 endPosition = b.v[(i + 1) % b.num];
+				RayHit tmpHit;
+
+				if (Touch(a, Vertex2(startPosition, endPosition), &tmpHit)) {
+					if (hit) {
+						float distance = Vector2::Distance(a.a, tmpHit.position);
+						if (distance < minDistance || minDistance < 0.0f) {
+							minDistance = distance;
+							*hit = tmpHit;
+						}
+					}
+					else return true;
+				}
+
+				startPosition = endPosition;
+			}
+
+			if (hit) return 0.0f <= minDistance;
+			else return false;
 		}
 	};
 }
