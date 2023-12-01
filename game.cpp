@@ -9,7 +9,7 @@
 Game::Game(SceneMngr* scene_mngr)
     :scene_mngr_(scene_mngr)
 {
-    mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
+    mapmngr_ = new MapMngr("data/map/1.csv", this);
     player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("data/texture/player.png"), Vector2(0.0f, 0.0f), mapmngr_);
     player_->SetScale(Vector2(player_->GetScale().x, player_->GetScale().y * 2));
     player_->SetPos(Vector2(player_->GetPos().x, player_->GetPos().y + player_->GetScale().y / 2));
@@ -46,6 +46,7 @@ void Game::DebugMenu()
     ImGui::Text("x:%f, y: %f", camera_->GetPos().x, camera_->GetPos().y);
     static std::string preview = u8"無属性";
     static std::string preview_atk = u8"無属性";
+    ImGui::Text(u8"プレイヤーHP: %d", player_->GetHp());
     if (ImGui::BeginCombo(u8"プレイヤー移動属性", preview.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
