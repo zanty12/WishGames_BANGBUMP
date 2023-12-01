@@ -9,13 +9,14 @@
 //--------------------------------------------------------------------------------
 #pragma once
 #include "attribute.h"
-#include <list>
+#include "lib/list.h"
 
 class Thunder : public Attribute
 {
     struct Arrow {
         Vector2 position;
         Vector2 velocity;
+        bool isVisible = false;
     };
 
     const float responseMinStickDistance = 0.2f;    // スティック傾けたとき判定する距離
@@ -26,13 +27,15 @@ class Thunder : public Attribute
     const float attackPower = 5;                    // 矢の移動の力
     float charge = 0.0f;                            // チャージの値
     float responseMinOneFrameDistance = 0.2f;       // 1フレームでのスティック移動量（弾くときの判定値）
-    std::list<Arrow> arrows_;
+    Arrow arrows_[3];
+
 
 public:
 
     Thunder(Player *player) : Attribute(player) {}
-    bool StickTrigger();
+    bool StickTrigger(Vector2 stick, Vector2 previousStick);
     Vector2 Move() override;
     void Action() override;
+    void Draw(Vector2 offset) override;
 };
 

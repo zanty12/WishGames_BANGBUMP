@@ -128,11 +128,11 @@ void DrawLine(Vector2 startPosition, Vector2 endPosition, Color color, float wid
 	);
 }
 
-void DrawCollider(PHYSICS::Vertex1 vertex, Color color, float width) {
+void DrawCollider(PHYSICS::Vertex1 vertex, Color color, Vector2 offset, float width) {
 	// 描画用の座標系に変換する
 	const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
 	const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
-	vertex.a.x *= scale_x, vertex.a.y *= scale_y;
+	vertex.a.x = (vertex.a.x - offset.x) * scale_x, vertex.a.y = (vertex.a.y - offset.y) * scale_y;
 	Vector2 previous = Vector2(cosf(0.0f), sinf(0.0f)) * vertex.radius + vertex.a;
 
 	for (float rad = 0.0f; rad < 6.28f; rad += MATH::Deg2Rad) {
@@ -142,24 +142,24 @@ void DrawCollider(PHYSICS::Vertex1 vertex, Color color, float width) {
 	}
 }
 
-void DrawCollider(PHYSICS::Vertex2 vertex, Color color, float width) {
+void DrawCollider(PHYSICS::Vertex2 vertex, Color color, Vector2 offset, float width) {
 	// 描画用の座標系に変換する
 	const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
 	const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
-	vertex.a.x *= scale_x, vertex.a.y *= scale_y;
-	vertex.b.x *= scale_x, vertex.b.y *= scale_y;
+	vertex.a.x = (vertex.a.x - offset.x) * scale_x, vertex.a.y = (vertex.a.y - offset.y) * scale_y;
+	vertex.b.x = (vertex.b.x - offset.x) * scale_x, vertex.b.y = (vertex.b.y - offset.y) * scale_y;
 
 	DrawLine(vertex.a, vertex.b, Color::Green, width);
 }
 
-void DrawCollider(PHYSICS::Vertex4 vertex, Color color, float width) {
+void DrawCollider(PHYSICS::Vertex4 vertex, Color color, Vector2 offset, float width) {
 	// 描画用の座標系に変換する
 	const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
 	const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
-	vertex.a.x *= scale_x, vertex.a.y *= scale_y;
-	vertex.b.x *= scale_x, vertex.b.y *= scale_y;
-	vertex.c.x *= scale_x, vertex.c.y *= scale_y;
-	vertex.d.x *= scale_x, vertex.d.y *= scale_y;
+	vertex.a.x = (vertex.a.x - offset.x) * scale_x, vertex.a.y = (vertex.a.y - offset.y) * scale_y;
+	vertex.b.x = (vertex.b.x - offset.x) * scale_x, vertex.b.y = (vertex.b.y - offset.y) * scale_y;
+	vertex.c.x = (vertex.c.x - offset.x) * scale_x, vertex.c.y = (vertex.c.y - offset.y) * scale_y;
+	vertex.d.x = (vertex.d.x - offset.x) * scale_x, vertex.d.y = (vertex.d.y - offset.y) * scale_y;
 
 	DrawLine(vertex.a, vertex.b, Color::Green, width);
 	DrawLine(vertex.b, vertex.c, Color::Green, width);
@@ -167,7 +167,7 @@ void DrawCollider(PHYSICS::Vertex4 vertex, Color color, float width) {
 	DrawLine(vertex.d, vertex.a, Color::Green, width);
 }
 
-void DrawCollider(PHYSICS::VertexN vertex, Color color, float width) {
+void DrawCollider(PHYSICS::VertexN vertex, Color color, Vector2 offset, float width) {
 	// 描画用の座標系に変換する
 	const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
 	const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
@@ -176,8 +176,9 @@ void DrawCollider(PHYSICS::VertexN vertex, Color color, float width) {
 	for (int i = 0; i < vertex.num - 1; i++) {
 		Vector2 startPosition = vertex.v[i];
 		Vector2 endPosition = vertex.v[(i + 1) % vertex.num];
-		startPosition *= scale_x, startPosition.y *= scale_y;
-		endPosition *= scale_x, endPosition.y *= scale_y;
+
+		startPosition.x = (startPosition.x - offset.x) * scale_x, startPosition.y = (startPosition.y - offset.y) * scale_y;
+		endPosition.x = (endPosition.x - offset.x) * scale_x, endPosition.y = (endPosition.y - offset.y) * scale_y;
 		DrawLine(startPosition, endPosition, Color::Green, width);
 	}
 }

@@ -50,6 +50,7 @@ namespace PHYSICS {
 	struct Vertex1 {
 		Vector2 a;
 		float radius = 0.0f;
+		Vertex1() { }
 		Vertex1(Vector2 a, float radius = 0.0f) : a(a), radius(radius) { }
 	};
 	struct Vertex2 {
@@ -59,6 +60,7 @@ namespace PHYSICS {
 
 	public:
 		Vector2 a, b;
+		Vertex2() { }
 		Vertex2(Vector2 a, Vector2 b) : a(a), b(b), a_b(b - a) { }
 		Vertex2 Translate(Vector2 pos) {
 			a += pos;

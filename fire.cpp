@@ -21,14 +21,15 @@ void Fire::Action() {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
     float distance = stick.Distance();
+    bool isDraw = false;
 
     if (responseMinStickDistance < stick.Distance()) {
         Vector2 direction = stick * speed;
         auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
-        Vertex4 attackCollider(player_->GetPos(), player_->GetPos() + direction * attackInjectionLength, attackWidthLength);
+        attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + direction * attackInjectionLength, attackWidthLength);
 
-        DrawCollider(attackCollider, Color::Green);
-
+        isDraw = true;
+        
         for (auto enemy : enemies) {
             if (enemy) {
                 Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
@@ -39,5 +40,8 @@ void Fire::Action() {
             }
         }
     }
-};
+}
+void Fire::Draw(Vector2 offset) {
+    DrawCollider(attackCollider, Color::Green, offset);
+}
 
