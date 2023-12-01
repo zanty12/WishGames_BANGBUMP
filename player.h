@@ -35,6 +35,8 @@ private:
 	int hp_;
 	int skillpt_;
 
+	bool change_scene_;		//シーン遷移フラグ
+
 	MapMngr* map_mangr_;
 
 	int clash_spike_;		//トゲに衝突したら15フレームの間ノックバック
@@ -43,7 +45,8 @@ private:
 public:
 	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
 		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),
-		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0){}
+		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0),
+		change_scene_(false){}
 
 	void SetDir(Vector2 dir) { dir_ = dir; }	//向きのセット
 	Vector2 GetDir(void) const { return dir_; }	//向きのゲット
@@ -53,6 +56,7 @@ public:
 	Attribute* GetAttribute(void) { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
 	Attribute* GetAttackAttribute(void) { return attack_attribute_; }	//アタックアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
 	MapMngr* GetMapMngr(void) { return map_mangr_; }	//MapMngrのポインタをゲット
+	bool GetChangeSceneFlag(void) { return change_scene_; }	//シーンチェンジのフラグ true=別のシーンへ
 
 	//スキルポイントの使用（使えるとき=true 使うとスキルポイントは0になる）
 	bool UseSkillPoint(void);

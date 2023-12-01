@@ -13,6 +13,7 @@ public:
 	}
 	void Update() const{
 		scene_->Update();
+		
 	}
 	void Draw() const{
 		scene_->Draw();
