@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="dark.cpp" />
     <ClCompile Include="debugUI.cpp" />
     <ClCompile Include="enemymngr.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemymngr.h" />
     <ClInclude Include="game.h" />

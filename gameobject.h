@@ -28,7 +28,8 @@ private:
 	Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
 
 public:
-	static constexpr float size_ = 96.0f; //１マスの標準サイズ
+	static constexpr float size_ = 96.0f; //１マスの標準サイズ\
+	GameObject() = default;
 	GameObject(Vector2 pos,float rot,int tex_number)
 		:pos_(pos),rot_(rot),tex_(tex_number) {}
 

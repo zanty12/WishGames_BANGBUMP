@@ -17,7 +17,7 @@ private:
 public:
     Spike(int x, int y, MAP_READ type) : Cell(x, y, 0)
     {
-        this->SetTexNo(LoadTexture("data/texture/floor.png"));
+        this->SetTexNo(LoadTexture("data/texture/spike.png"));
         switch (type)
         {
         case MAP_READ_SPIKE_UP:
@@ -49,10 +49,8 @@ public:
         {
         case SPIKE_UP:
             return MAP_READ_SPIKE_UP;
-
         case SPIKE_RIGHT:
             return MAP_READ_SPIKE_RIGHT;
-
         case SPIKE_DOWN:
             return MAP_READ_SPIKE_DOWN;
         case SPIKE_LEFT:
