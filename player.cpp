@@ -46,11 +46,11 @@ void Player::Update(void)
 
 	UpdateDir();
 
-	CollisionSpike();
-
 	AddVel(GetVel());
 
 	CollisionMap();
+
+	CollisionSpike();
 
 	//上に上がっている
 	if (GetVel().y > 0.0f)
@@ -98,8 +98,8 @@ void Player::CollisionSpike(void)
 {
 	Map* map = GetMapMngr()->GetMap();
 	Cell* cells[4] = { nullptr };
-	int idx = std::floor(GetPos().x / size_ + GetVel().x);
-	int idy = std::floor(GetPos().y / size_ + GetVel().y);
+	int idx = std::floor(GetPos().x / size_);
+	int idy = std::floor(GetPos().y / size_);
 	cells[0] = map->GetCell(idx, idy + 1);	//頭
 	cells[1] = map->GetCell(idx, idy - 1);	//足
 	cells[2] = map->GetCell(idx - 1, idy);	//左
@@ -118,6 +118,23 @@ void Player::CollisionSpike(void)
 			{
 				knock_back_dir_ = i;
 				clash_spike_ = SPIKE_SURPRISE_;
+				switch (knock_back_dir_)
+				{
+				case 0:	//頭
+					dir_.y = -1;
+					break;
+				case 1:	//足
+					dir_.y = +1;
+					break;
+				case 2:	//左
+					dir_.x = +1;
+					break;
+				case 3:	//右
+					dir_.x = -1;
+					break;
+				default:
+					break;
+				}
 				break;
 			}
 		}
@@ -126,18 +143,18 @@ void Player::CollisionSpike(void)
 	Vector2 clash_vel(0.0f,0.0f);	//クラッシュしたときの速度
 	if (clash_spike_ > 0)
 	{
-		float knock_back = 5.0f * clash_spike_;
+		float knock_back = 2.0f * clash_spike_;
 		
 		switch (knock_back_dir_)
 		{
 		case 0:	//頭
-			clash_vel = Vector2(GetVel().x, -dir_.y * knock_back);
+			clash_vel = Vector2(GetVel().x, dir_.y * knock_back);
 			break;
 		case 1:	//足
-			clash_vel = Vector2(GetVel().x, +dir_.y * knock_back);
+			clash_vel = Vector2(GetVel().x, dir_.y * knock_back);
 			break;
 		case 2:	//左
-			clash_vel = Vector2(-dir_.x * knock_back, GetVel().y);
+			clash_vel = Vector2(dir_.x * knock_back, GetVel().y);
 			break;
 		case 3:	//右
 			clash_vel = Vector2(dir_.x * knock_back, GetVel().y);
