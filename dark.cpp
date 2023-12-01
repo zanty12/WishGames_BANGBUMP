@@ -11,6 +11,7 @@
 #include"xinput.h"
 #include"lib/collider2d.h"
 
+
 Vector2 Dark::Move()
 {
 	Vector2 velocity = player_->GetVel();

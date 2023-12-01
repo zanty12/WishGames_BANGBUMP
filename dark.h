@@ -24,7 +24,6 @@ public:
 	Dark(Player *player) : Attribute(player) {}
 
 	Vector2 Move() override;
-
 	void Action() override;
 
 };
