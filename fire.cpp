@@ -26,7 +26,7 @@ void Fire::Action() {
     if (responseMinStickDistance < stick.Distance()) {
         attackDirection = stick * speed;
         auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
-        auto attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + direction * attackInjectionLength, attackWidthLength);
+        auto attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + attackDirection * attackInjectionLength, attackWidthLength);
 
         isDraw = true;
         
