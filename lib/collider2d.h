@@ -176,20 +176,20 @@ namespace PHYSICS {
 		}
 		Vertex4(Vector2 startPosition, Vector2 endPosition, float width) {
 			Vertex4 vertex4 = Vertex4(
-				Vector2(-0.0f, +1.0f),
+				Vector2(-1.0f, +1.0f),
 				Vector2(+1.0f, +1.0f),
 				Vector2(+1.0f, -1.0f),
-				Vector2(-0.0f, -1.0f)
+				Vector2(-1.0f, -1.0f)
 			);
 
 			Vector2 direction = endPosition - startPosition;
 			float distance = direction.Distance();
-			Vector2 scale = Vector2(width, distance);
-			float rot = atan2f(direction.x, direction.y);
+			Vector2 scale = Vector2(distance, distance);
+			float rot = atan2f(direction.y, direction.x);
 
 			vertex4 = vertex4.Scale(scale);
 			vertex4 = vertex4.Rotate(rot);
-			vertex4 = vertex4.Translate(startPosition);
+			//vertex4 = vertex4.Translate(startPosition);
 			*this = vertex4;
 		}
 		Vertex4(Vector2 a, Vector2 b, Vector2 c, Vector2 d) : a(a), b(b), c(c), d(d), a_b(b - a), b_c(c - b), c_d(d - c), d_a(a - d) { }
@@ -205,16 +205,16 @@ namespace PHYSICS {
 			return *this;
 		}
 		Vertex4 Rotate(float rad) {
-			float s_ = sinf(rad);
 			float c_ = cosf(rad);
-			a.x = a.x * +c_ + a.y * -s_;
-			a.y = a.x * +s_ + a.y * +c_;
-			b.x = b.x * +c_ + b.y * -s_;
-			b.y = b.x * +s_ + b.y * +c_;
-			c.x = c.x * +c_ + c.y * -s_;
-			c.y = c.x * +s_ + c.y * +c_;
-			d.x = d.x * +c_ + d.y * -s_;
-			d.y = d.x * +s_ + d.y * +c_;
+			float s_ = sinf(rad);
+			a.x = a.x * c_ - a.y * s_;
+			a.y = a.x * s_ + a.y * c_;
+			b.x = b.x * c_ - b.y * s_;
+			b.y = b.x * s_ + b.y * c_;
+			c.x = c.x * c_ - c.y * s_;
+			c.y = c.x * s_ + c.y * c_;
+			d.x = d.x * c_ - d.y * s_;
+			d.y = d.x * s_ + d.y * c_;
 			a_b = b - a;
 			b_c = c - b;
 			c_d = d - c;
