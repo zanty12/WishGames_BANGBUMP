@@ -24,9 +24,9 @@ class Dark : public Attribute
 public:
 
 	Dark(Player *player) : Attribute(player) {}
-
+	~Dark() override = default;
 	Vector2 Move() override;
 	void Action() override;
 	void Draw(Vector2 offset) override;
-
+	void DebugMenu() override {};
 };

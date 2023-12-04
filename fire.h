@@ -14,7 +14,9 @@ class Fire :public Attribute
 
 public:
 	Fire(Player *player) : Attribute(player) { }
+	~Fire() override = default;
 	Vector2 Move() override;
 	void Action() override;
 	void Draw(Vector2 offset)override;
+	void DebugMenu() override {};
 };

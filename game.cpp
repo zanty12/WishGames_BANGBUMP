@@ -50,7 +50,7 @@ void Game::DebugMenu()
         preview = u8"無属性";
     if(player_->GetAttackAttribute() == nullptr)
         preview_atk = u8"無属性";
-    ImGui::Text(u8"プレイヤーHP: %d", player_->GetHp());
+
     if (ImGui::BeginCombo(u8"プレイヤー移動属性", preview.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
