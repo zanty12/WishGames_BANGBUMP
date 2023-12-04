@@ -46,6 +46,10 @@ void Game::DebugMenu()
     ImGui::Text("x:%f, y: %f", camera_->GetPos().x, camera_->GetPos().y);
     static std::string preview = u8"無属性";
     static std::string preview_atk = u8"無属性";
+    if(player_->GetAttribute() == nullptr)
+        preview = u8"無属性";
+    if(player_->GetAttackAttribute() == nullptr)
+        preview_atk = u8"無属性";
     ImGui::Text(u8"プレイヤーHP: %d", player_->GetHp());
     if (ImGui::BeginCombo(u8"プレイヤー移動属性", preview.c_str()))
     {
