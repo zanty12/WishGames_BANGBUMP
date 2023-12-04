@@ -10,6 +10,8 @@
 #pragma once
 #include "cell.h"
 
+class Camera;
+
 /**
  * @class Map
  * @brief ゲームマップを構成するセルの2Dグリッドを表します。
@@ -70,14 +72,7 @@ public:
      *
      * このメソッドは、マップ内の各セルでDrawメソッドを呼び出します。
      */
-    void Draw()
-    {
-        for (int i = 0; i < width_ * height_; i++)
-        {
-            if(map_[i] != nullptr)
-                map_[i]->Draw();
-        }
-    }
+    void Draw(Camera* camera) const;
 
     /**
      * @brief 指定した位置に指定したタイプのセルを配置します。

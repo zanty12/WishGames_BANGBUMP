@@ -1,0 +1,28 @@
+#include "title.h"
+#include "xinput.h"
+
+static int	g_TextureNo = 0;
+
+Title::Title(SceneMngr* scene_mngr)
+	:scene_mngr_(scene_mngr)
+{
+	g_TextureNo = LoadTexture((char*)"data/TEXTURE/title.webp");
+}
+
+Title::~Title()
+{
+}
+
+void Title::Update()
+{
+	if (Input::GetKeyDown(0, Input::North))	//Aƒ{ƒ^ƒ“
+	{
+		scene_mngr_->ChangeScene(SCENE_GAME);
+
+	}
+}
+
+void Title::Draw()
+{
+	DrawSprite(g_TextureNo, Vector2(960.0f, 540.0f), 0.0f, Vector2(1920.0f, 1080.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+}

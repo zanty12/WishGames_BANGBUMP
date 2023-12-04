@@ -25,12 +25,13 @@ public:
         }
         enemies_.clear();
     }
-    void Update() const;
-    void Draw() const;
+    void Update();
+    void Draw(Camera* camera) const;
     void Spawn(int x,int y,int type);
     void PutEnemy(Enemy* enemy)
     {
         enemies_.push_back(enemy);
     }
     MapMngr* GetMapMngr() const { return map_mngr_; }
+    std::vector<Enemy*> GetEnemies() const { return enemies_; }
 };

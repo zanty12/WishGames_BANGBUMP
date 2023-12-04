@@ -1,19 +1,29 @@
 #include "enemymngr.h"
 #include "koopa.h"
 
-void EnemyMngr::Update() const
+void EnemyMngr::Update()
 {
-    for (Enemy* enemy : enemies_)
+    for(int i = 0; i < enemies_.size(); i++)
     {
-        enemy->Update();
+        if(enemies_[i] == nullptr)
+            continue;
+
+        enemies_[i]->Update();
+
+        if(enemies_[i]->IsDead())
+        {
+            delete enemies_[i];
+            enemies_[i] = nullptr;
+        }
     }
 }
 
-void EnemyMngr::Draw() const
+void EnemyMngr::Draw(Camera* camera) const
 {
     for (Enemy* enemy : enemies_)
     {
-        enemy->Draw();
+        if(enemy != nullptr && camera->InCamera(enemy))
+            enemy->Draw(camera);
     }
 }
 

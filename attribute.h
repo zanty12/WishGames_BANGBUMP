@@ -17,5 +17,7 @@ public:
 
 	virtual void Action() = 0;
 
+	virtual void Draw(Vector2 offset) = 0;
+
 
 };

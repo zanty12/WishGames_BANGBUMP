@@ -1,5 +1,6 @@
-#include"fire.h"
-#include"xinput.h"
+#include "fire.h"
+#include "xinput.h"
+#include "sprite.h"
 #include"lib/collider2d.h"
 
 Vector2 Fire::Move() {
@@ -17,16 +18,33 @@ Vector2 Fire::Move() {
 };
 
 void Fire::Action() {
-    Vector2 stick = Input::GetStickRight(0);
-
     using namespace PHYSICS;
+    Vector2 stick = Input::GetStickRight(0);
+    float distance = stick.Distance();
+    isDraw = false;
 
-    Vertex4 square(Vector2(0, 1), Vector2(1, 1), Vector2(1, -1), Vector2(0, -1));
-    //Vertex1=円　Vertex2=線（・と・）　Vertex3=三角形　VertexN=四角形
+    if (responseMinStickDistance < stick.Distance()) {
+        attackDirection = stick * speed;
+        auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
+        auto attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + attackDirection * attackInjectionLength, attackWidthLength);
 
-    Vertex1 enemy(Vector2(0, 0), 2.0f);
+        isDraw = true;
+        
+        for (auto enemy : enemies) {
+            if (enemy) {
+                Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
 
-    bool isTouch = Collider2D::Touch(enemy, square);
+                if (Collider2D::Touch(attackCollider, enemyCollider)) {
+                    enemy->Die();
+                }
+            }
+        }
+    }
+}
 
-};
-
+void Fire::Draw(Vector2 offset) {
+    if (isDraw) {
+        auto attackCollider = PHYSICS::Vertex4(player_->GetPos(), player_->GetPos() + attackDirection * attackInjectionLength, attackWidthLength);
+        DrawCollider(attackCollider, Color::Green, offset);
+    }
+}

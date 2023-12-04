@@ -1,77 +1,91 @@
 //--------------------------------------------------------------------------------
 // 
-// ƒvƒŒƒCƒ„[[player.h]
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼[player.h]
 // 
-// ì¬Ò ª–{Œ«
+// ä½œæˆè€… æ ¹æœ¬è³¢
 // 
-// ì¬“ú		2023/11/16
-// ÅIXV“ú	2023/11/20
+// ä½œæˆæ—¥		2023/11/16
+// æœ€çµ‚æ›´æ–°æ—¥	2023/11/30
 // 
 //--------------------------------------------------------------------------------
 
 #pragma once
 
-#include "lib/dxlib.h"
-
-#include "sprite.h"
 #include "movableobj.h"
 #include "attribute.h"
 #include "mapmngr.h"
 
+enum PLAYER_STATE
+{
+	MOVE_UP,		//ä¸Šã«ç§»å‹•
+	FALL,			//è½ã¡ã‚‹
+	TOUCH_GROUND,	//åœ°é¢ã«ã„ã‚‹
+};
+
 class MapMngr;
+class Camera;
 class Player : public MovableObj
 {
 private:
-	const int SKILL_GAUGE_MAX_ = 10;	//ŠƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚ÌãŒÀ
-	const int HP_MAX_ = 1000;			//HP‚ÌãŒÀ
-	const float GRAVITY_SCALE_ = 6.0f;	//d—Íi‰¼j
+	const int SKILL_GAUGE_MAX_ = 10;	//æ‰€æŒã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã®ä¸Šé™
+	const int HP_MAX_ = 10000000;		//HPã®ä¸Šé™
+	const float GRAVITY_SCALE_ = 6.0f;	//é‡åŠ›ï¼ˆä»®ï¼‰
+	const int SPIKE_SURPRISE_ = 15;		//ãƒˆã‚²ã«å½“ãŸã£ã¦ãƒãƒƒã‚¯ãƒãƒƒã‚¯ã™ã‚‹ãƒ•ãƒ¬ãƒ¼ãƒ æ•°
 
-	Vector2 dir_;		//Œü‚«
-	Vector2 scale_;		//‘å‚«‚³i–¢’èj
-	Color color_;
+	Vector2 dir_;		//å‘ã
 
-	class Attribute* move_attribute_ = nullptr;		//“®‚­—p‚ÌƒAƒgƒŠƒrƒ…[ƒg
-	class Attribute* attack_attribute_ = nullptr;	//UŒ‚—p‚ÌƒAƒgƒŠƒrƒ…[ƒg
+	class Attribute* move_attribute_ = nullptr;		//å‹•ãç”¨ã®ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆ
+	class Attribute* attack_attribute_ = nullptr;	//æ”»æ’ƒç”¨ã®ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆ
 
 	int hp_;
 	int skillpt_;
 
+	bool change_scene_;		//ã‚·ãƒ¼ãƒ³é·ç§»ãƒ•ãƒ©ã‚°
+
 	MapMngr* map_mangr_;
+
+	int clash_spike_;		//ãƒˆã‚²ã«è¡çªã—ãŸã‚‰15ãƒ•ãƒ¬ãƒ¼ãƒ ã®é–“ãƒãƒƒã‚¯ãƒãƒƒã‚¯
+	int knock_back_dir_;	//ãƒˆã‚²ã«è¡çªã—ãŸæ–¹å‘
+
+	PLAYER_STATE player_state_;
 
 public:
 	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
 		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),
-		dir_(Vector2(0.0f,0.0f)), scale_(Vector2(100.0f,100.0f/*–¢’è‚Æ‚è‚ ‚¦‚¸100*/)),color_(Color(1.0f, 1.0f, 1.0f, 1.0f))
-		,map_mangr_(map_mangr) {}
+		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0),
+		change_scene_(false){}
 
-	void SetDir(Vector2 dir) { dir_ = dir; }	//Œü‚«‚ÌƒZƒbƒg
-	Vector2 GetDir(void) const { return dir_; }	//Œü‚«‚ÌƒQƒbƒg
-	int GetHp(void) const { return hp_; }		//HP‚ÌƒQƒbƒg
-	void SetAttribute(Attribute* move_attribute) {delete move_attribute_; move_attribute_ = move_attribute; }				//ƒ€[ƒuƒAƒgƒŠƒrƒ…[ƒgƒ|ƒCƒ“ƒ^‚ÌƒZƒbƒgi‰½‚à‘€ì‚µ‚Ä‚¢‚È‚¢‚Æ‚«‚Ínullptr‚ğƒZƒbƒgj
-	void SetAttackAttribute(Attribute* attack_attribute) {delete attack_attribute_; attack_attribute_ = attack_attribute; }	//ƒAƒ^ƒbƒNƒAƒgƒŠƒrƒ…[ƒgƒ|ƒCƒ“ƒ^‚ÌƒZƒbƒgi‰½‚à‘€ì‚µ‚Ä‚¢‚È‚¢‚Æ‚«‚Ínullptr‚ğƒZƒbƒgj
-	Attribute* GetAttribute(void) { return move_attribute_; }			//ƒ€[ƒuƒAƒgƒŠƒrƒ…[ƒgƒ|ƒCƒ“ƒ^‚ğƒQƒbƒgi‘®«‚ª‰½‚à‚È‚¯‚ê‚Înullptr‚ğ•Ô‚·j
-	Attribute* GetAttackAttribute(void) { return attack_attribute_; }	//ƒAƒ^ƒbƒNƒAƒgƒŠƒrƒ…[ƒgƒ|ƒCƒ“ƒ^‚ğƒQƒbƒgi‘®«‚ª‰½‚à‚È‚¯‚ê‚Înullptr‚ğ•Ô‚·j
-	MapMngr* GetMapMngr(void) { return map_mangr_; }	//MapMngr‚Ìƒ|ƒCƒ“ƒ^‚ğƒQƒbƒg
+	void SetDir(Vector2 dir) { dir_ = dir; }	//å‘ãã®ã‚»ãƒƒãƒˆ
+	Vector2 GetDir(void) const { return dir_; }	//å‘ãã®ã‚²ãƒƒãƒˆ
+	int GetHp(void) const { return hp_; }		//HPã®ã‚²ãƒƒãƒˆ
+	void SetHp(int hp) { hp_ = hp; }			//HPã®ã‚»ãƒƒãƒˆ
+	void SetAttribute(Attribute* move_attribute) {delete move_attribute_; move_attribute_ = move_attribute; }				//ãƒ ãƒ¼ãƒ–ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ã®ã‚»ãƒƒãƒˆï¼ˆä½•ã‚‚æ“ä½œã—ã¦ã„ãªã„ã¨ãã¯nullptrã‚’ã‚»ãƒƒãƒˆï¼‰
+	void SetAttackAttribute(Attribute* attack_attribute) {delete attack_attribute_; attack_attribute_ = attack_attribute; }	//ã‚¢ã‚¿ãƒƒã‚¯ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ã®ã‚»ãƒƒãƒˆï¼ˆä½•ã‚‚æ“ä½œã—ã¦ã„ãªã„ã¨ãã¯nullptrã‚’ã‚»ãƒƒãƒˆï¼‰
+	Attribute* GetAttribute(void) { return move_attribute_; }			//ãƒ ãƒ¼ãƒ–ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ã‚’ã‚²ãƒƒãƒˆï¼ˆå±æ€§ãŒä½•ã‚‚ãªã‘ã‚Œã°nullptrã‚’è¿”ã™ï¼‰
+	Attribute* GetAttackAttribute(void) { return attack_attribute_; }	//ã‚¢ã‚¿ãƒƒã‚¯ã‚¢ãƒˆãƒªãƒ“ãƒ¥ãƒ¼ãƒˆãƒã‚¤ãƒ³ã‚¿ã‚’ã‚²ãƒƒãƒˆï¼ˆå±æ€§ãŒä½•ã‚‚ãªã‘ã‚Œã°nullptrã‚’è¿”ã™ï¼‰
+	MapMngr* GetMapMngr(void) { return map_mangr_; }	//MapMngrã®ãƒã‚¤ãƒ³ã‚¿ã‚’ã‚²ãƒƒãƒˆ
+	bool GetChangeSceneFlag(void) { return change_scene_; }	//ã‚·ãƒ¼ãƒ³ãƒã‚§ãƒ³ã‚¸ã®ãƒ•ãƒ©ã‚° true=åˆ¥ã®ã‚·ãƒ¼ãƒ³ã¸
+	PLAYER_STATE GetPlayerState(void) { return player_state_; }	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã‚’ã‚²ãƒƒãƒˆ
 
-	//ƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚Ìg—pig‚¦‚é‚Æ‚«=true g‚¤‚ÆƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚Í0‚É‚È‚éj
+	//ã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã®ä½¿ç”¨ï¼ˆä½¿ãˆã‚‹ã¨ã=true ä½¿ã†ã¨ã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã¯0ã«ãªã‚‹ï¼‰
 	bool UseSkillPoint(void);
-	//ƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚Ì‘‰ÁiƒQƒbƒg‚µ‚½ƒ|ƒCƒ“ƒg‚ÆŠƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚Ì‡Œv‚ªŠƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚ÌãŒÀ‚ğ’´‚¦‚éê‡AŠƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚Í10‚É‚È‚éj
+	//ã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã®å¢—åŠ ï¼ˆã‚²ãƒƒãƒˆã—ãŸãƒã‚¤ãƒ³ãƒˆã¨æ‰€æŒã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã®åˆè¨ˆãŒæ‰€æŒã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã®ä¸Šé™ã‚’è¶…ãˆã‚‹å ´åˆã€æ‰€æŒã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã¯10ã«ãªã‚‹ï¼‰
 	void SkillPointUp(int point) { skillpt_ + point <= SKILL_GAUGE_MAX_ ? skillpt_ += point : skillpt_ = SKILL_GAUGE_MAX_; }
-	//ƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚ÌŒ¸­iƒ_ƒ[ƒW‚ªŠƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚ğ’´‚¦‚éê‡AƒXƒLƒ‹ƒ|ƒCƒ“ƒg‚Í0‚É‚È‚éj
+	//ã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã®æ¸›å°‘ï¼ˆãƒ€ãƒ¡ãƒ¼ã‚¸ãŒæ‰€æŒã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã‚’è¶…ãˆã‚‹å ´åˆã€ã‚¹ã‚­ãƒ«ãƒã‚¤ãƒ³ãƒˆã¯0ã«ãªã‚‹ï¼‰
 	void SkillPointDown(int damage) { damage <= skillpt_ ? skillpt_ -= damage : skillpt_ = 0; }
-	//HP‚ÌŒ¸­iƒ_ƒ[ƒW‚ªŒ»İ‚ÌHP‚ğ’´‚¦‚éê‡AHP‚Í0‚É‚È‚éj
+	//HPã®æ¸›å°‘ï¼ˆãƒ€ãƒ¡ãƒ¼ã‚¸ãŒç¾åœ¨ã®HPã‚’è¶…ãˆã‚‹å ´åˆã€HPã¯0ã«ãªã‚‹ï¼‰
 	void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
 	void Update(void) override;
-	void Draw(void) override { DrawSprite(GetTexNo(), GetPos(), GetRot(), scale_, color_); }
+	void Draw(Camera* camera);
 
 private:
-	//Œü‚«‚ÌƒAƒbƒvƒf[ƒgB‘¬“x‚ğ‚à‚Æ‚ÉXVi‘S‚­“®‚¢‚Ä‚¢‚È‚¢ê‡‚Í~‚Ü‚Á‚½uŠÔ‚ÌŒü‚«‚Ì‚Ü‚Ü‚É‚·‚éj
+	//å‘ãã®ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆã€‚é€Ÿåº¦ã‚’ã‚‚ã¨ã«æ›´æ–°ï¼ˆå…¨ãå‹•ã„ã¦ã„ãªã„å ´åˆã¯æ­¢ã¾ã£ãŸç¬é–“ã®å‘ãã®ã¾ã¾ã«ã™ã‚‹ï¼‰
 	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
 
-	//“–‚½‚è”»’èiƒoƒEƒ“ƒfƒBƒ“ƒOƒ{ƒbƒNƒXj
-	bool CollisionBB(Vector2 others_pos,float others_size);
-
-	//“–‚½‚è”»’èiƒ}ƒbƒvj
+	//å½“ãŸã‚Šåˆ¤å®šï¼ˆãƒãƒƒãƒ—ï¼‰
 	void CollisionMap(void);
+
+	//å½“ãŸã‚Šåˆ¤å®šï¼ˆãƒˆã‚²ï¼‰
+	void CollisionSpike(void);
 };

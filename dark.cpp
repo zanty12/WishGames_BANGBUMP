@@ -11,6 +11,7 @@
 #include"xinput.h"
 #include"lib/collider2d.h"
 
+
 Vector2 Dark::Move()
 {
 	Vector2 velocity = player_->GetVel();
@@ -37,40 +38,73 @@ Vector2 Dark::Move()
 
 void Dark::Action()
 {
-	/*if (Input::GetKey(0,Input::RThumb))
-	{
-		if (!is_press_)
-		{
-			is_trigger_ = true;
+    using namespace PHYSICS;
+    Vector2 stick = Input::GetStickRight(0);
+    float distance = stick.Distance();
+	isDraw = false;
+
+
+
+	float width = Graphical::GetWidth();
+	float height = Graphical::GetHeight();
+	Vector2 screenVertices[] = {
+		Vector2(0.0f, 0.0f),
+		Vector2(0.0f, height),
+		Vector2(width, height),
+		Vector2(width, 0.0f)
+	};
+	VertexN screenCollider(screenVertices, 4);					// スクリーンのコライダー
+
+	// 押し込む
+	if (Input::GetKeyDown(0, Input::RThumb) && responseMinStickDistance < stick.Distance()) {
+		attackDirection = stick.Normalize();
+	}
+	// 攻撃
+	else if (Input::GetKey(0, Input::RThumb)) {
+		auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
+		Vector2 normalize = attackDirection.Normalize();		// スティックの正規化ベクトル
+		Vector2 maxAttackDirection = normalize * 1000.0f;		// 最大射程
+		RayHit screenEndPoint;									// スクリーンにぶつかった場所を格納
+
+		attackDirection = maxAttackDirection;
+		auto attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + maxAttackDirection, attackWidthLength);
+		isDraw = true;
+
+		for (auto enemy : enemies) {
+			if (enemy) {
+				Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
+
+				if (Collider2D::Touch(attackCollider, enemyCollider)) {
+					enemy->Die();
+				}
+			}
 		}
+		//if (Collider2D::TouchLine(Vertex2(player_->GetPos(), maxAttackDirection), screenCollider, &screenEndPoint)) {
+		//	// 画面までの距離
+		//	float laserDistance = Vector2::Distance(player_->GetPos(), screenEndPoint.position);
+		//	// レーザーのコライダー
+		//	Vector2 laserEndPosition = player_->GetPos() + Vector2(normalize.x, -normalize.y) * laserDistance;
+		//	attackCollider = Vertex4(player_->GetPos(), laserEndPosition, attackWidthLength);
 
-		is_press_ = true;
+		//	DrawCollider(Vertex1(screenEndPoint.position, 100), Color::White);
 
+		//	DrawCollider(attackCollider, Color::Green);
+
+		//	for (auto enemy : enemies) {
+		//		if (enemy) {
+		//			Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
+
+		//			if (Collider2D::Touch(attackCollider, enemyCollider)) {
+		//				enemy->Die();
+		//			}
+		//		}
+		//	}
+		//}
 	}
-	else
-	{
-		is_press_ = false;
+}
+void Dark::Draw(Vector2 offset) {
+	if (isDraw) {
+		auto attackCollider = PHYSICS::Vertex4(player_->GetPos(), player_->GetPos() + attackDirection, attackWidthLength);
+		DrawCollider(attackCollider, Color::Green, offset);
 	}
-
-	if (is_trigger_)
-	{
-		player_->SetVel(Vector2(0, 0));
-	}
-	is_trigger_ = false;
-
-	Vector2 stick = Input::GetStickRight(0);
-
-	float rad = atan2f(stick.y, stick.x);*/
-
-	using namespace PHYSICS;
-
-	Vertex4 square(Vector2(0, 1), Vector2(1, 1), Vector2(1, -1), Vector2(0, -1));
-
-	//square.Rotate(rad);
-
-
-
-	//bool isTouch = Collider2D::Touch(enemy, square);
-
-
-};
+}

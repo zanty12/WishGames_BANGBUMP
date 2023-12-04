@@ -4,7 +4,6 @@
 #include "DebugUI.h"
 #include "xinput.h"
 #include "mapmngr.h"
-#include "player.h"
 #include "scenemngr.h"
 #include "time.h"
 
@@ -15,7 +14,7 @@ int main()
     Graphical::Initialize(1600, 900);
     DebugUI::Initialize();
     MSG msg;
-    SceneMngr* scene_mngr = new SceneMngr(SCENE_GAME);
+    SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
     Time::Initialize();
     while (true)
     {
@@ -76,7 +75,6 @@ int main()
     Graphical::Release();
     DebugUI::Release();
     Time::Release();
-
 
     std::cout << "Hello World!\n"; //基本
 }

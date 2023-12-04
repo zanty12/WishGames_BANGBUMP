@@ -127,8 +127,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="dark.cpp" />
     <ClCompile Include="debugUI.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemymngr.cpp" />
     <ClCompile Include="fire.cpp" />
     <ClCompile Include="game.cpp" />
@@ -144,18 +146,22 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapmngr.cpp" />
+    <ClCompile Include="movableobj.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="result.cpp" />
     <ClCompile Include="scenemngr.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="thunder.cpp" />
     <ClCompile Include="time.cpp" />
+    <ClCompile Include="title.cpp" />
     <ClCompile Include="wind.cpp" />
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemymngr.h" />
     <ClInclude Include="game.h" />
@@ -184,10 +190,12 @@
     <ClInclude Include="penfloor.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="prep.h" />
+    <ClInclude Include="result.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scenemngr.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
+    <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="time.h" />
@@ -226,7 +234,9 @@
     <Content Include="data\texture\koopa.png" />
     <Content Include="data\texture\NotoSansJP-Bold.ttf" />
     <Content Include="data\texture\penfloor.png" />
+    <Content Include="data\texture\player.png" />
     <Content Include="data\texture\skillorb.png" />
+    <Content Include="data\texture\spike.png" />
     <Content Include="data\texture\thundercloud.png" />
     <Content Include="data\texture\wall.png" />
   </ItemGroup>
