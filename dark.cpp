@@ -108,3 +108,12 @@ void Dark::Draw(Vector2 offset) {
 		DrawCollider(attackCollider, Color::Green, offset);
 	}
 }
+
+void Dark::DebugMenu()
+{
+	ImGui::Begin("Dark");
+	ImGui::SliderFloat2("maxSpeedFalling",&maxSpeedFalling,0.0f,1.0f);
+	ImGui::SliderFloat2("warpDistance", &warpDistance, 400.0f, 1000.0f);
+	ImGui::SliderFloat2("attackWidthLength", &attackWidthLength, 1.0f, 10.0f);
+	ImGui::End();
+}

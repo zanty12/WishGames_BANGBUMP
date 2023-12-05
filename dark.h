@@ -14,12 +14,17 @@ class Dark : public Attribute
 {
 	Vector2 warpPosition;
 	Vector2 attackDirection;						// 攻撃する向き
-	const float maxSpeedFalling = 0.5f;				// 落下中のスピード
-	const float warpDistance = 800.0f;				// ワープ距離
-	const float attackWidthLength = 5.0f;			// レーザーの幅の長さ
+	//const float maxSpeedFalling = 0.5f;				// 落下中のスピード
+	//const float warpDistance = 800.0f;				// ワープ距離
+	//const float attackWidthLength = 5.0f;			// レーザーの幅の長さ
 	const float responseMinStickDistance = 0.2f;	// スティックの傾けたときに判定する最小値
 
 	bool isDraw = false;
+
+	//ここからは調整用のためconst抜き
+	float maxSpeedFalling = 0.5f;
+	float warpDistance = 800.0f;
+	float attackWidthLength = 5.0f;
 
 public:
 
@@ -28,5 +33,5 @@ public:
 	Vector2 Move() override;
 	void Action() override;
 	void Draw(Vector2 offset) override;
-	void DebugMenu() override {};
+	void DebugMenu() override;
 };
