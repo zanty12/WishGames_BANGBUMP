@@ -53,7 +53,6 @@ int main()
                     ImGui::Text("X:%.2f, Y:%.2f", Input::GetStickRight(0).x, Input::GetStickRight(0).y);
 
                     //Time
-                    ImGui::Text("Time");
                     ImGui::Text("DeltaTime:%.4f", Time::GetDeltaTime());
                     ImGui::End();
 
@@ -62,7 +61,6 @@ int main()
             }
             Input::Update();
 
-            //DrawSprite(texNo, Vector2(100, 100), 0, Vector2(100, 100), Color(1, 1, 1));
             Time::Update();
             scene_mngr->Update();
             scene_mngr->Draw();
