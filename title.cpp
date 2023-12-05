@@ -26,3 +26,13 @@ void Title::Draw()
 {
 	DrawSprite(g_TextureNo, Vector2(960.0f, 540.0f), 0.0f, Vector2(1920.0f, 1080.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
+
+void Title::DebugMenu()
+{
+	ImGui::Begin(u8"タイトル");
+	if(ImGui::Button(u8"ゲームスタート"))
+	{
+		scene_mngr_->ChangeScene(SCENE_GAME);
+	}
+	ImGui::End();
+}

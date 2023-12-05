@@ -100,4 +100,5 @@ void Game::DebugMenu()
         ImGui::EndCombo();
     }
     ImGui::End();
+    player_->DebugMenu();
 }
