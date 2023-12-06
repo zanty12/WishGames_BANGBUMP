@@ -48,3 +48,12 @@ void Fire::Draw(Vector2 offset) {
         DrawCollider(attackCollider, Color::Green, offset);
     }
 }
+
+void Fire::DebugMenu()
+{
+    ImGui::Begin("Fire");
+    ImGui::SliderFloat2("speed", &speed, 0.0f, 20.0f);
+    ImGui::SliderFloat("attackInjectionLength", &attackInjectionLength, 0.0f, 50.0f);
+    ImGui::SliderFloat("attackWidthLength", &attackWidthLength, 0.0f, 10.0f);
+    ImGui::End();
+}

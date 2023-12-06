@@ -19,7 +19,7 @@ bool Thunder::StickTrigger(Vector2 stick, Vector2 previousStick) {
 
 	if (responseMinStickDistance <= distance) {
 		charge += distance;
-		if (maxChage < charge) charge = maxChage;
+		if (maxCharge < charge) charge = maxCharge;
 	}
 
 	if (previousStick != Vector2::Zero && stick == Vector2::Zero && responseMinOneFrameDistance < (stick - previousStick).Distance()) {
@@ -99,4 +99,14 @@ void Thunder::Draw(Vector2 offset) {
 			DrawCollider(attackCollider, Color::Green, offset);
 		}
 	}
+}
+
+void Thunder::DebugMenu()
+{
+	ImGui::Begin("Thunder");
+	ImGui::Text("charge:%f", charge);
+	ImGui::SliderFloat("maxCharge", &maxCharge, 0.0f, 100.0f);
+	ImGui::SliderFloat("movePower", &movePower, 0.0f, 5.0f);
+	ImGui::SliderFloat("attackPower", &attackPower, 0.0f, 10.0f);
+	ImGui::End();
 }

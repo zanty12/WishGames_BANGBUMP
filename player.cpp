@@ -77,6 +77,17 @@ void Player::Draw(Camera* camera)
 	if (attack_attribute_) attack_attribute_->Draw(camera->GetCameraOffset());
 }
 
+void Player::DebugMenu()
+{
+	ImGui::Begin("Player");
+	ImGui::Text("HP:%d", hp_);
+	ImGui::Text("SkillPoint:%d", skillpt_);
+	ImGui::Text("PlayerState:%d", player_state_);
+	ImGui::End();
+	if(move_attribute_ != nullptr) move_attribute_->DebugMenu();
+	if(attack_attribute_ != nullptr) attack_attribute_->DebugMenu();
+}
+
 
 //================================================================================
 // ↓パブリック関数↓

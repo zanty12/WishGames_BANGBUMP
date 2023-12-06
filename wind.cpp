@@ -68,3 +68,15 @@ void Wind::Action(void) {
 void Wind::Draw(Vector2 offset) {
 	if (isDraw) DrawCollider(attackCollider, Color::Green, offset);
 }
+
+void Wind::DebugMenu()
+{
+	ImGui::Begin("Wind");
+	ImGui::Text("power: %.2f", power_);
+	ImGui::SliderFloat("MaxPower", &maxPower_, 0.0f, 1000.0f);
+	ImGui::SliderFloat("RotInputFriction", &rotInputFriction, 0.0f, 1.0f);
+	ImGui::SliderFloat("RotInputJudgeMin", &rotInputJudgeMin, 0.0f, 1.0f);
+	ImGui::SliderFloat("Friction", &friction_, 0.0f, 1.0f);
+	ImGui::SliderFloat("AttackRadius", &attackRadius, 0.0f, 100.0f);
+	ImGui::End();
+}

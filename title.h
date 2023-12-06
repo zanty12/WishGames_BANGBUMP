@@ -12,6 +12,6 @@ public:
 	~Title();
 	void Update()override;
 	void Draw()override;
-	void DebugMenu() override {}
+	void DebugMenu() override;
 };
 

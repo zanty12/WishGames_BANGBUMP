@@ -54,6 +54,7 @@ public:
 		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),
 		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0),
 		change_scene_(false){}
+	~Player() { delete move_attribute_; delete attack_attribute_; }
 
 	void SetDir(Vector2 dir) { dir_ = dir; }	//向きのセット
 	Vector2 GetDir(void) const { return dir_; }	//向きのゲット
@@ -78,6 +79,8 @@ public:
 
 	void Update(void) override;
 	void Draw(Camera* camera);
+
+	void DebugMenu();
 
 private:
 	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）
