@@ -91,13 +91,14 @@ void MovableObj::PenCellInteract(Cell* cell)
     }
     else if (x == 1 && y == 0) //マスの右
     {
-        SetPos(Vector2(cell->GetPos().x + cell->GetScale().x / 2 + GetScale().x / 2, GetPos().y));
+
+        //SetPos(Vector2(cell->GetPos().x + cell->GetScale().x / 2 + GetScale().x / 2, GetPos().y));
         if (vel_.x < 0.0f)
             SetVel(Vector2(0.0f, GetVel().y));
     }
     else if (x == -1 && y == 0) //マスの左
     {
-        SetPos(Vector2(cell->GetPos().x - cell->GetScale().x / 2 - GetScale().x / 2, GetPos().y));
+        //SetPos(Vector2(cell->GetPos().x - cell->GetScale().x / 2 - GetScale().x / 2, GetPos().y));
         if (vel_.x > 0.0f)
             SetVel(Vector2(0.0f, GetVel().y));
     }
