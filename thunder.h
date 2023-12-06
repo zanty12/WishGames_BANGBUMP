@@ -35,7 +35,6 @@ class Thunder : public Attribute
     float attackPower = 5;
 
 public:
-
     Thunder(Player *player) : Attribute(player) {}
     ~Thunder() override = default;
     bool StickTrigger(Vector2 stick, Vector2 previousStick);
