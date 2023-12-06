@@ -19,7 +19,7 @@ class Thunder : public Attribute
         bool isVisible = false;
     };
 
-    const float responseMinStickDistance = 0.2f;    // スティック傾けたとき判定する距離
+    const float responseMinStickDistance = 0.5f;    // スティック傾けたとき判定する距離
     const float maxChage = 100.0f;                  // チャージの最大値
     const float arrowGravity = 0.5f;                // 矢の重力
     const Vector2 arrowSize = Vector2(100, 10);     // 矢のサイズ→向きね

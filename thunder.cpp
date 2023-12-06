@@ -15,6 +15,7 @@ bool Thunder::StickTrigger(Vector2 stick, Vector2 previousStick) {
 	stick.y *= -1;
 	previousStick.y *= -1;
 	float distance = stick.Distance();
+	float previousDistance = previousStick.Distance();
 
 
 	if (responseMinStickDistance <= distance) {
@@ -22,7 +23,7 @@ bool Thunder::StickTrigger(Vector2 stick, Vector2 previousStick) {
 		if (maxChage < charge) charge = maxChage;
 	}
 
-	if (previousStick != Vector2::Zero && stick == Vector2::Zero && responseMinOneFrameDistance < (stick - previousStick).Distance()) {
+	if (distance < responseMinStickDistance && responseMinStickDistance < previousDistance && responseMinOneFrameDistance < (stick - previousStick).Distance()) {
 		return true;
 	}
 
@@ -38,8 +39,9 @@ Vector2 Thunder::Move() {
 
 
 	if (StickTrigger(stick, previousStick)) {
-		Vector2 direction = -previousStick * charge * movePower;
+		Vector2 direction = -previousStick * 10 * movePower;
 		charge = 0.0f;
+		player_->SetVel(direction);
 		return direction;
 	}
 
