@@ -15,9 +15,8 @@ class Spike : public Cell
 private:
     SPIKE_DIR dir_;
 public:
-    Spike(int x, int y, MAP_READ type) : Cell(x, y, 0)
+    Spike(int x, int y, MAP_READ type) : Cell(x, y, LoadTexture("data/texture/spike.png"))
     {
-        this->SetTexNo(LoadTexture("data/texture/spike.png"));
         switch (type)
         {
         case MAP_READ_SPIKE_UP:

@@ -15,12 +15,11 @@ class SkillOrb :
 {
 private:
     ORB_TYPE type_;
-    float size_ = GameObject::size_;
+    float size_ = GameObject::SIZE_;
 
 public:
-    SkillOrb(int x, int y, MAP_READ type) : Cell(x, y, 0)
+    SkillOrb(int x, int y, MAP_READ type) : Cell(x, y, LoadTexture("data/TEXTURE/skillorb.png"))
     {
-        this->SetTexNo(LoadTexture("data/TEXTURE/skillorb.png"));
         switch (type)
         {
         case MAP_READ_ORB_SMALL:
@@ -28,13 +27,13 @@ public:
             break;
         case MAP_READ_ORB_MID:
             type_ = ORB_MID;
-            this->SetPos(this->GetPos() + Vector2(GameObject::size_ / 2, -GameObject::size_ / 2)); //2*2の真ん中にずれる
-            size_ = GameObject::size_ * type_;
+            this->SetPos(this->GetPos() + Vector2(GameObject::SIZE_ / 2, -GameObject::SIZE_ / 2)); //2*2の真ん中にずれる
+            size_ = GameObject::SIZE_ * type_;
             break;
         case MAP_READ_ORB_BIG:
             type_ = ORB_BIG;
-            this->SetPos(this->GetPos() + Vector2(GameObject::size_, -GameObject::size_)); //3*3の真ん中にずれる
-            size_ = GameObject::size_ * type_;
+            this->SetPos(this->GetPos() + Vector2(GameObject::SIZE_, -GameObject::SIZE_)); //3*3の真ん中にずれる
+            size_ = GameObject::SIZE_ * type_;
             break;
         default:
             break;

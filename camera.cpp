@@ -4,9 +4,9 @@ Camera::Camera(Player* player) : GameObject(player->GetPos(), 0.0f, 0), player_(
 {
     SetTexNo(LoadTexture("data/texture/bg.png"));
     SetScale(screen_size_);
-    map_size_.x = player->GetMapMngr()->GetMap()->GetWidth() * size_;
-    map_size_.y = player->GetMapMngr()->GetMap()->GetHeight() * size_;
-    SetPos(Vector2(map_size_.x / 2, player->GetPos().y + screen_size_.y / 2 + size_));
+    map_size_.x = player->GetMapMngr()->GetMap()->GetWidth() * SIZE_;
+    map_size_.y = player->GetMapMngr()->GetMap()->GetHeight() * SIZE_;
+    SetPos(Vector2(map_size_.x / 2, player->GetPos().y + screen_size_.y / 2 + SIZE_));
 };
 
 void Camera::Update()
@@ -17,7 +17,7 @@ void Camera::Update()
     }
     else
     {
-        target_pos_ = Vector2(GetPos().x, player_->GetPos().y + screen_size_.y / 2 - player_->GetScale().y / 2 -size_);
+        target_pos_ = Vector2(GetPos().x, player_->GetPos().y + screen_size_.y / 2 - player_->GetScale().y / 2 -SIZE_);
     }
 
     if(target_pos_.y < (screen_size_.y / 2))

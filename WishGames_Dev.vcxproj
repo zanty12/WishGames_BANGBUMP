@@ -127,13 +127,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="animator.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="collider.cpp" />
+    <ClCompile Include="collmngr.cpp" />
     <ClCompile Include="dark.cpp" />
     <ClCompile Include="debugUI.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemymngr.cpp" />
     <ClCompile Include="fire.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="koopa.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
@@ -149,6 +153,7 @@
     <ClCompile Include="movableobj.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="scenemngr.cpp" />
     <ClCompile Include="shader.cpp" />
@@ -161,13 +166,17 @@
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="animator.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="collider.h" />
+    <ClInclude Include="collmngr.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemymngr.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="block.h" />
     <ClInclude Include="cloud.h" />
     <ClInclude Include="floor.h" />
+    <ClInclude Include="Gamemodules.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />
@@ -190,6 +199,7 @@
     <ClInclude Include="penfloor.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="prep.h" />
+    <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scenemngr.h" />

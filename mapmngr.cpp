@@ -66,8 +66,8 @@ bool MapMngr::Read(const char* file_name)
                 continue;
             };
             if (item2 == "S" || item == "s")
-                spawn_ = Vector2(x * GameObject::size_ + GameObject::size_ / 2,
-                                 y * GameObject::size_ + GameObject::size_ / 2);
+                spawn_ = Vector2(x * GameObject::SIZE_ + GameObject::SIZE_ / 2,
+                                 y * GameObject::SIZE_ + GameObject::SIZE_ / 2);
             else if (stoi(item2) < MAP_READ_KOOPA
                 )
                 map_->PutCell(x, y, stoi(item2));

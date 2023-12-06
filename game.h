@@ -2,12 +2,13 @@
 #include "scene.h"
 #include "player.h"
 #include "mapmngr.h"
-
 #include "scenemngr.h"
 
 class MapMngr;
 class Player;
 class Camera;
+
+class Renderer;
 
 class Game :public Scene
 {
@@ -17,15 +18,12 @@ private:
 	Camera* camera_;
 
 	SceneMngr* scene_mngr_;
+	static Renderer* renderer_;
 
 public:
 	Game() = delete;
 	Game(SceneMngr* scene_mngr);
-	~Game() override {
-		delete mapmngr_;
-		delete player_;
-		delete camera_;
-	}
+	~Game() override;
 	void Update()override;
 	void Draw()override;
 
@@ -33,4 +31,6 @@ public:
 		return player_;
 	}
 	void DebugMenu() override;
+
+	static Renderer* GetRenderer();
 };

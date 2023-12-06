@@ -1,19 +1,26 @@
 #include "game.h"
-
 #include "dark.h"
 #include "fire.h"
 #include "mapmngr.h"
 #include "thunder.h"
 #include "wind.h"
+#include "renderer.h"
+
+Renderer* Game::renderer_ = new Renderer();
 
 Game::Game(SceneMngr* scene_mngr)
     :scene_mngr_(scene_mngr)
 {
     mapmngr_ = new MapMngr("data/map/1.csv", this);
     player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("data/texture/player.png"), Vector2(0.0f, 0.0f), mapmngr_);
-    player_->SetScale(Vector2(player_->GetScale().x, player_->GetScale().y * 2));
-    player_->SetPos(Vector2(player_->GetPos().x, player_->GetPos().y + player_->GetScale().y / 2));
     camera_ = new Camera(player_);
+}
+
+Game::~Game() {
+    delete mapmngr_;
+    delete player_;
+    delete camera_;
+    delete renderer_;
 }
 
 void Game::Update()
@@ -21,6 +28,7 @@ void Game::Update()
     mapmngr_->Update();
     player_->Update();
     camera_->Update();
+    renderer_->Update();
     if (player_->GetChangeSceneFlag())
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
@@ -29,10 +37,7 @@ void Game::Update()
 
 void Game::Draw()
 {
-    camera_->Draw();
-    mapmngr_->Draw(camera_);
-    player_->Draw(camera_);
-
+    renderer_->Draw(camera_ ->GetCameraOffset());
 }
 
 void Game::DebugMenu()
@@ -101,4 +106,8 @@ void Game::DebugMenu()
     }
     ImGui::End();
     player_->DebugMenu();
+}
+
+Renderer* Game::GetRenderer() {
+    return renderer_;
 }

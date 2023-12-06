@@ -6,9 +6,7 @@ class ThunderCloud :
     public Cell
 {
 public:
-    ThunderCloud(int x, int y) : Cell(x, y, 0) {
-        this->SetTexNo(LoadTexture("data/TEXTURE/thundercloud.png"));
-    }
+    ThunderCloud(int x, int y) : Cell(x, y, LoadTexture("data/TEXTURE/thundercloud.png")) {}
     virtual ~ThunderCloud() override = default;
     MAP_READ GetCellType() const override { return MAP_READ_THUNDERCLOUD; }
 };

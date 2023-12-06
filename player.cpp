@@ -73,6 +73,7 @@ void Player::Update(void)
 
 void Player::Draw(Camera* camera)
 {
+
 	GameObject::Draw(camera->GetCameraOffset());
 	if (attack_attribute_) attack_attribute_->Draw(camera->GetCameraOffset());
 }
@@ -98,8 +99,8 @@ void Player::CollisionMap(void)
 {
 	Map* map = GetMapMngr()->GetMap();
 	Cell* cells[4] = {nullptr, nullptr, nullptr, nullptr};
-	int idx = std::floor((GetPos().x / size_));
-	int idy = std::floor((GetPos().y / size_));
+	int idx = std::floor((GetPos().x / SIZE_));
+	int idy = std::floor((GetPos().y / SIZE_));
 	cells[0] = map->GetCell(idx, idy + 1);
 	cells[1] = map->GetCell(idx, idy - 1);
 	cells[2] = map->GetCell(idx - 1, idy);
@@ -127,8 +128,8 @@ void Player::CollisionSpike(void)
 {
 	Map* map = GetMapMngr()->GetMap();
 	Cell* cells[4] = { nullptr };
-	int idx = std::floor(GetPos().x / size_);
-	int idy = std::floor(GetPos().y / size_);
+	int idx = std::floor(GetPos().x / SIZE_);
+	int idy = std::floor(GetPos().y / SIZE_);
 	cells[0] = map->GetCell(idx, idy + 1);	//ì™
 	cells[1] = map->GetCell(idx, idy - 1);	//ë´
 	cells[2] = map->GetCell(idx - 1, idy);	//ç∂

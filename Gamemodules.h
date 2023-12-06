@@ -1,0 +1,13 @@
+class GameObject;
+class Animator;
+class Renderer;
+class Collider;
+class CollMngr;
+class Camera;
+class MovableObj;
+class Player;
+class Enemy;
+class EnemyMngr;
+class Map;
+class MapMngr;
+class Attribute;
