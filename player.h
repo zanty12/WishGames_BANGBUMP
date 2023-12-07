@@ -54,10 +54,8 @@ public:
 	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
 		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),
 		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0),
-		change_scene_(false)
-	{
-		GetAnimator()->SetIsAnim(true);
-	}
+		change_scene_(false){}
+
 	~Player() { delete move_attribute_; delete attack_attribute_; }
 
 	void SetDir(Vector2 dir) { dir_ = dir; }	//向きのセット

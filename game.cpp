@@ -12,7 +12,8 @@ Game::Game(SceneMngr* scene_mngr)
     :scene_mngr_(scene_mngr)
 {
     mapmngr_ = new MapMngr("data/map/1.csv", this);
-    player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, LoadTexture("data/texture/player.png"), Vector2(0.0f, 0.0f), mapmngr_);
+    int playertex = LoadTexture("data/texture/player.png");
+    player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, playertex, Vector2(0.0f, 0.0f), mapmngr_);
     camera_ = new Camera(player_);
 }
 
@@ -37,6 +38,7 @@ void Game::Update()
 
 void Game::Draw()
 {
+    camera_->Draw();
     renderer_->Draw(camera_ ->GetCameraOffset());
 }
 

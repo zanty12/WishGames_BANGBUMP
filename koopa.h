@@ -14,11 +14,10 @@ public:
     ~Koopa() override = default;
 
     Koopa(int x, int y, EnemyMngr* enemy_mngr) : Enemy(x, y,LoadTexture("data/texture/koopa.png"), enemy_mngr)
-    {
-        GetAnimator()->SetIsAnim(true);
-    }
+    {}
 
     void Update() override;
+
 
 private:
     void CellActions();

@@ -37,7 +37,7 @@ void Koopa::Update()
     if (Collision(player))
     {
         player->HpDown(500);//★仮★
-        Die();
+        //Die();
     }
     //他の敵との当たり判定
     for (auto& enemy : GetEnemyMngr()->GetEnemies())

@@ -18,6 +18,8 @@ public:
 
     bool Add(Animator* animator)
     {
+        if (animator == nullptr || animator->GetTexNo() < 0 || animator->GetPos().x < 0.0f || animator->GetPos().y < 0.0f)
+            return false;
         animators_.push_back(animator);
         return true;
     }

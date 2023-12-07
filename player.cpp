@@ -74,7 +74,7 @@ void Player::Update(void)
 void Player::Draw(Camera* camera)
 {
 
-	GameObject::Draw(camera->GetCameraOffset());
+	//GameObject::Draw(camera->GetCameraOffset());
 	if (attack_attribute_) attack_attribute_->Draw(camera->GetCameraOffset());
 }
 

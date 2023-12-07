@@ -10,7 +10,9 @@ void Renderer::Update()
             animator--;
             continue;
         }*/ //FIXME: ŠÔˆá‚Á‚½‚Æ‚±‚ë‚ðÁ‚·
-        animator->Update();
+        if(animator->GetIsMovable() || animator->GetIsAnim())
+            animator->Update();
+
     }
 }
 void Renderer::Draw() { for (auto animator : animators_)animator->Draw(); }

@@ -10,8 +10,9 @@ class Animator
 private:
     Vector2 pos_, scale_;
 
-    int fps_;
-    bool isAnim_;
+    int fps_;      //フレームレート
+    bool isAnim_;   //アニメーションするか
+    bool isMovable_; //移動するか
     int texNo_;
     float u_ = 0.0f, v_ = 0.0f;
     Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -58,4 +59,6 @@ public:
     GameObject* GetParent(void) const { return parent_; }
     bool GetIsAnim(void) const { return isAnim_; }
     void SetIsAnim(bool isAnim) { isAnim_ = isAnim; }
+    bool GetIsMovable(void) const { return isMovable_; }
+    void SetIsMovable(bool isMovable) { isMovable_ = isMovable; }
 };

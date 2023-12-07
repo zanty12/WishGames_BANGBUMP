@@ -11,6 +11,7 @@
 
 #pragma once
 
+#include "animator.h"
 #include "cell.h"
 #include "lib/dxlib.h"
 
@@ -23,7 +24,10 @@ private:
 
 public:
 	MovableObj(Vector2 pos,float rot,int tex_number,Vector2 vel)
-		:GameObject(pos,rot,tex_number),vel_(vel) {}
+		:GameObject(pos,rot,tex_number),vel_(vel)
+	{
+		GetAnimator()->SetIsMovable(true);
+	}
 
 	void SetVel(Vector2 vel) { vel_ = vel; }		//速度セット
 	Vector2 GetVel(void) const { return vel_; }		//速度ゲット
