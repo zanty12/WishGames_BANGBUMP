@@ -41,10 +41,10 @@ void MovableObj::MapCellInteract(Cell* cell)
 
 void MovableObj::SolidCellInteract(Cell* cell)
 {
-    const int self_idx = std::floor(GetPos().x / size_);
-    const int self_idy = std::floor(GetPos().y / size_);
-    const int cell_idx = std::floor(cell->GetPos().x / size_);
-    const int cell_idy = std::floor(cell->GetPos().y / size_);
+    const int self_idx = std::floor(GetPos().x / SIZE_);
+    const int self_idy = std::floor(GetPos().y / SIZE_);
+    const int cell_idx = std::floor(cell->GetPos().x / SIZE_);
+    const int cell_idy = std::floor(cell->GetPos().y / SIZE_);
     const int x = cell_idx - self_idx;
     const int y = cell_idy - self_idy;
 
@@ -74,10 +74,10 @@ void MovableObj::SolidCellInteract(Cell* cell)
 
 void MovableObj::PenCellInteract(Cell* cell)
 {
-    const int self_idx = std::floor(GetPos().x / size_);
-    const int self_idy = std::floor(GetPos().y / size_);
-    const int cell_idx = std::floor(cell->GetPos().x / size_);
-    const int cell_idy = std::floor(cell->GetPos().y / size_);
+    const int self_idx = std::floor(GetPos().x / SIZE_);
+    const int self_idy = std::floor(GetPos().y / SIZE_);
+    const int cell_idx = std::floor(cell->GetPos().x / SIZE_);
+    const int cell_idy = std::floor(cell->GetPos().y / SIZE_);
     const int x = cell_idx - self_idx;
     const int y = cell_idy - self_idy;
     if (x == 0 && y == 1) //ƒ}ƒX‚Ì‰º

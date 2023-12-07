@@ -8,6 +8,8 @@ void Koopa::Update()
 {
     Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //正直これのメモリ操作多すぎ
 
+    GetAnimator()->SetIsAnim(true);
+
     float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //初期化時のエラーを回避する
 
     //重力
@@ -35,7 +37,7 @@ void Koopa::Update()
     if (Collision(player))
     {
         player->HpDown(500);//★仮★
-        Die();
+        //Die();
     }
     //他の敵との当たり判定
     for (auto& enemy : GetEnemyMngr()->GetEnemies())
@@ -53,8 +55,8 @@ void Koopa::CellActions()
 {
     Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
     Cell* cells[4] = {nullptr, nullptr, nullptr, nullptr};
-    int idx = std::floor(GetPos().x / size_);
-    int idy = std::floor(GetPos().y / size_);
+    int idx = std::floor(GetPos().x / SIZE_);
+    int idy = std::floor(GetPos().y / SIZE_);
     cells[0] = map->GetCell(idx, idy + 1);
     cells[1] = map->GetCell(idx, idy - 1);
     cells[2] = map->GetCell(idx - 1, idy);

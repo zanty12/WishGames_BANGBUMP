@@ -11,7 +11,7 @@ private:
     bool dead = false; //Ž€‚ñ‚Å‚¢‚é‚©‚Ç‚¤‚©
 public:
     Enemy() = delete;
-    Enemy(int x, int y,EnemyMngr* enemy_mngr) : MovableObj(Vector2((x + 0.5f) * size_, (y + 0.5f) * size_),0.0f,0,Vector2(0.0f,0.0f))
+    Enemy(int x, int y,int texNo,EnemyMngr* enemy_mngr) : MovableObj(Vector2((x + 0.5f) * SIZE_, (y + 0.5f) * SIZE_),0.0f,texNo,Vector2(0.0f,0.0f))
     {
         enemy_mngr_ = enemy_mngr;
     }

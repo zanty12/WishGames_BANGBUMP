@@ -37,46 +37,93 @@ void Map::PutCell(int x, int y, int MAP_READ) const
     case MAP_READ_NONE:
         break;
     case MAP_READ_WALL:
-        map_[y * width_ + x] = new Wall(x, y);
-        break;
+        {
+            Wall* wall = new Wall(x, y);
+            map_[y * width_ + x] = wall;
+            break;
+        }
     case MAP_READ_FLOOR:
         {
+            Floor* floor = new Floor(x, y);
+            map_[y * width_ + x] = floor;
+            break;
         }
-        map_[y * width_ + x] = new Floor(x, y);
-        break;
     case MAP_READ_PENFLOOR:
-        map_[y * width_ + x] = new PenFloor(x, y);
-        break;
+        {
+            PenFloor* penfloor = new PenFloor(x, y);
+            map_[y * width_ + x] = penfloor;
+            break;
+        }
     case MAP_READ_BLOCK:
-        map_[y * width_ + x] = new Block(x, y);
-        break;
+        {
+            Block* block = new Block(x, y);
+            map_[y * width_ + x] = block;
+            break;
+        }
+
     case MAP_READ_CLOUD:
-        map_[y * width_ + x] = new Cloud(x, y);
-        break;
+        {
+            Cloud * cloud = new Cloud(x, y);
+            map_[y * width_ + x] = cloud;
+            break;
+        }
+
     case MAP_READ_THUNDERCLOUD:
-        map_[y * width_ + x] = new ThunderCloud(x, y);
-        break;
+        {
+            ThunderCloud * thundercloud = new ThunderCloud(x, y);
+            map_[y * width_ + x] = thundercloud;
+            break;
+        }
+
     case MAP_READ_ORB_SMALL:
-        map_[y * width_ + x] = new SkillOrb(x, y, MAP_READ_ORB_SMALL);
-        break;
+        {
+            SkillOrb * skillorb = new SkillOrb(x, y, MAP_READ_ORB_SMALL);
+            map_[y * width_ + x] = skillorb;
+            break;
+        }
+
     case MAP_READ_ORB_MID:
-        map_[y * width_ + x] = new SkillOrb(x, y, MAP_READ_ORB_MID);
-        break;
+        {
+            SkillOrb * skillorb = new SkillOrb(x, y, MAP_READ_ORB_MID);
+            map_[y * width_ + x] = skillorb;
+            break;
+        }
+
     case MAP_READ_ORB_BIG:
-        map_[y * width_ + x] = new SkillOrb(x, y, MAP_READ_ORB_BIG);
-        break;
+        {
+            SkillOrb * skillorb = new SkillOrb(x, y, MAP_READ_ORB_BIG);
+            map_[y * width_ + x] = skillorb;
+            break;
+        }
+
     case MAP_READ_SPIKE_UP:
-        map_[y * width_ + x] = new Spike(x, y, MAP_READ_SPIKE_UP);
-        break;
+        {
+            Spike * spike = new Spike(x, y, MAP_READ_SPIKE_UP);
+            map_[y * width_ + x] = spike;
+            break;
+        }
+
     case MAP_READ_SPIKE_DOWN:
-        map_[y * width_ + x] = new Spike(x, y, MAP_READ_SPIKE_DOWN);
-        break;
+        {
+            Spike* spike = new Spike(x, y, MAP_READ_SPIKE_DOWN);
+            map_[y * width_ + x] = spike;
+            break;
+        }
+
     case MAP_READ_SPIKE_LEFT:
-        map_[y * width_ + x] = new Spike(x, y, MAP_READ_SPIKE_LEFT);
-        break;
+        {
+            Spike* spike = new Spike(x, y, MAP_READ_SPIKE_LEFT);
+            map_[y * width_ + x] = spike;
+            break;
+        }
+
     case MAP_READ_SPIKE_RIGHT:
-        map_[y * width_ + x] = new Spike(x, y, MAP_READ_SPIKE_RIGHT);
-        break;
+        {
+            Spike* spike = new Spike(x, y, MAP_READ_SPIKE_RIGHT);
+            map_[y * width_ + x] = spike;
+            break;
+        }
+
     default:
         break;
     }

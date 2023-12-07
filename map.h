@@ -102,8 +102,8 @@ public:
      */
     Cell* GetCell(float x, float y) const
     {
-        const int idx = std::floor((x - GameObject::size_ / 2) / GameObject::size_);
-        const int idy = std::floor((y - GameObject::size_ / 2) / GameObject::size_);
+        const int idx = std::floor((x - GameObject::SIZE_ / 2) / GameObject::SIZE_);
+        const int idy = std::floor((y - GameObject::SIZE_ / 2) / GameObject::SIZE_);
         return GetCell(idx,idy);
     }
     int GetWidth() const

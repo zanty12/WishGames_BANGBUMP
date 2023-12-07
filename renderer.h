@@ -1,0 +1,26 @@
+#pragma once
+#include <list>
+
+#include "animator.h"
+class Animator;
+
+class Renderer
+{
+private:
+    std::list<Animator*> animators_;
+
+public:
+    Renderer() = default;
+    ~Renderer() = default;
+    void Update();
+    void Draw();
+    void Draw(Vector2 offset);
+
+    bool Add(Animator* animator)
+    {
+        if (animator == nullptr || animator->GetTexNo() < 0 || animator->GetPos().x < 0.0f || animator->GetPos().y < 0.0f)
+            return false;
+        animators_.push_back(animator);
+        return true;
+    }
+};
