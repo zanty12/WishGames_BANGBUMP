@@ -1,21 +1,30 @@
-#include "koopa.h"
+#include "enemy1.h"
 #include "Cell.h"
 #include "MapMngr.h"
 #include "lib/collider2d.h"
 #include "time.h"
 
-void Koopa::Update()
+void Enemy1::Update()
 {
-    Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //æ­£ç›´ã“ã‚Œã®ãƒ¡ãƒ¢ãƒªæ“ä½œå¤šã™ãŽ
+    Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //³’¼‚±‚ê‚Ìƒƒ‚ƒŠ‘€ì‘½‚·‚¬
 
     GetAnimator()->SetIsAnim(true);
 
-    float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //åˆæœŸåŒ–æ™‚ã®ã‚¨ãƒ©ãƒ¼ã‚’å›žé¿ã™ã‚‹
+    float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //‰Šú‰»Žž‚ÌƒGƒ‰[‚ð‰ñ”ð‚·‚é
 
-    //é‡åŠ›
+    //d—Í
     SetVel(Vector2(GetVel().x, GetVel().y - y_spd_ * dt));
 
-    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¿½å¾“
+    float once = 3.0f;//ˆê‰ñ
+
+    if (Time::GetDeltaTime() > once)
+    {
+
+    }
+
+
+
+    //ƒvƒŒƒCƒ„[’Ç]
     if (player->GetPos().x < GetPos().x)
     {
         SetVel(Vector2(-x_spd_ * dt, GetVel().y));
@@ -31,15 +40,15 @@ void Koopa::Update()
 
     this->AddVel(GetVel());
 
-    //å£åˆ¤å®š
+    //•Ç”»’è
     CellActions();
-    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã®å½“ãŸã‚Šåˆ¤å®š
+    //ƒvƒŒƒCƒ„[‚Æ‚Ì“–‚½‚è”»’è
     if (Collision(player))
     {
-        player->HpDown(500);//â˜…ä»®â˜…
+        player->HpDown(500);//š‰¼š
         //Die();
     }
-    //ä»–ã®æ•µã¨ã®å½“ãŸã‚Šåˆ¤å®š
+    //‘¼‚Ì“G‚Æ‚Ì“–‚½‚è”»’è
     for (auto& enemy : GetEnemyMngr()->GetEnemies())
     {
         if (enemy == this || enemy == nullptr)
@@ -51,10 +60,10 @@ void Koopa::Update()
     }
 }
 
-void Koopa::CellActions()
+void Enemy1::CellActions()
 {
     Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
-    Cell* cells[4] = {nullptr, nullptr, nullptr, nullptr};
+    Cell* cells[4] = { nullptr, nullptr, nullptr, nullptr };
     int idx = std::floor(GetPos().x / SIZE_);
     int idy = std::floor(GetPos().y / SIZE_);
     cells[0] = map->GetCell(idx, idy + 1);

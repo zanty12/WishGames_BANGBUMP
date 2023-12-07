@@ -1,19 +1,19 @@
-﻿#pragma once
+#pragma once
 #include "enemy.h"
 #include "sprite.h"
 #include "animator.h"
 
-class Koopa : public Enemy
+class Enemy2 : public Enemy
 {
 private:
     const float x_spd_ = 96.0f;
     const float y_spd_ = 0.5f;
 
 public:
-    Koopa() = delete;
-    ~Koopa() override = default;
+    Enemy2() = delete;
+    ~Enemy2() override = default;
 
-    Koopa(int x, int y, EnemyMngr* enemy_mngr) : Enemy(x, y,LoadTexture("data/texture/koopa.png"), enemy_mngr)
+    Enemy2(int x, int y, EnemyMngr* enemy_mngr) : Enemy(x, y, LoadTexture("data/texture/enemy1.png"), enemy_mngr)
     {}
 
     void Update() override;

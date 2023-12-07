@@ -1,5 +1,5 @@
 #include "enemymngr.h"
-#include "koopa.h"
+#include "Enemy1.h"
 
 void EnemyMngr::Update()
 {
@@ -34,7 +34,7 @@ void EnemyMngr::Spawn(int x, int y, int type)
     {
     case(MAP_READ_KOOPA):
         {
-            Enemy* enemy = new Koopa(x, y,this);
+            Enemy* enemy = new Enemy1(x, y,this);
             enemies_.push_back(enemy);
             break;
         }
