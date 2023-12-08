@@ -4,38 +4,51 @@
 #include "lib/collider2d.h"
 #include "time.h"
 
+bool CheckLength(Vector2 a, Vector2 b, float len);
 
-struct Enemy_set
+enum Enemy_move
 {
-    Vector2		pos1;	//地点１
-    Vector2		pos2;	//地点2
+    ES_MOVE_RIGHT,		// 右に移動する状態
+    ES_MOVE_LEFT,		// 左に移動する状態
 };
-
-static Enemy_set g_EnemySet[] =
-{
-    { {20.0f, 250.0f}, {240.0f, 250.0f} },
-    { {240.0f, 350.0f}, {340.0f, 350.0f} },
-};
-
+   
 
 
 void Enemy1::Update()
 {
+
     Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //正直これのメモリ操作多すぎ
 
     GetAnimator()->SetIsAnim(true);
 
-    float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //初期化時のエラーを回避する
+
+    
 
     //重力
-    SetVel(Vector2(GetVel().x, GetVel().y - y_spd_ * dt));
-  
-    float once = 3.0f;//一回
+    //SetVel(Vector2(GetVel().x, GetVel().y - y_spd_ * dt));
 
-    if (Time::GetDeltaTime() > once)
+    
+    /*float once = 3.0f;
+    float once_time = Time::GetDeltaTime();*/
+
+
+
+    if (!CheckLength(GetPos(), startPosition, (SIZE_ * 3.0f)))
     {
-
+        startPosition = GetPos();
+        SetVel(Vector2(GetVel().x * -1, GetVel().y));
     }
+
+   
+
+    
+
+   
+    /*if (startPosition.x < (SIZE_ * 3.0f))
+    {
+        SetVel(Vector2(x_spd_ * dt, GetVel().y));
+    }*/
+    
 
     this->AddVel(GetVel());
 
@@ -76,4 +89,16 @@ void Enemy1::CellActions()
         if (Collision(cells[i]))
             MapCellInteract(cells[i]);
     }
+}
+
+
+bool CheckLength(Vector2 a, Vector2 b, float len)
+{
+
+    if (Vector2::Distance(a, b) < len)
+    {
+        return true;
+    }
+
+    return false;
 }

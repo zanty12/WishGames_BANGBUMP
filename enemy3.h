@@ -13,7 +13,7 @@ public:
     Enemy3() = delete;
     ~Enemy3() override = default;
 
-    Enemy3(int x, int y, EnemyMngr* enemy_mngr) : Enemy(x, y, LoadTexture("data/texture/enemy1.png"), enemy_mngr)
+    Enemy3(int x, int y, EnemyMngr* enemy_mngr) : Enemy(x, y, LoadTexture("data/texture/enemy3.png"), enemy_mngr)
     {}
 
     void Update() override;
