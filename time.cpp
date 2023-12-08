@@ -7,8 +7,8 @@ DWORD Time::deltaTime = 0;
 
 
 void Time::Initialize(void) {
-	startTime = timeGetTime();
 	timeBeginPeriod(1000);
+	startTime = currentTime = previousTime = timeGetTime();
 }
 
 void Time::Release(void) {
