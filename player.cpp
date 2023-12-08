@@ -12,6 +12,7 @@
 #include "player.h"
 #include "lib/collider2d.h"
 #include "spike.h"
+#include "xinput.h"
 
 bool Player::UseSkillPoint(void)
 {
@@ -33,22 +34,58 @@ void Player::Update(void)
 		change_scene_ = true;
 	}
 
+	//5フレーム中に何も操作していなかったら落ちる動作に移行する
+	if (Input::GetStickLeft(0).x == 0.0f && Input::GetStickLeft(0).y == 0.0f)
+	{
+		not_stick_working_++;
+	}
+	else
+	{
+		not_stick_working_ = 0;
+	}
+
+	bool affected_gravity = false;	//重力を受けたかどうか
+
 	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
-		SetVel(move_attribute_->Move());
+		Vector2 move = move_attribute_->Move();
+		if (abs(move.x) > 0.1f || move.y <= GRAVITY_SCALE_-0.05f || move.y > 0.1f)
+		{
+			SetVel(move);
+		}
+		else
+		{
+			if (not_stick_working_ > 5)
+			{
+				if (GetVel().y >= 0.0f)
+					SetVel(Vector2(0.0f, GetVel().y - 0.5f));
+				if (GetVel().y >= GRAVITY_SCALE_)
+					SetVel(Vector2(0.0f, GetVel().y - 0.05f));
+				affected_gravity = true;
+			}
+			else
+			{
+				SetVel(Vector2::Zero);
+			}
+		}
 	}
-	else if(clash_spike_ == 0)
-	{//何も操作しなければ落ちる
-		if (GetVel().y <= GRAVITY_SCALE_)
+	else if (clash_spike_ == 0)
+	{//何も属性がなければ落ちる
+		if (GetVel().y >= GRAVITY_SCALE_)
 			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));
-		player_state_ = FALL;
+	}
+
+	//落ちる処理をまだしていなくてスティック操作をしていないときは重力を与える
+	if (!affected_gravity && not_stick_working_ > 5)
+	{
+		if (GetVel().y >= GRAVITY_SCALE_)
+			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));
 	}
 
 	if (attack_attribute_ != nullptr)
 	{
 		attack_attribute_->Action();
 	}
-
 
 	UpdateDir();
 
@@ -70,6 +107,8 @@ void Player::Update(void)
 	}
 
 }
+
+//サンダーはチャージ中は落ちない
 
 void Player::Draw(Camera* camera)
 {

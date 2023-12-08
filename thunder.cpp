@@ -41,8 +41,12 @@ Vector2 Thunder::Move() {
 	if (StickTrigger(stick, previousStick)) {
 		Vector2 direction = -previousStick * 10 * movePower;
 		charge = 0.0f;
-		player_->SetVel(direction);
+
 		return direction;
+	}
+	else if(stick!=Vector2::Zero)
+	{
+		return Vector2::Zero;
 	}
 
 	return player_->GetVel();
