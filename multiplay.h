@@ -4,6 +4,7 @@
 #include "lib/vector.h"
 #include "mapmngr.h"
 #include "player.h"
+#include "buffer.h"
 
 #define SERVER_ADDRESS "10.192.121.53"
 #define MAX_MEMBER (4)
@@ -11,7 +12,7 @@
 
 using namespace Network;
 
-struct LOCAL_DATA {
+struct HEADER {
 	enum COMMAND {
 		NONE,
 		REQUEST_LOGIN,
@@ -25,100 +26,87 @@ struct LOCAL_DATA {
 	int command = NONE;
 	int id = -1;
 };
-
-struct REQUEST {
-	struct PLAYER {
-		Vector2 stick;
-	};
-	struct EFFECT {
-		enum {
-			NONE,
-			FIRE,
-			WATER,
-			WIND,
-
-		};
-
-		Vector2 pos;
-		float rot = 0.0f;
-		Vector2 scl = Vector2::One;
-		float power = 1.0f;
-		int command = NONE;
-
-		EFFECT(Vector2 pos, float rot, Vector2 scl, float power, int command) :
-			pos(pos), rot(rot), scl(scl), power(power), command(command) { }
-	};
-
-	enum {
-		NONE,
-		MOVE,
-	};
-
-	int command = NONE;
-	Vector2 vector;
+struct OTHER_CLIENT {
+	HEADER header;
+	Vector2 position;
 };
 
-struct RESPONSE {
-	struct PLAYER {
-		enum {
-			NONE = 0x00,
-			DAMAGE = 0x01,
-		};
-
-		int hp = 0;
-		Vector2 pos;
-		float rot = 0.0f;
-		int status = NONE;
-
-	};
-	struct EFFECT {
-		enum {
-			NONE,
-			FIRE,
-			WATER,
-			WIND,
-
-		};
-
-		Vector2 pos;
-		float rot = 0.0f;
-		Vector2 scl = Vector2::One;
-		float power = 1.0f;
-		int type = NONE;
-
-		EFFECT(Vector2 pos, float rot, Vector2 scl, float power, int type) :
-			pos(pos), rot(rot), scl(scl), power(power), type(type) { }
-	};
-	
-	UINT playerNum = 0;
-	UINT effectNum = 0;
-	PLAYER *players_ = nullptr;
-	EFFECT *effectors_ = nullptr;
-
-
+struct REQUEST_PLAYER {
+	HEADER header;
+	XINPUT_GAMEPAD curInput;
+	XINPUT_GAMEPAD preInput;
 };
+
+struct RESPONSE_PLAYER {
+	HEADER header;
+	Vector2 position;
+};
+
 
 class MultiServer : Server {
 private:
 	struct CLIENT_DATA {
+		HEADER header;
 		Socket sockfd_;
 		Address clientAddr_;
-		LOCAL_DATA localData;
-	}; 
+	};
 
 	int nowMember_ = 0;
 	Socket sockfd_;
-	CLIENT_DATA players_[MAX_MEMBER] = {};
-
+	Player players_[MAX_MEMBER];
+	CLIENT_DATA clients_[MAX_MEMBER] = {};
+	Buffer sendBuff = Buffer(1024), sendContentBuff = Buffer(1024), recvBuff = Buffer(1024);
 
 private:
-	int Register(Address clientAddr, LOCAL_DATA *localData, Socket sockfd);
+	int Register(Address clientAddr, HEADER *localData, Socket sockfd);
 
 	void Unregister(int id);
 
-	void SendUpdate(LOCAL_DATA *pLocalData);
+	void PlayerUpdate(REQUEST_PLAYER req);
+
+	REQUEST_PLAYER RecvUpdate(void);
+
+	void SendUpdate(void);
+
+	void Update();
+
+
+
+	void CreateResponseToClient(Buffer &buff) {
+
+		// 初期化
+		buff = nullptr;
+		int playerNum = 0;
+
+		// プレイヤー数のカウント
+		for (int i = 0; i < MAX_MEMBER; i++) if (0 <= clients_[i].header.id) playerNum++;
+
+		// ヘッダー作成
+		buff << playerNum;
+
+		// レスポンス作成（プレイヤー）
+		for (int i = 0; i < MAX_MEMBER; i++) {
+			// 登録されていないならスキップ
+			if (0 > clients_[i].header.id) continue;
+
+			// レスポンス情報の設定
+			RESPONSE_PLAYER res;
+			res.header = clients_[i].header;
+			res.position = players_[i].GetPos();
+
+			buff << res;
+		}
+	}
+
+	void ParseRequestFromClient(Buffer &buff, REQUEST_PLAYER *req) {
+		if (req == nullptr) return;
+
+		buff >> req;
+	}
 
 public:
+	~MultiServer() { sendBuff.Release(); }
+
 	void OpenTerminal(void);
 };
 
@@ -128,19 +116,55 @@ private:
 	Socket sockfd_;
 	Address serverAddr;
 	FD readfd_;
-	Game game;
+	Buffer sendBuff = Buffer(1024), recvBuff = Buffer(1024);
 
 public:
-	LOCAL_DATA localData;
-	LOCAL_DATA players_[MAX_MEMBER - 1] = {};
-
+	HEADER header_;
+	RESPONSE_PLAYER player;
+	RESPONSE_PLAYER players_[MAX_MEMBER - 1];	
 
 	int Register();
 
 	void Unregister();
 
-	void Send(void);
+	void PlayerUpdate(RESPONSE_PLAYER res, RESPONSE_PLAYER reses);
 
-	void Update(int waitTime);
+	void RecvUpdate(int waitTime);
+
+	void SendUpdate(void);
+
+	void Update(void);
+
+
+
+	void CreateRequestToServer(Buffer &outBuff) {
+		// コマンド設定
+		header_.command = HEADER::REQUEST_UPDATE;
+
+		REQUEST_PLAYER req;
+		req.header = header_;
+		req.curInput = Input::GetState(0);
+		req.preInput = Input::GetPreviousState(0);
+
+		outBuff << req;
+	}
+
+	void ParseResponseFromServer(Buffer &buff, RESPONSE_PLAYER *res) {
+		if (res == nullptr) return;
+
+		RESPONSE_PLAYER res__;
+		int playerNum = 0;
+
+		// ヘッダーの取得
+		buff >> header_;
+		buff >> playerNum;
+
+
+		// レスポンス解析（プレイヤー）
+		for (int i = 0; i < playerNum; i++) {
+			buff >> res__;
+
+			res[i] = res__;
+		}
+	}
 };
-

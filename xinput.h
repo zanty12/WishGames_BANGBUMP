@@ -46,6 +46,11 @@ public:
 	static float GetTriggerRight(int index);
 	static float GetTriggerLeft(int index);
 
+	static XINPUT_GAMEPAD GetState(int index) { return state[index].Gamepad; }
+	static XINPUT_GAMEPAD GetPreviousState(int index) { return previous[index].Gamepad; }
+	static void SetState(int index, XINPUT_GAMEPAD gamepad) { state[index].Gamepad = gamepad; }
+	static void SetPreviousState(int index, XINPUT_GAMEPAD gamepad) { previous[index].Gamepad = gamepad; }
+
 	static Vector2 GetPreviousStickRight(int index);
 	static Vector2 GetPreviousStickLeft(int index);
 
