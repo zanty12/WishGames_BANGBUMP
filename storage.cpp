@@ -1,9 +1,9 @@
 #include <memory.h>
 #include <string.h>
-#include "buffer.h"
+#include "storage.h"
 
 // メモリ確保
-void Buffer::allocate(buffer *dst, unsigned int size) {
+void Storage::allocate(buffer *dst, unsigned int size) {
 	// dstからsize分確保する
 	// 実際に確保するメモリサイズを計算 (先頭アドレスから中間アドレスまでのサイズを求め、そこから確保するサイズを足す)
 	unsigned int size__ = maximum(dst - head + size);
@@ -38,7 +38,7 @@ void Buffer::allocate(buffer *dst, unsigned int size) {
 }
 
 // コピー
-void Buffer::copy(buffer *dst, buffer *src, unsigned int size) {
+void Storage::copy(buffer *dst, buffer *src, unsigned int size) {
 	unsigned int size__ = maximum(maxSize + size);
 
 	// コピー
@@ -46,14 +46,14 @@ void Buffer::copy(buffer *dst, buffer *src, unsigned int size) {
 }
 
 // メモリ解放
-void Buffer::release(void) {
+void Storage::release(void) {
 	if (head) delete[] head;
 	head = tail = begin = end = nullptr;
 	maxSize = capacitySize = 0;
 }
 
 
-void Buffer::Refresh(buffer *src, unsigned int size) {
+void Storage::Refresh(buffer *src, unsigned int size) {
 	// 領域確保
 	if (capacitySize < size) allocate(head, size);
 
@@ -68,7 +68,7 @@ void Buffer::Refresh(buffer *src, unsigned int size) {
 	maxSize = size;
 }
 
-void Buffer::Push(buffer *src, unsigned int size) {
+void Storage::Push(buffer *src, unsigned int size) {
 	// 領域確保
 	if (capacitySize < end - head + size) allocate(end, size);
 
@@ -83,11 +83,11 @@ void Buffer::Push(buffer *src, unsigned int size) {
 }
 
 
-void Buffer::Release(void) {
+void Storage::Release(void) {
 	release();
 }
 
-void Buffer::operator =(char *src) {
+void Storage::operator =(char *src) {
 	// サイズの取得
 	unsigned int size__ = strlen(src) + 1;
 
@@ -101,7 +101,7 @@ void Buffer::operator =(char *src) {
 	maxSize += size__;
 }
 
-void Buffer::operator <<(char *src) {
+void Storage::operator <<(char *src) {
 	// サイズの取得
 	unsigned int size__ = strlen(src) + 1;
 
@@ -115,12 +115,12 @@ void Buffer::operator <<(char *src) {
 	maxSize += size__;
 }
 
-char *Buffer::operator >>(char *&dst) {
+char *Storage::operator >>(char *&dst) {
 	// 取得する
 	return dst = Pop<char>();
 }
 
-void Buffer::operator =(const char *src) {
+void Storage::operator =(const char *src) {
 	// サイズの取得
 	unsigned int size__ = strlen(src) + 1;
 
@@ -131,7 +131,7 @@ void Buffer::operator =(const char *src) {
 	end--;
 }
 
-void Buffer::operator <<(const char *src) {
+void Storage::operator <<(const char *src) {
 	// サイズの取得
 	unsigned int size__ = strlen(src) + 1;
 

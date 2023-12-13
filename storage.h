@@ -2,11 +2,11 @@
 #include <memory.h>
 #include <string.h>
 #include <cstddef>
-#include "buffer.h"
+#include "storage.h"
 
 
 
-class Buffer {
+class Storage {
 	typedef char buffer;
 	buffer *head = nullptr, *tail = nullptr;
 	buffer *begin = nullptr, *end = nullptr;
@@ -35,7 +35,7 @@ private:
 
 
 public:
-	Buffer(unsigned int sliceSize = 0) : onceSize(sliceSize) { }
+	Storage(unsigned int sliceSize = 0) : onceSize(sliceSize) { }
 
 	void Refresh(buffer *src, unsigned int size);
 
@@ -118,7 +118,7 @@ public:
 	}
 
 	template<>
-	void operator <<(Buffer src) {
+	void operator <<(Storage src) {
 		// ‰ÁŽZ‚·‚é
 		Push(src.head, src.maxSize);
 	}

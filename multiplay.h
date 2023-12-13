@@ -1,10 +1,14 @@
 #pragma once
 #include <iostream>
+#include <list>
+#include <tuple>
+#include <algorithm>
 #include "lib/network.h"
 #include "lib/vector.h"
 #include "mapmngr.h"
 #include "player.h"
-#include "buffer.h"
+#include "storage.h"
+#include "xinput.h"
 
 #define SERVER_ADDRESS "10.192.121.53"
 #define MAX_MEMBER (4)
@@ -49,16 +53,17 @@ private:
 		HEADER header;
 		Socket sockfd_;
 		Address clientAddr_;
+		Player player_;
 	};
 
-	int nowMember_ = 0;
+	int maxID = 0;
 	Socket sockfd_;
-	Player players_[MAX_MEMBER];
-	CLIENT_DATA clients_[MAX_MEMBER] = {};
-	Buffer sendBuff = Buffer(1024), sendContentBuff = Buffer(1024), recvBuff = Buffer(1024);
+	std::list<CLIENT_DATA> clients_;
+	Storage sendBuff = Storage(1024), sendContentBuff = Storage(1024), recvBuff = Storage(1024);
+	MapMngr mapMngr;
 
 private:
-	int Register(Address clientAddr, HEADER *localData, Socket sockfd);
+	int Register(Address clientAddr, HEADER &header, Socket sockfd);
 
 	void Unregister(int id);
 
@@ -71,34 +76,39 @@ private:
 	void Update();
 
 
+	std::list<CLIENT_DATA>::iterator find(int id) {
+		return std::find(clients_.begin(), clients_.end(), [&](CLIENT_DATA client) { 
+			return client.header.id == id;
+			}
+		);
+	}
 
-	void CreateResponseToClient(Buffer &buff) {
+	void CreateResponseToClient(Storage &buff) {
 
 		// 初期化
 		buff = nullptr;
 		int playerNum = 0;
 
 		// プレイヤー数のカウント
-		for (int i = 0; i < MAX_MEMBER; i++) if (0 <= clients_[i].header.id) playerNum++;
+		for (auto client : clients_) {
+			if (0 <= client.header.id) playerNum++;
+		}
 
 		// ヘッダー作成
 		buff << playerNum;
 
 		// レスポンス作成（プレイヤー）
-		for (int i = 0; i < MAX_MEMBER; i++) {
-			// 登録されていないならスキップ
-			if (0 > clients_[i].header.id) continue;
-
+		for (auto client : clients_) {
 			// レスポンス情報の設定
 			RESPONSE_PLAYER res;
-			res.header = clients_[i].header;
-			res.position = players_[i].GetPos();
+			res.header = client.header;
+			res.position = client.player_.GetPos();
 
 			buff << res;
 		}
 	}
 
-	void ParseRequestFromClient(Buffer &buff, REQUEST_PLAYER *req) {
+	void ParseRequestFromClient(Storage &buff, REQUEST_PLAYER *req) {
 		if (req == nullptr) return;
 
 		buff >> req;
@@ -112,24 +122,22 @@ public:
 
 class Client : public Server {
 private:
-	int id = -1;
 	Socket sockfd_;
 	Address serverAddr;
 	FD readfd_;
-	Buffer sendBuff = Buffer(1024), recvBuff = Buffer(1024);
+	Storage sendBuff = Storage(1024), recvBuff = Storage(1024);
 
 public:
-	HEADER header_;
 	RESPONSE_PLAYER player;
-	RESPONSE_PLAYER players_[MAX_MEMBER - 1];	
+	std::list<RESPONSE_PLAYER> players_;
 
 	int Register();
 
 	void Unregister();
 
-	void PlayerUpdate(RESPONSE_PLAYER res, RESPONSE_PLAYER reses);
+	void PlayerUpdate(RESPONSE_PLAYER &res, std::list<RESPONSE_PLAYER> &reses);
 
-	void RecvUpdate(int waitTime);
+	void RecvUpdate(int waitTime, RESPONSE_PLAYER &res, std::list<RESPONSE_PLAYER> &reses);
 
 	void SendUpdate(void);
 
@@ -137,7 +145,17 @@ public:
 
 
 
-	void CreateRequestToServer(Buffer &outBuff) {
+
+	std::list<RESPONSE_PLAYER>::iterator find(int id) {
+		return std::find(players_.begin(), players_.end(), [&](RESPONSE_PLAYER client) {
+			return client.header.id == id;
+			}
+		);
+	}
+
+	void CreateRequestToServer(Storage &outBuff) {
+		HEADER &header_ = player.header;
+
 		// コマンド設定
 		header_.command = HEADER::REQUEST_UPDATE;
 
@@ -149,14 +167,12 @@ public:
 		outBuff << req;
 	}
 
-	void ParseResponseFromServer(Buffer &buff, RESPONSE_PLAYER *res) {
-		if (res == nullptr) return;
-
+	void ParseResponseFromServer(Storage &buff, std::list<RESPONSE_PLAYER> &reses) {
 		RESPONSE_PLAYER res__;
 		int playerNum = 0;
 
 		// ヘッダーの取得
-		buff >> header_;
+		buff >> player.header;
 		buff >> playerNum;
 
 
@@ -164,7 +180,7 @@ public:
 		for (int i = 0; i < playerNum; i++) {
 			buff >> res__;
 
-			res[i] = res__;
+			reses.push_back(res__);
 		}
 	}
 };

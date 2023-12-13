@@ -4,68 +4,76 @@
 
 
 
-int MultiServer::Register(Address clientAddr, HEADER *header, Socket sockfd) {
-	// 登録できる
-	for (int i = 0; i < MAX_MEMBER; i++) {
-		// 登録されていない
-		if (clients_[i].header.id < 0) {
+int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
+	Vector2 pos = Vector2::Zero;
+	float rot = 0.0f;
+	int texNo = 0;
+	Vector2 vel = Vector2::Zero;
+	Player player = Player(pos, rot, texNo, vel, &mapMngr);
 
-			// アドレスの設定
-			clients_[i].clientAddr_ = clientAddr;
+	// ヘッダーの更新
+	header.command = HEADER::RESPONSE_LOGIN;
+	header.id = maxID++;
 
-			// ソケットの設定
-			clients_[i].sockfd_ = sockfd;
+	// クライアントデータの作成
+	CLIENT_DATA clientData = {
+		header,
+		sockfd,
+		clientAddr,
+		player
+	};
 
-			// データがあるなら設定
-			if (header) clients_[i].header = *header;
+	// プレイヤー追加
+	clients_.push_back(clientData);
 
-			// 最後にIDの設定
-			clients_[i].header.id = i;
 
-			// 送信
-			clients_[i].header.command = HEADER::RESPONSE_LOGIN;
-			SendTo(this->sockfd_, (char *)&clients_[i].header, sizeof(HEADER), 0, clientAddr);
-			std::cout << "Res >> ID:" << i << " Login" << std::endl;
+	// 送信
+	header.command = HEADER::RESPONSE_LOGIN;
+	SendTo(this->sockfd_, (char *)&header, sizeof(HEADER), 0, clientAddr);
+	std::cout << "Res >> ID:" << maxID << " Login" << std::endl;
 
-			return i;
-		}
-	}
-
-	// 登録できない
-	return -1;
+	return maxID - 1;
 }
 
 void MultiServer::Unregister(int id) {
-	// 範囲外
-	if (0 <= id && id < MAX_MEMBER) return;
 
-	// 登録している
-	if (0 <= clients_[id].header.id) {
-		// 解除
-		clients_[id].header.command = HEADER::RESPONSE_LOGOUT;
-		clients_[id].sockfd_.Close();
+	// プレイヤーの検索
+	auto iterator = find(id);
+	
+	// 検索不一致
+	if (iterator == clients_.end()) return;
 
-		// 送信
-		SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
-		std::cout << "Res >> ID:" << id << " Logout" << std::endl;
+	// 解除
+	iterator->header.command = HEADER::RESPONSE_LOGOUT;
+	iterator->sockfd_.Close();
 
-		// IDを削除
-		clients_[id].header = HEADER();
-	}
+	// 送信
+	SendTo(sockfd_, (char *)&iterator->header, sizeof(HEADER), 0, iterator->clientAddr_);
+	std::cout << "Res >> ID:" << " Logout" << std::endl;
+
+	// 削除
+	clients_.erase(iterator);
 }
 
 void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
+
+	// プレイヤーの検索
+	auto iterator = find(req.header.id);
+
+	// 検索不一致
+	if (iterator == clients_.end()) return;
+
 	// キー入力の更新
 	Input::SetState(0, req.curInput);
 	Input::SetPreviousState(0, req.preInput);
 
 	// ヘッダーの更新
-	clients_[req.header.id].header = req.header;
+	iterator->header = req.header;
 
 
 
 	// プレイヤーの処理を行う
-	players_[req.header.id].Update();
+	iterator->player_.Update();
 }
 
 REQUEST_PLAYER MultiServer::RecvUpdate(void) {
@@ -74,15 +82,11 @@ REQUEST_PLAYER MultiServer::RecvUpdate(void) {
 
 	ParseRequestFromClient(recvBuff, &req);
 
-	// リクエストの情報をもとに反映させる
-	//PlayerUpdate(req);
-
 	return req;
 }
 
 void MultiServer::SendUpdate(void) {
 	// レスポンスの作成
-	RESPONSE_PLAYER res[MAX_MEMBER];
 	CreateResponseToClient(sendContentBuff);
 
 
@@ -132,9 +136,9 @@ void MultiServer::OpenTerminal(void) {
 			case HEADER::COMMAND::REQUEST_LOGIN: {
 				// 登録
 				std::cout << "Req << ID:*" << " Login" << std::endl;
-				int id = Register(clientAddr, pHeader, 0);
+				int id = Register(clientAddr, *pHeader, 0);
 				// 送信
-				SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
+				//SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
 				std::cout << id << " : 登録しました" << std::endl;
 				break;
 			};
@@ -162,59 +166,70 @@ void MultiServer::OpenTerminal(void) {
 
 
 int Client::Register() {
-		// ソケット作成
-		sockfd_ = Socket(AddressFamily::IPV4, Type::UDP, 0);
+	HEADER &header_ = player.header;
 
-		// アドレス作成
-		serverAddr = Address(AddressFamily::IPV4, SERVER_ADDRESS, PORT);
+	// ソケット作成
+	sockfd_ = Socket(AddressFamily::IPV4, Type::UDP, 0);
 
-		// コマンド設定
-		header_.command = HEADER::COMMAND::REQUEST_LOGIN;
+	// アドレス作成
+	serverAddr = Address(AddressFamily::IPV4, SERVER_ADDRESS, PORT);
 
-		// 操作
-		readfd_.Add(sockfd_);
+	// コマンド設定
+	header_.command = HEADER::COMMAND::REQUEST_LOGIN;
 
-		// 送信
-		std::cout << "Req >> ID:*" << " Login" << std::endl;
-		SendTo(sockfd_, (char *)&header_, sizeof(HEADER), 0, serverAddr);
+	// 操作
+	readfd_.Add(sockfd_);
 
-		// 受信
-		while (true) {
-			Recv(sockfd_, (char *)&header_, sizeof(HEADER), 0);
-			if (header_.command = HEADER::RESPONSE_LOGIN) break;
-		}
-		std::cout << "Res << ID:" << header_.id << " Login" << std::endl;
-		std::cout << header_.id << "番目に登録しました。" << std::endl;
+	// 送信
+	std::cout << "Req >> ID:*" << " Login" << std::endl;
+	SendTo(sockfd_, (char *)&player.header, sizeof(HEADER), 0, serverAddr);
 
-		return header_.id;
+	// 受信
+	while (true) {
+		Recv(sockfd_, (char *)&header_, sizeof(HEADER), 0);
+		if (header_.command = HEADER::RESPONSE_LOGIN) break;
 	}
+	std::cout << "Res << ID:" << header_.id << " Login" << std::endl;
+	std::cout << header_.id << "番目に登録しました。" << std::endl;
+
+	return header_.id;
+}
 
 void Client::Unregister() {
-		// コマンド設定
+	HEADER &header_ = player.header;
+
+	// コマンド設定
 	header_.command = HEADER::REQUEST_LOGOUT;
 
-		// 送信
-		std::cout << "Req << ID:" << header_.id << " Logout" << std::endl;
-		SendTo(sockfd_, (char *)&header_, sizeof(HEADER), 0, serverAddr);
+	// 送信
+	std::cout << "Req << ID:" << header_.id << " Logout" << std::endl;
+	SendTo(sockfd_, (char *)&header_, sizeof(HEADER), 0, serverAddr);
 
-		while (true) {
-			HEADER data;
-			Recv(sockfd_, (char *)&data, sizeof(HEADER), 0);
-			if (data.command == HEADER::RESPONSE_LOGOUT &&
-				data.id == header_.id) {
-				std::cout << "Res << ID:" << header_.id << " Logout" << std::endl;
-				header_ = HEADER();
-				break;
-			}
+	while (true) {
+		HEADER data;
+		Recv(sockfd_, (char *)&data, sizeof(HEADER), 0);
+		if (data.command == HEADER::RESPONSE_LOGOUT &&
+			data.id == header_.id) {
+			std::cout << "Res << ID:" << header_.id << " Logout" << std::endl;
+			header_ = HEADER();
+			break;
 		}
-
-		std::cout << header_.id << "番目を解除しました。" << std::endl;
-
-		sockfd_.Close();
 	}
 
-void Client::PlayerUpdate(RESPONSE_PLAYER res, RESPONSE_PLAYER reses) {
+	std::cout << header_.id << "を解除しました。" << std::endl;
 
+	sockfd_.Close();
+}
+#define Cursor(x, y) printf("\033[%d;%dH", y, x)
+void Client::PlayerUpdate(RESPONSE_PLAYER &res, std::list<RESPONSE_PLAYER> &reses) {
+	system("cls");
+	Cursor((int)res.position.x, (int)res.position.y);
+	printf("*");
+
+	for (auto &res : reses) {
+		Cursor((int)res.position.x, (int)res.position.y);
+		printf("*");
+	}
 }
 
 void Client::SendUpdate(void) {
@@ -225,7 +240,7 @@ void Client::SendUpdate(void) {
 	SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, serverAddr);
 }
 
-void Client::RecvUpdate(int waitTime) {
+void Client::RecvUpdate(int waitTime, RESPONSE_PLAYER &res, std::list<RESPONSE_PLAYER> &reses) {
 	FD tmp;
 	memcpy(&tmp, &readfd_, sizeof(FD));
 
@@ -239,32 +254,38 @@ void Client::RecvUpdate(int waitTime) {
 		recvBuff.Push(buff, buffLen);
 
 		// レスポンスの解析
-		RESPONSE_PLAYER reses[MAX_MEMBER] = {};
 		ParseResponseFromServer(recvBuff, reses);
 
 		// 更新
 		for (RESPONSE_PLAYER &res : reses) {
 			// 自分自身を更新
-			if (res.header.id == header_.id) {
-				header_ = res.header;
-				if (header_.command == HEADER::RESPONSE_LOGOUT) return;
+			if (res.header.id == player.header.id) {
+				player.header = res.header;
+				if (player.header.command == HEADER::RESPONSE_LOGOUT) return;
 			}
 			// 他人を更新
 			else {
 				// IDを0~MAX_MEMBER-1にする
-				int id = header_.id;
-				if (header_.id <= id) id--;
+				int id = res.header.id;
+
+				// プレイヤーの検索
+				auto iterator = find(id);
 
 				// 更新
 				if (res.header.command == HEADER::RESPONSE_LOGOUT) res.header = HEADER();
-				players_[id].header = header_;
+				iterator->header = res.header;
 			}
 		}
 	}
 }
 
 void Client::Update() {
-	RecvUpdate(10);
+	RESPONSE_PLAYER res;
+	std::list<RESPONSE_PLAYER> reses;
+
+	RecvUpdate(10, res, reses);
+	PlayerUpdate(res, reses);
+	SendUpdate();
 }
 
 #include <thread>
