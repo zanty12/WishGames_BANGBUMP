@@ -6,8 +6,7 @@
 class Enemy2 : public Enemy
 {
 private:
-    //const float x_spd_ = 96.0f;
-    //const float y_spd_ = 0.5f;
+    
 
 public:
     Enemy2() = delete;

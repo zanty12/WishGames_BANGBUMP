@@ -7,6 +7,8 @@ class EnemyMngr;
 class Enemy : public MovableObj
 {
 private:
+    const int HP_MAX_ = 150;		//HPの上限
+    int hp_;
     EnemyMngr* enemy_mngr_;
     bool dead = false; //死んでいるかどうか
 public:
@@ -21,4 +23,6 @@ public:
     EnemyMngr* GetEnemyMngr() const { return enemy_mngr_; }
     bool IsDead() const { return dead; }
     void Die(){ this->dead = true; }
+    //HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
+    void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 };

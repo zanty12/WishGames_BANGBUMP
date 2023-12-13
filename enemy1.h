@@ -7,9 +7,11 @@
 class Enemy1 : public Enemy
 {
 private:
+    Vector2 dir_;		//向き
     const float x_spd_ = 96.0f;
     const float y_spd_ = 0.5f;
     Vector2 startPosition;
+    int knock_back_dir_;	//トゲに衝突した方向
 
 public:
     Enemy1() = delete;
@@ -26,5 +28,6 @@ public:
 
 
 private:
-    void CellActions();
+    void CellAction();
+    void CellActionSpike();
 };
