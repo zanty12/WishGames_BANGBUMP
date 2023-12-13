@@ -22,7 +22,7 @@ class Dark : public Attribute
 	bool isDraw = false;
 
 	//ここからは調整用のためconst抜き
-	float maxSpeedFalling = 0.5f;
+	float maxSpeedFalling = -0.5f;
 	float warpDistance = 800.0f;
 	float attackWidthLength = 5.0f;
 

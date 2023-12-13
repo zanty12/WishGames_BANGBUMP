@@ -25,15 +25,19 @@ Vector2 Wind::Move(void) {
 	if (StickTrigger(stick, previousStick)) {
 		power_ += rotSpeed * rotSpeed * rotInputFriction;
 		if (maxPower_ < power_) power_ = maxPower_;
+
+		vel = Vector2::Up * power_;
 	}
 
 	// 落下中の処理
 	else if (0 < Vector2::Dot(Vector2::Down, vel)) {
 		power_ *= friction_;
+
+		vel.x = stick.x * 2.0f;
 	}
 
-	vel += Vector2::Up * power_;
-	player_->SetVel(vel);
+
+
 	return vel;
 }
 

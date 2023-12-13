@@ -19,7 +19,7 @@ Vector2 Dark::Move()
 	if (Input::GetKey(0, Input::LThumb)) {
 		if (velocity.y <= -maxSpeedFalling) {
 			velocity.y = maxSpeedFalling;
-			player_->SetVel(velocity);
+			return velocity;
 		}
 	}
 	if (Input::GetKeyUp(0, Input::LThumb)) {
