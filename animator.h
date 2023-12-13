@@ -8,22 +8,54 @@ class GameObject;
 class Animator
 {
 private:
+    GameObject* my_object;  //アニメーション対象のゲームオブジェクト
+
     Vector2 pos_, scale_;
+    float rot_ = 0.0f;
+    int texNo_;
 
     int fps_;      //フレームレート
     bool isAnim_;   //アニメーションするか
     bool isMovable_; //移動するか
-    int texNo_;
+    int x_matrix_num_, y_matrix_num_;   //横と縦の画像の枚数
+    int loop_start_x_, loop_start_y_;   //ループする初めの場所
+    int loop_end_x_, loop_end_y_;       //ループする終わりの場所
+    bool is_loop_ = false;              //ループ判定（treu=ループ）
+    float img_change_time_ = 0.0f;          //画像を切り替える時間の間隔
+    float now_time_ = 0.0f;
+
+    int now_matrix_number_ = 0;   //現在の行列の位置
     float u_ = 0.0f, v_ = 0.0f;
     Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
-    float rot_ = 0.0f;
 
     GameObject* parent_;
 
 public:
     Animator() = delete;
 
-    Animator(Vector2 pos, Vector2 scale, int fps, bool isAnim, int texNo);
+    Animator(GameObject* game_object);
+    //--------------------------------------------------------------------------------
+    // fps              フレームレート
+    // isAnim           アニメーションするかどうか
+    // x_matrix_num     横の画像の数
+    // y_matrix_num     縦の画像の数
+    // img_change_time  次の画像に切り替えるまでの秒数
+    //--------------------------------------------------------------------------------
+    Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time);
+    //--------------------------------------------------------------------------------
+    // fps              フレームレート
+    // isAnim           アニメーションするかどうか
+    // x_matrix_num     横の画像の数
+    // y_matrix_num     縦の画像の数
+    // img_change_time  次の画像に切り替えるまでの秒数
+    // is_loop          特定の場所をループするかどうか
+    // loop_start_x     ループする初めの横の位置
+    // loop_start_y     ループする初めの縦の位置
+    // loop_end_x       ループを終わる横の位置
+    // loop_end_y       ループを終わる縦の位置
+    //--------------------------------------------------------------------------------
+    Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop, 
+        int loop_start_x, int loop_start_y,int loop_end_x,int loop_end_y);
 
     ~Animator() = default;
 
@@ -61,4 +93,16 @@ public:
     void SetIsAnim(bool isAnim) { isAnim_ = isAnim; }
     bool GetIsMovable(void) const { return isMovable_; }
     void SetIsMovable(bool isMovable) { isMovable_ = isMovable; }
+
+    void SetIsLoop(bool is_loop) { is_loop_ = is_loop; }    //ループの設定（treu=ループ）
+    void SetImgChangeTime(float img_change_time) { img_change_time_ = img_change_time; }    //次の画像に切り替える間隔 [1.0f=１秒]
+
+    float UWidth(void) const{ return 1.0f / x_matrix_num_; }    //UV(U)の幅を取得
+    float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)の高さを取得
+    float GetU(void) const { return u_; }   //UV(U)の値を取得
+    float GetV(void) const { return v_; }   //UV(V)の値を取得
+
+private:
+    void LoopAnimation(void);
+
 };
