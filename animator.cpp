@@ -6,15 +6,15 @@
 #include "time.h"
 
 Animator::Animator(GameObject* game_object)
-        : pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), isAnim_(false),
-          now_matrix_number_(0),u_(0.0f),v_(0.0f)//初期化
+        : my_object_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
+          now_matrix_number_(0),u_(0.0f),v_(0.0f), isAnim_(false)//初期化
 {
     if(!Game::GetRenderer()->Add(this))
         std::cout<<"error creating animator for obj at "<<pos_.x<<", "<<pos_.y<<std::endl;
 }
 
 Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time)
-    : pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), img_change_time_(img_change_time),
+    : my_object_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), img_change_time_(img_change_time),
       fps_(fps), isAnim_(isAnim),
       x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(false),
       now_matrix_number_(0), u_(0.0f), v_(0.0f)//初期化
@@ -25,7 +25,7 @@ Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_n
 
 Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop,
             int loop_start_x, int loop_start_y, int loop_end_x, int loop_end_y)
-    : pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), 
+    : my_object_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
       fps_(fps), isAnim_(isAnim), img_change_time_(img_change_time),
       x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(is_loop),
       loop_start_x_(loop_start_x), loop_start_y_(loop_start_y), loop_end_x_(loop_end_x), loop_end_y_(loop_end_y),
@@ -40,9 +40,9 @@ Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_n
 void Animator::Update(void)
 {
     //今のゲームオブジェクトの状態を反映させる
-    pos_ = my_object->GetPos();
-    scale_ = my_object->GetScale();
-    rot_ = my_object->GetRot();
+    pos_ = my_object_->GetPos();
+    scale_ = my_object_->GetScale();
+    rot_ = my_object_->GetRot();
 
     if (!isAnim_)
     {

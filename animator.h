@@ -8,14 +8,14 @@ class GameObject;
 class Animator
 {
 private:
-    GameObject* my_object;  //アニメーション対象のゲームオブジェクト
+    GameObject* my_object_;  //アニメーション対象のゲームオブジェクト
 
     Vector2 pos_, scale_;
     float rot_ = 0.0f;
     int texNo_;
 
     int fps_;      //フレームレート
-    bool isAnim_;   //アニメーションするか
+    bool isAnim_ = false;   //アニメーションするか
     bool isMovable_; //移動するか
     int x_matrix_num_, y_matrix_num_;   //横と縦の画像の枚数
     int loop_start_x_, loop_start_y_;   //ループする初めの場所
@@ -90,7 +90,10 @@ public:
     void SetParent(GameObject* parent) { parent_ = parent; }
     GameObject* GetParent(void) const { return parent_; }
     bool GetIsAnim(void) const { return isAnim_; }
-    void SetIsAnim(bool isAnim) { isAnim_ = isAnim; }
+    void SetIsAnim(bool isAnim) { 
+        if (x_matrix_num_!=0&& y_matrix_num_ != 0)//セットされていないものはアニメーションすることが許されない
+            isAnim_ = isAnim;
+    }
     bool GetIsMovable(void) const { return isMovable_; }
     void SetIsMovable(bool isMovable) { isMovable_ = isMovable; }
 
