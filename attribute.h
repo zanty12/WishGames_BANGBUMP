@@ -3,7 +3,7 @@
 #include "player.h"
 
 class Player;
-class Attribute
+class Attribute : public GameObject
 {
 protected:
 	Player *player_;
