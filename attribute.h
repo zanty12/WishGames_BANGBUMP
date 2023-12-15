@@ -3,7 +3,7 @@
 #include "player.h"
 
 class Player;
-class Attribute
+class Attribute : public GameObject
 {
 protected:
 	Player *player_;
@@ -22,4 +22,5 @@ public:
 
 	virtual void DebugMenu() = 0;
 
+	virtual void Gravity() = 0;
 };
