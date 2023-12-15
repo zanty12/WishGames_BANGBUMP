@@ -18,6 +18,16 @@
 #include "lib/dxlib.h"
 #include "graphical.h"
 
+enum OBJECT_TYPE
+{
+    OBJ_SOLID, //貫通不能
+    OBJ_PENETRABLE, //下貫通
+    OBJ_VOID, //貫通可能
+    OBJ_SPIKE, //トゲ
+    OBJ_PLAYER, //プレイヤー
+    OBJ_ENEMY, //敵
+    OBJ_ATTACK, //攻撃
+};
 
 class Animator;
 class Collider;
