@@ -5,7 +5,7 @@
 // 作成者 根本賢
 // 
 // 作成日		2023/11/17
-// 最終更新日	2023/11/30
+// 最終更新日	2023/12/15
 // 
 //--------------------------------------------------------------------------------
 
@@ -14,12 +14,33 @@
 #include "spike.h"
 #include "xinput.h"
 
-bool Player::UseSkillPoint(void)
+
+#define LVUP_EXP_2	(2)
+#define LVUP_EXP_3	(5)
+#define LVUP_EXP_4	(9)
+#define LVUP_EXP_5	(14)
+#define LVUP_EXP_6	(20)
+#define LVUP_EXP_7	(29)
+#define LVUP_EXP_8	(41)
+#define LVUP_EXP_9	(55)
+#define LVUP_EXP_10	(71)
+
+bool Player::LvUp(int get_skill_pt)
 {
-	if (skillpt_ == SKILL_GAUGE_MAX_)
-	{
-		skillpt_ = 0;
-		return true;
+	skillpt_ += get_skill_pt;
+
+	//なんか効率のいい方法ない？
+	if (skillpt_ >= LVUP_EXP_2) {
+		lv_ = 2;
+	}
+	if (skillpt_ >= LVUP_EXP_3) {
+		lv_ = 3;
+	}
+	if (skillpt_ >= LVUP_EXP_4) {
+		lv_ = 4;
+	}
+	if (skillpt_ >= LVUP_EXP_5) {
+		lv_ = 5;
 	}
 
 	return false;
@@ -48,26 +69,9 @@ void Player::Update(void)
 
 	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
-		Vector2 move = move_attribute_->Move();
-		if (abs(move.x) > 0.1f || move.y <= GRAVITY_SCALE_-0.05f || move.y > 0.1f)
-		{
-			SetVel(move);
-		}
-		else
-		{
-			if (not_stick_working_ > 5)
-			{
-				if (GetVel().y >= 0.0f)
-					SetVel(Vector2(0.0f, GetVel().y - 0.5f));
-				if (GetVel().y >= GRAVITY_SCALE_)
-					SetVel(Vector2(0.0f, GetVel().y - 0.05f));
-				affected_gravity = true;
-			}
-			else
-			{
-				SetVel(Vector2::Zero);
-			}
-		}
+		(void)move_attribute_->Move();
+		move_attribute_->Gravity();
+
 	}
 	else if (clash_spike_ == 0)
 	{//何も属性がなければ落ちる
@@ -75,12 +79,6 @@ void Player::Update(void)
 			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));
 	}
 
-	//落ちる処理をまだしていなくてスティック操作をしていないときは重力を与える
-	if (!affected_gravity && not_stick_working_ > 5)
-	{
-		if (GetVel().y >= GRAVITY_SCALE_)
-			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));
-	}
 
 	if (attack_attribute_ != nullptr)
 	{

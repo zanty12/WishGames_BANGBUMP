@@ -40,6 +40,7 @@ private:
 
 	int hp_;
 	int skillpt_;
+	int lv_;
 
 	bool change_scene_;		//シーン遷移フラグ
 
@@ -54,7 +55,7 @@ private:
 
 public:
 	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
-		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),
+		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),lv_(1),
 		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0),
 		change_scene_(false){}
 
@@ -72,8 +73,8 @@ public:
 	bool GetChangeSceneFlag(void) { return change_scene_; }	//シーンチェンジのフラグ true=別のシーンへ
 	PLAYER_STATE GetPlayerState(void) { return player_state_; }	//プレイヤーのステータスをゲット
 
-	//スキルポイントの使用（使えるとき=true 使うとスキルポイントは0になる）
-	bool UseSkillPoint(void);
+	//レベルアップ（ゲットしたスキルポイントを引数にする）
+	bool LvUp(int get_skill_pt);
 	//スキルポイントの増加（ゲットしたポイントと所持スキルポイントの合計が所持スキルポイントの上限を超える場合、所持スキルポイントは10になる）
 	void SkillPointUp(int point) { skillpt_ + point <= SKILL_GAUGE_MAX_ ? skillpt_ += point : skillpt_ = SKILL_GAUGE_MAX_; }
 	//スキルポイントの減少（ダメージが所持スキルポイントを超える場合、スキルポイントは0になる）
