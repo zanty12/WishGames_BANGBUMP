@@ -117,3 +117,7 @@ void Dark::DebugMenu()
 	ImGui::SliderFloat2("attackWidthLength", &attackWidthLength, 1.0f, 10.0f);
 	ImGui::End();
 }
+
+void Dark::Gravity() {
+
+}

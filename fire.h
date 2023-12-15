@@ -24,4 +24,5 @@ public:
 	void Action() override;
 	void Draw(Vector2 offset)override;
 	void DebugMenu() override;
+	void Gravity() override;
 };
