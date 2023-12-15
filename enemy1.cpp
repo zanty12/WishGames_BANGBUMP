@@ -13,13 +13,11 @@ void Enemy1::Update()
 
     GetAnimator()->SetIsAnim(true);
 
-    if (!CheckLength(GetPos(), startPosition, (SIZE_ * 3.0f))/* || CellActions()*/)
+    if (!CheckLength(GetPos(), startPosition, (SIZE_ * 3.0f)))
     {
         startPosition = GetPos();
-        SetVel(Vector2(GetVel().x * -1, GetVel().y));
+        SetVel(Vector2(GetVel().x, GetVel().y));
     }
-
-    this->AddVel(GetVel());
 
     //壁判定
     CellAction();
@@ -30,18 +28,22 @@ void Enemy1::Update()
         player->HpDown(3);//★仮★
         //Die();
     }
-    ////他の敵との当たり判定
-    //for (auto& enemy : GetEnemyMngr()->GetEnemies())
-    //{
-    //    if (enemy == this || enemy == nullptr)
-    //        continue;
-    //    if (Collision(enemy))
-    //    {
-    //        enemy->SetVel(Vector2(enemy->GetVel().x, 0.0f));
-    //    }
-    //}
+
+    //他の敵との当たり判定
+ /*   for (auto& enemy : GetEnemyMngr()->GetEnemies())
+    {
+        if (enemy == this || enemy == nullptr)
+            continue;
+        if (Collision(enemy))
+        {
+            enemy->SetVel(Vector2(enemy->GetVel().x * -1, 0.0f));
+        }
+    }*/
 
 
+    
+
+    this->AddVel(GetVel());
 }
 
 void Enemy1::CellAction()
@@ -96,6 +98,8 @@ void Enemy1::CellAction()
 
 void Enemy1::CellActionSpike()
 {
+    //Enemy1* enemy;
+
     Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
     Cell* cells[4] = { nullptr, nullptr, nullptr, nullptr };
     int idx = std::floor((GetPos().x / SIZE_));
@@ -131,11 +135,13 @@ void Enemy1::CellActionSpike()
                     }
                     break;
                 case 2:
-                    if (GetVel().x < 0 || cell_type == MAP_READ_SPIKE_LEFT)
+                    if (GetVel().x < 0/* || cell_type == MAP_READ_SPIKE_LEFT*//* && cell_type != MAP_READ_SPIKE_RIGHT*/)
                     {
                         SetVel(Vector2(GetVel().x * -1, GetVel().y));
-                        enemy->
-
+                       /* if (Collision(enemy))
+                        {
+                            enemy->HpDown(3);
+                        }*/
                     }
                     break;
                 case 3:
