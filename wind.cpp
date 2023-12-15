@@ -84,3 +84,7 @@ void Wind::DebugMenu()
 	ImGui::SliderFloat("AttackRadius", &attackRadius, 0.0f, 100.0f);
 	ImGui::End();
 }
+
+void Wind::Gravity() {
+
+}

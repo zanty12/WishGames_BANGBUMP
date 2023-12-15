@@ -57,3 +57,7 @@ void Fire::DebugMenu()
     ImGui::SliderFloat("attackWidthLength", &attackWidthLength, 0.0f, 10.0f);
     ImGui::End();
 }
+
+void Fire::Gravity() {
+
+}
