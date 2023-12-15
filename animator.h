@@ -1,18 +1,49 @@
 #pragma once
+
+#include <map>
+
 #include "lib/vector.h"
 #include "graphical.h"
 #include "sprite.h"
 #include "gameobject.h"
 
+struct ANIM_DATA
+{
+    int loop_start_x, loop_start_y;
+    int loop_end_x, loop_end_y;
+
+    ANIM_DATA() {}
+    ANIM_DATA(int start_x, int start_y, int end_x, int end_y)
+    {
+        loop_start_x = start_x;
+        loop_start_y = start_y;
+        loop_end_x = end_x;
+        loop_end_y = end_y;
+    }
+};
+
+enum LOOP_IMG
+{
+    FIRE,
+    WIND,
+
+};
+
+
 class GameObject;
 class Animator
 {
 private:
+    std::map<LOOP_IMG, ANIM_DATA> DICTIONARY_;
+
     GameObject* my_object_;  //アニメーション対象のゲームオブジェクト
 
     Vector2 pos_, scale_;
     float rot_ = 0.0f;
     int texNo_;
+
+    LOOP_IMG loop_img_; //ループする画像の種類
+    LOOP_IMG loop_img_next_; //ループする画像の種類
 
     int fps_;      //フレームレート
     bool isAnim_ = false;   //アニメーションするか
@@ -49,13 +80,9 @@ public:
     // y_matrix_num     縦の画像の数
     // img_change_time  次の画像に切り替えるまでの秒数
     // is_loop          特定の場所をループするかどうか
-    // loop_start_x     ループする初めの横の位置
-    // loop_start_y     ループする初めの縦の位置
-    // loop_end_x       ループを終わる横の位置
-    // loop_end_y       ループを終わる縦の位置
     //--------------------------------------------------------------------------------
-    Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop, 
-        int loop_start_x, int loop_start_y,int loop_end_x,int loop_end_y);
+    Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop,
+        LOOP_IMG loop_img);
 
     ~Animator() = default;
 
@@ -66,7 +93,7 @@ public:
         const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
         const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
         DrawSprite(texNo_, Vector2(GetPos().x * scale_x, GetPos().y * scale_y), rot_,
-                   Vector2(scale_.x * scale_x, scale_.y * scale_y),color_);
+            Vector2(scale_.x * scale_x, scale_.y * scale_y), color_);
     }
 
     void Draw(Vector2 offset)
@@ -74,7 +101,7 @@ public:
         const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
         const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
         DrawSprite(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
-                       Vector2(scale_.x * scale_x, scale_.y * scale_y), color_);
+            Vector2(scale_.x * scale_x, scale_.y * scale_y), color_);
     }
 
     void SetPos(Vector2 pos) { pos_ = pos; }
@@ -90,8 +117,8 @@ public:
     void SetParent(GameObject* parent) { parent_ = parent; }
     GameObject* GetParent(void) const { return parent_; }
     bool GetIsAnim(void) const { return isAnim_; }
-    void SetIsAnim(bool isAnim) { 
-        if (x_matrix_num_!=0&& y_matrix_num_ != 0)//セットされていないものはアニメーションすることが許されない
+    void SetIsAnim(bool isAnim) {
+        if (x_matrix_num_ != 0 && y_matrix_num_ != 0)//セットされていないものはアニメーションすることが許されない
             isAnim_ = isAnim;
     }
     bool GetIsMovable(void) const { return isMovable_; }
@@ -100,12 +127,15 @@ public:
     void SetIsLoop(bool is_loop) { is_loop_ = is_loop; }    //ループの設定（treu=ループ）
     void SetImgChangeTime(float img_change_time) { img_change_time_ = img_change_time; }    //次の画像に切り替える間隔 [1.0f=１秒]
 
-    float UWidth(void) const{ return 1.0f / x_matrix_num_; }    //UV(U)の幅を取得
+    void SetLoopImg(LOOP_IMG loop_img) { loop_img_next_ = loop_img; }    //ループするイメージの設定
+
+    float UWidth(void) const { return 1.0f / x_matrix_num_; }    //UV(U)の幅を取得
     float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)の高さを取得
     float GetU(void) const { return u_; }   //UV(U)の値を取得
     float GetV(void) const { return v_; }   //UV(V)の値を取得
 
 private:
+    void InitDictionly(void);
     void LoopAnimation(void);
-
+    void Reset(void);
 };
