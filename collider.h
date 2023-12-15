@@ -2,7 +2,7 @@
 #include "lib/collider2d.h"
 #include "gameobject.h"
 
-enum ColliderType
+enum COLLIDER_TYPE
 {
     CIRCLE,
     RECTANGLE,
@@ -12,21 +12,22 @@ enum ColliderType
 class Collider
 {
 private:
+    COLLIDER_TYPE type_;
     Vector2 pos_;
-    bool is_move_ = false;
+    bool is_movable_= false;
     GameObject* parent_;
     std::list<Collider*> collision_;
 
 public:
     Collider() = delete;
-    Collider(GameObject* parent);
+    Collider(COLLIDER_TYPE type, GameObject* parent);
     virtual ~Collider() = default;
     virtual void Update() = 0;
 
     //getter and setter
     void SetPos(Vector2 pos) { pos_ = pos; }
     Vector2 GetPos() const { return pos_; }
-    void SetIsMove(bool is_move) { is_move_ = is_move; }
+    void SetIsMove(bool is_move) { is_movable_ = is_move; }
     GameObject* GetParent() const { return parent_; }
     std::list<Collider*> GetCollision() const { return collision_; }
     void SetCollision(const std::list<Collider*>& collision) { collision_ = collision; }
