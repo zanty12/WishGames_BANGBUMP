@@ -178,7 +178,7 @@
     <ClInclude Include="block.h" />
     <ClInclude Include="cloud.h" />
     <ClInclude Include="floor.h" />
-    <ClInclude Include="Gamemodules.h" />
+    <ClInclude Include="gamemodules.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />

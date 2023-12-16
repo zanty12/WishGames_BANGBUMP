@@ -37,7 +37,7 @@ class Animator
 private:
     std::map<LOOP_ANIM, ANIM_DATA> DICTIONARY_;
 
-    GameObject* my_object_;  //アニメーション対象のゲームオブジェクト
+    GameObject* parent_;  //アニメーション対象のゲームオブジェクト
 
     Vector2 pos_, scale_;
     float rot_ = 0.0f;
@@ -60,7 +60,7 @@ private:
     float u_ = 0.0f, v_ = 0.0f;
     Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-    GameObject* parent_;
+
 
 public:
     Animator() = delete;
@@ -137,7 +137,7 @@ public:
     float GetV(void) const { return v_; }   //UV(V)の値を取得
 
 private:
-    void InitDictionly(void);
+    void InitDictionary(void);
     void LoopAnimation(void);
     void Reset(void);
 };
