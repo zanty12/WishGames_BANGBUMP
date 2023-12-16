@@ -21,9 +21,18 @@ typedef enum {
     MAP_READ_CLOUD, ///< 雲セルを表します。
     MAP_READ_THUNDERCLOUD, ///< 雷雲セルを表します。
     MAP_READ_BLOCK, ///< ブロックセルを表します。
-    MAP_READ_ORB_SMALL, ///< 小スキル玉セルを表します。
-    MAP_READ_ORB_MID, ///< 中スキル玉セルを表します。
-    MAP_READ_ORB_BIG, ///< 大スキル玉セルを表します。
+    MAP_READ_ORB_SMALL_FIRE, ///< 小スキル玉セルを表します。
+    MAP_READ_ORB_MID_FIRE, ///< 中スキル玉セルを表します。
+    MAP_READ_ORB_BIG_FIRE, ///< 大スキル玉セルを表します。
+    MAP_READ_ORB_SMALL_DARK, ///< 小スキル玉セルを表します。
+    MAP_READ_ORB_MID_DARK, ///< 中スキル玉セルを表します。
+    MAP_READ_ORB_BIG_DARK, ///< 大スキル玉セルを表します。
+    MAP_READ_ORB_SMALL_WIND, ///< 小スキル玉セルを表します。
+    MAP_READ_ORB_MID_WIND, ///< 中スキル玉セルを表します。
+    MAP_READ_ORB_BIG_WIND, ///< 大スキル玉セルを表します。
+    MAP_READ_ORB_SMALL_THUNDER, ///< 小スキル玉セルを表します。
+    MAP_READ_ORB_MID_THUNDER, ///< 中スキル玉セルを表します。
+    MAP_READ_ORB_BIG_THUNDER, ///< 大スキル玉セルを表します。
     MAP_READ_SPIKE_LEFT, ///< 左向きのトゲセルを表します。
     MAP_READ_SPIKE_RIGHT, ///< 右向きのトゲセルを表します。
     MAP_READ_SPIKE_UP, ///< 上向きのトゲセルを表します。

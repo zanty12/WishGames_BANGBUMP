@@ -10,7 +10,7 @@
 #include "cloud.h"
 #include "floor.h"
 #include "penfloor.h"
-#include "skillorb.h"
+#include "skillorbattribute.h"
 #include "thundercloud.h"
 #include "wall.h"
 #include "mapenum.h"
@@ -26,7 +26,7 @@
  * このメソッドは、指定した位置がマップの範囲内にある場合にのみセルを配置します。
  * MAP_READの値に応じて、異なる種類のセルが配置されます。
  * 例えば、MAP_READ_WALLの場合はWall、MAP_READ_FLOORの場合はFloorが配置されます。
- * MAP_READ_ORB_SMALL、MAP_READ_ORB_MID、MAP_READ_ORB_BIGの場合は、それぞれ異なる大きさのSkillOrbが配置されます。
+ * MAP_READ_ORB_SMALL、MAP_READ_ORB_MID、MAP_READ_ORB_BIGの場合は、それぞれ異なる大きさのSkillOrbAttributeが配置されます。
  */
 void Map::PutCell(int x, int y, int MAP_READ) const
 {
@@ -75,26 +75,89 @@ void Map::PutCell(int x, int y, int MAP_READ) const
             break;
         }
 
-    case MAP_READ_ORB_SMALL:
+    case MAP_READ_ORB_SMALL_FIRE:
         {
-            SkillOrb * skillorb = new SkillOrb(x, y, MAP_READ_ORB_SMALL);
+            SkillOrbAttribute * skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_SMALL_FIRE);
             map_[y * width_ + x] = skillorb;
             break;
         }
 
-    case MAP_READ_ORB_MID:
+    case MAP_READ_ORB_MID_FIRE:
         {
-            SkillOrb * skillorb = new SkillOrb(x, y, MAP_READ_ORB_MID);
+            SkillOrbAttribute * skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_MID_FIRE);
             map_[y * width_ + x] = skillorb;
             break;
         }
 
-    case MAP_READ_ORB_BIG:
+    case MAP_READ_ORB_BIG_FIRE:
         {
-            SkillOrb * skillorb = new SkillOrb(x, y, MAP_READ_ORB_BIG);
+            SkillOrbAttribute * skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_BIG_FIRE);
             map_[y * width_ + x] = skillorb;
             break;
         }
+
+    case MAP_READ_ORB_SMALL_DARK:
+    {
+        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_SMALL_DARK);
+        map_[y * width_ + x] = skillorb;
+        break;
+    }
+
+    case MAP_READ_ORB_MID_DARK:
+    {
+        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_MID_DARK);
+        map_[y * width_ + x] = skillorb;
+        break;
+    }
+
+    case MAP_READ_ORB_BIG_DARK:
+    {
+        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_BIG_DARK);
+        map_[y * width_ + x] = skillorb;
+        break;
+    }
+
+    case MAP_READ_ORB_SMALL_THUNDER:
+    {
+        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_SMALL_THUNDER);
+        map_[y * width_ + x] = skillorb;
+        break;
+    }
+
+    case MAP_READ_ORB_MID_THUNDER:
+    {
+        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_MID_THUNDER);
+        map_[y * width_ + x] = skillorb;
+        break;
+    }
+
+    case MAP_READ_ORB_BIG_THUNDER:
+    {
+        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_BIG_THUNDER);
+        map_[y * width_ + x] = skillorb;
+        break;
+    }
+
+    case MAP_READ_ORB_SMALL_WIND:
+    {
+        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_SMALL_WIND);
+        map_[y * width_ + x] = skillorb;
+        break;
+    }
+
+    case MAP_READ_ORB_MID_WIND:
+    {
+        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_MID_WIND);
+        map_[y * width_ + x] = skillorb;
+        break;
+    }
+
+    case MAP_READ_ORB_BIG_WIND:
+    {
+        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_BIG_WIND);
+        map_[y * width_ + x] = skillorb;
+        break;
+    }
 
     case MAP_READ_SPIKE_UP:
         {
