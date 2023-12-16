@@ -22,7 +22,8 @@ struct ANIM_DATA
     }
 };
 
-enum LOOP_IMG
+//ここに全てのアニメーションの名前を書く
+enum LOOP_ANIM
 {
     FIRE,
     WIND,
@@ -34,7 +35,7 @@ class GameObject;
 class Animator
 {
 private:
-    std::map<LOOP_IMG, ANIM_DATA> DICTIONARY_;
+    std::map<LOOP_ANIM, ANIM_DATA> DICTIONARY_;
 
     GameObject* my_object_;  //アニメーション対象のゲームオブジェクト
 
@@ -42,8 +43,8 @@ private:
     float rot_ = 0.0f;
     int texNo_;
 
-    LOOP_IMG loop_img_; //ループする画像の種類
-    LOOP_IMG loop_img_next_; //ループする画像の種類
+    LOOP_ANIM loop_anim_; //ループする画像の種類
+    LOOP_ANIM loop_anim_next_; //ループする画像の種類
 
     int fps_;      //フレームレート
     bool isAnim_ = false;   //アニメーションするか
@@ -80,9 +81,10 @@ public:
     // y_matrix_num     縦の画像の数
     // img_change_time  次の画像に切り替えるまでの秒数
     // is_loop          特定の場所をループするかどうか
+    // loop_anim        ループさせるアニメーション
     //--------------------------------------------------------------------------------
     Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop,
-        LOOP_IMG loop_img);
+        LOOP_ANIM loop_anim);
 
     ~Animator() = default;
 
@@ -127,7 +129,7 @@ public:
     void SetIsLoop(bool is_loop) { is_loop_ = is_loop; }    //ループの設定（treu=ループ）
     void SetImgChangeTime(float img_change_time) { img_change_time_ = img_change_time; }    //次の画像に切り替える間隔 [1.0f=１秒]
 
-    void SetLoopImg(LOOP_IMG loop_img) { loop_img_next_ = loop_img; }    //ループするイメージの設定
+    void SetLoopImg(LOOP_ANIM loop_anim) { loop_anim_next_ = loop_anim; }    //ループするイメージの設定
 
     float UWidth(void) const { return 1.0f / x_matrix_num_; }    //UV(U)の幅を取得
     float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)の高さを取得
