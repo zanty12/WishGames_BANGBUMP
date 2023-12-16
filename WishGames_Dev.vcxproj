@@ -132,6 +132,7 @@
     <ClCompile Include="animator.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collider.cpp" />
+    <ClCompile Include="collidercir.cpp" />
     <ClCompile Include="collmngr.cpp" />
     <ClCompile Include="dark.cpp" />
     <ClCompile Include="debugUI.cpp" />
@@ -155,7 +156,7 @@
     <ClCompile Include="movableobj.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="RectColl.cpp" />
+    <ClCompile Include="colliderrect.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="scenemngr.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="animator.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collider.h" />
+    <ClInclude Include="collidercir.h" />
     <ClInclude Include="collmngr.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemymngr.h" />
@@ -202,7 +204,7 @@
     <ClInclude Include="penfloor.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="prep.h" />
-    <ClInclude Include="RectColl.h" />
+    <ClInclude Include="colliderrect.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="scene.h" />
