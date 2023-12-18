@@ -50,6 +50,8 @@ void Game::DebugMenu()
     ImGui::Begin("Game");
     ImGui::Text(u8"プレイヤー座標");
     ImGui::Text("x:%f, y: %f", player_->GetPos().x, player_->GetPos().y);
+    ImGui::Text(u8"プレイヤースピード");
+    ImGui::Text("x:%f, y: %f", player_->GetVel().x, player_->GetVel().y);
     ImGui::Text(u8"プレイヤー状態");
     ImGui::Text("%d", player_->GetPlayerState());
     ImGui::Text(u8"カメラ座標");

@@ -15,7 +15,10 @@ public:
     ColliderCir(GameObject* parent, float radius);
     Vertex1 GetCircle() const { return cir_; }
     float GetRadius() const { return radius_; }
-    bool Collide(Collider* other) const override;
+    bool Collide(Collider* other) override;
     void Update() override;
-    void OnCollision(Collider* other) override;
+
+    void CollisionInteract() override;
+    void CollisionSolid(Collider* other) override;
+    void CollisionPen(Collider* other) override;
 };

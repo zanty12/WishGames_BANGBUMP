@@ -13,14 +13,24 @@ ColliderRect::ColliderRect(GameObject* parent) : Collider(RECTANGLE, parent)
     Game::GetCollMngr()->Add(this);
 }
 
-bool ColliderRect::Collide(Collider* other) const
+bool ColliderRect::Collide(Collider* other)
 {
     switch (other->GetType())
     {
     case CIRCLE:
-        return Collider2D::Touch(rect_, dynamic_cast<ColliderCir*>(other)->GetCircle());
+        if(Collider2D::Touch(rect_, dynamic_cast<ColliderCir*>(other)->GetCircle()))
+        {
+            collision_.push_back(other);
+            return true;
+        }
+        return false;
     case RECTANGLE:
-        return Collider2D::Touch(rect_, dynamic_cast<ColliderRect*>(other)->GetRect());
+        if(Collider2D::Touch(rect_, dynamic_cast<ColliderRect*>(other)->GetRect()))
+        {
+            collision_.push_back(other);
+            return true;
+        }
+        return false;
     default:
         return false;
     }
@@ -36,7 +46,50 @@ void ColliderRect::Update()
     }
 }
 
-void ColliderRect::OnCollision(Collider* other)
+void ColliderRect::CollisionInteract()
+{
+    for (auto& other : collision_)
+    {
+        switch (other->GetParent()->GetType())
+        {
+        case OBJ_SOLID:
+            CollisionSolid(other);
+            break;
+        case OBJ_PENETRABLE:
+            CollisionPen(other);
+            break;
+        case OBJ_VOID:
+            break;
+        default:
+            CollisionSolid(other);
+        }
+    }
+}
+
+void ColliderRect::CollisionSolid(Collider* other)
+{
+    switch (other->GetType())
+    {
+    case CIRCLE:
+        break;
+    case RECTANGLE:
+        break;
+    }
+}
+
+void ColliderRect::CollisionPen(Collider* other)
+{
+    switch (other->GetType())
+    {
+    case CIRCLE:
+        break;
+    case RECTANGLE:
+        break;
+    }
+}
+
+
+
 {
     collision_.push_back(other);
     switch (other->GetType())
