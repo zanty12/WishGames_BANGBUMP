@@ -4,17 +4,18 @@
 
 ColliderRect::ColliderRect(GameObject* parent) : Collider(RECTANGLE, parent)
 {
-    const Vertex4 rect = Vertex4(Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),
-                                 Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),
-                                 Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2),
-                                 Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2));
+    const Vertex4 rect = Vertex4(
+        Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),
+        Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),
+        Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2),
+        Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2));
     rect_ = rect;
     Game::GetCollMngr()->Add(this);
 }
 
 bool ColliderRect::Collide(Collider* other) const
 {
-    switch(other->GetType())
+    switch (other->GetType())
     {
     case CIRCLE:
         return Collider2D::Touch(rect_, dynamic_cast<ColliderCir*>(other)->GetCircle());
@@ -23,25 +24,22 @@ bool ColliderRect::Collide(Collider* other) const
     default:
         return false;
     }
-
 }
 
 void ColliderRect::Update()
 {
-    if(GetPos() != GetParent()->GetPos())
+    if (GetPos() != GetParent()->GetPos())
     {
+        const Vector2 translate = GetParent()->GetPos() - GetPos();
         SetPos(GetParent()->GetPos());
-        rect_.a = Vector2(GetPos().x - GetParent()->GetScale().x / 2, GetPos().y + GetParent()->GetScale().y / 2);
-        rect_.b = Vector2(GetPos().x + GetParent()->GetScale().x / 2, GetPos().y + GetParent()->GetScale().y / 2);
-        rect_.c = Vector2(GetPos().x + GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
-        rect_.d = Vector2(GetPos().x - GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
+        rect_.Translate(translate);
     }
 }
 
 void ColliderRect::OnCollision(Collider* other)
 {
-    GetCollision().push_back(other);
-    switch(other->GetType())
+    collision_.push_back(other);
+    switch (other->GetType())
     {
     case CIRCLE:
         {
@@ -58,7 +56,7 @@ void ColliderRect::OnCollision(Collider* other)
                 Vector2 side_dir = (rect_side_end - rect_side_start).Normalize();
 
                 // Project circle center onto rectangle side
-                float t = Vector2::Dot((circle_center- rect_side_start), side_dir);
+                float t = Vector2::Dot((circle_center - rect_side_start), side_dir);
                 Vector2 projection = rect_side_start + side_dir * t;
 
                 // Clamp projection to rectangle side
@@ -88,30 +86,42 @@ void ColliderRect::OnCollision(Collider* other)
             Vertex4 rect = GetRect();
             Vertex4 other_rect_ = other_rect->GetRect();
             Vector2 collision_normal = other->GetPos() - GetPos();
-            float overlap_x = GetParent()->GetScale().x / 2 + other->GetParent()->GetScale().x / 2 - abs(collision_normal.x);
-            float overlap_y = GetParent()->GetScale().y / 2 + other->GetParent()->GetScale().y / 2 - abs(collision_normal.y);
-            if (overlap_x > 0 && overlap_y > 0)
+            float overlap_x = abs(collision_normal.x) - GetParent()->GetScale().x / 2 - other->GetParent()->GetScale().x
+                / 2;
+            float overlap_y = abs(collision_normal.y) - GetParent()->GetScale().y / 2 - other->GetParent()->GetScale().y
+                / 2;
+            if (overlap_x < 0 || overlap_y < 0)
             {
-                if (overlap_x < overlap_y)
+                Vector2 coll_dir = collision_normal.Normalize();
+                if (overlap_y < 0 && overlap_y > overlap_x)
                 {
-                    if (collision_normal.x < 0)
+                    //if this is top side
+                    if (GetPos().y < other->GetPos().y)
                     {
-                        GetParent()->SetPos(GetParent()->GetPos() - Vector2(overlap_x, 0));
+                        GetParent()->SetPos(GetPos() - Vector2(0.0f,coll_dir.y) * overlap_y);
+                        MovableObj* p = dynamic_cast<MovableObj*>(GetParent());
+                        if (p != nullptr)
+                        {
+                            p->SetVel(Vector2(p->GetVel().x, 0.0f));
+                        }
                     }
+                    //if this is bottom side
                     else
                     {
-                        GetParent()->SetPos(GetParent()->GetPos() + Vector2(overlap_x, 0));
+                        GetParent()->SetPos(GetPos() +  Vector2(0.0f,coll_dir.y) * overlap_y);
                     }
                 }
-                else
+                else if (overlap_x < 0 && overlap_x > overlap_y)
                 {
-                    if (collision_normal.y < 0)
+                    //if this is left side
+                    if (GetPos().x < other->GetPos().x)
                     {
-                        GetParent()->SetPos(GetParent()->GetPos() - Vector2(0, overlap_y));
+                        GetParent()->SetPos(GetPos() +  Vector2(coll_dir.x,0.0f) * overlap_x);
                     }
+                    //if this is right side
                     else
                     {
-                        GetParent()->SetPos(GetParent()->GetPos() + Vector2(0, overlap_y));
+                        GetParent()->SetPos(GetPos() + Vector2(coll_dir.x,0.0f) * overlap_x);
                     }
                 }
             }

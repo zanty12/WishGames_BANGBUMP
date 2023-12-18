@@ -35,7 +35,7 @@ void ColliderCir::Update()
 
 void ColliderCir::OnCollision(Collider* other)
 {
-    GetCollision().push_back(other);
+    collision_.push_back(other);
     switch (other->GetType())
     {
     case CIRCLE:
