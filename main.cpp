@@ -13,21 +13,19 @@ bool debug_mode = true;
 int main()
 {
     Graphical::Initialize(1600, 900);
+    DebugUI::Initialize();
     Time::Initialize();
 
     int mode = 0;
     std::cin >> mode;
     if (mode == 0) {
-        LoadTexture("./data/texture/skillorb.png");
-        //MultiServer server;
-        //server.OpenTerminal();
+        MultiServer server;
+        server.OpenTerminal();
     }
     else {
-        Graphical::WindowShow();
-        DebugUI::Initialize();
         MSG msg;
-
         Client client;
+        client.Register();
         //SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
 
         while (true)
@@ -74,21 +72,24 @@ int main()
                 }
                 }
                 Input::Update();
-
                 Time::Update();
                 client.Update();
                 //scene_mngr->Update();
                 //scene_mngr->Draw();
+
+                if (GetAsyncKeyState(VK_ESCAPE)) {
+                    break;
+                }
 
                 DebugUI::EndDraw();
                 Graphical::Present();
             }
         }
 
-        DebugUI::Release();
         client.Unregister();
         std::cout << "Hello World!\n"; //基本
     }
-    Graphical::Release();
     Time::Release();
+    DebugUI::Release();
+    Graphical::Release();
 }

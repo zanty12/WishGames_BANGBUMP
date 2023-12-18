@@ -10,15 +10,18 @@
 #include "storage.h"
 #include "xinput.h"
 
-#define SERVER_ADDRESS "10.192.53.0"
+#define SERVER_ADDRESS "192.168.0.121"
 #define MAX_MEMBER (4)
 #define PORT (8080)
 
 using namespace Network;
 
 struct HEADER {
+	enum {
+		NONE = -1,
+	};
+
 	enum COMMAND {
-		NONE,
 		REQUEST_LOGIN,
 		RESPONSE_LOGIN,
 		REQUEST_LOGOUT,
@@ -27,8 +30,14 @@ struct HEADER {
 		RESPONSE_UPDATE
 	};
 
-	int command = NONE;
+	enum SCENE {
+		SELECT_ATTRIBUTE,
+		STAGE,
+	};
+
 	int id = -1;
+	int command = NONE;
+	int scene = NONE;
 };
 struct OTHER_CLIENT {
 	HEADER header;
@@ -60,19 +69,20 @@ private:
 	Socket sockfd_;
 	std::list<CLIENT_DATA> clients_;
 	Storage sendBuff = Storage(1024), sendContentBuff = Storage(1024), recvBuff = Storage(1024);
-	MapMngr mapMngr = MapMngr("data\\map\\1.csv", nullptr);
+	MapMngr mapMngr = MapMngr("data/map/1.csv", nullptr);
 
 private:
+	// 登録
 	int Register(Address clientAddr, HEADER &header, Socket sockfd);
-
+	// 解除
 	void Unregister(int id);
-
+	// 全解除
 	void AllUnregister(void);
-
+	// 更新
 	void PlayerUpdate(REQUEST_PLAYER req);
-
+	// 受信
 	REQUEST_PLAYER RecvUpdate(void);
-
+	// 送信
 	void SendUpdate(void);
 
 	void Update();
@@ -84,7 +94,7 @@ private:
 			}
 		);
 	}
-
+	// レスポンス作成
 	void CreateResponseToClient(Storage &buff) {
 
 		// 初期化
@@ -92,7 +102,7 @@ private:
 		int playerNum = 0;
 
 		// プレイヤー数のカウント
-		for (auto client : clients_) {
+		for (auto &client : clients_) {
 			if (0 <= client.header.id) playerNum++;
 		}
 
@@ -100,7 +110,7 @@ private:
 		buff << playerNum;
 
 		// レスポンス作成（プレイヤー）
-		for (auto client : clients_) {
+		for (auto &client : clients_) {
 			// レスポンス情報の設定
 			RESPONSE_PLAYER res;
 			res.header = client.header;
@@ -109,9 +119,8 @@ private:
 			buff << res;
 		}
 	}
-
-	void ParseRequestFromClient(Storage &buff, REQUEST_PLAYER *req) {
-		if (req == nullptr) return;
+	// リクエスト解析
+	void ParseRequestFromClient(Storage &buff, REQUEST_PLAYER &req) {
 
 		buff >> req;
 	}
@@ -127,6 +136,27 @@ public:
 	void OpenTerminal(void);
 };
 
+
+
+class Object : public GameObject {
+private:
+	Animator anim = Animator(this);
+	void Update(void) override {};
+
+public:
+	Object(Vector2 pos, int texNo) : GameObject(pos, 0.0f, texNo) {}
+	void Update(RESPONSE_PLAYER res) {
+		SetPos(res.position);
+	}
+
+	void Draw(void) override {
+		anim.Draw();
+	}
+};
+
+
+
+
 class Client : public Server {
 private:
 	Socket sockfd_;
@@ -137,15 +167,18 @@ private:
 public:
 	RESPONSE_PLAYER player;
 	std::list<RESPONSE_PLAYER> players_;
+	Object playerAnim = Object(Vector2(0,0), LoadTexture("data/texture/player.png"));
+	~Client() { Unregister(); }
 
+	// 登録
 	int Register();
-
+	// 解除
 	void Unregister();
-
+	// 更新
 	void PlayerUpdate(RESPONSE_PLAYER &res, std::list<RESPONSE_PLAYER> &reses);
-
+	// 受信
 	void RecvUpdate(int waitTime, RESPONSE_PLAYER &res, std::list<RESPONSE_PLAYER> &reses);
-
+	// 送信
 	void SendUpdate(void);
 
 	void Update(void);
@@ -159,7 +192,7 @@ public:
 			}
 		);
 	}
-
+	// リクエスト作成
 	void CreateRequestToServer(Storage &outBuff) {
 		HEADER &header_ = player.header;
 
@@ -173,7 +206,7 @@ public:
 
 		outBuff << req;
 	}
-
+	// レスポンス解析
 	void ParseResponseFromServer(Storage &buff, std::list<RESPONSE_PLAYER> &reses) {
 		RESPONSE_PLAYER res__;
 		int playerNum = 0;

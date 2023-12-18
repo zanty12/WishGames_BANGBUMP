@@ -1,5 +1,9 @@
 #include "multiplay.h"
 #include "xinput.h"
+#include "thunder.h"
+#include "fire.h"
+#include "wind.h"
+#include "dark.h"
 #pragma comment(lib, "lib/lib.lib")
 
 
@@ -10,6 +14,8 @@ int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	int texNo = 0;
 	Vector2 vel = Vector2::Zero;
 	Player *player = new Player(pos, rot, texNo, vel, &mapMngr);
+	player->SetAttribute(new Fire(player));
+	player->SetAttackAttribute(new Fire(player));
 
 	// ヘッダーの更新
 	header.command = HEADER::RESPONSE_LOGIN;
@@ -30,7 +36,7 @@ int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	// 送信
 	header.command = HEADER::RESPONSE_LOGIN;
 	SendTo(this->sockfd_, (char *)&header, sizeof(HEADER), 0, clientAddr);
-	std::cout << "Res >> ID:" << maxID << " Login" << std::endl;
+	std::cout << "Res >> ID:" << (maxID - 1) << " Login" << std::endl;
 
 	return maxID - 1;
 }
@@ -81,14 +87,16 @@ void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
 
 
 	// プレイヤーの処理を行う
-	//iterator->player_.Update();
+	iterator->player_->Update();
+	std::cout << clients_.size() << std::endl;
+	//std::cout << iterator->player_->GetPos().x << ", " << iterator->player_->GetPos().y << std::endl;
 }
 
 REQUEST_PLAYER MultiServer::RecvUpdate(void) {
 	// リクエスト情報を書き出す
 	REQUEST_PLAYER req;
 
-	ParseRequestFromClient(recvBuff, &req);
+	ParseRequestFromClient(recvBuff, req);
 
 	return req;
 }
@@ -128,7 +136,23 @@ void MultiServer::OpenTerminal(void) {
 	sockfd_.Bind(addr);
 
 	const int MAX_BUFF = 1024;
+	MSG msg;
 	while (true) {
+		// メッセージ
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			if (msg.message == WM_QUIT)
+			{
+				break;
+			}
+			else
+			{
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+
+
 		Address clientAddr;
 		int clientAddrLen = sizeof(clientAddr);
 		char buff[MAX_BUFF] = {};
@@ -198,7 +222,6 @@ int Client::Register() {
 	}
 	std::cout << "Res << ID:" << header_.id << " Login" << std::endl;
 	std::cout << header_.id << "番目に登録しました。" << std::endl;
-
 	return header_.id;
 }
 
@@ -227,15 +250,15 @@ void Client::Unregister() {
 
 	sockfd_.Close();
 }
-#define Cursor(x, y) printf("\033[%d;%dH", y, x)
+
 void Client::PlayerUpdate(RESPONSE_PLAYER &res, std::list<RESPONSE_PLAYER> &reses) {
-	system("cls");
-	Cursor((int)res.position.x, (int)res.position.y);
-	printf("*");
+	std::cout << res.position.x << ", " << res.position.y << std::endl;
+	playerAnim.Update(res);
+	playerAnim.Draw();
 
 	for (auto &res : reses) {
-		Cursor((int)res.position.x, (int)res.position.y);
-		printf("*");
+		playerAnim.Update(res);
+		playerAnim.Draw();
 	}
 }
 
@@ -263,26 +286,24 @@ void Client::RecvUpdate(int waitTime, RESPONSE_PLAYER &res, std::list<RESPONSE_P
 		recvBuff.Push(buff, buffLen);
 
 		// レスポンスの解析
-		ParseResponseFromServer(recvBuff, reses);
+		std::list<RESPONSE_PLAYER> clients;
+		ParseResponseFromServer(recvBuff, clients);
 
 		// 更新
-		for (RESPONSE_PLAYER &res : reses) {
+		for (RESPONSE_PLAYER &r : clients) {
 			// 自分自身を更新
-			if (res.header.id == player.header.id) {
-				player.header = res.header;
+			if (r.header.id == player.header.id) {
+				player.header = r.header;
+				player.position = r.position;
+
+				res = player;
 				if (player.header.command == HEADER::RESPONSE_LOGOUT) return;
 			}
 			// 他人を更新
 			else {
-				// IDを0~MAX_MEMBER-1にする
-				int id = res.header.id;
-
-				// プレイヤーの検索
-				auto iterator = find(id);
-
 				// 更新
-				if (res.header.command == HEADER::RESPONSE_LOGOUT) res.header = HEADER();
-				iterator->header = res.header;
+				if (r.header.command == HEADER::RESPONSE_LOGOUT) r.header = HEADER();
+				reses.push_back(r);
 			}
 		}
 	}
@@ -298,67 +319,3 @@ void Client::Update() {
 	recvBuff = nullptr;
 	sendBuff = nullptr;
 }
-
-//#include <thread>
-
-//Client client;
-
-//void clientMultiplay() {
-//	while (true) {
-//		client.Send();
-//		client.Update(100);
-//		if (client.header.command == HEADER::RESPONSE_LOGOUT) return;
-//	}
-//}
-
-//int main(void) {
-//
-//	int i = 0;
-//	std::cin >> i;
-//	system("cls");
-//
-//	if (i) {
-//		client.Register();
-//		std::thread thread__(clientMultiplay);
-//
-//		while (true) {
-//			//system("cls");
-//			if (_kbhit()) {
-//				int key = _getch();
-//				switch (key) {
-//				case 'a': client.header.pos.x -= 1; break;
-//				case 'd': client.header.pos.x += 1; break;
-//				case 'w': client.header.pos.y -= 1; break;
-//				case 's': client.header.pos.y += 1; break;
-//				}
-//				if ('l' == key) {
-//					client.Unregister();
-//					break;
-//				}
-//			}
-//
-//			//client.Send();
-//			//client.Update(10);
-//			//if (client.header.command == LOCAL_DATA::UNREGISTER_OK) return 0;
-//
-//
-//			//Vector2Int pos = client.header.pos;
-//			//Cursor(pos.x, pos.y);
-//			//printf("*");
-//			//for (int i = 0; i < MAX_MEMBER - 1; i++) {
-//			//	pos = client.players_[i].pos;
-//			//	Cursor(pos.x, pos.y);
-//			//	printf("*");
-//			//}
-//		}
-//
-//		thread__.join();
-//	}
-//	else {
-//		MultiServer server;
-//		server.OpenTerminal();
-//	}
-//
-//
-//	return 0;
-//}

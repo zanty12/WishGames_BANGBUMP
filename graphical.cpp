@@ -29,6 +29,8 @@ void Graphical::Initialize(int width, int height) {
 	Device3D::SetResource(renderer.GetRasterizer());
 	device.Target(renderer);
 
+	Graphical::WindowShow();
+
 
 	// スプライトの初期化
 	InitSprite();
