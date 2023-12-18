@@ -16,6 +16,7 @@
 
 using namespace Network;
 
+
 struct HEADER {
 	enum {
 		NONE = -1,
@@ -29,11 +30,10 @@ struct HEADER {
 		REQUEST_UPDATE,
 		RESPONSE_UPDATE
 	};
-
 	enum SCENE {
-		SELECT_ATTRIBUTE,
-		STAGE,
+		SELECT,
 	};
+
 
 	int id = -1;
 	int command = NONE;
@@ -44,15 +44,99 @@ struct OTHER_CLIENT {
 	Vector2 position;
 };
 
-struct REQUEST_PLAYER {
-	HEADER header;
-	XINPUT_GAMEPAD curInput;
-	XINPUT_GAMEPAD preInput;
-};
 
 struct RESPONSE_PLAYER {
-	HEADER header;
-	Vector2 position;
+	struct DESC {
+		int id;
+		Vector2 position;
+	};
+	std::list<DESC> clients;
+
+	void CreateResponse(Storage &out, int id) {
+		// 初期化
+		out = nullptr;
+
+		// ヘッダー作成
+		HEADER header;
+		header.id = id;
+		header.command = HEADER::RESPONSE_UPDATE;
+
+		// レスポンス作成（ヘッダー）
+		out << header;
+		out << clients.size();
+
+		// レスポンス作成（プレイヤー）
+		for (auto &client : clients) {
+			// レスポンス情報の設定
+			out << client;
+		}
+	}
+
+	void ParseResponse(Storage &in) {
+		HEADER recvHeader;
+		size_t playerNum = 0;
+
+		// ヘッダー取得
+		in >> recvHeader;
+		in >> playerNum;
+
+
+		// レスポンス解析（プレイヤー）
+		for (int i = 0; i < playerNum; i++) {
+			DESC res;
+			in >> res;
+
+			// 自分なら先頭に
+			if (res.id == recvHeader.id) {
+				clients.push_front(res);
+			}
+			else {
+				clients.push_back(res);
+			}
+		}
+
+		// 初期化
+		in = nullptr;
+	}
+};
+
+struct REQUEST_PLAYER {
+	struct DESC {
+		int id;
+		XINPUT_GAMEPAD curInput;
+		XINPUT_GAMEPAD preInput;
+	};
+	DESC input;
+
+	void CreateRequest(Storage &out, int id) {
+		// 初期化
+		out = nullptr;
+
+		// ヘッダー作成
+		HEADER header;
+		header.id = id;
+		header.command = HEADER::REQUEST_UPDATE;
+
+		// レスポンス作成（ヘッダー）
+		out << header;
+
+		// レスポンス作成（入力）
+		out << input;
+	}
+
+	void ParseRequest(Storage &in) {
+		HEADER recvHeader;
+
+		// ヘッダー取得
+		in >> recvHeader;
+
+
+		// レスポンス解析（入力）
+		in >> input;
+
+		// 初期化
+		in = nullptr;
+	}
 };
 
 
@@ -70,6 +154,7 @@ private:
 	std::list<CLIENT_DATA> clients_;
 	Storage sendBuff = Storage(1024), sendContentBuff = Storage(1024), recvBuff = Storage(1024);
 	MapMngr mapMngr = MapMngr("data/map/1.csv", nullptr);
+	//MULTI_SCENE scene = SELECT;
 
 private:
 	// 登録
@@ -94,36 +179,7 @@ private:
 			}
 		);
 	}
-	// レスポンス作成
-	void CreateResponseToClient(Storage &buff) {
 
-		// 初期化
-		buff = nullptr;
-		int playerNum = 0;
-
-		// プレイヤー数のカウント
-		for (auto &client : clients_) {
-			if (0 <= client.header.id) playerNum++;
-		}
-
-		// ヘッダー作成
-		buff << playerNum;
-
-		// レスポンス作成（プレイヤー）
-		for (auto &client : clients_) {
-			// レスポンス情報の設定
-			RESPONSE_PLAYER res;
-			res.header = client.header;
-			res.position = client.player_->GetPos();
-
-			buff << res;
-		}
-	}
-	// リクエスト解析
-	void ParseRequestFromClient(Storage &buff, REQUEST_PLAYER &req) {
-
-		buff >> req;
-	}
 
 public:
 	~MultiServer() { 
@@ -145,8 +201,8 @@ private:
 
 public:
 	Object(Vector2 pos, int texNo) : GameObject(pos, 0.0f, texNo) {}
-	void Update(RESPONSE_PLAYER res) {
-		SetPos(res.position);
+	void Update(RESPONSE_PLAYER::DESC res) {
+		anim.SetPos((res.position / 2 + Vector2(1600, 900) / 2));
 	}
 
 	void Draw(void) override {
@@ -165,8 +221,8 @@ private:
 	Storage sendBuff = Storage(1024), recvBuff = Storage(1024);
 
 public:
-	RESPONSE_PLAYER player;
-	std::list<RESPONSE_PLAYER> players_;
+	int id = -1;
+	//RESPONSE_PLAYER::DESC player;
 	Object playerAnim = Object(Vector2(0,0), LoadTexture("data/texture/player.png"));
 	~Client() { Unregister(); }
 
@@ -175,9 +231,9 @@ public:
 	// 解除
 	void Unregister();
 	// 更新
-	void PlayerUpdate(RESPONSE_PLAYER &res, std::list<RESPONSE_PLAYER> &reses);
+	void PlayerUpdate(RESPONSE_PLAYER &res/*, std::list<RESPONSE_PLAYER> &reses*/);
 	// 受信
-	void RecvUpdate(int waitTime, RESPONSE_PLAYER &res, std::list<RESPONSE_PLAYER> &reses);
+	void RecvUpdate(int waitTime, RESPONSE_PLAYER &res/*, std::list<RESPONSE_PLAYER> &reses*/);
 	// 送信
 	void SendUpdate(void);
 
@@ -186,41 +242,10 @@ public:
 
 
 
-	std::list<RESPONSE_PLAYER>::iterator find(int id) {
-		return std::find_if(players_.begin(), players_.end(), [&](RESPONSE_PLAYER client) {
-			return client.header.id == id;
+	std::list<RESPONSE_PLAYER::DESC>::iterator find(int id, std::list<RESPONSE_PLAYER::DESC> clients) {
+		return std::find_if(clients.begin(), clients.end(), [&](RESPONSE_PLAYER::DESC client) {
+			return client.id == id;
 			}
 		);
-	}
-	// リクエスト作成
-	void CreateRequestToServer(Storage &outBuff) {
-		HEADER &header_ = player.header;
-
-		// コマンド設定
-		header_.command = HEADER::REQUEST_UPDATE;
-
-		REQUEST_PLAYER req;
-		req.header = header_;
-		req.curInput = Input::GetState(0);
-		req.preInput = Input::GetPreviousState(0);
-
-		outBuff << req;
-	}
-	// レスポンス解析
-	void ParseResponseFromServer(Storage &buff, std::list<RESPONSE_PLAYER> &reses) {
-		RESPONSE_PLAYER res__;
-		int playerNum = 0;
-
-		// ヘッダーの取得
-		buff >> player.header;
-		buff >> playerNum;
-
-
-		// レスポンス解析（プレイヤー）
-		for (int i = 0; i < playerNum; i++) {
-			buff >> res__;
-
-			reses.push_back(res__);
-		}
 	}
 };

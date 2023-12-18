@@ -1,4 +1,4 @@
-#include "multiplay.h"
+ï»¿#include "multiplay.h"
 #include "xinput.h"
 #include "thunder.h"
 #include "fire.h"
@@ -17,11 +17,11 @@ int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	player->SetAttribute(new Fire(player));
 	player->SetAttackAttribute(new Fire(player));
 
-	// ƒwƒbƒ_[‚ÌXV
+	// ãƒ˜ãƒƒãƒ€ãƒ¼ã®æ›´æ–°
 	header.command = HEADER::RESPONSE_LOGIN;
 	header.id = maxID++;
 
-	// ƒNƒ‰ƒCƒAƒ“ƒgƒf[ƒ^‚Ìì¬
+	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãƒ‡ãƒ¼ã‚¿ã®ä½œæˆ
 	CLIENT_DATA clientData = {
 		header,
 		sockfd,
@@ -29,11 +29,11 @@ int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 		player
 	};
 
-	// ƒvƒŒƒCƒ„[’Ç‰Á
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¿½åŠ 
 	clients_.push_back(clientData);
 
 
-	// ‘—M
+	// é€ä¿¡
 	header.command = HEADER::RESPONSE_LOGIN;
 	SendTo(this->sockfd_, (char *)&header, sizeof(HEADER), 0, clientAddr);
 	std::cout << "Res >> ID:" << (maxID - 1) << " Login" << std::endl;
@@ -43,21 +43,21 @@ int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 
 void MultiServer::Unregister(int id) {
 
-	// ƒvƒŒƒCƒ„[‚ÌŒŸõ
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ¤œç´¢
 	auto iterator = find(id);
 
-	// ŒŸõ•sˆê’v
+	// æ¤œç´¢ä¸ä¸€è‡´
 	if (iterator == clients_.end()) return;
 
-	// ‰ğœ
+	// è§£é™¤
 	iterator->header.command = HEADER::RESPONSE_LOGOUT;
 	iterator->sockfd_.Close();
 
-	// ‘—M
+	// é€ä¿¡
 	SendTo(sockfd_, (char *)&iterator->header, sizeof(HEADER), 0, iterator->clientAddr_);
 	std::cout << "Res >> ID:" << " Logout" << std::endl;
 
-	// íœ
+	// å‰Šé™¤
 	delete iterator->player_;
 	clients_.erase(iterator);
 }
@@ -71,52 +71,54 @@ void MultiServer::AllUnregister(void) {
 
 void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
 
-	// ƒvƒŒƒCƒ„[‚ÌŒŸõ
-	auto iterator = find(req.header.id);
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ¤œç´¢
+	auto iterator = find(req.input.id);
 
-	// ŒŸõ•sˆê’v
+	// æ¤œç´¢ä¸ä¸€è‡´
 	if (iterator == clients_.end()) return;
 
-	// ƒL[“ü—Í‚ÌXV
-	Input::SetState(0, req.curInput);
-	Input::SetPreviousState(0, req.preInput);
-
-	// ƒwƒbƒ_[‚ÌXV
-	iterator->header = req.header;
+	// ã‚­ãƒ¼å…¥åŠ›ã®æ›´æ–°
+	Input::SetState(0, req.input.curInput);
+	Input::SetPreviousState(0, req.input.preInput);
 
 
 
-	// ƒvƒŒƒCƒ„[‚Ìˆ—‚ğs‚¤
+
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‡¦ç†ã‚’è¡Œã†
 	iterator->player_->Update();
 	std::cout << clients_.size() << std::endl;
 	//std::cout << iterator->player_->GetPos().x << ", " << iterator->player_->GetPos().y << std::endl;
 }
 
 REQUEST_PLAYER MultiServer::RecvUpdate(void) {
-	// ƒŠƒNƒGƒXƒgî•ñ‚ğ‘‚«o‚·
+	// ãƒªã‚¯ã‚¨ã‚¹ãƒˆæƒ…å ±ã‚’æ›¸ãå‡ºã™
 	REQUEST_PLAYER req;
+	req.ParseRequest(recvBuff);
 
-	ParseRequestFromClient(recvBuff, req);
+	//ParseRequestFromClient(recvBuff, req);
 
 	return req;
 }
 
 void MultiServer::SendUpdate(void) {
-	// ƒŒƒXƒ|ƒ“ƒX‚Ìì¬
-	CreateResponseToClient(sendContentBuff);
+	// ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã®ä½œæˆ
+	RESPONSE_PLAYER res;
+	//CreateResponseToClient(sendContentBuff);
 
-
+	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæƒ…å ±ã®ç™»éŒ²
 	for (auto &client : clients_) {
-		// “o˜^‚³‚ê‚Ä‚¢‚È‚¢‚È‚çƒXƒLƒbƒv
+		res.clients.push_back({ client.header.id , client.player_->GetPos() });
+	}
+
+	// ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå…¨å“¡ã«é€ä¿¡ã™ã‚‹
+	for (auto &client : clients_) {
+		// ç™»éŒ²ã•ã‚Œã¦ã„ãªã„ãªã‚‰ã‚¹ã‚­ãƒƒãƒ—
 		if (client.header.id < 0) continue;
 
-		client.header.command = HEADER::RESPONSE_UPDATE;
+		// å®›å…ˆã®ç™»éŒ²ã¨ãƒ¬ã‚¹ãƒãƒ³ã‚¹å†…å®¹ã®çµåˆ
+		res.CreateResponse(sendBuff, client.header.id);
 
-		// ˆ¶æ‚Ì“o˜^‚ÆƒŒƒXƒ|ƒ“ƒX“à—e‚ÌŒ‹‡
-		sendBuff = client.header;
-		sendBuff << sendContentBuff;
-
-		// ‘—M
+		// é€ä¿¡
 		SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
 	}
 }
@@ -128,17 +130,17 @@ void MultiServer::Update() {
 }
 
 void MultiServer::OpenTerminal(void) {
-	// ƒ\ƒPƒbƒgì¬
+	// ã‚½ã‚±ãƒƒãƒˆä½œæˆ
 	sockfd_ = Socket(AddressFamily::IPV4, Type::UDP, 0);
-	// ƒoƒCƒ“ƒh—pƒAƒhƒŒƒXì¬
+	// ãƒã‚¤ãƒ³ãƒ‰ç”¨ã‚¢ãƒ‰ãƒ¬ã‚¹ä½œæˆ
 	Address addr = Address(AddressFamily::IPV4, INADDR_ANY, PORT);
-	// ƒoƒCƒ“ƒh
+	// ãƒã‚¤ãƒ³ãƒ‰
 	sockfd_.Bind(addr);
 
 	const int MAX_BUFF = 1024;
 	MSG msg;
 	while (true) {
-		// ƒƒbƒZ[ƒW
+		// ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT)
@@ -157,7 +159,7 @@ void MultiServer::OpenTerminal(void) {
 		int clientAddrLen = sizeof(clientAddr);
 		char buff[MAX_BUFF] = {};
 
-		// óM
+		// å—ä¿¡
 		int buffLen = RecvFrom(sockfd_, buff, MAX_BUFF, 0, &clientAddr, &clientAddrLen);
 
 		if (0 <= buffLen) {
@@ -166,23 +168,23 @@ void MultiServer::OpenTerminal(void) {
 			switch (pHeader->command)
 			{
 			case HEADER::COMMAND::REQUEST_LOGIN: {
-				// “o˜^
+				// ç™»éŒ²
 				std::cout << "Req << ID:*" << " Login" << std::endl;
 				int id = Register(clientAddr, *pHeader, 0);
-				// ‘—M
+				// é€ä¿¡
 				//SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
-				std::cout << id << " : “o˜^‚µ‚Ü‚µ‚½" << std::endl;
+				std::cout << id << " : ç™»éŒ²ã—ã¾ã—ãŸ" << std::endl;
 				break;
 			};
 			case HEADER::COMMAND::REQUEST_LOGOUT: {
-				// ‰ğœ
+				// è§£é™¤
 				std::cout << "Req << ID:" << pHeader->id << " Logout" << std::endl;
 				Unregister(pHeader->id);
-				std::cout << pHeader->id << " : ‰ğœ‚µ‚Ü‚µ‚½" << std::endl;
+				std::cout << pHeader->id << " : è§£é™¤ã—ã¾ã—ãŸ" << std::endl;
 				break;
 			}
 			case HEADER::COMMAND::REQUEST_UPDATE: {
-				// XV
+				// æ›´æ–°
 				recvBuff.Push(buff, buffLen);
 				Update();
 				break;
@@ -197,124 +199,115 @@ void MultiServer::OpenTerminal(void) {
 
 
 int Client::Register() {
-	HEADER &header_ = player.header;
+	HEADER header;
 
-	// ƒ\ƒPƒbƒgì¬
+	// ã‚½ã‚±ãƒƒãƒˆä½œæˆ
 	sockfd_ = Socket(AddressFamily::IPV4, Type::UDP, 0);
 
-	// ƒAƒhƒŒƒXì¬
+	// ã‚¢ãƒ‰ãƒ¬ã‚¹ä½œæˆ
 	serverAddr = Address(AddressFamily::IPV4, SERVER_ADDRESS, PORT);
 
-	// ƒRƒ}ƒ“ƒhİ’è
-	header_.command = HEADER::COMMAND::REQUEST_LOGIN;
+	// ã‚³ãƒãƒ³ãƒ‰è¨­å®š
+	header.command = HEADER::COMMAND::REQUEST_LOGIN;
 
-	// ‘€ì
+	// æ“ä½œ
 	readfd_.Add(sockfd_);
 
-	// ‘—M
+	// é€ä¿¡
 	std::cout << "Req >> ID:*" << " Login" << std::endl;
-	SendTo(sockfd_, (char *)&player.header, sizeof(HEADER), 0, serverAddr);
+	SendTo(sockfd_, (char *)&header, sizeof(HEADER), 0, serverAddr);
 
-	// óM
+	// å—ä¿¡
 	while (true) {
-		Recv(sockfd_, (char *)&header_, sizeof(HEADER), 0);
-		if (header_.command = HEADER::RESPONSE_LOGIN) break;
+		Recv(sockfd_, (char *)&header, sizeof(HEADER), 0);
+		if (header.command = HEADER::RESPONSE_LOGIN) break;
 	}
-	std::cout << "Res << ID:" << header_.id << " Login" << std::endl;
-	std::cout << header_.id << "”Ô–Ú‚É“o˜^‚µ‚Ü‚µ‚½B" << std::endl;
-	return header_.id;
+
+	// IDã‚’è¨˜éŒ²
+	id = header.id;
+
+	std::cout << "Res << ID:" << header.id << " Login" << std::endl;
+	std::cout << header.id << "ç•ªç›®ã«ç™»éŒ²ã—ã¾ã—ãŸã€‚" << std::endl;
+	return header.id;
 }
 
 void Client::Unregister() {
-	HEADER &header_ = player.header;
+	HEADER header;
 
-	// ƒRƒ}ƒ“ƒhİ’è
-	header_.command = HEADER::REQUEST_LOGOUT;
+	// ã‚³ãƒãƒ³ãƒ‰è¨­å®š
+	header.command = HEADER::REQUEST_LOGOUT;
+	// IDè¨­å®š
+	header.id = id;
 
-	// ‘—M
-	std::cout << "Req << ID:" << header_.id << " Logout" << std::endl;
-	SendTo(sockfd_, (char *)&header_, sizeof(HEADER), 0, serverAddr);
+	// é€ä¿¡
+	std::cout << "Req << ID:" << header.id << " Logout" << std::endl;
+	SendTo(sockfd_, (char *)&header, sizeof(HEADER), 0, serverAddr);
 
 	while (true) {
 		HEADER data;
 		Recv(sockfd_, (char *)&data, sizeof(HEADER), 0);
+
+		// ã‡¿ã‚°ãƒ©ã‚¦ãƒˆæˆåŠŸãªã‚‰
 		if (data.command == HEADER::RESPONSE_LOGOUT &&
-			data.id == header_.id) {
-			std::cout << "Res << ID:" << header_.id << " Logout" << std::endl;
-			header_ = HEADER();
+			data.id == header.id) {
+			std::cout << "Res << ID:" << id << " Logout" << std::endl;
 			break;
 		}
 	}
 
-	std::cout << header_.id << "‚ğ‰ğœ‚µ‚Ü‚µ‚½B" << std::endl;
+	std::cout << id << "ã‚’è§£é™¤ã—ã¾ã—ãŸã€‚" << std::endl;
 
 	sockfd_.Close();
 }
 
-void Client::PlayerUpdate(RESPONSE_PLAYER &res, std::list<RESPONSE_PLAYER> &reses) {
-	std::cout << res.position.x << ", " << res.position.y << std::endl;
-	playerAnim.Update(res);
-	playerAnim.Draw();
+void Client::PlayerUpdate(RESPONSE_PLAYER &res) {
+	//playerAnim.Update(res);
+	//playerAnim.Draw();
 
-	for (auto &res : reses) {
-		playerAnim.Update(res);
+	for (auto &client : res.clients) {
+		std::cout << client.position.x << ", " << client.position.y << std::endl;
+		playerAnim.Update(client);
 		playerAnim.Draw();
 	}
 }
 
 void Client::SendUpdate(void) {
-	// ƒŠƒNƒGƒXƒg‚Ìì¬
-	CreateRequestToServer(sendBuff);
+	// ãƒªã‚¯ã‚¨ã‚¹ãƒˆã®ä½œæˆ
+	REQUEST_PLAYER req;
+	req.input = { id, Input::GetState(0), Input::GetPreviousState(0) };
+	req.CreateRequest(sendBuff, id);
 
-	// ‘—M
+	// é€ä¿¡
 	SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, serverAddr);
 }
 
-void Client::RecvUpdate(int waitTime, RESPONSE_PLAYER &res, std::list<RESPONSE_PLAYER> &reses) {
+void Client::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 	FD tmp;
 	memcpy(&tmp, &readfd_, sizeof(FD));
 
-	// ŒŸ’m‚·‚é
+	// æ¤œçŸ¥ã™ã‚‹
 	const int MAX_BUFF = 1024;
 	if (Select(&tmp, nullptr, nullptr, 0, waitTime)) {
 		char buff[MAX_BUFF] = {};
 
-		// óM‚·‚é
+		// å—ä¿¡ã™ã‚‹
 		int buffLen = Recv(sockfd_, (char *)buff, MAX_BUFF);
-		// ¸”s‚È‚çI—¹
+		// å¤±æ•—ãªã‚‰çµ‚äº†
 		if (buffLen <= 0) return;
 		recvBuff.Push(buff, buffLen);
 
-		// ƒŒƒXƒ|ƒ“ƒX‚Ì‰ğÍ
-		std::list<RESPONSE_PLAYER> clients;
-		ParseResponseFromServer(recvBuff, clients);
 
-		// XV
-		for (RESPONSE_PLAYER &r : clients) {
-			// ©•ª©g‚ğXV
-			if (r.header.id == player.header.id) {
-				player.header = r.header;
-				player.position = r.position;
 
-				res = player;
-				if (player.header.command == HEADER::RESPONSE_LOGOUT) return;
-			}
-			// ‘¼l‚ğXV
-			else {
-				// XV
-				if (r.header.command == HEADER::RESPONSE_LOGOUT) r.header = HEADER();
-				reses.push_back(r);
-			}
-		}
+		// ãƒ¬ã‚¹ãƒãƒ³ã‚¹ã®è§£æ
+		res.ParseResponse(recvBuff);
 	}
 }
 
 void Client::Update() {
 	RESPONSE_PLAYER res;
-	std::list<RESPONSE_PLAYER> reses;
 
-	RecvUpdate(10, res, reses);
-	PlayerUpdate(res, reses);
+	RecvUpdate(10, res);
+	PlayerUpdate(res);
 	SendUpdate();
 	recvBuff = nullptr;
 	sendBuff = nullptr;
