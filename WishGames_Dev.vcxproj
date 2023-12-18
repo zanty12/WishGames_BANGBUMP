@@ -136,12 +136,14 @@
     <ClCompile Include="dark.cpp" />
     <ClCompile Include="debugUI.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="enemy2.cpp" />
+    <ClCompile Include="enemy3.cpp" />
     <ClCompile Include="enemymngr.cpp" />
     <ClCompile Include="fire.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="graphical.cpp" />
-    <ClCompile Include="koopa.cpp" />
+    <ClCompile Include="enemy1.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
     <ClCompile Include="lib\imgui\imgui_draw.cpp" />
@@ -173,6 +175,8 @@
     <ClInclude Include="collider.h" />
     <ClInclude Include="collmngr.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="enemy2.h" />
+    <ClInclude Include="enemy3.h" />
     <ClInclude Include="enemymngr.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="block.h" />
@@ -183,7 +187,7 @@
     <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />
     <ClInclude Include="graphical.h" />
-    <ClInclude Include="koopa.h" />
+    <ClInclude Include="enemy1.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />
     <ClInclude Include="lib\imgui\imgui_impl_dx11.h" />
