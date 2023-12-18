@@ -14,4 +14,5 @@ public:
     Vertex4 GetRect() const { return rect_; }
     bool Collide(Collider* other) const override;
     void Update() override;
+    void OnCollision(Collider* other) override;
 };

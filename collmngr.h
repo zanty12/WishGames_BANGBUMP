@@ -10,6 +10,6 @@ private:
 public:
     CollMngr() = default;
     ~CollMngr() = default;
-    void AddCollider(Collider* collider) {colliders_.push_back(collider);}
+    bool Add(Collider* collider);
     void Update();
 };

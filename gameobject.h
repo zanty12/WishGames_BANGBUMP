@@ -41,6 +41,7 @@ private:
     Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
     Animator* animator_;
     Collider* collider_;
+    OBJECT_TYPE type_ = OBJ_SOLID;
 
 public:
     static constexpr float SIZE_ = 64.0f; //１マスの標準サイズ
@@ -59,8 +60,11 @@ public:
     void SetColor(Color color) { color_ = color; } //色セット
     Color GetColor(void) const { return color_; } //色ゲット
     Animator* GetAnimator(void) const { return animator_; } //アニメーターゲット
+    void SetAnimator(Animator* animator) { animator_ = animator; } //アニメーターセット
     Collider* GetCollider(void) const { return collider_; } //コライダーゲット
-
+    void SetCollider(Collider* collider) { collider_ = collider; } //コライダーセット
+    OBJECT_TYPE GetType(void) const { return type_; } //オブジェクトタイプゲット
+    void SetType(OBJECT_TYPE type) { type_ = type; } //オブジェクトタイプセット
 
     virtual void Update(void) = 0;
 

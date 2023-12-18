@@ -31,7 +31,7 @@ void Koopa::Update()
 
     this->AddVel(GetVel());
 
-    //壁判定
+    /*//壁判定
     CellActions();
     //プレイヤーとの当たり判定
     if (Collision(player))
@@ -48,10 +48,10 @@ void Koopa::Update()
         {
             //enemy->SetVel(Vector2(enemy->GetVel().x, 0.5f));
         }
-    }
+    }*/
 }
 
-void Koopa::CellActions()
+/*void Koopa::CellActions()
 {
     Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
     Cell* cells[4] = {nullptr, nullptr, nullptr, nullptr};
@@ -68,4 +68,4 @@ void Koopa::CellActions()
         if (Collision(cells[i]))
             MapCellInteract(cells[i]);
     }
-}
+}*/

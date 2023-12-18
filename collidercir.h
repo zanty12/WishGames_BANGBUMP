@@ -8,6 +8,8 @@ class ColliderCir: public Collider
 private:
     Vertex1 cir_;
     float radius_;
+
+    Animator* animator_;
 public:
     ColliderCir() = delete;
     ColliderCir(GameObject* parent, float radius);
@@ -15,4 +17,5 @@ public:
     float GetRadius() const { return radius_; }
     bool Collide(Collider* other) const override;
     void Update() override;
+    void OnCollision(Collider* other) override;
 };

@@ -7,6 +7,7 @@
 #include "renderer.h"
 
 Renderer* Game::renderer_ = new Renderer();
+CollMngr* Game::coll_mngr_ = new CollMngr();
 
 Game::Game(SceneMngr* scene_mngr)
     :scene_mngr_(scene_mngr)
@@ -22,6 +23,7 @@ Game::~Game() {
     delete player_;
     delete camera_;
     delete renderer_;
+    delete coll_mngr_;
 }
 
 void Game::Update()
@@ -29,6 +31,7 @@ void Game::Update()
     mapmngr_->Update();
     player_->Update();
     camera_->Update();
+    coll_mngr_->Update();
     renderer_->Update();
     if (player_->GetChangeSceneFlag())
     {
@@ -112,4 +115,8 @@ void Game::DebugMenu()
 
 Renderer* Game::GetRenderer() {
     return renderer_;
+}
+
+CollMngr* Game::GetCollMngr() {
+    return coll_mngr_;
 }

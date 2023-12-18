@@ -1,5 +1,13 @@
 #include "collmngr.h"
 
+bool CollMngr::Add(Collider* collider)
+{
+    if(collider == nullptr)
+        return false;
+    colliders_.push_back(collider);
+    return true;
+}
+
 void CollMngr::Update()
 {
     //前のフレームでの衝突情報をリセット
@@ -10,13 +18,13 @@ void CollMngr::Update()
     //衝突判定
     for(const auto collider : colliders_)
     {
-        if(collider->GetIsMove())
+        if(collider->GetIsMovable())
             collider->Update();
     }
     //衝突処理
     for(auto collider : colliders_)
     {
-        if(collider->GetIsMove())
+        if(collider->GetIsMovable())
         {
             for(auto other : colliders_)
             {
@@ -25,7 +33,8 @@ void CollMngr::Update()
                 if(collider->Collide(other))
                 {
                     collider->OnCollision(other);
-                    other->OnCollision(collider);
+                    if(other->GetIsMovable())
+                        other->OnCollision(collider);
                 }
             }
         }
