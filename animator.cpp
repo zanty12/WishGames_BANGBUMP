@@ -40,7 +40,7 @@ Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_n
     : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
     fps_(fps), isAnim_(isAnim), img_change_time_(img_change_time),
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(is_loop),
-    loop_anim_(loop_anim),
+    loop_anim_next_(loop_anim),
     now_matrix_number_(0), u_(0.0f), v_(0.0f)//èâä˙âª
 {
     InitDictionary();
