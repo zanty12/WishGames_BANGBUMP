@@ -22,4 +22,5 @@ public:
 
 	virtual void DebugMenu() = 0;
 
+	virtual void Gravity() = 0;
 };

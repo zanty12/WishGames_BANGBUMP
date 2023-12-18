@@ -19,7 +19,7 @@ Vector2 Dark::Move()
 	if (Input::GetKey(0, Input::LThumb)) {
 		if (velocity.y <= -maxSpeedFalling) {
 			velocity.y = maxSpeedFalling;
-			player_->SetVel(velocity);
+			return velocity;
 		}
 	}
 	if (Input::GetKeyUp(0, Input::LThumb)) {
@@ -116,4 +116,8 @@ void Dark::DebugMenu()
 	ImGui::SliderFloat2("warpDistance", &warpDistance, 400.0f, 1000.0f);
 	ImGui::SliderFloat2("attackWidthLength", &attackWidthLength, 1.0f, 10.0f);
 	ImGui::End();
+}
+
+void Dark::Gravity() {
+
 }

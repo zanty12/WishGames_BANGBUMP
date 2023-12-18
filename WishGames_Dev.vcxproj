@@ -118,12 +118,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -180,7 +182,7 @@
     <ClInclude Include="block.h" />
     <ClInclude Include="cloud.h" />
     <ClInclude Include="floor.h" />
-    <ClInclude Include="Gamemodules.h" />
+    <ClInclude Include="gamemodules.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />
@@ -209,6 +211,7 @@
     <ClInclude Include="scenemngr.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
+    <ClInclude Include="skillorbattribute.h" />
     <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />

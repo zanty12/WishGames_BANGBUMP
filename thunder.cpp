@@ -41,8 +41,12 @@ Vector2 Thunder::Move() {
 	if (StickTrigger(stick, previousStick)) {
 		Vector2 direction = -previousStick * 10 * movePower;
 		charge = 0.0f;
-		player_->SetVel(direction);
+
 		return direction;
+	}
+	else if(stick!=Vector2::Zero)
+	{
+		return Vector2::Zero;
 	}
 
 	return player_->GetVel();
@@ -111,4 +115,8 @@ void Thunder::DebugMenu()
 	ImGui::SliderFloat("movePower", &movePower, 0.0f, 5.0f);
 	ImGui::SliderFloat("attackPower", &attackPower, 0.0f, 10.0f);
 	ImGui::End();
+}
+
+void Thunder::Gravity() {
+
 }
