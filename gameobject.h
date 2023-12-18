@@ -43,7 +43,7 @@ private:
     Collider* collider_;
 
 public:
-    static constexpr float SIZE_ = 96.0f; //１マスの標準サイズ
+    static constexpr float SIZE_ = 64.0f; //１マスの標準サイズ
 	GameObject() = default;
     GameObject(Vector2 pos, float rot, int tex_number);
     virtual ~GameObject() = default;
@@ -64,7 +64,4 @@ public:
 
     virtual void Update(void) = 0;
 
-    virtual void Draw(void);
-
-    virtual void Draw(Vector2 offset);
 };

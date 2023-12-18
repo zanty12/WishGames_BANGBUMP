@@ -206,13 +206,3 @@ void Map::Update()
     }
 }
 
-void Map::Draw(Camera* camera) const
-{
-    for (int i = 0; i < width_ * height_; i++)
-    {
-        if (map_[i] != nullptr && camera->InCamera(map_[i]))
-        {
-            map_[i]->Draw(camera->GetCameraOffset());
-        }
-    }
-}
