@@ -178,7 +178,7 @@
     <ClInclude Include="block.h" />
     <ClInclude Include="cloud.h" />
     <ClInclude Include="floor.h" />
-    <ClInclude Include="Gamemodules.h" />
+    <ClInclude Include="gamemodules.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="cell.h" />
     <ClInclude Include="debugUI.h" />
@@ -207,6 +207,7 @@
     <ClInclude Include="scenemngr.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
+    <ClInclude Include="skillorbattribute.h" />
     <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />

@@ -7,7 +7,7 @@
 #include "time.h"
 
 
-void Animator::InitDictionly(void)
+void Animator::InitDictionary(void)
 {
     DICTIONARY_[FIRE] = ANIM_DATA(0, 0, 1, 1);//★仮。それぞれのアニメーションごとに設定していく★
     DICTIONARY_[WIND] = ANIM_DATA(2, 1, 3, 5);
@@ -15,35 +15,35 @@ void Animator::InitDictionly(void)
 }
 
 Animator::Animator(GameObject* game_object)
-    : my_object_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
     now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false)//初期化
 {
-    InitDictionly();
+    InitDictionary();
 
     if (!Game::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
 Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time)
-    : my_object_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), img_change_time_(img_change_time),
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), img_change_time_(img_change_time),
     fps_(fps), isAnim_(isAnim),
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(false),
     now_matrix_number_(0), u_(0.0f), v_(0.0f)//初期化
 {
-    InitDictionly();
+    InitDictionary();
 
     if (!Game::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
 Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop, LOOP_ANIM loop_anim)
-    : my_object_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
     fps_(fps), isAnim_(isAnim), img_change_time_(img_change_time),
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(is_loop),
     loop_anim_(loop_anim),
     now_matrix_number_(0), u_(0.0f), v_(0.0f)//初期化
 {
-    InitDictionly();
+    InitDictionary();
 
     if (!Game::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
@@ -54,9 +54,9 @@ Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_n
 void Animator::Update(void)
 {
     //今のゲームオブジェクトの状態を反映させる
-    pos_ = my_object_->GetPos();
-    scale_ = my_object_->GetScale();
-    rot_ = my_object_->GetRot();
+    pos_ = parent_->GetPos();
+    scale_ = parent_->GetScale();
+    rot_ = parent_->GetRot();
 
     if (!isAnim_)
     {
