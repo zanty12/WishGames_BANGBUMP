@@ -18,6 +18,7 @@ private:
 
 public:
 	static void Initialize(int width, int height);
+	static void WindowShow(void);
 	static void Release(void);
 
 	static void Clear(Color color);

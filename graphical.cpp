@@ -32,7 +32,9 @@ void Graphical::Initialize(int width, int height) {
 
 	// スプライトの初期化
 	InitSprite();
+}
 
+void Graphical::WindowShow(void) {
 	// ウィンドウの表示
 	window.Show();
 }

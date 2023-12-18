@@ -10,7 +10,7 @@
 #include "storage.h"
 #include "xinput.h"
 
-#define SERVER_ADDRESS "10.192.121.53"
+#define SERVER_ADDRESS "10.192.53.0"
 #define MAX_MEMBER (4)
 #define PORT (8080)
 
@@ -53,19 +53,21 @@ private:
 		HEADER header;
 		Socket sockfd_;
 		Address clientAddr_;
-		Player player_;
+		Player *player_;
 	};
 
 	int maxID = 0;
 	Socket sockfd_;
 	std::list<CLIENT_DATA> clients_;
 	Storage sendBuff = Storage(1024), sendContentBuff = Storage(1024), recvBuff = Storage(1024);
-	MapMngr mapMngr;
+	MapMngr mapMngr = MapMngr("data\\map\\1.csv", nullptr);
 
 private:
 	int Register(Address clientAddr, HEADER &header, Socket sockfd);
 
 	void Unregister(int id);
+
+	void AllUnregister(void);
 
 	void PlayerUpdate(REQUEST_PLAYER req);
 
@@ -77,7 +79,7 @@ private:
 
 
 	std::list<CLIENT_DATA>::iterator find(int id) {
-		return std::find(clients_.begin(), clients_.end(), [&](CLIENT_DATA client) { 
+		return std::find_if(clients_.begin(), clients_.end(), [&](CLIENT_DATA client) { 
 			return client.header.id == id;
 			}
 		);
@@ -102,7 +104,7 @@ private:
 			// ƒŒƒXƒ|ƒ“ƒXî•ñ‚ÌÝ’è
 			RESPONSE_PLAYER res;
 			res.header = client.header;
-			res.position = client.player_.GetPos();
+			res.position = client.player_->GetPos();
 
 			buff << res;
 		}
@@ -115,7 +117,12 @@ private:
 	}
 
 public:
-	~MultiServer() { sendBuff.Release(); }
+	~MultiServer() { 
+		sendBuff.Release();
+		sendContentBuff.Release();
+		recvBuff.Release();
+		AllUnregister();
+	}
 
 	void OpenTerminal(void);
 };
@@ -147,7 +154,7 @@ public:
 
 
 	std::list<RESPONSE_PLAYER>::iterator find(int id) {
-		return std::find(players_.begin(), players_.end(), [&](RESPONSE_PLAYER client) {
+		return std::find_if(players_.begin(), players_.end(), [&](RESPONSE_PLAYER client) {
 			return client.header.id == id;
 			}
 		);

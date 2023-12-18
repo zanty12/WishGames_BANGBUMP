@@ -9,7 +9,7 @@ int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	float rot = 0.0f;
 	int texNo = 0;
 	Vector2 vel = Vector2::Zero;
-	Player player = Player(pos, rot, texNo, vel, &mapMngr);
+	Player *player = new Player(pos, rot, texNo, vel, &mapMngr);
 
 	// ヘッダーの更新
 	header.command = HEADER::RESPONSE_LOGIN;
@@ -39,7 +39,7 @@ void MultiServer::Unregister(int id) {
 
 	// プレイヤーの検索
 	auto iterator = find(id);
-	
+
 	// 検索不一致
 	if (iterator == clients_.end()) return;
 
@@ -52,7 +52,15 @@ void MultiServer::Unregister(int id) {
 	std::cout << "Res >> ID:" << " Logout" << std::endl;
 
 	// 削除
+	delete iterator->player_;
 	clients_.erase(iterator);
+}
+
+void MultiServer::AllUnregister(void) {
+	while (clients_.size())
+	{
+		Unregister(clients_.begin()->header.id);
+	}
 }
 
 void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
@@ -73,7 +81,7 @@ void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
 
 
 	// プレイヤーの処理を行う
-	iterator->player_.Update();
+	//iterator->player_.Update();
 }
 
 REQUEST_PLAYER MultiServer::RecvUpdate(void) {
@@ -157,12 +165,11 @@ void MultiServer::OpenTerminal(void) {
 			}
 			}
 		}
+
+		recvBuff = nullptr;
+		sendBuff = nullptr;
 	}
 }
-
-
-
-
 
 
 int Client::Register() {
@@ -251,6 +258,8 @@ void Client::RecvUpdate(int waitTime, RESPONSE_PLAYER &res, std::list<RESPONSE_P
 
 		// 受信する
 		int buffLen = Recv(sockfd_, (char *)buff, MAX_BUFF);
+		// 失敗なら終了
+		if (buffLen <= 0) return;
 		recvBuff.Push(buff, buffLen);
 
 		// レスポンスの解析
@@ -286,11 +295,13 @@ void Client::Update() {
 	RecvUpdate(10, res, reses);
 	PlayerUpdate(res, reses);
 	SendUpdate();
+	recvBuff = nullptr;
+	sendBuff = nullptr;
 }
 
-#include <thread>
+//#include <thread>
 
-Client client;
+//Client client;
 
 //void clientMultiplay() {
 //	while (true) {
