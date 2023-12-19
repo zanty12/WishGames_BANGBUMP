@@ -24,5 +24,4 @@ void Renderer::Draw(Vector2 offset)
         if(*it != nullptr)
             (*it)->Draw(offset);
     }
-
 }

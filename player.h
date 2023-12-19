@@ -14,6 +14,7 @@
 #include "animator.h"
 #include "movableobj.h"
 #include "attribute.h"
+#include "collidercir.h"
 #include "mapmngr.h"
 
 enum PLAYER_STATE
@@ -57,7 +58,11 @@ public:
 	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
 		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),lv_(1),
 		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0),
-		change_scene_(false){}
+		change_scene_(false)
+	{
+		SetCollider(new ColliderRect(this));
+		GetCollider()->SetIsMovable(true);
+	}
 
 	~Player() { delete move_attribute_; delete attack_attribute_; }
 
@@ -92,8 +97,8 @@ private:
 	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
 
 	//当たり判定（マップ）
-	void CollisionMap(void);
+	//void CollisionMap(void);
 
 	//当たり判定（トゲ）
-	void CollisionSpike(void);
+	//void CollisionSpike(void);
 };
