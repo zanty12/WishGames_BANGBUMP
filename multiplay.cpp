@@ -81,13 +81,13 @@ void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
 	Input::SetState(0, req.input.curInput);
 	Input::SetPreviousState(0, req.input.preInput);
 
-	std::cout << req.input.id << ":" << (Input::GetKey(0, Input::North) ? "true" : "false") << std::endl;
+	std::cout << req.input.id << " : " << Input::GetStickLeft(0).x << Input::GetStickLeft(0).y << std::endl;
 
 
 
 	// プレイヤーの処理を行う
-	iterator->player_->Update();
-	//std::cout << clients_.size() << std::endl;
+	float speed = 10;
+	iterator->player_->SetPos(iterator->player_->GetPos() + Input::GetStickLeft(0) * speed);
 }
 
 REQUEST_PLAYER MultiServer::RecvUpdate(void) {
@@ -103,7 +103,6 @@ REQUEST_PLAYER MultiServer::RecvUpdate(void) {
 void MultiServer::SendUpdate(void) {
 	// レスポンスの作成
 	RESPONSE_PLAYER res;
-	//CreateResponseToClient(sendContentBuff);
 
 	// クライアント情報の登録
 	for (auto &client : clients_) {
