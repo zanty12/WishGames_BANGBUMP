@@ -49,6 +49,7 @@ int main()
             }
             else {
                 float currentTime = Time::GetCurrentTime();
+                Time::Update();
 
                 if (currentTime - startTime > oneFrameTime) {
                     startTime = currentTime;
@@ -81,7 +82,6 @@ int main()
                     }
                     }
                     Input::Update();
-                    Time::Update();
                     client.Update();
                     //scene_mngr->Update();
                     //scene_mngr->Draw();
