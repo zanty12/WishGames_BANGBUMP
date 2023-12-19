@@ -81,15 +81,16 @@ void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
 	Input::SetState(0, req.input.curInput);
 	Input::SetPreviousState(0, req.input.preInput);
 
-	std::cout << req.input.id << " : " << Input::GetStickLeft(0).x << Input::GetStickLeft(0).y << std::endl;
+	std::cout << req.input.id << " : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
 
 
 
 	// プレイヤーの処理を行う
 	float speed = 10;
 	Vector2 v = Input::GetStickLeft(0);
+	Vector2 center = Vector2(1600, 900) / 2;
 	v.y *= -1;
-	iterator->player_->SetPos(iterator->player_->GetPos() + v * speed);
+	iterator->player_->SetPos(center + v * speed);
 }
 
 REQUEST_PLAYER MultiServer::RecvUpdate(void) {
@@ -264,6 +265,7 @@ void Client::Unregister() {
 void Client::PlayerUpdate(RESPONSE_PLAYER &res) {
 	//playerAnim.Update(res);
 	//playerAnim.Draw();
+	std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
 
 	for (auto &client : res.clients) {
 		std::cout << client.position.x << ", " << client.position.y << std::endl;
