@@ -20,14 +20,6 @@ void EnemyMngr::Update()
     }
 }
 
-void EnemyMngr::Draw(Camera* camera) const
-{
-    for (Enemy* enemy : enemies_)
-    {
-        if(enemy != nullptr && camera->InCamera(enemy))
-            enemy->Draw(camera);
-    }
-}
 
 void EnemyMngr::Spawn(int x, int y, int type)
 {

@@ -9,13 +9,3 @@ GameObject::GameObject(Vector2 pos, float rot, int tex_number)
     animator_->SetParent(this);
     collider_ = nullptr;
 }
-
-void GameObject::Draw(void)
-{
-    //animator_->Draw();
-}
-
-void GameObject::Draw(Vector2 offset)
-{
-    //animator->Draw(offset);
-}

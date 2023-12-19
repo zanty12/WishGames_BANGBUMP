@@ -1,4 +1,5 @@
 #pragma once
+#include "collmngr.h"
 #include "scene.h"
 #include "player.h"
 #include "mapmngr.h"
@@ -19,6 +20,7 @@ private:
 
 	SceneMngr* scene_mngr_;
 	static Renderer* renderer_;
+	static CollMngr* coll_mngr_;
 
 public:
 	Game() = delete;
@@ -33,4 +35,5 @@ public:
 	void DebugMenu() override;
 
 	static Renderer* GetRenderer();
+	static CollMngr* GetCollMngr();
 };

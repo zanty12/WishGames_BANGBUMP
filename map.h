@@ -67,12 +67,6 @@ public:
       */
     void Update();
 
-    /**
-     * @brief マップ内のすべてのセルを描画します。
-     *
-     * このメソッドは、マップ内の各セルでDrawメソッドを呼び出します。
-     */
-    void Draw(Camera* camera) const;
 
     /**
      * @brief 指定した位置に指定したタイプのセルを配置します。

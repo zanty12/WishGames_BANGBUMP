@@ -34,11 +34,11 @@ public:
 
 	void AddVel(Vector2 vel) { SetPos(GetPos() + vel); }	//速度をオブジェクトに足す
 
-	bool Collision(const GameObject* obj) const;	//当たり判定
+	//bool Collision(const GameObject* obj) const;	//当たり判定
 
-	void MapCellInteract(Cell* cell);	//マップとの当たり判定
+	//void MapCellInteract(Cell* cell);	//マップとの当たり判定
 
 private:
-	void SolidCellInteract(Cell* cell);	//壁との当たり判定
-	void PenCellInteract(Cell* cell);	//貫通可能な壁との当たり判定
+	//void SolidCellInteract(Cell* cell);	//壁との当たり判定
+	//void PenCellInteract(Cell* cell);	//貫通可能な壁との当たり判定
 };
