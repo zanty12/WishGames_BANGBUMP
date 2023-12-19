@@ -15,28 +15,33 @@ void CollMngr::Update()
     {
         collider->SetCollision(std::list<Collider*>());
     }
-    //Õ“Ë”»’è
+    //ˆê‰ñˆÊ’uXV
     for(const auto collider : colliders_)
     {
         if(collider->GetIsMovable())
             collider->Update();
     }
-    //Õ“Ëˆ—
-    for(auto collider : colliders_)
+    //Õ“Ë
+    for(const auto collider : colliders_)
     {
         if(collider->GetIsMovable())
         {
-            for(auto other : colliders_)
+            for(const auto other : colliders_)
             {
                 if(collider == other)
                     continue;
                 if(collider->Collide(other))
                 {
-                    collider->OnCollision(other);
+                    collider->AddCollision(other);
                     if(other->GetIsMovable())
-                        other->OnCollision(collider);
+                        other->AddCollision(collider);
                 }
             }
         }
+    }
+    for(const auto collider : colliders_)
+    {
+        if(collider->GetIsMovable())
+            collider->CollisionInteract();
     }
 }

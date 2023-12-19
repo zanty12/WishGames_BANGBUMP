@@ -44,5 +44,10 @@ public:
         using namespace std;
         return Vector2(max(min.x, min(max.x, val.x)), max(min.y, min(max.y, val.y)));
     }
+    void AddCollision(Collider* other)
+    {
+        collision_.push_back(other);
+        collision_.unique();
+    }
 
 };
