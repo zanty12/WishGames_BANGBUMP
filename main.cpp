@@ -9,7 +9,7 @@
 #include "multiplay.h"
 
 bool debug_mode = true;
-
+#include <thread>
 int main()
 {
     int mode = 0;
@@ -27,7 +27,16 @@ int main()
         MSG msg;
         Client client;
         client.Register();
+        
         //SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
+        std::thread sendInputFunc([&]() {
+            while (true) {
+                client.SendUpdate();
+                if (GetAsyncKeyState(VK_ESCAPE)) return;
+            }
+            },
+            &client
+        );
 
         while (true)
         {
@@ -87,8 +96,8 @@ int main()
                 }
             }
         }
-
         client.Unregister();
+        sendInputFunc.join();
         std::cout << "Hello World!\n"; //基本
     }
     Time::Release();

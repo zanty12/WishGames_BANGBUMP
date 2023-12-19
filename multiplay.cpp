@@ -319,7 +319,7 @@ void Client::Update() {
 
 	RecvUpdate(10, res);
 	PlayerUpdate(res);
-	SendUpdate();
+	// SendUpdate();
 	recvBuff = nullptr;
 	sendBuff = nullptr;
 }
