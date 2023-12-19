@@ -126,7 +126,7 @@ void MultiServer::SendUpdate(void) {
 			SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
 		}
 
-		if (clients_.size() == 0) return;
+		if (GetAsyncKeyState(VK_ESCAPE)) return;
 	}
 }
 
@@ -147,7 +147,6 @@ void MultiServer::OpenTerminal(void) {
 	MSG msg;
 
 	std::thread f ( &MultiServer::SendUpdate, this );
-	f.detach();
 
 	while (true) {
 		// メッセージ
@@ -275,7 +274,7 @@ void Client::Unregister() {
 void Client::PlayerUpdate(RESPONSE_PLAYER &res) {
 	//playerAnim.Update(res);
 	//playerAnim.Draw();
-	if(res.clients.size())std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
+	if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
 
 	for (auto &client : res.clients) {
 		std::cout << client.position.x << ", " << client.position.y << std::endl;
