@@ -1,5 +1,7 @@
 #include "enemymngr.h"
-#include "koopa.h"
+#include "Enemy1.h"
+#include "Enemy2.h"
+#include "Enemy3.h"
 
 void EnemyMngr::Update()
 {
@@ -26,14 +28,24 @@ void EnemyMngr::Spawn(int x, int y, int type)
     {
     case(MAP_READ_KOOPA):
         {
-            Enemy* enemy = new Koopa(x, y,this);
+            Enemy* enemy = new Enemy1(x, y,this);
             enemies_.push_back(enemy);
             break;
         }
 
     case(MAP_READ_HAMMERBRO):
+    /*{
+        Enemy* enemy = new Enemy1(x, y, this);
+        enemies_.push_back(enemy);
+        break;
+    }*/
         break;
     case(MAP_READ_PHANTOM):
+    {
+        Enemy* enemy = new Enemy3(x, y, this);
+        enemies_.push_back(enemy);
+        break;
+    }
         break;
     default:
         break;
