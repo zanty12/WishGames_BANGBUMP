@@ -32,8 +32,16 @@ int main()
         
         //SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
         auto func = [&]() {
+            DWORD dwStartTime = timeGetTime();
+            DWORD dwCurrentTime = timeGetTime();
+            DWORD dwOnceFrameTime = 1000 / 60;
+
             while (true) {
-                client.SendUpdate();
+                dwCurrentTime = timeGetTime();
+                if (dwCurrentTime - dwStartTime > dwOnceFrameTime) {
+                    dwStartTime = dwCurrentTime;
+                    client.SendUpdate();
+                }
                 if (GetAsyncKeyState(VK_ESCAPE)) return;
             }
         };

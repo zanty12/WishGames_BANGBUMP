@@ -82,7 +82,7 @@ void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
 	Input::SetState(0, req.input.curInput);
 	Input::SetPreviousState(0, req.input.preInput);
 
-	//std::cout << req.input.id << " : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
+	std::cout << req.input.id << " : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
 
 
 
