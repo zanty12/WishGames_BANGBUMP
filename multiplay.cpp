@@ -146,7 +146,7 @@ void MultiServer::OpenTerminal(void) {
 	const int MAX_BUFF = 1024;
 	MSG msg;
 
-	std::thread thread(SendUpdate);
+	std::thread f ( &MultiServer::SendUpdate, this );
 
 
 	while (true) {
@@ -206,7 +206,7 @@ void MultiServer::OpenTerminal(void) {
 		sendBuff = nullptr;
 	}
 
-	thread.join();
+	f.join();
 }
 
 
