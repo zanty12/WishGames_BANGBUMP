@@ -40,6 +40,7 @@ int main()
                 dwCurrentTime = timeGetTime();
                 if (dwCurrentTime - dwStartTime > dwOnceFrameTime) {
                     dwStartTime = dwCurrentTime;
+                    Input::Update();
                     client.SendUpdate();
                 }
                 if (GetAsyncKeyState(VK_ESCAPE)) return;
@@ -90,7 +91,6 @@ int main()
 
                     //scene_mngr->DebugMenu();
                 }
-                Input::Update();
                 Time::Update();
                 client.Update();
                 //scene_mngr->Update();
