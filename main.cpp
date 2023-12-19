@@ -36,7 +36,7 @@ int main()
         client.Register();
         
         //SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
-        std::thread sendInputFunc(SendUpdate, &client);
+        std::thread sendInputFunc(SendUpdate, client);
 
         while (true)
         {
