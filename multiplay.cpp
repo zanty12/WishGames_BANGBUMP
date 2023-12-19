@@ -4,6 +4,7 @@
 #include "fire.h"
 #include "wind.h"
 #include "dark.h"
+#include <thread>
 #pragma comment(lib, "lib/lib.lib")
 
 
@@ -104,31 +105,34 @@ REQUEST_PLAYER MultiServer::RecvUpdate(void) {
 }
 
 void MultiServer::SendUpdate(void) {
-	// レスポンスの作成
-	RESPONSE_PLAYER res;
+	while (true) {
+		// レスポンスの作成
+		RESPONSE_PLAYER res;
 
-	// クライアント情報の登録
-	for (auto &client : clients_) {
-		res.clients.push_back({ client.header.id , client.player_->GetPos() });
-	}
+		// クライアント情報の登録
+		for (auto &client : clients_) {
+			res.clients.push_back({ client.header.id , client.player_->GetPos() });
+		}
 
-	// クライアント全員に送信する
-	for (auto &client : clients_) {
-		// 登録されていないならスキップ
-		if (client.header.id < 0) continue;
+		// クライアント全員に送信する
+		for (auto &client : clients_) {
+			// 登録されていないならスキップ
+			if (client.header.id < 0) continue;
 
-		// 宛先の登録とレスポンス内容の結合
-		res.CreateResponse(sendBuff, client.header.id);
+			// 宛先の登録とレスポンス内容の結合
+			res.CreateResponse(sendBuff, client.header.id);
 
-		// 送信
-		SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
+			// 送信
+			SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
+		}
+
+		if (clients_.size() == 0) return;
 	}
 }
 
 void MultiServer::Update() {
 	REQUEST_PLAYER req = RecvUpdate();
 	PlayerUpdate(req);
-	SendUpdate();
 }
 
 void MultiServer::OpenTerminal(void) {
@@ -141,6 +145,10 @@ void MultiServer::OpenTerminal(void) {
 
 	const int MAX_BUFF = 1024;
 	MSG msg;
+
+	std::thread thread(SendUpdate);
+
+
 	while (true) {
 		// メッセージ
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -197,6 +205,8 @@ void MultiServer::OpenTerminal(void) {
 		recvBuff = nullptr;
 		sendBuff = nullptr;
 	}
+
+	thread.join();
 }
 
 
