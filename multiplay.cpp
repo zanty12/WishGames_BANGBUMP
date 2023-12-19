@@ -147,7 +147,7 @@ void MultiServer::OpenTerminal(void) {
 	MSG msg;
 
 	std::thread f ( &MultiServer::SendUpdate, this );
-
+	f.detach();
 
 	while (true) {
 		// メッセージ
