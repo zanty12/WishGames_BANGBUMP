@@ -105,34 +105,31 @@ REQUEST_PLAYER MultiServer::RecvUpdate(void) {
 }
 
 void MultiServer::SendUpdate(void) {
-	while (true) {
-		// レスポンスの作成
-		RESPONSE_PLAYER res;
+	// レスポンスの作成
+	RESPONSE_PLAYER res;
 
-		// クライアント情報の登録
-		for (auto &client : clients_) {
-			res.clients.push_back({ client.header.id , client.player_->GetPos() });
-		}
+	// クライアント情報の登録
+	for (auto &client : clients_) {
+		res.clients.push_back({ client.header.id , client.player_->GetPos() });
+	}
 
-		// クライアント全員に送信する
-		for (auto &client : clients_) {
-			// 登録されていないならスキップ
-			if (client.header.id < 0) continue;
+	// クライアント全員に送信する
+	for (auto &client : clients_) {
+		// 登録されていないならスキップ
+		if (client.header.id < 0) continue;
 
-			// 宛先の登録とレスポンス内容の結合
-			res.CreateResponse(sendBuff, client.header.id);
+		// 宛先の登録とレスポンス内容の結合
+		res.CreateResponse(sendBuff, client.header.id);
 
-			// 送信
-			SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
-		}
-
-		if (GetAsyncKeyState(VK_ESCAPE)) return;
+		// 送信
+		SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
 	}
 }
 
 void MultiServer::Update() {
 	REQUEST_PLAYER req = RecvUpdate();
 	PlayerUpdate(req);
+	SendUpdate();
 }
 
 void MultiServer::OpenTerminal(void) {
@@ -146,7 +143,7 @@ void MultiServer::OpenTerminal(void) {
 	const int MAX_BUFF = 1024;
 	MSG msg;
 
-	std::thread f ( &MultiServer::SendUpdate, this );
+	//std::thread f(&MultiServer::SendUpdate, this);
 
 	while (true) {
 		// メッセージ
@@ -205,7 +202,7 @@ void MultiServer::OpenTerminal(void) {
 		sendBuff = nullptr;
 	}
 
-	f.join();
+	//f.join();
 }
 
 
