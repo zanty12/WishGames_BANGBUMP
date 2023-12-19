@@ -269,6 +269,8 @@ void Client::PlayerUpdate(RESPONSE_PLAYER &res) {
 		playerAnim.Update(client);
 		playerAnim.Draw();
 	}
+	//Camera camera = Camera();
+	//mapMngr.Draw();
 }
 
 void Client::SendUpdate(void) {

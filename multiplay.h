@@ -224,6 +224,7 @@ public:
 	int id = -1;
 	//RESPONSE_PLAYER::DESC player;
 	Object playerAnim = Object(Vector2(0,0), LoadTexture("data/texture/player.png"));
+	MapMngr mapMngr = MapMngr("data/map/1.csv", nullptr);
 	~Client() { Unregister(); }
 
 	// “o˜^
