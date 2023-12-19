@@ -10,12 +10,7 @@
 
 bool debug_mode = true;
 #include <thread>
-void SendUpdate(Client &client) {
-    while (true) {
-        client.SendUpdate();
-        if (GetAsyncKeyState(VK_ESCAPE)) return;
-    }
-}
+
 
 int main()
 {
@@ -36,7 +31,13 @@ int main()
         client.Register();
         
         //SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
-        std::thread sendInputFunc(SendUpdate, client);
+        auto func = [&]() {
+            while (true) {
+                client.SendUpdate();
+                if (GetAsyncKeyState(VK_ESCAPE)) return;
+            }
+        };
+        std::thread sendInputFunc(func);
 
         while (true)
         {
