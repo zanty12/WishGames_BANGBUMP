@@ -14,4 +14,5 @@ public:
 	static void Release(void);
 	static void Update(void);
 	static float GetDeltaTime(void);
+	static float GetCurrentTime(void) { return currentTime * 0.001f; }
 };

@@ -87,7 +87,9 @@ void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
 
 	// プレイヤーの処理を行う
 	float speed = 10;
-	iterator->player_->SetPos(iterator->player_->GetPos() + Input::GetStickLeft(0) * speed);
+	Vector2 v = Input::GetStickLeft(0);
+	v.y *= -1;
+	iterator->player_->SetPos(iterator->player_->GetPos() + v * speed);
 }
 
 REQUEST_PLAYER MultiServer::RecvUpdate(void) {
