@@ -81,7 +81,7 @@ void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
 	Input::SetState(0, req.input.curInput);
 	Input::SetPreviousState(0, req.input.preInput);
 
-	std::cout << req.input.id << " : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
+	//std::cout << req.input.id << " : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
 
 
 
@@ -265,7 +265,7 @@ void Client::Unregister() {
 void Client::PlayerUpdate(RESPONSE_PLAYER &res) {
 	//playerAnim.Update(res);
 	//playerAnim.Draw();
-	std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
+	if(res.clients.size())std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
 
 	for (auto &client : res.clients) {
 		std::cout << client.position.x << ", " << client.position.y << std::endl;
