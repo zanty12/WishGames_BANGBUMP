@@ -14,7 +14,8 @@ class Camera;
 class Game :public Scene
 {
 private:
-	Player *player_;
+	Player* player_;
+	std::list<Player*> player_list_;
 	MapMngr *mapmngr_;
 	Camera* camera_;
 
@@ -30,8 +31,11 @@ public:
 	void Update()override;
 	void Draw()override;
 
-	Player *GetPlayer() const {
+	Player* GetPlayer() const {
 		return player_;
+	}
+	std::list<Player*> GetPlayerList() const {
+		return player_list_;
 	}
 	void DebugMenu() override;
 
