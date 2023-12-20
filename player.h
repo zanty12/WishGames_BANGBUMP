@@ -97,8 +97,8 @@ private:
 	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
 
 	//当たり判定（マップ）
-	//void CollisionMap(void);
+	void CollisionAction(void);
 
 	//当たり判定（トゲ）
-	//void CollisionSpike(void);
+	void CollisionSpike(void);
 };

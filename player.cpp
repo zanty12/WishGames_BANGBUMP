@@ -14,33 +14,36 @@
 #include "spike.h"
 #include "xinput.h"
 
+#define LV_NUM (10)
 
-#define LVUP_EXP_2	(2)
-#define LVUP_EXP_3	(5)
-#define LVUP_EXP_4	(9)
-#define LVUP_EXP_5	(14)
-#define LVUP_EXP_6	(20)
-#define LVUP_EXP_7	(29)
-#define LVUP_EXP_8	(41)
-#define LVUP_EXP_9	(55)
-#define LVUP_EXP_10	(71)
+static const int LvUpPoint[LV_NUM] =
+{
+	0,
+	20,
+	30,
+	40,
+	50,
+	60,
+	90,
+	120,
+	140,
+	160,
+};
+
 
 bool Player::LvUp(int get_skill_pt)
 {
-	skillpt_ += get_skill_pt;
 
-	//なんか効率のいい方法ない？
-	if (skillpt_ >= LVUP_EXP_2) {
-		lv_ = 2;
-	}
-	if (skillpt_ >= LVUP_EXP_3) {
-		lv_ = 3;
-	}
-	if (skillpt_ >= LVUP_EXP_4) {
-		lv_ = 4;
-	}
-	if (skillpt_ >= LVUP_EXP_5) {
-		lv_ = 5;
+
+	for (int i = 0; i < LV_NUM; i++)
+	{
+		if (skillpt_ > LvUpPoint[i])
+		{
+			if (lv_ < i)	//Lv下げはしない
+			{
+				lv_ = i;
+			}
+		}
 	}
 
 	return false;
@@ -89,9 +92,7 @@ void Player::Update(void)
 
 	AddVel(GetVel());
 
-	//CollisionMap();
-
-	//CollisionSpike();
+	CollisionAction();
 
 	//上に上がっている
 	if (GetVel().y > 0.0f)
@@ -131,81 +132,55 @@ void Player::DebugMenu()
 // ↓パブリック関数↓
 //================================================================================
 
-
-/*void Player::CollisionMap(void)
+void Player::CollisionAction(void)
 {
-	Map* map = GetMapMngr()->GetMap();
-	Cell* cells[4] = {nullptr, nullptr, nullptr, nullptr};
-	int idx = std::floor((GetPos().x / SIZE_));
-	int idy = std::floor((GetPos().y / SIZE_));
-	cells[0] = map->GetCell(idx, idy + 1);
-	cells[1] = map->GetCell(idx, idy - 1);
-	cells[2] = map->GetCell(idx - 1, idy);
-	cells[3] = map->GetCell(idx + 1, idy);
-	for (int i = 0; i < 4; i++)
+	std::list<Collider*> collisions = GetCollider()->GetCollision();
+	for (auto collision : collisions)
 	{
-		if (cells[i] == nullptr)
-			continue;
-		if (Collision(cells[i]))
-			MapCellInteract(cells[i]);
-
-		//地面の時の処理
-		if (Collision(cells[i]) && i == 1)
+		OBJECT_TYPE type = collision->GetParent()->GetType();
+		switch (type)
 		{
-			MAP_READ cell_type = cells[i]->GetCellType();
-			if (cell_type == MAP_READ_WALL || cell_type == MAP_READ_FLOOR)
-			{
-				player_state_ = TOUCH_GROUND;
-				break;
-			}
+		case OBJ_SOLID:
+			if (GetVel().x != 0.0f)
+				SetVel(Vector2(0.0f, GetVel().y));
+			if (GetVel().y != 0.0f)
+				SetVel(Vector2(GetVel().x, 0.0f));
+			break;
+		case OBJ_PENETRABLE:
+			if (GetVel().x != 0.0f)
+				SetVel(Vector2(0.0f, GetVel().y));
+			if (GetVel().y < 0.0f)
+				SetVel(Vector2(GetVel().x, 0.0f));
+			break;
+		case OBJ_SPIKE:
+			CollisionSpike();
+			break;
+		case OBJ_PLAYER:
+			break;
+		case OBJ_ENEMY:	//とりあえず止まるようにする
+			if (GetVel().x != 0.0f)
+				SetVel(Vector2(0.0f, GetVel().y));
+			if (GetVel().y != 0.0f)
+				SetVel(Vector2(GetVel().x, 0.0f));
+			break;
+		case OBJ_ATTACK:
+			break;
+		default:
+			break;
 		}
 	}
 }
+
 void Player::CollisionSpike(void)
 {
-	Map* map = GetMapMngr()->GetMap();
-	Cell* cells[4] = { nullptr };
-	int idx = std::floor(GetPos().x / SIZE_);
-	int idy = std::floor(GetPos().y / SIZE_);
-	cells[0] = map->GetCell(idx, idy + 1);	//頭
-	cells[1] = map->GetCell(idx, idy - 1);	//足
-	cells[2] = map->GetCell(idx - 1, idy);	//左
-	cells[3] = map->GetCell(idx + 1, idy);	//右
-
-	for (int i = 0; i < 4; i++)
-	{
-		if (cells[i] == nullptr)
-			continue;
-
-		//トゲの時の処理
-		if (Collision(cells[i]))
-		{
-			MAP_READ cell_type = cells[i]->GetCellType();
-			if (cell_type >= MAP_READ_SPIKE_LEFT && cell_type <= MAP_READ_SPIKE_DOWN)
-			{
-				knock_back_dir_ = i;
-				clash_spike_ = SPIKE_SURPRISE_;
-				switch (knock_back_dir_)
-				{
-				case 0:	//頭
-					dir_.y = -1;
-					break;
-				case 1:	//足
-					dir_.y = +1;
-					break;
-				case 2:	//左
-					dir_.x = +1;
-					break;
-				case 3:	//右
-					dir_.x = -1;
-					break;
-				default:
-					break;
-				}
-				break;
-			}
-		}
-	}
+	if (GetVel().x > 0.0f)
+		dir_.x = -1;
+	if (GetVel().x < 0.0f)
+		dir_.x = 1;
+	if (GetVel().y > 0.0f)
+		dir_.y = -1;
+	if (GetVel().y < 0.0f)
+		dir_.y = 1;
 
 	Vector2 clash_vel(0.0f,0.0f);	//クラッシュしたときの速度
 	if (clash_spike_ > 0)
@@ -233,13 +208,21 @@ void Player::CollisionSpike(void)
 		SetVel(clash_vel);
 		clash_spike_--;
 	}
-
-
-}*/
+}
 
 //上に移動
 //落ちる
 //地面にいる
+
+/*
+	OBJ_SOLID, //貫通不能
+	OBJ_PENETRABLE, //下貫通
+	OBJ_VOID, //貫通可能
+	OBJ_SPIKE, //トゲ
+	OBJ_PLAYER, //プレイヤー
+	OBJ_ENEMY, //敵
+	OBJ_ATTACK, //攻撃
+*/
 
 /*
 MAP_READ_NONE, ///< 空のセルを表します。

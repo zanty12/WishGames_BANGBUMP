@@ -23,11 +23,11 @@ void Enemy1::Update()
     CellAction();
 
     //プレイヤーとの当たり判定
-    if (Collision(player))
-    {
-        player->HpDown(3);//★仮★
-        //Die();
-    }
+    //if (Collision(player))
+    //{
+    //    player->HpDown(3);//★仮★
+    //    //Die();
+    //}
 
     //他の敵との当たり判定
  /*   for (auto& enemy : GetEnemyMngr()->GetEnemies())
@@ -60,39 +60,39 @@ void Enemy1::CellAction()
     {
         if (cells[i] == nullptr)
             continue;
-        if (Collision(cells[i]))
-        {
-            switch (i)
-            {
-            case 0:
-                if (GetVel().y > 0)
-                {
-                    SetVel(Vector2(GetVel().x, GetVel().y * -1));
-                }
-                break;
-            case 1:
-                if (GetVel().y < 0)
-                {
-                    SetVel(Vector2(GetVel().x, GetVel().y * -1));
-                }
-                break;
-            case 2:
-                if (GetVel().x < 0)
-                {
-                    SetVel(Vector2(GetVel().x * -1, GetVel().y));
-                }
-                break;
-            case 3:
-                if (GetVel().x > 0)
-                {
-                    SetVel(Vector2(GetVel().x * -1, GetVel().y));
-                }
-                break;
-            default:
-                break;
-            }
-            break;
-        }
+        //if (Collision(cells[i]))
+        //{
+        //    switch (i)
+        //    {
+        //    case 0:
+        //        if (GetVel().y > 0)
+        //        {
+        //            SetVel(Vector2(GetVel().x, GetVel().y * -1));
+        //        }
+        //        break;
+        //    case 1:
+        //        if (GetVel().y < 0)
+        //        {
+        //            SetVel(Vector2(GetVel().x, GetVel().y * -1));
+        //        }
+        //        break;
+        //    case 2:
+        //        if (GetVel().x < 0)
+        //        {
+        //            SetVel(Vector2(GetVel().x * -1, GetVel().y));
+        //        }
+        //        break;
+        //    case 3:
+        //        if (GetVel().x > 0)
+        //        {
+        //            SetVel(Vector2(GetVel().x * -1, GetVel().y));
+        //        }
+        //        break;
+        //    default:
+        //        break;
+        //    }
+        //    break;
+        //}
     }
 }
 
@@ -115,46 +115,46 @@ void Enemy1::CellActionSpike()
             continue;
 
         //トゲの時の処理
-        if (Collision(cells[i]))
-        {
-            MAP_READ cell_type = cells[i]->GetCellType();
-            if (cell_type == MAP_READ_SPIKE_UP || cell_type == MAP_READ_SPIKE_DOWN)
-            {
-                switch (i)
-                {
-                case 0:
-                    if (GetVel().y > 0)
-                    {
-                        SetVel(Vector2(GetVel().x, GetVel().y * -1));
-                    }
-                    break;
-                case 1:
-                    if (GetVel().y < 0)
-                    {
-                        SetVel(Vector2(GetVel().x, GetVel().y * -1));
-                    }
-                    break;
-                case 2:
-                    if (GetVel().x < 0/* || cell_type == MAP_READ_SPIKE_LEFT*//* && cell_type != MAP_READ_SPIKE_RIGHT*/)
-                    {
-                        SetVel(Vector2(GetVel().x * -1, GetVel().y));
-                       /* if (Collision(enemy))
-                        {
-                            enemy->HpDown(3);
-                        }*/
-                    }
-                    break;
-                case 3:
-                    if (GetVel().x > 0)
-                    {
-                        SetVel(Vector2(GetVel().x * -1, GetVel().y));
-                    }
-                    break;
-                }
-                break;
-            }
+        //if (Collision(cells[i]))
+        //{
+        //    MAP_READ cell_type = cells[i]->GetCellType();
+        //    if (cell_type == MAP_READ_SPIKE_UP || cell_type == MAP_READ_SPIKE_DOWN)
+        //    {
+        //        switch (i)
+        //        {
+        //        case 0:
+        //            if (GetVel().y > 0)
+        //            {
+        //                SetVel(Vector2(GetVel().x, GetVel().y * -1));
+        //            }
+        //            break;
+        //        case 1:
+        //            if (GetVel().y < 0)
+        //            {
+        //                SetVel(Vector2(GetVel().x, GetVel().y * -1));
+        //            }
+        //            break;
+        //        case 2:
+        //            if (GetVel().x < 0/* || cell_type == MAP_READ_SPIKE_LEFT*//* && cell_type != MAP_READ_SPIKE_RIGHT*/)
+        //            {
+        //                SetVel(Vector2(GetVel().x * -1, GetVel().y));
+        //               /* if (Collision(enemy))
+        //                {
+        //                    enemy->HpDown(3);
+        //                }*/
+        //            }
+        //            break;
+        //        case 3:
+        //            if (GetVel().x > 0)
+        //            {
+        //                SetVel(Vector2(GetVel().x * -1, GetVel().y));
+        //            }
+        //            break;
+        //        }
+        //        break;
+        //    }
 
-        }
+        //}
 
     }
 }

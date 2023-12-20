@@ -96,12 +96,12 @@ void Enemy3::Update()
     //壁判定
     CellActions();
 
-    //プレイヤーとの当たり判定
-    if (Collision(player))
-    {
-        player->HpDown(15);//★仮★
-        //Die();
-    }
+    ////プレイヤーとの当たり判定
+    //if (Collision(player))
+    //{
+    //    player->HpDown(15);//★仮★
+    //    //Die();
+    //}
 
     //他の敵との当たり判定
    /* for (auto& enemy : GetEnemyMngr()->GetEnemies())
@@ -131,8 +131,8 @@ void Enemy3::CellActions()
     {
         if (cells[i] == nullptr)
             continue;
-        if (Collision(cells[i]))
-            MapCellInteract(cells[i]);
+        //if (Collision(cells[i]))
+        //    MapCellInteract(cells[i]);
     }
 }
 
