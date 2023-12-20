@@ -6,7 +6,9 @@
 class Enemy2 : public Enemy
 {
 private:
-    
+    const int HP_MAX_ = 30;		//HPÇÃè„å¿
+    int hp_;
+    Vector2 startPosition;
 
 public:
     Enemy2() = delete;
@@ -16,8 +18,9 @@ public:
     {}
 
     void Update() override;
-
+    void Spawn(int x, int y, int type);
 
 /*private:
     void CellActions();*/
 };
+

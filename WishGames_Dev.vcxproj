@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="animator.cpp" />
+    <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collider.cpp" />
     <ClCompile Include="collidercir.cpp" />
@@ -173,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animator.h" />
+    <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collider.h" />
     <ClInclude Include="collidercir.h" />

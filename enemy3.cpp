@@ -4,7 +4,7 @@
 #include "lib/collider2d.h"
 #include "time.h"
 
-#define RANGE (SIZE_ * 5.0f)                            //”ÍˆÍ
+#define RANGE (SIZE_ * 20.0f)                            //”ÍˆÍ
 
 
 bool CheckEnemy3Length(Vector2 a, Vector2 b, float len);
@@ -12,6 +12,18 @@ bool CheckEnemy3Length(Vector2 a, Vector2 b, float len);
 void Enemy3::Update()
 {
     Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //³’¼‚±‚ê‚Ìƒƒ‚ƒŠ‘€ì‘½‚·‚¬
+
+
+    std::list<Collider*> collisions = GetCollider()->GetCollision();
+    for (auto collision : collisions)
+    {
+        OBJECT_TYPE type = collision->GetParent()->GetType();
+        //ÀÛ‚Ìˆ—
+        if (type == OBJ_PLAYER)
+        {
+            player->HpDown(15);//š‰¼š
+        }
+    }
 
     GetAnimator()->SetIsAnim(true);
 
@@ -41,18 +53,6 @@ void Enemy3::Update()
             SetVel(v.Normalize() * spd_ * dt);
         }
     }
-
-    /*
-    //•Ç”»’è
-    CellActions();
-
-    //ƒvƒŒƒCƒ„[‚Æ‚Ì“–‚½‚è”»’è
-    if (Collision(player))
-    {
-        player->HpDown(15);//š‰¼š
-        //Die();
-    }
-    */
 
     //‘¼‚Ì“G‚Æ‚Ì“–‚½‚è”»’è
    /* for (auto& enemy : GetEnemyMngr()->GetEnemies())

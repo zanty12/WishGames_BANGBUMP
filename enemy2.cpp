@@ -1,10 +1,14 @@
 #include "enemy2.h"
+#include "bullet.h"
 #include "Cell.h"
 #include "MapMngr.h"
 #include "lib/collider2d.h"
 #include "time.h"
 
-bool CheckLength(Vector2 a, Vector2 b, float len);
+#define RANGE (SIZE_ * 10.0f)                            //îÕàÕ
+
+
+bool CheckEnemy2Length(Vector2 a, Vector2 b, float len);
 
 void Enemy2::Update()
 {
@@ -12,6 +16,17 @@ void Enemy2::Update()
 
 
     GetAnimator()->SetIsAnim(true);
+
+
+
+    if (CheckEnemy2Length(startPosition, player->GetPos(), RANGE))
+    {
+
+
+    }
+
+
+
 
     /*//ï«îªíË
     CellActions();
@@ -37,8 +52,17 @@ void Enemy2::Update()
 
 
 
-    this->AddVel(GetVel());
+
 }
+
+//void Enemy2::Spawn(int x, int y, int type)
+//{
+//    //TODO: Ç±Ç±Ç≈íeÇê∂ê¨Ç∑ÇÈ
+//    if (type == OBJ_ENEMY_BULLET)
+//    {
+//        Bullet* bullet = new Bullet(x, y, this);
+//    }
+//}
 
 /*
 void Enemy2::CellActions()
@@ -90,3 +114,15 @@ void Enemy2::CellActions()
         }
     }
 }*/
+
+bool CheckEnemy2Length(Vector2 a, Vector2 b, float len)
+{
+
+    if (Vector2::Distance(a, b) < len)
+    {
+        return true;
+    }
+
+    return false;
+}
+
