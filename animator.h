@@ -42,6 +42,7 @@ private:
     Vector2 pos_, scale_;
     float rot_ = 0.0f;
     int texNo_;
+    bool is_discard_ = false;
 
     LOOP_ANIM loop_anim_; //ループする画像の種類
     LOOP_ANIM loop_anim_next_; //ループする画像の種類
@@ -135,6 +136,9 @@ public:
     float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)の高さを取得
     float GetU(void) const { return u_; }   //UV(U)の値を取得
     float GetV(void) const { return v_; }   //UV(V)の値を取得
+
+    void Discard() {is_discard_ = true;}
+    bool GetDiscard() const { return is_discard_; }
 
 private:
     void InitDictionary(void);

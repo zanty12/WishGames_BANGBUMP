@@ -2,17 +2,19 @@
 
 void ProjectileMngr::Update()
 {
-    for(auto projectile : projectiles_)
+    for(auto it = projectiles_.begin(); it != projectiles_.end();)
     {
-        if(projectile == nullptr)
-            continue;
-
-        projectile->Update();
-
-        if(projectile->GetDiscard())
+        if((*it)->GetDiscard())
         {
-            delete projectile;
-            projectile = nullptr;
+            delete *it;
+            it = projectiles_.erase(it);
+        }
+        else
+        {
+            (*it)->Update();
+            ++it;
         }
     }
 }
+
+

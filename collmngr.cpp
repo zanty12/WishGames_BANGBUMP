@@ -16,11 +16,21 @@ void CollMngr::Update()
         collider->SetCollision(std::list<Collider*>());
     }
     //ˆê‰ñˆÊ’uXV
-    for(const auto collider : colliders_)
+    for(auto it = colliders_.begin(); it != colliders_.end();)
     {
-        if(collider->GetIsMovable())
-            collider->Update();
+        if((*it)->GetDiscard())
+        {
+            delete *it;
+            it = colliders_.erase(it);
+        }
+        else
+        {
+            if((*it)->GetIsMovable())
+                (*it)->Update();
+            ++it;
+        }
     }
+
     //Õ“Ë
     for(const auto collider : colliders_)
     {

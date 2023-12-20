@@ -16,6 +16,7 @@ private:
     bool is_movable_= false;
     GameObject* parent_;
     float bounciness_ = 1.0f; //’e—Í
+    bool is_discard_ = false; //”jŠü‚·‚é‚©‚Ç‚¤‚©
 
     protected:
     std::list<Collider*> collision_;
@@ -52,5 +53,7 @@ public:
         collision_.push_back(other);
         collision_.unique();
     }
+    void Discard(){is_discard_ = true;}
+    bool GetDiscard() const { return is_discard_; }
 
 };
