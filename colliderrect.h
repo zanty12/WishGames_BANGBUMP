@@ -12,7 +12,9 @@ public:
     ColliderRect() = delete;
     ColliderRect(GameObject* parent);
     Vertex4 GetRect() const { return rect_; }
-    bool Collide(Collider* other) const override;
+    bool Collide(Collider* other) override;
     void Update() override;
-    void OnCollision(Collider* other) override;
+    void CollisionInteract() override;
+    void CollisionSolid(Collider* other) override;
+    void CollisionPen(Collider* other) override;
 };

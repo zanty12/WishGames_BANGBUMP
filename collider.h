@@ -24,8 +24,11 @@ public:
     Collider(COLLIDER_TYPE type, GameObject* parent);
     virtual ~Collider() = default;
     virtual void Update() = 0;
-    virtual bool Collide(Collider* other) const = 0;
-    virtual void OnCollision(Collider* other) = 0;
+    virtual bool Collide(Collider* other) = 0;
+
+    virtual void CollisionInteract() = 0;
+    virtual void CollisionSolid(Collider* other) = 0;
+    virtual void CollisionPen(Collider* other) = 0;
 
     //getter and setter
     void SetPos(Vector2 pos) { pos_ = pos; }
@@ -41,4 +44,10 @@ public:
         using namespace std;
         return Vector2(max(min.x, min(max.x, val.x)), max(min.y, min(max.y, val.y)));
     }
+    void AddCollision(Collider* other)
+    {
+        collision_.push_back(other);
+        collision_.unique();
+    }
+
 };
