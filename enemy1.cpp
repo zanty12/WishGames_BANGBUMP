@@ -16,7 +16,7 @@ void Enemy1::Update()
     if (!CheckLength(GetPos(), startPosition, (SIZE_ * 3.0f)))
     {
         startPosition = GetPos();
-        SetVel(Vector2(GetVel().x, GetVel().y));
+        SetVel(Vector2(GetVel().x * -1, GetVel().y));
     }
 
     //壁判定
