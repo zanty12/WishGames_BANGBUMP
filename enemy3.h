@@ -33,6 +33,6 @@ public:
     void Range(float a, float b, float c, float d);
 
 
-private:
-    void CellActions();
+/*private:
+    void CellActions();*/
 };

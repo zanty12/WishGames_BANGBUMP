@@ -46,7 +46,7 @@ void Enemy1::Update()
     this->AddVel(GetVel());
 }
 
-void Enemy1::CellAction()
+/*void Enemy1::CellAction()
 {
     Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
     Cell* cells[4] = { nullptr, nullptr, nullptr, nullptr };
@@ -135,13 +135,13 @@ void Enemy1::CellActionSpike()
                     }
                     break;
                 case 2:
-                    if (GetVel().x < 0/* || cell_type == MAP_READ_SPIKE_LEFT*//* && cell_type != MAP_READ_SPIKE_RIGHT*/)
+                    if (GetVel().x < 0/* || cell_type == MAP_READ_SPIKE_LEFT#1#/* && cell_type != MAP_READ_SPIKE_RIGHT#1#)
                     {
                         SetVel(Vector2(GetVel().x * -1, GetVel().y));
                        /* if (Collision(enemy))
                         {
                             enemy->HpDown(3);
-                        }*/
+                        }#1#
                     }
                     break;
                 case 3:
@@ -157,7 +157,7 @@ void Enemy1::CellActionSpike()
         }
 
     }
-}
+}*/
 
 
 
