@@ -59,10 +59,7 @@ public:
 		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),lv_(1),
 		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0),
 		change_scene_(false)
-	{
-		SetCollider(new ColliderRect(this));
-		GetCollider()->SetIsMovable(true);
-	}
+	{}
 
 	~Player() { delete move_attribute_; delete attack_attribute_; }
 

@@ -32,8 +32,7 @@ public:
 
     void Update() override;
 
-
-private:
+/*private:
     void CellAction();
-    void CellActionSpike();
+    void CellActionSpike();*/
 };

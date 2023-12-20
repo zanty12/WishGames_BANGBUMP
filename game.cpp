@@ -28,10 +28,10 @@ Game::~Game() {
 
 void Game::Update()
 {
+    coll_mngr_->Update();
     mapmngr_->Update();
     player_->Update();
     camera_->Update();
-    coll_mngr_->Update();
     renderer_->Update();
     if (player_->GetChangeSceneFlag())
     {
@@ -115,10 +115,3 @@ void Game::DebugMenu()
     player_->DebugMenu();
 }
 
-Renderer* Game::GetRenderer() {
-    return renderer_;
-}
-
-CollMngr* Game::GetCollMngr() {
-    return coll_mngr_;
-}

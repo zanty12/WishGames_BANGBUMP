@@ -4,8 +4,10 @@
 #include "lib/collider2d.h"
 #include "time.h"
 
+#define RANGE (SIZE_ * 5.0f)                            //範囲
+
+
 bool CheckEnemy3Length(Vector2 a, Vector2 b, float len);
-bool CheakRange(Vector2 a, Vector2 b);
 
 void Enemy3::Update()
 {
@@ -13,95 +15,44 @@ void Enemy3::Update()
 
     GetAnimator()->SetIsAnim(true);
 
-    float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //初期化時のエラーを回避する
+    float dt = Time::GetDeltaTime(); //初期化時のエラーを回避する
 
     //重力
     //SetVel(Vector2(GetVel().x, GetVel().y - y_spd_ * dt));
 
+    Range(startPosition.x, startPosition.y, GetPos().x, GetPos().y);
+
+
     //プレイヤー追従
-    if (CheckEnemy3Length(GetPos(), startPosition, (SIZE_ * 3.0f)))//仮
+    if (CheckEnemy3Length(GetPos(), startPosition, RANGE))//仮
     {
-        if (CheakRange(GetPos(), startPosition))
+        if (cheakRange == true)
         {
-            if (startPosition.x > GetPos().x && startPosition.y > GetPos().y)
-            {
-                SetVel(Vector2(x_spd_ * dt, y_spd_ * dt));
-            }
-            else if (startPosition.x > GetPos().x && startPosition.y < GetPos().y)
-            {
-                SetVel(Vector2(x_spd_ * dt, -y_spd_ * dt));
-            }
-            else if (startPosition.x < GetPos().x && startPosition.y > GetPos().y)
-            {
-                SetVel(Vector2(-x_spd_ * dt, y_spd_ * dt));
-            }
-            else if (startPosition.x < GetPos().x && startPosition.y < GetPos().y)
-            {
-                SetVel(Vector2(-x_spd_ * dt, -y_spd_ * dt));
-            }
-            else if (startPosition.y < GetPos().y)
-            {
-                SetVel(Vector2(GetVel().x, -y_spd_ * dt));
-            }
-            else if (startPosition.y > GetPos().y)
-            {
-                SetVel(Vector2(GetVel().x, y_spd_ * dt));
-            }
-            else if (startPosition.x < GetPos().x)
-            {
-                SetVel(Vector2(-x_spd_ * dt, GetVel().y));
-            }
-            else if (startPosition.x > GetPos().x)
-            {
-                SetVel(Vector2(x_spd_ * dt, GetVel().y));
-            }
+            Vector2 v = startPosition - GetPos();
+            SetVel(v.Normalize() * spd_ * dt);
         }
     }
-    /*else
+    else
     {
-        if (player->GetPos().x > GetPos().x && player->GetPos().y > GetPos().y)
+        if (cheakRange == false)
         {
-            SetVel(Vector2(x_spd_ * dt, y_spd_ * dt));
-        }
-        else if (player->GetPos().x > GetPos().x && player->GetPos().y < GetPos().y)
-        {
-            SetVel(Vector2(x_spd_ * dt, -y_spd_ * dt));
-        }
-        else if (player->GetPos().x < GetPos().x && player->GetPos().y > GetPos().y)
-        {
-            SetVel(Vector2(-x_spd_ * dt, y_spd_ * dt));
-        }
-        else if (player->GetPos().x < GetPos().x && player->GetPos().y < GetPos().y)
-        {
-            SetVel(Vector2(-x_spd_ * dt, -y_spd_ * dt));
-        }
-        else if (player->GetPos().y < GetPos().y)
-        {
-            SetVel(Vector2(GetVel().x, -y_spd_ * dt));
-        }
-        else if (player->GetPos().y > GetPos().y)
-        {
-            SetVel(Vector2(GetVel().x, y_spd_ * dt));
-        }
-        else if (player->GetPos().x < GetPos().x)
-        {
-            SetVel(Vector2(-x_spd_ * dt, GetVel().y));
-        }
-        else if (player->GetPos().x > GetPos().x)
-        {
-            SetVel(Vector2(x_spd_ * dt, GetVel().y));
-        }
-    }*/
 
+            Vector2 v = player->GetPos() - GetPos();
+            SetVel(v.Normalize() * spd_ * dt);
+        }
+    }
+
+    /*
     //壁判定
     CellActions();
 
-    ////プレイヤーとの当たり判定
-    //if (Collision(player))
-    //{
-    //    player->HpDown(15);//★仮★
-    //    //Die();
-    //}
+    //プレイヤーとの当たり判定
+    if (Collision(player))
+    {
+        player->HpDown(15);//★仮★
+        //Die();
+    }
+    */
 
     //他の敵との当たり判定
    /* for (auto& enemy : GetEnemyMngr()->GetEnemies())
@@ -117,6 +68,7 @@ void Enemy3::Update()
     this->AddVel(GetVel());
 }
 
+/*
 void Enemy3::CellActions()
 {
     Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
@@ -135,6 +87,7 @@ void Enemy3::CellActions()
         //    MapCellInteract(cells[i]);
     }
 }
+*/
 
 bool CheckEnemy3Length(Vector2 a, Vector2 b, float len)
 {
@@ -146,14 +99,26 @@ bool CheckEnemy3Length(Vector2 a, Vector2 b, float len)
 
     return false;
 }
-bool CheakRange(Vector2 a, Vector2 b)
+
+void Enemy3::Range(float a, float b, float c, float d)
 {
-    if (a != b)
+    // 円の情報
+    float x = a;
+    float y = b;
+    float radius_0 = RANGE;
+    float radius_1 = 0.5f;
+
+    float h = c - x;
+    float i = d - y;
+    float g = sqrt(h * h + i * i);
+
+    if (g > radius_0)
     {
-        return true;
+        cheakRange = true;
     }
-    else if (a == b)
+    else if (g < radius_1)
     {
-        return false;
+        cheakRange = false;
     }
 }
+

@@ -1,32 +1,35 @@
 //--------------------------------------------------------------------------------
 // 
-// ƒQ[ƒ€ƒIƒuƒWƒFƒNƒgiƒCƒ“ƒ^[ƒtƒF[ƒXj[gameobject.h]
+// ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼ˆã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ï¼‰[gameobject.h]
 // 
-// ì¬Ò ª–{Œ«
+// ä½œæˆè€… æ ¹æœ¬è³¢
 // 
-// ì¬“ú		2023/11/16
-// ÅIXV“ú	2023/11/16
+// ä½œæˆæ—¥		2023/11/16
+// æœ€çµ‚æ›´æ–°æ—¥	2023/11/16
 //
 //  Update:
-//  2023/11/16 [ª–{Œ«] ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚ÌƒCƒ“ƒ^[ƒtƒF[ƒX‚ğì¬
-// 2023/11/30 Cheung To Hung •`‰æ‚Æscale,color‚ğ’Ç‰Á
+//  2023/11/16 [æ ¹æœ¬è³¢] ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã‚’ä½œæˆ
+// 2023/11/30 Cheung To Hung æç”»ã¨scale,colorã‚’è¿½åŠ 
 //--------------------------------------------------------------------------------
 
 #pragma once
 
+#include "animator.h"
+#include "collider.h"
 #include "sprite.h"
 #include "lib/dxlib.h"
 #include "graphical.h"
 
 enum OBJECT_TYPE
 {
-    OBJ_SOLID, //ŠÑ’Ê•s”\
-    OBJ_PENETRABLE, //‰ºŠÑ’Ê
-    OBJ_VOID, //ŠÑ’Ê‰Â”\
-    OBJ_SPIKE, //ƒgƒQ
-    OBJ_PLAYER, //ƒvƒŒƒCƒ„[
-    OBJ_ENEMY, //“G
-    OBJ_ATTACK, //UŒ‚
+    OBJ_SOLID, //è²«é€šä¸èƒ½
+    OBJ_PENETRABLE, //ä¸‹è²«é€š
+    OBJ_VOID, //è²«é€šå¯èƒ½
+    OBJ_SPIKE, //ãƒˆã‚²
+    OBJ_PLAYER, //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼
+    OBJ_ENEMY, //æ•µ
+    OBJ_ATTACK, //æ”»æ’ƒ
+    OBJ_ITEM, //ã‚¢ã‚¤ãƒ†ãƒ (ã‚¹ã‚­ãƒ«ç‰ã—ã‹ãªã„ã‘ã©)
 };
 
 class Animator;
@@ -37,35 +40,38 @@ private:
     Vector2 pos_;
     float rot_;
     int tex_;
-    Vector2 scale_ = Vector2{SIZE_, SIZE_}; //‘å‚«‚³
+    Vector2 scale_ = Vector2{SIZE_, SIZE_}; //å¤§ãã•
     Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
     Animator* animator_;
     Collider* collider_;
     OBJECT_TYPE type_ = OBJ_SOLID;
+    bool is_discard_ = false; //ç ´æ£„ã™ã‚‹ã‹ã©ã†ã‹
 
 public:
-    static constexpr float SIZE_ = 64.0f; //‚Pƒ}ƒX‚Ì•W€ƒTƒCƒY
+    static constexpr float SIZE_ = 64.0f; //ï¼‘ãƒã‚¹ã®æ¨™æº–ã‚µã‚¤ã‚º
 	GameObject() = default;
     GameObject(Vector2 pos, float rot, int tex_number);
     virtual ~GameObject() = default;
 
-    void SetPos(Vector2 pos) { pos_ = pos; } //ƒ|ƒWƒVƒ‡ƒ“ƒZƒbƒg
-    Vector2 GetPos(void) const { return pos_; } //ƒ|ƒWƒVƒ‡ƒ“ƒQƒbƒg
-    void SetRot(float rot) { rot_ = rot; } //‰ñ“]ƒZƒbƒg
-    float GetRot(void) const { return rot_; } //‰ñ“]ƒQƒbƒg
-    void SetTexNo(int tex_number) { tex_ = tex_number; } //ƒeƒNƒXƒ`ƒƒƒZƒbƒg
-    int GetTexNo(void) const { return tex_; } //ƒeƒNƒXƒ`ƒƒƒQƒbƒg
-    void SetScale(Vector2 scale) { scale_ = scale; } //‘å‚«‚³ƒZƒbƒg
-    Vector2 GetScale(void) const { return scale_; } //‘å‚«‚³ƒQƒbƒg
-    void SetColor(Color color) { color_ = color; } //FƒZƒbƒg
-    Color GetColor(void) const { return color_; } //FƒQƒbƒg
-    Animator* GetAnimator(void) const { return animator_; } //ƒAƒjƒ[ƒ^[ƒQƒbƒg
-    void SetAnimator(Animator* animator) { animator_ = animator; } //ƒAƒjƒ[ƒ^[ƒZƒbƒg
-    Collider* GetCollider(void) const { return collider_; } //ƒRƒ‰ƒCƒ_[ƒQƒbƒg
-    void SetCollider(Collider* collider) { collider_ = collider; } //ƒRƒ‰ƒCƒ_[ƒZƒbƒg
-    OBJECT_TYPE GetType(void) const { return type_; } //ƒIƒuƒWƒFƒNƒgƒ^ƒCƒvƒQƒbƒg
-    void SetType(OBJECT_TYPE type) { type_ = type; } //ƒIƒuƒWƒFƒNƒgƒ^ƒCƒvƒZƒbƒg
+    void SetPos(Vector2 pos) { pos_ = pos; } //ãƒã‚¸ã‚·ãƒ§ãƒ³ã‚»ãƒƒãƒˆ
+    Vector2 GetPos(void) const { return pos_; } //ãƒã‚¸ã‚·ãƒ§ãƒ³ã‚²ãƒƒãƒˆ
+    void SetRot(float rot) { rot_ = rot; } //å›è»¢ã‚»ãƒƒãƒˆ
+    float GetRot(void) const { return rot_; } //å›è»¢ã‚²ãƒƒãƒˆ
+    void SetTexNo(int tex_number) { tex_ = tex_number; } //ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚»ãƒƒãƒˆ
+    int GetTexNo(void) const { return tex_; } //ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚²ãƒƒãƒˆ
+    void SetScale(Vector2 scale) { scale_ = scale; } //å¤§ãã•ã‚»ãƒƒãƒˆ
+    Vector2 GetScale(void) const { return scale_; } //å¤§ãã•ã‚²ãƒƒãƒˆ
+    void SetColor(Color color) { color_ = color; } //è‰²ã‚»ãƒƒãƒˆ
+    Color GetColor(void) const { return color_; } //è‰²ã‚²ãƒƒãƒˆ
+    Animator* GetAnimator(void) const { return animator_; } //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ
+    void SetAnimator(Animator* animator) { animator_ = animator; } //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚¿ãƒ¼ã‚»ãƒƒãƒˆ
+    Collider* GetCollider(void) const { return collider_; } //ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚²ãƒƒãƒˆ
+    void SetCollider(Collider* collider) { collider_ = collider; } //ã‚³ãƒ©ã‚¤ãƒ€ãƒ¼ã‚»ãƒƒãƒˆ
+    OBJECT_TYPE GetType(void) const { return type_; } //ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¿ã‚¤ãƒ—ã‚²ãƒƒãƒˆ
+    void SetType(OBJECT_TYPE type) { type_ = type; } //ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¿ã‚¤ãƒ—ã‚»ãƒƒãƒˆ
+    void Discard(){is_discard_ = true; animator_->Discard(); collider_->Discard();} //ç ´æ£„ã™ã‚‹
+    bool GetDiscard() const { return is_discard_; } //ç ´æ£„ã™ã‚‹ã‹ã©ã†ã‹
+
 
     virtual void Update(void) = 0;
-
 };

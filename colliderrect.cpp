@@ -53,7 +53,12 @@ void ColliderRect::CollisionInteract()
             CollisionSolid(other);
             break;
         case OBJ_PENETRABLE:
-            CollisionPen(other);
+            {
+                if (GetBounciness() > 1.0f)
+                    CollisionSolid(other);
+                else
+                    CollisionPen(other);
+            }
             break;
         case OBJ_VOID:
             break;
@@ -123,6 +128,13 @@ void ColliderRect::CollisionSolid(Collider* other)
                 Vector2 overlap = Vector2(overlap_x, overlap_y);
                 // Adjust the position of the rectangle based on the overlap vector
                 Vector2 move_amount = Vector2(coll_dir.x * overlap.x, coll_dir.y * overlap.y);
+                if(GetBounciness() > 1.0f)
+                {
+                    MovableObj* parent = dynamic_cast<MovableObj*>(GetParent());
+                    Vector2 vel = -parent->GetVel();
+                    vel += Vector2(-move_amount.x * GetBounciness(), move_amount.y * GetBounciness());
+                    parent->SetVel(vel);
+                }
                 SetPos(GetPos() + move_amount);
             }
         }
@@ -186,37 +198,26 @@ void ColliderRect::CollisionPen(Collider* other)
             if (overlap_x < 0 || overlap_y < 0)
             {
                 Vector2 coll_dir = collision_normal.Normalize();
-                if (overlap_y < 0 && overlap_y > overlap_x)
+                Vector2 overlap = Vector2(overlap_x, overlap_y);
+                if (abs(coll_dir.y) > abs(coll_dir.x))
                 {
-                    //if this is top side
-                    if (GetPos().y < other->GetPos().y)
+                    if (coll_dir.y > 0.0f)
                     {
-                        SetPos(GetPos() - Vector2(0.0f, coll_dir.y) * overlap_y);
-                        MovableObj* p = dynamic_cast<MovableObj*>(GetParent());
-                        if (p != nullptr)
-                        {
-                            p->SetVel(Vector2(p->GetVel().x, 0.0f));
-                        }
+                        //go through bottom
+                        SetPos(GetPos() + Vector2(
+                            coll_dir.x * overlap.x,
+                            GetParent()->GetScale().y / 2 + other->GetParent()->GetScale().y / 2));
                     }
-                    //if this is bottom side
                     else
                     {
-                        SetPos(other->GetPos() + Vector2(0.0f, GetParent()->GetScale().y / 2) + Vector2(
-                            0.0f, other->GetParent()->GetScale().y / 2));
+                        Vector2 move_amount = Vector2(coll_dir.x * overlap.x, coll_dir.y * overlap.y);
+                        SetPos(GetPos() + move_amount);
                     }
                 }
-                else if (overlap_x < 0 && overlap_x > overlap_y)
+                else
                 {
-                    //if this is left side
-                    if (GetPos().x < other->GetPos().x)
-                    {
-                        SetPos(GetPos() + Vector2(coll_dir.x, 0.0f) * overlap_x);
-                    }
-                    //if this is right side
-                    else
-                    {
-                        SetPos(GetPos() + Vector2(coll_dir.x, 0.0f) * overlap_x);
-                    }
+                    Vector2 move_amount = Vector2(coll_dir.x * overlap.x, coll_dir.y * overlap.y);
+                    SetPos(GetPos() + move_amount);
                 }
             }
         }

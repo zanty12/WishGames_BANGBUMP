@@ -8,9 +8,11 @@ class Enemy3 : public Enemy
 private:
     const int HP_MAX_ = 60;		//HPÇÃè„å¿
     int hp_;
-    const float x_spd_ = 96.0f * 2;
-    const float y_spd_ = 96.0f * 2;
+    //const float x_spd_ = 96.0f * 2;
+    //const float y_spd_ = 96.0f * 2;
+    const float spd_ = 96.0f * 2;
     Vector2 startPosition;
+    bool cheakRange;
 
 public:
     Enemy3() = delete;
@@ -28,7 +30,9 @@ public:
 
     void Update() override;
 
+    void Range(float a, float b, float c, float d);
 
-private:
-    void CellActions();
+
+/*private:
+    void CellActions();*/
 };
