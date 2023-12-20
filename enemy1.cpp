@@ -19,16 +19,6 @@ void Enemy1::Update()
         SetVel(Vector2(GetVel().x * -1, GetVel().y));
     }
 
-    //壁判定
-    CellAction();
-
-    //プレイヤーとの当たり判定
-    if (Collision(player))
-    {
-        player->HpDown(3);//★仮★
-        //Die();
-    }
-
     //他の敵との当たり判定
  /*   for (auto& enemy : GetEnemyMngr()->GetEnemies())
     {
