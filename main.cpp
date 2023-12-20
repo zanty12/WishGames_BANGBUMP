@@ -38,7 +38,7 @@ int main()
 
             while (true) {
                 dwCurrentTime = timeGetTime();
-                if (dwCurrentTime - dwStartTime > dwOnceFrameTime) {
+                if (dwCurrentTime - dwStartTime > dwOnceFrameTime * 2) {
                     dwStartTime = dwCurrentTime;
                     Input::Update();
                     client.SendUpdate();

@@ -10,6 +10,14 @@
 
 
 int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
+	// ロック解除待機
+	while (isListLock);
+
+	// ロック
+	isListLock = true;
+
+
+
 	Vector2 pos = Vector2::Zero;
 	float rot = 0.0f;
 	int texNo = 0;
@@ -30,6 +38,7 @@ int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 		player
 	};
 
+
 	// プレイヤー追加
 	clients_.push_back(clientData);
 
@@ -39,10 +48,24 @@ int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	SendTo(this->sockfd_, (char *)&header, sizeof(HEADER), 0, clientAddr);
 	std::cout << "Res >> ID:" << (maxID - 1) << " Login" << std::endl;
 
+
+
+	// ロック解除
+	isListLock = false;
+
 	return maxID - 1;
 }
 
 void MultiServer::Unregister(int id) {
+	// ロック解除待機
+	while (isListLock);
+
+	// ロック
+	isListLock = true;
+
+
+
+
 
 	// プレイヤーの検索
 	auto iterator = find(id);
@@ -61,6 +84,11 @@ void MultiServer::Unregister(int id) {
 	// 削除
 	delete iterator->player_;
 	clients_.erase(iterator);
+
+
+
+	// ロック解除
+	isListLock = false;
 }
 
 void MultiServer::AllUnregister(void) {
@@ -105,31 +133,50 @@ REQUEST_PLAYER MultiServer::RecvUpdate(void) {
 }
 
 void MultiServer::SendUpdate(void) {
-	// レスポンスの作成
-	RESPONSE_PLAYER res;
+	DWORD startTime, currentTime, onceFrameTime;
+	startTime = currentTime = timeGetTime();
+	onceFrameTime = 1000 / 60;
 
-	// クライアント情報の登録
-	for (auto &client : clients_) {
-		res.clients.push_back({ client.header.id , client.player_->GetPos() });
-	}
+	while (true) {
+		if (!isListLock) {
+			// ロック
+			isListLock = true;
 
-	// クライアント全員に送信する
-	for (auto &client : clients_) {
-		// 登録されていないならスキップ
-		if (client.header.id < 0) continue;
+			currentTime = timeGetTime();
 
-		// 宛先の登録とレスポンス内容の結合
-		res.CreateResponse(sendBuff, client.header.id);
+			if (currentTime - startTime > onceFrameTime) {
+				startTime = currentTime;
 
-		// 送信
-		SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
+				// レスポンスの作成
+				RESPONSE_PLAYER res;
+
+				// クライアント情報の登録
+				for (auto &client : clients_) {
+					res.clients.push_back({ client.header.id , client.player_->GetPos() });
+				}
+
+				// クライアント全員に送信する
+				for (auto &client : clients_) {
+					// 登録されていないならスキップ
+					if (client.header.id < 0) continue;
+
+					// 宛先の登録とレスポンス内容の結合
+					res.CreateResponse(sendBuff, client.header.id);
+
+					// 送信
+					SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
+				}
+			}
+			// ロック解除
+			isListLock = false;
+		}
 	}
 }
 
 void MultiServer::Update() {
 	REQUEST_PLAYER req = RecvUpdate();
 	PlayerUpdate(req);
-	SendUpdate();
+	//SendUpdate();
 }
 
 void MultiServer::OpenTerminal(void) {
@@ -143,7 +190,7 @@ void MultiServer::OpenTerminal(void) {
 	const int MAX_BUFF = 1024;
 	MSG msg;
 
-	//std::thread f(&MultiServer::SendUpdate, this);
+	std::thread f(&MultiServer::SendUpdate, this);
 
 	while (true) {
 		// メッセージ
@@ -202,7 +249,10 @@ void MultiServer::OpenTerminal(void) {
 		sendBuff = nullptr;
 	}
 
-	//f.join();
+	f.join();
+}
+
+void MultiServer::Send() {
 }
 
 
@@ -290,6 +340,7 @@ void Client::SendUpdate(void) {
 
 	// 送信
 	SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, serverAddr);
+	sendBuff = nullptr;
 }
 
 void Client::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
@@ -317,9 +368,9 @@ void Client::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 void Client::Update() {
 	RESPONSE_PLAYER res;
 
-	RecvUpdate(10, res);
+	RecvUpdate(1, res);
 	PlayerUpdate(res);
 	// SendUpdate();
 	recvBuff = nullptr;
-	sendBuff = nullptr;
+	//sendBuff = nullptr;
 }

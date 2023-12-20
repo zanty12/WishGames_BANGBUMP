@@ -154,6 +154,7 @@ private:
 	std::list<CLIENT_DATA> clients_;
 	Storage sendBuff = Storage(1024), sendContentBuff = Storage(1024), recvBuff = Storage(1024);
 	MapMngr mapMngr = MapMngr("data/map/1.csv", nullptr);
+	bool isListLock = false;
 	//MULTI_SCENE scene = SELECT;
 
 private:
@@ -171,6 +172,8 @@ private:
 	void SendUpdate(void);
 
 	void Update();
+
+	void Send();
 
 
 	std::list<CLIENT_DATA>::iterator find(int id) {
