@@ -3,13 +3,13 @@
 #include "scene.h"
 #include "player.h"
 #include "mapmngr.h"
+#include "projectilemngr.h"
 #include "scenemngr.h"
+#include "renderer.h"
 
 class MapMngr;
 class Player;
 class Camera;
-
-class Renderer;
 
 class Game :public Scene
 {
@@ -21,6 +21,7 @@ private:
 	SceneMngr* scene_mngr_;
 	static Renderer* renderer_;
 	static CollMngr* coll_mngr_;
+	static ProjectileMngr* projectile_mngr_;
 
 public:
 	Game() = delete;
@@ -34,6 +35,7 @@ public:
 	}
 	void DebugMenu() override;
 
-	static Renderer* GetRenderer();
-	static CollMngr* GetCollMngr();
+	static Renderer* GetRenderer(){return renderer_;}
+	static CollMngr* GetCollMngr() {return coll_mngr_;}
+	static ProjectileMngr* GetProjectileMngr(){return projectile_mngr_;}
 };

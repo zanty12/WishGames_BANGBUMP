@@ -27,6 +27,7 @@ enum OBJECT_TYPE
     OBJ_PLAYER, //プレイヤー
     OBJ_ENEMY, //敵
     OBJ_ATTACK, //攻撃
+    OBJ_ITEM, //アイテム(スキル玉しかないけど)
 };
 
 class Animator;
@@ -42,6 +43,7 @@ private:
     Animator* animator_;
     Collider* collider_;
     OBJECT_TYPE type_ = OBJ_SOLID;
+    bool is_discard = false; //破棄するかどうか
 
 public:
     static constexpr float SIZE_ = 64.0f; //１マスの標準サイズ
@@ -65,7 +67,8 @@ public:
     void SetCollider(Collider* collider) { collider_ = collider; } //コライダーセット
     OBJECT_TYPE GetType(void) const { return type_; } //オブジェクトタイプゲット
     void SetType(OBJECT_TYPE type) { type_ = type; } //オブジェクトタイプセット
+    void Discard(){is_discard = true;} //破棄する
+    bool GetDiscard() const { return is_discard; } //破棄するかどうか
 
     virtual void Update(void) = 0;
-
 };
