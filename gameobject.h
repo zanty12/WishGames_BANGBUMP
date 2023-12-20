@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "animator.h"
+#include "collider.h"
 #include "sprite.h"
 #include "lib/dxlib.h"
 #include "graphical.h"
@@ -43,7 +45,7 @@ private:
     Animator* animator_;
     Collider* collider_;
     OBJECT_TYPE type_ = OBJ_SOLID;
-    bool is_discard = false; //破棄するかどうか
+    bool is_discard_ = false; //破棄するかどうか
 
 public:
     static constexpr float SIZE_ = 64.0f; //１マスの標準サイズ
@@ -67,8 +69,8 @@ public:
     void SetCollider(Collider* collider) { collider_ = collider; } //コライダーセット
     OBJECT_TYPE GetType(void) const { return type_; } //オブジェクトタイプゲット
     void SetType(OBJECT_TYPE type) { type_ = type; } //オブジェクトタイプセット
-    void Discard(){is_discard = true;} //破棄する
-    bool GetDiscard() const { return is_discard; } //破棄するかどうか
+    void Discard(){is_discard_ = true; animator_->Discard(); collider_->Discard();} //破棄する
+    bool GetDiscard() const { return is_discard_; } //破棄するかどうか
 
     virtual void Update(void) = 0;
 };

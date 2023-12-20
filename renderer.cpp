@@ -1,18 +1,19 @@
 #include "renderer.h"
 void Renderer::Update()
 {
-    for (auto animator : animators_)
+    for(auto it = animators_.begin(); it != animators_.end();)
     {
-        /*if(animator->GetPos().x < 0.0f || animator->GetPos().y < 0.0f)
+        if((*it)->GetDiscard())
         {
-            delete animator;
-            animators_.remove(animator);
-            animator--;
-            continue;
-        }*/ //FIXME: ŠÔˆá‚Á‚½‚Æ‚±‚ë‚ðÁ‚·
-        if(animator->GetIsMovable() || animator->GetIsAnim())
-            animator->Update();
-
+            delete *it;
+            it = animators_.erase(it);
+        }
+        else
+        {
+            if((*it)->GetIsMovable()||(*it)->GetIsAnim())
+                (*it)->Update();
+            ++it;
+        }
     }
 }
 void Renderer::Draw() { for (auto animator : animators_)animator->Draw(); }
