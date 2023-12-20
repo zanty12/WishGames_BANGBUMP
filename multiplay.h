@@ -10,6 +10,7 @@
 #include "storage.h"
 #include "xinput.h"
 #include "multi_header.h"
+#include "renderer.h"
 #include "multi_area_capture_mode_.h"
 
 
@@ -79,7 +80,7 @@ private:
 public:
 	Object(Vector2 pos, int texNo) : GameObject(pos, 0.0f, texNo) {}
 	void Update(RESPONSE_PLAYER::DESC res) {
-		anim.SetPos((res.position / 2 + Vector2(1600, 900) / 2));
+		anim.SetPos(res.position);
 	}
 
 	void Draw(void) override {
@@ -96,13 +97,18 @@ private:
 	FD readfd_;
 	Storage sendBuff = Storage(1024), recvBuff = Storage(1024);
 	MultiPlayClientSide *gameMode = nullptr;
+	//Renderer renderer_;
+
 
 public:
 	int id = -1;
 	//RESPONSE_PLAYER::DESC player;
 	Object playerAnim = Object(Vector2(0,0), LoadTexture("data/texture/player.png"));
 	MapMngr mapMngr = MapMngr("data/map/1.csv", nullptr);
-	~Client() { Unregister(); }
+	Client() {
+		gameMode = new MultiPlayAreaCaptureModeClientSide();
+	}
+	~Client() { Unregister(); delete gameMode; }
 
 	// “o˜^
 	int Register();

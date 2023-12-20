@@ -16,6 +16,6 @@ private:
 
 public:
 	MultiPlayClientSide(){ }
-	virtual void Draw(CLIENT_DATA_CLIENT_SIDE client) = 0;
+	virtual void Draw(void) = 0;
 	virtual void ParseResponse(Storage& in) = 0;
 };

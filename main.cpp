@@ -29,7 +29,7 @@ int main()
         MSG msg;
         Client client;
         client.Register();
-        
+
         //SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
         auto func = [&]() {
             DWORD dwStartTime = timeGetTime();
@@ -45,7 +45,7 @@ int main()
                 }
                 if (GetAsyncKeyState(VK_ESCAPE)) return;
             }
-        };
+            };
         std::thread sendInputFunc(func);
 
         while (true)

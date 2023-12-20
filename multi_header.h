@@ -95,9 +95,6 @@ struct RESPONSE_PLAYER {
 				clients.push_back(res);
 			}
 		}
-
-		// 初期化
-		in = nullptr;
 	}
 };
 // リクエスト（プレイヤー）
@@ -145,7 +142,7 @@ struct REQUEST_PLAYER {
 struct RESPONSE_AREA_CAPTURE {
 	struct DESC {
 		Vector2 position;				// 占領の座標
-		Vector2 scale;					// 占領のスケール
+		float radius = 100;				// 占領のスケール
 		float captureRatio = 0.0f;		// 占領度合い
 		int id = -1;					// 現在占領しているID
 	};

@@ -1,5 +1,6 @@
 #pragma once
 #include "multi_mode.h"
+#include "sprite.h"
 #include "time.h"
 
 
@@ -23,7 +24,7 @@ private:
 
 		// エリア
 		for (auto& area : areas) {
-			Vertex4 areaCollider = Vertex4(area.position, 0.0f, area.scale);	// エリアのコライダー
+			Vertex1 areaCollider = Vertex1(area.position, area.radius);	// エリアのコライダー
 			int touchID = -1;													// エリアに触れているID
 
 			// プレイヤー
@@ -47,9 +48,12 @@ private:
 				}
 			}
 
+			// だれも触れていないなら
+			if (touchID == -1) continue;
+
 			// 占領し続けているならゲージの更新
 			if (area.id == touchID) {
-				area.captureNowTime = Time::GetDeltaTime();
+				area.captureNowTime += Time::GetDeltaTime();
 			}
 			// 別のプレイヤーに占領されたなら初期化
 			else {
@@ -76,10 +80,13 @@ private:
 		// エリアの生成
 		Area area;
 		area.position = position;
+		area.radius = 100;
 		areas.push_back(area);
 	}
 public:
-	MultiPlayAreaCaptureModeServerSide(MapMngr* map) : MultiPlayServerSide(map) { }
+	MultiPlayAreaCaptureModeServerSide(MapMngr* map) : MultiPlayServerSide(map) {
+		Spawn(Vector2(100, 100));
+	}
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE>& clients) override {
 		CaptureUpdate(clients);
@@ -99,15 +106,24 @@ public:
 
 class MultiPlayAreaCaptureModeClientSide : public MultiPlayClientSide {
 private:
+	int texNo = -1;
 	RESPONSE_AREA_CAPTURE res;
 
 public:
-	void Draw(CLIENT_DATA_CLIENT_SIDE client) override {
-		
+	MultiPlayAreaCaptureModeClientSide() {
+		texNo = LoadTexture("data/texture/area_capture.png");
+	}
 
+	void Draw(void) override {
+
+		for (auto area : res.areas) {
+			DrawSprite(0, area.position + Vector2(100, 100), 0, Vector2::One * (area.radius), Color::White);
+			std::cout << texNo << " : " << area.captureRatio << std::endl;
+		}
 	}
 
 	void ParseResponse(Storage& in) override {
+		res = RESPONSE_AREA_CAPTURE();
 		// レスポンス解析
 		res.ParseResponse(in);
 	}

@@ -116,9 +116,9 @@ void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
 	// プレイヤーの処理を行う
 	float speed = 10;
 	Vector2 v = Input::GetStickLeft(0);
-	Vector2 center = Vector2(1600, 900) / 2;
+	Vector2 pos = iterator->player_->GetPos();
 	v.y *= -1;
-	iterator->player_->SetPos(center + v * speed);
+	iterator->player_->SetPos(v * speed + pos);
 }
 
 REQUEST_PLAYER MultiServer::RecvUpdate(void) {
@@ -253,6 +253,8 @@ void MultiServer::OpenTerminal(void) {
 			}
 		}
 
+		Time::Update();
+
 		recvBuff = nullptr;
 		sendBuff = nullptr;
 	}
@@ -261,6 +263,14 @@ void MultiServer::OpenTerminal(void) {
 
 	sendUpdateFunc.join();
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -329,13 +339,16 @@ void Client::Unregister() {
 void Client::PlayerUpdate(RESPONSE_PLAYER &res) {
 	//playerAnim.Update(res);
 	//playerAnim.Draw();
-	if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
+	//if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
 
+	DrawSprite(0, Vector2(0, 0), 0, Vector2::One * (100), Color::White);
 	for (auto &client : res.clients) {
-		std::cout << client.position.x << ", " << client.position.y << std::endl;
+		//std::cout << client.position.x << ", " << client.position.y << std::endl;
 		playerAnim.Update(client);
 		playerAnim.Draw();
 	}
+
+	if (gameMode) gameMode->Draw();
 	//Camera camera = Camera();
 	//mapMngr.Draw();
 }
@@ -370,6 +383,11 @@ void Client::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 		// レスポンスの解析
 		res.ParseResponse(recvBuff);
+		if (gameMode) gameMode->ParseResponse(recvBuff);
+
+
+		// 初期化
+		recvBuff = nullptr;
 	}
 }
 
@@ -380,5 +398,5 @@ void Client::Update() {
 	PlayerUpdate(res);
 	// SendUpdate();
 	recvBuff = nullptr;
-	//sendBuff = nullptr;
+	// sendBuff = nullptr;
 }
