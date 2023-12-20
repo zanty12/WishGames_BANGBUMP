@@ -40,6 +40,8 @@ public:
     GameObject* GetParent() const { return parent_; }
     std::list<Collider*> GetCollision() const { return collision_; }
     void SetCollision(const std::list<Collider*>& collision) { collision_ = collision; }
+    float GetBounciness() const { return bounciness_; }
+    void SetBounciness(float bounciness) { if(bounciness > 1.0f) bounciness_ = bounciness; else bounciness_ = 1.0f;}
     Vector2 Clamp(const Vector2& val, const Vector2& min, const Vector2& max)
     {
         using namespace std;

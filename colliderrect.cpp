@@ -53,7 +53,12 @@ void ColliderRect::CollisionInteract()
             CollisionSolid(other);
             break;
         case OBJ_PENETRABLE:
-            CollisionPen(other);
+            {
+                if (GetBounciness() > 1.0f)
+                    CollisionSolid(other);
+                else
+                    CollisionPen(other);
+            }
             break;
         case OBJ_VOID:
             break;
@@ -123,6 +128,13 @@ void ColliderRect::CollisionSolid(Collider* other)
                 Vector2 overlap = Vector2(overlap_x, overlap_y);
                 // Adjust the position of the rectangle based on the overlap vector
                 Vector2 move_amount = Vector2(coll_dir.x * overlap.x, coll_dir.y * overlap.y);
+                if(GetBounciness() > 1.0f)
+                {
+                    MovableObj* parent = dynamic_cast<MovableObj*>(GetParent());
+                    Vector2 vel = -parent->GetVel();
+                    vel += Vector2(-move_amount.x * GetBounciness(), move_amount.y * GetBounciness());
+                    parent->SetVel(vel);
+                }
                 SetPos(GetPos() + move_amount);
             }
         }
