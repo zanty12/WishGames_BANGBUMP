@@ -12,7 +12,7 @@ public:
 
     Cell(int x, int y, int tex) : GameObject(Vector2(x * GameObject::SIZE_ + GameObject::SIZE_ / 2,
                                                      y * GameObject::SIZE_ + GameObject::SIZE_ / 2), 0.0f, tex)
-    {SetCollider(new ColliderRect(this));} //ゲーム座標からマス座標に変換
+    {} //ゲーム座標からマス座標に変換
     virtual ~Cell() = default;
 
     void Update() override
