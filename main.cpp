@@ -1,4 +1,5 @@
-﻿#include "graphical.h"
+﻿#include "collider.h"
+#include "graphical.h"
 #include "sprite.h"
 #include <iostream>
 #include "DebugUI.h"
@@ -23,7 +24,7 @@ int main()
 
     if (mode == 0) {
         MultiServer server;
-        server.OpenTerminal();
+        server.OpenTerminal(); 
     }
     else {
         MSG msg;

@@ -83,7 +83,7 @@ public:
 		anim.SetPos(res.position);
 	}
 
-	void Draw(void) override {
+	void Draw(void) {
 		anim.Draw();
 	}
 };
