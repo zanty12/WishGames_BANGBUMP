@@ -27,6 +27,7 @@ public:
 		:GameObject(pos,rot,tex_number),vel_(vel)
 	{
 		GetAnimator()->SetIsMovable(true);
+		GetCollider()->SetIsMovable(true);
 	}
 
 	void SetVel(Vector2 vel) { vel_ = vel; }		//速度セット

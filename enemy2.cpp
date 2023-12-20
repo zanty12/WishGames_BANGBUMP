@@ -13,7 +13,7 @@ void Enemy2::Update()
 
     GetAnimator()->SetIsAnim(true);
 
-    //•Ç”»’è
+    /*//•Ç”»’è
     CellActions();
 
     //ƒvƒŒƒCƒ„[‚Æ‚Ì“–‚½‚è”»’è
@@ -21,7 +21,7 @@ void Enemy2::Update()
     {
         player->HpDown(3);//š‰¼š
         //Die();
-    }
+    }*/
 
     //‘¼‚Ì“G‚Æ‚Ì“–‚½‚è”»’è
  /*   for (auto& enemy : GetEnemyMngr()->GetEnemies())
@@ -40,6 +40,7 @@ void Enemy2::Update()
     this->AddVel(GetVel());
 }
 
+/*
 void Enemy2::CellActions()
 {
     Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
@@ -88,4 +89,4 @@ void Enemy2::CellActions()
             break;
         }
     }
-}
+}*/

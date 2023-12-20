@@ -15,6 +15,7 @@ private:
     Vector2 pos_;
     bool is_movable_= false;
     GameObject* parent_;
+    float bounciness_ = 1.0f; //’e—Í
 
     protected:
     std::list<Collider*> collision_;

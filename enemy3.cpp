@@ -42,6 +42,7 @@ void Enemy3::Update()
         }
     }
 
+    /*
     //•Ç”»’è
     CellActions();
 
@@ -51,6 +52,7 @@ void Enemy3::Update()
         player->HpDown(15);//š‰¼š
         //Die();
     }
+    */
 
     //‘¼‚Ì“G‚Æ‚Ì“–‚½‚è”»’è
    /* for (auto& enemy : GetEnemyMngr()->GetEnemies())
@@ -66,6 +68,7 @@ void Enemy3::Update()
     this->AddVel(GetVel());
 }
 
+/*
 void Enemy3::CellActions()
 {
     Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
@@ -84,6 +87,7 @@ void Enemy3::CellActions()
             MapCellInteract(cells[i]);
     }
 }
+*/
 
 bool CheckEnemy3Length(Vector2 a, Vector2 b, float len)
 {
