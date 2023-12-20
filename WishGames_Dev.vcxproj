@@ -171,6 +171,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animator.h" />
+    <ClInclude Include="multi_area_capture_mode_.h" />
+    <ClInclude Include="multi_enemy_rush_mode.h" />
+    <ClInclude Include="multi_header.h" />
+    <ClInclude Include="multi_mode.h" />
     <ClInclude Include="storage.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collider.h" />
