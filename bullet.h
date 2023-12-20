@@ -10,8 +10,6 @@ class Bullet : public MovableObj
 {
 private:
 
-	int use = 0; //‰ÂŽ‹ƒtƒ‰ƒO
-	float rot;
 	const float spd_ = 96.0f * 2;
 
 public:
@@ -23,7 +21,7 @@ public:
 
 	Bullet(int x, int y) : Bullet(x, y, LoadTexture("data/texture/bullet.png")) {}
 	
-	void Spawn(int x, int y, int type);
+	void Update() override;
 
 
 };

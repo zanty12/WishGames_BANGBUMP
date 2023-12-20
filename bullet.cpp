@@ -7,12 +7,19 @@
 #include "lib/collider2d.h"
 #include "time.h"
 
-#define BULLET 100
-
-bool CheckEnemy2Length(Vector2 a, Vector2 b, float len);
-
-void Bullet::Spawn(int x, int y, int type)
+void Bullet::Update()
 {
+    std::list<Collider*> collisions = GetCollider()->GetCollision();
+    for (auto collision : collisions)
+    {
+        OBJECT_TYPE type = collision->GetParent()->GetType();
 
-	
+        //ÀÛ‚Ìˆ—
+        if (type == OBJ_PLAYER)
+        {
+            Player* player = dynamic_cast<Player*> (collision->GetParent());
+            player->HpDown(15);//š‰¼š
+        }
+    }
+
 }

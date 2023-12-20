@@ -11,9 +11,6 @@ bool CheckEnemy3Length(Vector2 a, Vector2 b, float len);
 
 void Enemy3::Update()
 {
-    //Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //³’¼‚±‚ê‚Ìƒƒ‚ƒŠ‘€ì‘½‚·‚¬
-
-
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
@@ -34,7 +31,7 @@ void Enemy3::Update()
     //SetVel(Vector2(GetVel().x, GetVel().y - y_spd_ * dt));
 
     //ƒvƒŒƒCƒ„[’Ç]
-    std::list<Player*> players = Game::GetPlayer();
+    std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayerList();
 
     for (auto player : players)
     {

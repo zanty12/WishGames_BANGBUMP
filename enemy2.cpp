@@ -12,17 +12,30 @@ bool CheckEnemy2Length(Vector2 a, Vector2 b, float len);
 
 void Enemy2::Update()
 {
-    Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //³’¼‚±‚ê‚Ìƒƒ‚ƒŠ‘€ì‘½‚·‚¬
+    std::list<Collider*> collisions = GetCollider()->GetCollision();
+    for (auto collision : collisions)
+    {
+        OBJECT_TYPE type = collision->GetParent()->GetType();
 
+        //ÀÛ‚Ìˆ—
+        if (type == OBJ_PLAYER)
+        {
+            Player* player = dynamic_cast<Player*> (collision->GetParent());
+            player->HpDown(0);//š‰¼š
+        }
+    }
 
     GetAnimator()->SetIsAnim(true);
 
+    std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayerList();
 
-
-    if (CheckEnemy2Length(startPosition, player->GetPos(), RANGE))
+    for (auto player : players)
     {
+        if (CheckEnemy2Length(startPosition, player->GetPos(), RANGE))
+        {
 
 
+        }
     }
 
 
