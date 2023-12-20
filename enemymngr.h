@@ -26,7 +26,6 @@ public:
         enemies_.clear();
     }
     void Update();
-    void Draw(Camera* camera) const;
     void Spawn(int x,int y,int type);
     void PutEnemy(Enemy* enemy)
     {

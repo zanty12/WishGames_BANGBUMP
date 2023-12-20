@@ -1,6 +1,6 @@
 #include "movableobj.h"
 #include "lib/collider2d.h"
-
+/*
 bool MovableObj::Collision(const GameObject* obj) const
 {
     using namespace PHYSICS;
@@ -103,3 +103,4 @@ void MovableObj::PenCellInteract(Cell* cell)
             SetVel(Vector2(0.0f, GetVel().y));
     }
 }
+*/

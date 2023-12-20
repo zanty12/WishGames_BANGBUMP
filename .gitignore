@@ -367,3 +367,6 @@ FodyWeavers.xsd
 
 # Build folder
 bin/
+
+#imgui config
+imgui.ini
