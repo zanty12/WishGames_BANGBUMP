@@ -1,1 +1,3 @@
-# WishGames_Dev
+# Elemental Cross
+
+Wish Games
