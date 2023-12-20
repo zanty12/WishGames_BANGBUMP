@@ -9,6 +9,9 @@
 #include "player.h"
 #include "storage.h"
 #include "xinput.h"
+#include "multi_header.h"
+#include "multi_area_capture_mode_.h"
+
 
 #define SERVER_ADDRESS "192.168.0.121"
 #define MAX_MEMBER (4)
@@ -17,144 +20,17 @@
 using namespace Network;
 
 
-struct HEADER {
-	enum {
-		NONE = -1,
-	};
-
-	enum COMMAND {
-		REQUEST_LOGIN,
-		RESPONSE_LOGIN,
-		REQUEST_LOGOUT,
-		RESPONSE_LOGOUT,
-		REQUEST_UPDATE,
-		RESPONSE_UPDATE
-	};
-	enum SCENE {
-		SELECT,
-	};
-
-
-	int id = -1;
-	int command = NONE;
-	int scene = NONE;
-};
-struct OTHER_CLIENT {
-	HEADER header;
-	Vector2 position;
-};
-
-
-struct RESPONSE_PLAYER {
-	struct DESC {
-		int id;
-		Vector2 position;
-	};
-	std::list<DESC> clients;
-
-	void CreateResponse(Storage &out, int id) {
-		// 初期化
-		out = nullptr;
-
-		// ヘッダー作成
-		HEADER header;
-		header.id = id;
-		header.command = HEADER::RESPONSE_UPDATE;
-
-		// レスポンス作成（ヘッダー）
-		out << header;
-		out << clients.size();
-
-		// レスポンス作成（プレイヤー）
-		for (auto &client : clients) {
-			// レスポンス情報の設定
-			out << client;
-		}
-	}
-
-	void ParseResponse(Storage &in) {
-		HEADER recvHeader;
-		size_t playerNum = 0;
-
-		// ヘッダー取得
-		in >> recvHeader;
-		in >> playerNum;
-
-
-		// レスポンス解析（プレイヤー）
-		for (int i = 0; i < playerNum; i++) {
-			DESC res;
-			in >> res;
-
-			// 自分なら先頭に
-			if (res.id == recvHeader.id) {
-				clients.push_front(res);
-			}
-			else {
-				clients.push_back(res);
-			}
-		}
-
-		// 初期化
-		in = nullptr;
-	}
-};
-
-struct REQUEST_PLAYER {
-	struct DESC {
-		int id;
-		XINPUT_GAMEPAD curInput;
-		XINPUT_GAMEPAD preInput;
-	};
-	DESC input;
-
-	void CreateRequest(Storage &out, int id) {
-		// 初期化
-		out = nullptr;
-
-		// ヘッダー作成
-		HEADER header;
-		header.id = id;
-		header.command = HEADER::REQUEST_UPDATE;
-
-		// レスポンス作成（ヘッダー）
-		out << header;
-
-		// レスポンス作成（入力）
-		out << input;
-	}
-
-	void ParseRequest(Storage &in) {
-		HEADER recvHeader;
-
-		// ヘッダー取得
-		in >> recvHeader;
-
-
-		// レスポンス解析（入力）
-		in >> input;
-
-		// 初期化
-		in = nullptr;
-	}
-};
-
-
 class MultiServer : Server {
 private:
-	struct CLIENT_DATA {
-		HEADER header;
-		Socket sockfd_;
-		Address clientAddr_;
-		Player *player_;
-	};
+
 
 	int maxID = 0;
 	Socket sockfd_;
-	std::list<CLIENT_DATA> clients_;
+	std::list<CLIENT_DATA_SERVER_SIDE> clients_;
 	Storage sendBuff = Storage(1024), sendContentBuff = Storage(1024), recvBuff = Storage(1024);
-	MapMngr mapMngr = MapMngr("data/map/1.csv", nullptr);
+	MapMngr map_ = MapMngr("data/map/1.csv", nullptr);
 	bool isListLock = false;
+	MultiPlayServerSide* gameMode = nullptr;
 	//MULTI_SCENE scene = SELECT;
 
 private:
@@ -173,11 +49,9 @@ private:
 
 	void Update();
 
-	void Send();
 
-
-	std::list<CLIENT_DATA>::iterator find(int id) {
-		return std::find_if(clients_.begin(), clients_.end(), [&](CLIENT_DATA client) { 
+	std::list<CLIENT_DATA_SERVER_SIDE>::iterator find(int id) {
+		return std::find_if(clients_.begin(), clients_.end(), [&](CLIENT_DATA_SERVER_SIDE client) { 
 			return client.header.id == id;
 			}
 		);
@@ -215,13 +89,13 @@ public:
 
 
 
-
 class Client : public Server {
 private:
 	Socket sockfd_;
 	Address serverAddr;
 	FD readfd_;
 	Storage sendBuff = Storage(1024), recvBuff = Storage(1024);
+	MultiPlayClientSide *gameMode = nullptr;
 
 public:
 	int id = -1;

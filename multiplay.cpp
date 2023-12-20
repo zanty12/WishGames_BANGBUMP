@@ -8,7 +8,6 @@
 #pragma comment(lib, "lib/lib.lib")
 
 
-
 int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	// ロック解除待機
 	while (isListLock);
@@ -22,7 +21,7 @@ int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	float rot = 0.0f;
 	int texNo = 0;
 	Vector2 vel = Vector2::Zero;
-	Player *player = new Player(pos, rot, texNo, vel, &mapMngr);
+	Player *player = new Player(pos, rot, texNo, vel, &map_);
 	player->SetAttribute(new Fire(player));
 	player->SetAttackAttribute(new Fire(player));
 
@@ -31,7 +30,7 @@ int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	header.id = maxID++;
 
 	// クライアントデータの作成
-	CLIENT_DATA clientData = {
+	CLIENT_DATA_SERVER_SIDE clientData = {
 		header,
 		sockfd,
 		clientAddr,
@@ -163,6 +162,9 @@ void MultiServer::SendUpdate(void) {
 					// 宛先の登録とレスポンス内容の結合
 					res.CreateResponse(sendBuff, client.header.id);
 
+					// ゲームモードのレスポンス内容の結合
+					gameMode->CreateResponse(sendBuff);
+
 					// 送信
 					SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
 				}
@@ -175,8 +177,10 @@ void MultiServer::SendUpdate(void) {
 
 void MultiServer::Update() {
 	REQUEST_PLAYER req = RecvUpdate();
+	// プレイヤーアップデート
 	PlayerUpdate(req);
-	//SendUpdate();
+	// ゲームモードアップデート
+	gameMode->Update(clients_);
 }
 
 void MultiServer::OpenTerminal(void) {
@@ -190,7 +194,11 @@ void MultiServer::OpenTerminal(void) {
 	const int MAX_BUFF = 1024;
 	MSG msg;
 
-	std::thread f(&MultiServer::SendUpdate, this);
+	// SendUpdate()をスレッドを立てて関数を呼び出す
+	std::thread sendUpdateFunc(&MultiServer::SendUpdate, this);
+
+	// ゲームモード
+	gameMode = new MultiPlayAreaCaptureModeServerSide(&map_);
 
 	while (true) {
 		// メッセージ
@@ -249,11 +257,11 @@ void MultiServer::OpenTerminal(void) {
 		sendBuff = nullptr;
 	}
 
-	f.join();
+	delete gameMode;
+
+	sendUpdateFunc.join();
 }
 
-void MultiServer::Send() {
-}
 
 
 int Client::Register() {
