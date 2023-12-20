@@ -8,6 +8,7 @@ enum COLLIDER_TYPE
     RECTANGLE,
 };
 
+class GameObject;
 class Collider
 {
 private:
