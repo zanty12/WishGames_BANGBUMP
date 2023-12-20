@@ -160,6 +160,7 @@
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="colliderrect.cpp" />
+    <ClCompile Include="projectilemngr.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="scenemngr.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="prep.h" />
     <ClInclude Include="colliderrect.h" />
+    <ClInclude Include="projectilemngr.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="scene.h" />

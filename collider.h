@@ -16,6 +16,7 @@ private:
     bool is_movable_= false;
     GameObject* parent_;
     float bounciness_ = 1.0f; //’e—Í
+    bool is_discard_ = false; //”jŠü‚·‚é‚©‚Ç‚¤‚©
 
     protected:
     std::list<Collider*> collision_;
@@ -40,6 +41,8 @@ public:
     GameObject* GetParent() const { return parent_; }
     std::list<Collider*> GetCollision() const { return collision_; }
     void SetCollision(const std::list<Collider*>& collision) { collision_ = collision; }
+    float GetBounciness() const { return bounciness_; }
+    void SetBounciness(float bounciness) { if(bounciness > 1.0f) bounciness_ = bounciness; else bounciness_ = 1.0f;}
     Vector2 Clamp(const Vector2& val, const Vector2& min, const Vector2& max)
     {
         using namespace std;
@@ -50,5 +53,7 @@ public:
         collision_.push_back(other);
         collision_.unique();
     }
+    void Discard(){is_discard_ = true;}
+    bool GetDiscard() const { return is_discard_; }
 
 };

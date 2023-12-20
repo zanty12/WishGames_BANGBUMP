@@ -115,10 +115,3 @@ void Game::DebugMenu()
     player_->DebugMenu();
 }
 
-Renderer* Game::GetRenderer() {
-    return renderer_;
-}
-
-CollMngr* Game::GetCollMngr() {
-    return coll_mngr_;
-}
