@@ -11,7 +11,7 @@ bool CheckEnemy3Length(Vector2 a, Vector2 b, float len);
 
 void Enemy3::Update()
 {
-    Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //³’¼‚±‚ê‚Ìƒƒ‚ƒŠ‘€ì‘½‚·‚¬
+    //Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //³’¼‚±‚ê‚Ìƒƒ‚ƒŠ‘€ì‘½‚·‚¬
 
 
     std::list<Collider*> collisions = GetCollider()->GetCollision();
@@ -21,6 +21,7 @@ void Enemy3::Update()
         //ÀÛ‚Ìˆ—
         if (type == OBJ_PLAYER)
         {
+            Player* player = dynamic_cast<Player*> (collision->GetParent());
             player->HpDown(15);//š‰¼š
         }
     }
@@ -32,27 +33,58 @@ void Enemy3::Update()
     //d—Í
     //SetVel(Vector2(GetVel().x, GetVel().y - y_spd_ * dt));
 
-    Range(startPosition.x, startPosition.y, GetPos().x, GetPos().y);
-
-
     //ƒvƒŒƒCƒ„[’Ç]
-    if (CheckEnemy3Length(GetPos(), startPosition, RANGE))//‰¼
+    std::list<Player*> players = Game::GetPlayer();
+
+    for (auto player : players)
     {
-        if (cheakRange == true)
+        RangeEnemy(startPosition.x, startPosition.y, GetPos().x, GetPos().y);
+        RangePlayer(startPosition.x, startPosition.y, player->GetPos().x, player->GetPos().y);
+
+        if (cheakRange_Player_ == true)
+        {
+            if (CheckEnemy3Length(GetPos(), startPosition, RANGE))//‰¼
+            {
+                if (cheakRange_Enemy_ == true)
+                {
+                    Vector2 v = startPosition - GetPos();
+                    SetVel(v.Normalize() * spd_ * dt);
+                }
+            }
+            else
+            {
+                if (cheakRange_Enemy_ == false)
+                {
+
+                    Vector2 v = player->GetPos() - GetPos();
+                    SetVel(v.Normalize() * spd_ * dt);
+                }
+            }
+        }
+        else
         {
             Vector2 v = startPosition - GetPos();
             SetVel(v.Normalize() * spd_ * dt);
         }
     }
-    else
-    {
-        if (cheakRange == false)
-        {
+      
+    //if (CheckEnemy3Length(GetPos(), startPosition, RANGE))//‰¼
+    //{
+    //    if (cheakRange == true)
+    //    {
+    //        Vector2 v = startPosition - GetPos();
+    //        SetVel(v.Normalize() * spd_ * dt);
+    //    }
+    //}
+    //else
+    //{
+    //    if (cheakRange == false)
+    //    {
 
-            Vector2 v = player->GetPos() - GetPos();
-            SetVel(v.Normalize() * spd_ * dt);
-        }
-    }
+    //        Vector2 v = player->GetPos() - GetPos();
+    //        SetVel(v.Normalize() * spd_ * dt);
+    //    }
+    //}
 
     //‘¼‚Ì“G‚Æ‚Ì“–‚½‚è”»’è
    /* for (auto& enemy : GetEnemyMngr()->GetEnemies())
@@ -99,8 +131,18 @@ bool CheckEnemy3Length(Vector2 a, Vector2 b, float len)
 
     return false;
 }
+bool CheckEnemy3Length(Vector2 a, Vector2 b, float len)
+{
 
-void Enemy3::Range(float a, float b, float c, float d)
+    if (Vector2::Distance(a, b) > len)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+void Enemy3::RangeEnemy(float a, float b, float c, float d)
 {
     // ‰~‚Ìî•ñ
     float x = a;
@@ -114,11 +156,31 @@ void Enemy3::Range(float a, float b, float c, float d)
 
     if (g > radius_0)
     {
-        cheakRange = true;
+        cheakRange_Enemy_ = true;
     }
     else if (g < radius_1)
     {
-        cheakRange = false;
+        cheakRange_Enemy_ = false;
+    }
+}
+void Enemy3::RangePlayer(float a, float b, float c, float d)
+{
+    // ‰~‚Ìî•ñ
+    float x = a;
+    float y = b;
+    float radius_0 = RANGE;
+
+    float h = c - x;
+    float i = d - y;
+    float g = sqrt(h * h + i * i);
+
+    if (g < radius_0)
+    {
+        cheakRange_Player_ = true;
+    }
+    else if (g > radius_0)
+    {
+        cheakRange_Player_ = false;
     }
 }
 

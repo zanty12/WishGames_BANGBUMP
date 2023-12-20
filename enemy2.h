@@ -17,6 +17,11 @@ public:
     Enemy2(int x, int y, EnemyMngr* enemy_mngr) : Enemy(x, y, LoadTexture("data/texture/enemy2.png"), enemy_mngr)
     {}
 
+    int GetHp(void) const { return hp_; }		//HPのゲット
+    void SetHp(int hp) { hp_ = hp; }			//HPのセット
+    //HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
+    void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
+
     void Update() override;
     void Spawn(int x, int y, int type);
 
