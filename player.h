@@ -101,5 +101,7 @@ private:
 
 	void CollisionSkillPoint(GameObject* skill_point);
 
-	void PointUp(int point_type, int attribute);
+	void PointUp(int point_type, int attribute, MAP_READ point_attribute);
+
+	void SkillPointAttribute(MAP_READ point_attribute);
 };

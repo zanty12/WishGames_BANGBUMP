@@ -257,9 +257,28 @@ void Player::CollisionSkillPoint(GameObject* skill_point)
 
 }
 
-void Player::PointUp(int point_type, int attribute)
+void Player::PointUp(int point_type, int attribute, MAP_READ point_attribute)
 {
+	if (point_type == attribute)
+	{
 
+	}
+
+
+	if (point_type == 5)
+	{
+		skillpt_ += 30;
+	}
+}
+
+void Player::SkillPointAttribute(MAP_READ point_attribute)
+{
+	switch (point_attribute)
+	{
+
+	default:
+		break;
+	}
 }
 
 /*
