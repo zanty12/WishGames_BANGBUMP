@@ -5,7 +5,6 @@
 #include "lib/vector.h"
 #include "graphical.h"
 #include "sprite.h"
-#include "gameobject.h"
 
 struct ANIM_DATA
 {
@@ -31,7 +30,6 @@ enum LOOP_ANIM
 };
 
 
-class GameObject;
 class Animator
 {
 private:
