@@ -137,6 +137,12 @@ public:
     void Discard() {is_discard_ = true;}
     bool GetDiscard() const { return is_discard_; }
 
+    void StatusUpdate(Vector2 pos, Vector2 scale, float rot) {
+        pos_ = pos;
+        scale_ = scale;
+        rot_ = rot;
+    }
+
 private:
     void InitDictionary(void);
     void LoopAnimation(void);
