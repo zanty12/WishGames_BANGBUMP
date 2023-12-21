@@ -1,6 +1,6 @@
 
 #include "animator.h"
-#include "game.h"
+#include "gamebase.h"
 #include "renderer.h"
 
 #include "time.h"
@@ -19,7 +19,7 @@ Animator::Animator(Vector2 pos, Vector2 scale, int texNo)
 {
     InitDictionary();
 
-    if (!Game::GetRenderer()->Add(this))
+    if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
@@ -31,7 +31,7 @@ Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, 
 {
     InitDictionary();
 
-    if (!Game::GetRenderer()->Add(this))
+    if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
@@ -44,7 +44,7 @@ Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, 
 {
     InitDictionary();
 
-    if (!Game::GetRenderer()->Add(this))
+    if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 

@@ -142,6 +142,7 @@
     <ClCompile Include="enemymngr.cpp" />
     <ClCompile Include="fire.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gamebase.cpp" />
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="enemy1.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="block.h" />
     <ClInclude Include="cloud.h" />
     <ClInclude Include="floor.h" />
+    <ClInclude Include="gamebase.h" />
     <ClInclude Include="gamemodules.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="cell.h" />
