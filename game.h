@@ -6,6 +6,7 @@
 #include "projectilemngr.h"
 #include "scenemngr.h"
 #include "renderer.h"
+#include "skillorbmngr.h"
 
 class MapMngr;
 class Player;
@@ -23,6 +24,7 @@ private:
 	static Renderer* renderer_;
 	static CollMngr* coll_mngr_;
 	static ProjectileMngr* projectile_mngr_;
+	static SkillOrbMngr *orb_mngr_;
 
 public:
 	Game() = delete;
@@ -42,4 +44,5 @@ public:
 	static Renderer* GetRenderer(){return renderer_;}
 	static CollMngr* GetCollMngr() {return coll_mngr_;}
 	static ProjectileMngr* GetProjectileMngr(){return projectile_mngr_;}
+	static SkillOrbMngr* GetSkillOrbMngr(){return orb_mngr_;}
 };

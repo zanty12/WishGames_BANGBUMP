@@ -8,6 +8,7 @@
 
 Renderer* Game::renderer_ = new Renderer();
 CollMngr* Game::coll_mngr_ = new CollMngr();
+SkillOrbMngr * Game::orb_mngr_ = new SkillOrbMngr();
 
 Game::Game(SceneMngr* scene_mngr)
     :scene_mngr_(scene_mngr)
@@ -24,6 +25,7 @@ Game::~Game() {
     delete camera_;
     delete renderer_;
     delete coll_mngr_;
+    delete orb_mngr_;
 }
 
 void Game::Update()

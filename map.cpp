@@ -10,7 +10,7 @@
 #include "cloud.h"
 #include "floor.h"
 #include "penfloor.h"
-#include "skillorbattribute.h"
+#include "skillorb.h"
 #include "thundercloud.h"
 #include "wall.h"
 #include "mapenum.h"
@@ -77,85 +77,73 @@ void Map::PutCell(int x, int y, int MAP_READ) const
 
     case MAP_READ_ORB_SMALL_FIRE:
         {
-            SkillOrbAttribute * skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_SMALL_FIRE);
-            map_[y * width_ + x] = skillorb;
+            Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_SMALL);
             break;
         }
 
     case MAP_READ_ORB_MID_FIRE:
         {
-            SkillOrbAttribute * skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_MID_FIRE);
-            map_[y * width_ + x] = skillorb;
+            Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_MID);
             break;
         }
 
     case MAP_READ_ORB_BIG_FIRE:
         {
-            SkillOrbAttribute * skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_BIG_FIRE);
-            map_[y * width_ + x] = skillorb;
+            Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_BIG);
             break;
         }
 
     case MAP_READ_ORB_SMALL_DARK:
     {
-        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_SMALL_DARK);
-        map_[y * width_ + x] = skillorb;
+        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_SMALL);
         break;
     }
 
     case MAP_READ_ORB_MID_DARK:
     {
-        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_MID_DARK);
-        map_[y * width_ + x] = skillorb;
+        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_MID);
         break;
     }
 
     case MAP_READ_ORB_BIG_DARK:
     {
-        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_BIG_DARK);
-        map_[y * width_ + x] = skillorb;
+        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_BIG);
         break;
     }
 
     case MAP_READ_ORB_SMALL_THUNDER:
     {
-        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_SMALL_THUNDER);
-        map_[y * width_ + x] = skillorb;
+        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_SMALL);
         break;
     }
 
     case MAP_READ_ORB_MID_THUNDER:
     {
-        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_MID_THUNDER);
-        map_[y * width_ + x] = skillorb;
+        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_MID);
         break;
     }
 
     case MAP_READ_ORB_BIG_THUNDER:
     {
-        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_BIG_THUNDER);
-        map_[y * width_ + x] = skillorb;
+        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_BIG);
         break;
     }
 
     case MAP_READ_ORB_SMALL_WIND:
     {
-        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_SMALL_WIND);
-        map_[y * width_ + x] = skillorb;
+        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_SMALL);
         break;
     }
 
     case MAP_READ_ORB_MID_WIND:
     {
-        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_MID_WIND);
-        map_[y * width_ + x] = skillorb;
+        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_MID);
         break;
     }
 
     case MAP_READ_ORB_BIG_WIND:
     {
-        SkillOrbAttribute* skillorb = new SkillOrbAttribute(x, y, MAP_READ_ORB_BIG_WIND);
-        map_[y * width_ + x] = skillorb;
+        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_BIG);
         break;
     }
 
