@@ -10,3 +10,5 @@ GameObject::GameObject(Vector2 pos, float rot, int tex_number)
     animator_->SetParent(this);
     collider_ = new ColliderRect(this);
 }
+
+void GameObject::Discard() { is_discard_ = true; animator_->Discard(); collider_->Discard(); }

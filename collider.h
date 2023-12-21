@@ -11,7 +11,6 @@ enum COLLIDER_TYPE
 };
 
 class GameObject;
-
 class Collider
 {
 private:
