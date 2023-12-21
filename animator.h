@@ -5,7 +5,6 @@
 #include "lib/vector.h"
 #include "graphical.h"
 #include "sprite.h"
-#include "gameobject.h"
 
 struct ANIM_DATA
 {
@@ -31,13 +30,10 @@ enum LOOP_ANIM
 };
 
 
-class GameObject;
 class Animator
 {
 private:
     std::map<LOOP_ANIM, ANIM_DATA> DICTIONARY_;
-
-    GameObject* parent_;  //アニメーション対象のゲームオブジェクト
 
     Vector2 pos_, scale_;
     float rot_ = 0.0f;
@@ -66,7 +62,8 @@ private:
 public:
     Animator() = delete;
 
-    Animator(GameObject* game_object);
+    Animator(Vector2 pos, Vector2 scale, int texNo);
+
     //--------------------------------------------------------------------------------
     // fps              フレームレート
     // isAnim           アニメーションするかどうか
@@ -74,7 +71,7 @@ public:
     // y_matrix_num     縦の画像の数
     // img_change_time  次の画像に切り替えるまでの秒数
     //--------------------------------------------------------------------------------
-    Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time);
+    Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time);
     //--------------------------------------------------------------------------------
     // fps              フレームレート
     // isAnim           アニメーションするかどうか
@@ -84,7 +81,7 @@ public:
     // is_loop          特定の場所をループするかどうか
     // loop_anim        ループさせるアニメーション
     //--------------------------------------------------------------------------------
-    Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop,
+    Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop,
         LOOP_ANIM loop_anim);
 
     ~Animator() = default;
@@ -117,8 +114,6 @@ public:
     Color GetColor(void) const { return color_; }
     void SetRot(float rot) { rot_ = rot; }
     float GetRot(void) const { return rot_; }
-    void SetParent(GameObject* parent) { parent_ = parent; }
-    GameObject* GetParent(void) const { return parent_; }
     bool GetIsAnim(void) const { return isAnim_; }
     void SetIsAnim(bool isAnim) {
         if (x_matrix_num_ != 0 && y_matrix_num_ != 0)//セットされていないものはアニメーションすることが許されない
@@ -139,6 +134,12 @@ public:
 
     void Discard() {is_discard_ = true;}
     bool GetDiscard() const { return is_discard_; }
+
+    void StatusUpdate(Vector2 pos, Vector2 scale, float rot) {
+        pos_ = pos;
+        scale_ = scale;
+        rot_ = rot;
+    }
 
 private:
     void InitDictionary(void);
