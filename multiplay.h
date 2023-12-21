@@ -12,7 +12,7 @@
 #include "multi_header.h"
 #include "renderer.h"
 #include "multi_area_capture_mode_.h"
-
+#include "game.h"
 
 #define SERVER_ADDRESS "192.168.0.121"
 #define MAX_MEMBER (4)
@@ -31,6 +31,7 @@ private:
 	Storage sendBuff = Storage(1024), sendContentBuff = Storage(1024), recvBuff = Storage(1024);
 	bool isListLock = false;
 	MultiPlayServerSide* gameMode = nullptr;
+	MapMngr map_ = MapMngr("data/map/1.csv", nullptr);
 	//MULTI_SCENE scene = SELECT;
 
 private:
@@ -91,7 +92,7 @@ public:
 	int texNo = 0;
 	MapMngr mapMngr = MapMngr("data/map/1.csv", nullptr);
 	Client() : texNo(LoadTexture("data/texture/player.png")), anim(Animator(Vector2(0, 0), Vector2(50, 50), texNo)) {
-		gameMode = new MultiPlayAreaCaptureModeClientSide();
+		gameMode = new MultiPlayAreaCaptureModeClientSide(&mapMngr);
 	}
 	~Client() { Unregister(); delete gameMode; }
 

@@ -13,7 +13,6 @@ public:
 
 private:
 	std::list<Area> areas;
-	MapMngr map_ = MapMngr("data/map/1.csv", nullptr);
 
 
 
@@ -85,8 +84,8 @@ private:
 		areas.push_back(area);
 	}
 public:
-	MultiPlayAreaCaptureModeServerSide(MapMngr* map) : MultiPlayServerSide(map) {
-		Spawn(Vector2(100, 100));
+	MultiPlayAreaCaptureModeServerSide(MapMngr *map_) : MultiPlayServerSide(map_) {
+		Spawn(Vector2(900, 600) / 2);
 	}
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE>& clients) override {
@@ -115,15 +114,13 @@ private:
 	RESPONSE_AREA_CAPTURE res;
 	int areaTexNo = -1;
 	Animator areaAnim;
-	MapMngr map_ = MapMngr("data/map/1.csv", nullptr);
+	//MapMngr map_ = MapMngr("data/map/1.csv", nullptr);
 
 
 public:
-	MultiPlayAreaCaptureModeClientSide() : areaTexNo(LoadTexture("data/texture/area_capture.png")), areaAnim(Animator(Vector2::Zero, Vector2(100,100), areaTexNo)) { }
+	MultiPlayAreaCaptureModeClientSide(MapMngr *map) : areaTexNo(LoadTexture("data/texture/area_capture.png")), areaAnim(Animator(Vector2::Zero, Vector2(100,100), areaTexNo)), MultiPlayClientSide(map){ }
 
 	void Draw(void) override {
-		map_.Update();
-
 		// ƒGƒŠƒA‚Ì•`‰æ
 		for (auto area : res.areas) {
 			areaAnim.SetPos(area.position);

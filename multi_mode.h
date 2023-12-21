@@ -12,10 +12,11 @@ public:
 };
 
 class MultiPlayClientSide {
-private:
+protected:
+	MapMngr *map_ = nullptr;
 
 public:
-	MultiPlayClientSide(){ }
+	MultiPlayClientSide(MapMngr *map) : map_(map) { }
 	virtual void Draw(void) = 0;
 	virtual void ParseResponse(Storage& in) = 0;
 };
