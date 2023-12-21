@@ -98,4 +98,8 @@ private:
 
 	//当たり判定（トゲ）
 	void CollisionSpike(void);
+
+	void CollisionSkillPoint(GameObject* skill_point);
+
+	void PointUp(int point_type, int attribute);
 };
