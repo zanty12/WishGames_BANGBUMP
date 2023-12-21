@@ -91,9 +91,9 @@ void Player::Update(void)
 
 	AddVel(GetVel());
 
-	CollisionMap();
+	//CollisionMap();
 
-	CollisionSpike();
+	//CollisionSpike();
 
 	//ã‚Éã‚ª‚Á‚Ä‚¢‚é
 	if (GetVel().y > 0.0f)
@@ -134,7 +134,7 @@ void Player::DebugMenu()
 //================================================================================
 
 
-void Player::CollisionMap(void)
+/*void Player::CollisionMap(void)
 {
 	Map* map = GetMapMngr()->GetMap();
 	Cell* cells[4] = {nullptr, nullptr, nullptr, nullptr};
@@ -237,7 +237,7 @@ void Player::CollisionSpike(void)
 	}
 
 
-}
+}*/
 
 //ã‚ÉˆÚ“®
 //—‚¿‚é

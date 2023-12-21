@@ -7,6 +7,7 @@
 #include "renderer.h"
 
 Renderer* Game::renderer_ = new Renderer();
+CollMngr* Game::coll_mngr_ = new CollMngr();
 
 Game::Game(SceneMngr* scene_mngr)
     :scene_mngr_(scene_mngr)
@@ -22,10 +23,12 @@ Game::~Game() {
     delete player_;
     delete camera_;
     delete renderer_;
+    delete coll_mngr_;
 }
 
 void Game::Update()
 {
+    coll_mngr_->Update();
     mapmngr_->Update();
     player_->Update();
     camera_->Update();
@@ -47,6 +50,8 @@ void Game::DebugMenu()
     ImGui::Begin("Game");
     ImGui::Text(u8"プレイヤー座標");
     ImGui::Text("x:%f, y: %f", player_->GetPos().x, player_->GetPos().y);
+    ImGui::Text(u8"プレイヤースピード");
+    ImGui::Text("x:%f, y: %f", player_->GetVel().x, player_->GetVel().y);
     ImGui::Text(u8"プレイヤー状態");
     ImGui::Text("%d", player_->GetPlayerState());
     ImGui::Text(u8"カメラ座標");
@@ -110,6 +115,3 @@ void Game::DebugMenu()
     player_->DebugMenu();
 }
 
-Renderer* Game::GetRenderer() {
-    return renderer_;
-}
