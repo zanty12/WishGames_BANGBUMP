@@ -2,6 +2,8 @@
 #include "collider.h"
 #include "colliderrect.h"
 
+class Animator;
+
 using namespace PHYSICS;
 class ColliderCir: public Collider
 {

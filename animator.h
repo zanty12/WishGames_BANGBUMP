@@ -5,7 +5,7 @@
 #include "lib/vector.h"
 #include "graphical.h"
 #include "sprite.h"
-#include "gameobject.h"
+//#include "gameobject.h"
 
 struct ANIM_DATA
 {

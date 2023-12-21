@@ -68,6 +68,13 @@ void Player::Update(void)
 		not_stick_working_ = 0;
 	}
 
+	//----------------------------------------★アトリビュートができるまでのしのぎ
+	Vector2 stick = Input::GetStickLeft(0);
+	stick.y * -1;
+	Vector2 player_vel = stick * 5.0f;
+	SetVel(player_vel);
+	//----------------------------------------★アトリビュートができるまでのしのぎ
+
 	bool affected_gravity = false;	//重力を受けたかどうか
 
 	if (move_attribute_ != nullptr && clash_spike_ == 0)

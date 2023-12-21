@@ -1,12 +1,16 @@
 #pragma once
 #include "lib/collider2d.h"
-#include "gameobject.h"
+#include "lib/dxlib.h"
+//#include "gameobject.h"
+#include <list>
 
 enum COLLIDER_TYPE
 {
     CIRCLE,
     RECTANGLE,
 };
+
+class GameObject;
 
 class Collider
 {
