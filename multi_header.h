@@ -142,7 +142,7 @@ struct REQUEST_PLAYER {
 struct RESPONSE_AREA_CAPTURE {
 	struct DESC {
 		Vector2 position;				// 占領の座標
-		float radius = 100;				// 占領のスケール
+		float radius = 700;				// 占領のスケール
 		float captureRatio = 0.0f;		// 占領度合い
 		int id = -1;					// 現在占領しているID
 	};

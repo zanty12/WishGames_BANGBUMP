@@ -341,11 +341,10 @@ void Client::PlayerUpdate(RESPONSE_PLAYER &res) {
 	//playerAnim.Draw();
 	//if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
 
-	DrawSprite(0, Vector2(0, 0), 0, Vector2::One * (100), Color::White);
 	for (auto &client : res.clients) {
 		//std::cout << client.position.x << ", " << client.position.y << std::endl;
-		playerAnim.Update(client);
-		playerAnim.Draw();
+		anim.SetPos(client.position);
+		anim.Draw();
 	}
 
 	if (gameMode) gameMode->Draw();

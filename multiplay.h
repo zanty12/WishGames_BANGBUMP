@@ -29,7 +29,6 @@ private:
 	Socket sockfd_;
 	std::list<CLIENT_DATA_SERVER_SIDE> clients_;
 	Storage sendBuff = Storage(1024), sendContentBuff = Storage(1024), recvBuff = Storage(1024);
-	MapMngr map_ = MapMngr("data/map/1.csv", nullptr);
 	bool isListLock = false;
 	MultiPlayServerSide* gameMode = nullptr;
 	//MULTI_SCENE scene = SELECT;
@@ -72,21 +71,6 @@ public:
 
 
 
-class Object : public GameObject {
-private:
-	Animator anim = Animator(this);
-	void Update(void) override {};
-
-public:
-	Object(Vector2 pos, int texNo) : GameObject(pos, 0.0f, texNo) {}
-	void Update(RESPONSE_PLAYER::DESC res) {
-		anim.SetPos(res.position);
-	}
-
-	void Draw(void) {
-		anim.Draw();
-	}
-};
 
 
 
@@ -98,14 +82,15 @@ private:
 	Storage sendBuff = Storage(1024), recvBuff = Storage(1024);
 	MultiPlayClientSide *gameMode = nullptr;
 	//Renderer renderer_;
+	Animator anim;
 
 
 public:
 	int id = -1;
 	//RESPONSE_PLAYER::DESC player;
-	Object playerAnim = Object(Vector2(0,0), LoadTexture("data/texture/player.png"));
+	int texNo = 0;
 	MapMngr mapMngr = MapMngr("data/map/1.csv", nullptr);
-	Client() {
+	Client() : texNo(LoadTexture("data/texture/player.png")), anim(Animator(Vector2(0, 0), Vector2(50, 50), texNo)) {
 		gameMode = new MultiPlayAreaCaptureModeClientSide();
 	}
 	~Client() { Unregister(); delete gameMode; }

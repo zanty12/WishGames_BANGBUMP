@@ -13,6 +13,8 @@ public:
 
 private:
 	std::list<Area> areas;
+	MapMngr map_ = MapMngr("data/map/1.csv", nullptr);
+
 
 
 
@@ -80,7 +82,6 @@ private:
 		// エリアの生成
 		Area area;
 		area.position = position;
-		area.radius = 100;
 		areas.push_back(area);
 	}
 public:
@@ -104,21 +105,30 @@ public:
 	}
 };
 
+
+
+
+
+
 class MultiPlayAreaCaptureModeClientSide : public MultiPlayClientSide {
 private:
-	int texNo = -1;
 	RESPONSE_AREA_CAPTURE res;
+	int areaTexNo = -1;
+	Animator areaAnim;
+	MapMngr map_ = MapMngr("data/map/1.csv", nullptr);
+
 
 public:
-	MultiPlayAreaCaptureModeClientSide() {
-		texNo = LoadTexture("data/texture/area_capture.png");
-	}
+	MultiPlayAreaCaptureModeClientSide() : areaTexNo(LoadTexture("data/texture/area_capture.png")), areaAnim(Animator(Vector2::Zero, Vector2(100,100), areaTexNo)) { }
 
 	void Draw(void) override {
+		map_.Update();
 
+		// エリアの描画
 		for (auto area : res.areas) {
-			DrawSprite(0, area.position + Vector2(100, 100), 0, Vector2::One * (area.radius), Color::White);
-			std::cout << texNo << " : " << area.captureRatio << std::endl;
+			areaAnim.SetPos(area.position);
+			areaAnim.SetScale(Vector2(area.radius, area.radius));
+			areaAnim.Draw();
 		}
 	}
 
