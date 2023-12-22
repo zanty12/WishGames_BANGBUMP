@@ -130,7 +130,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="animator.cpp" />
-    <ClCompile Include="storage.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collider.cpp" />
     <ClCompile Include="collidercir.cpp" />
@@ -143,6 +142,7 @@
     <ClCompile Include="enemymngr.cpp" />
     <ClCompile Include="fire.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gamebase.cpp" />
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="enemy1.cpp" />
@@ -157,7 +157,6 @@
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapmngr.cpp" />
     <ClCompile Include="movableobj.cpp" />
-    <ClCompile Include="multiplay.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="colliderrect.cpp" />
@@ -166,6 +165,8 @@
     <ClCompile Include="result.cpp" />
     <ClCompile Include="scenemngr.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="skillorb.cpp" />
+    <ClCompile Include="skillorbmngr.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="thunder.cpp" />
@@ -176,11 +177,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animator.h" />
-    <ClInclude Include="multi_area_capture_mode_.h" />
-    <ClInclude Include="multi_enemy_rush_mode.h" />
-    <ClInclude Include="multi_header.h" />
-    <ClInclude Include="multi_mode.h" />
-    <ClInclude Include="storage.h" />
+    <ClInclude Include="attribute_type.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collider.h" />
     <ClInclude Include="collidercir.h" />
@@ -193,6 +190,7 @@
     <ClInclude Include="block.h" />
     <ClInclude Include="cloud.h" />
     <ClInclude Include="floor.h" />
+    <ClInclude Include="gamebase.h" />
     <ClInclude Include="gamemodules.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="cell.h" />
@@ -211,7 +209,6 @@
     <ClInclude Include="menu.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="mapmngr.h" />
-    <ClInclude Include="multiplay.h" />
     <ClInclude Include="original_window.h" />
     <ClInclude Include="movableobj.h" />
     <ClInclude Include="penfloor.h" />
@@ -226,6 +223,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
     <ClInclude Include="skillorbattribute.h" />
+    <ClInclude Include="skillorbmngr.h" />
     <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
