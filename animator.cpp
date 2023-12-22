@@ -51,7 +51,7 @@ Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, 
 
 void Animator::RendererRegister(void)
 {
-    if (!Game::GetRenderer()->Add(this))
+    if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
