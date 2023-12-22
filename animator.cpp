@@ -9,14 +9,14 @@
 
 void Animator::InitDictionary(void)
 {
-    DICTIONARY_[FIRE] = ANIM_DATA(0, 0, 1, 1);//š‰¼B‚»‚ê‚¼‚ê‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚²‚Æ‚Éİ’è‚µ‚Ä‚¢‚­š
+    DICTIONARY_[FIRE] = ANIM_DATA(0, 0, 1, 1);//â˜…ä»®ã€‚ãã‚Œãã‚Œã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã”ã¨ã«è¨­å®šã—ã¦ã„ãâ˜…
     DICTIONARY_[WIND] = ANIM_DATA(2, 1, 3, 5);
 
 }
 
-Animator::Animator(GameObject* game_object)
-    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
-    now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false)//‰Šú‰»
+Animator::Animator(Vector2 pos, Vector2 scale, int texNo)
+    : pos_(pos), scale_(scale), texNo_(texNo),
+    now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false)//åˆæœŸåŒ–
 {
     InitDictionary();
 
@@ -24,11 +24,11 @@ Animator::Animator(GameObject* game_object)
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
-Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time)
-    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), img_change_time_(img_change_time),
+Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time)
+    : pos_(pos), scale_(scale), texNo_(texNo), img_change_time_(img_change_time),
     fps_(fps), isAnim_(isAnim),
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(false),
-    now_matrix_number_(0), u_(0.0f), v_(0.0f)//‰Šú‰»
+    now_matrix_number_(0), u_(0.0f), v_(0.0f)//åˆæœŸåŒ–
 {
     InitDictionary();
 
@@ -36,12 +36,12 @@ Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_n
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
-Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop, LOOP_ANIM loop_anim)
-    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
+Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop, LOOP_ANIM loop_anim)
+    : pos_(pos), scale_(scale), texNo_(texNo),
     fps_(fps), isAnim_(isAnim), img_change_time_(img_change_time),
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(is_loop),
-    loop_anim_(loop_anim),
-    now_matrix_number_(0), u_(0.0f), v_(0.0f)//‰Šú‰»
+    loop_anim_next_(loop_anim),
+    now_matrix_number_(0), u_(0.0f), v_(0.0f)//åˆæœŸåŒ–
 {
     InitDictionary();
 
@@ -59,7 +59,7 @@ void Animator::RendererRegister(void)
 
 void Animator::Update(void)
 {
-    //¡‚ÌƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‚Ìó‘Ô‚ğ”½‰f‚³‚¹‚é
+    //ä»Šã®ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®çŠ¶æ…‹ã‚’åæ˜ ã•ã›ã‚‹
     if (parent_ != nullptr)
     {
         pos_ = parent_->GetPos();
@@ -69,7 +69,7 @@ void Animator::Update(void)
 
     if (!isAnim_)
     {
-        return; //ƒAƒjƒ[ƒVƒ‡ƒ“‚µ‚È‚¢‚È‚ç‚Î”²‚¯‚é
+        return; //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã—ãªã„ãªã‚‰ã°æŠœã‘ã‚‹
     }
 
     now_time_ += Time::GetDeltaTime();
@@ -106,13 +106,13 @@ void Animator::LoopAnimation(void)
     int yMatrix = now_matrix_number_ / x_matrix_num_;
     if (xMatrix == DICTIONARY_[loop_anim_].loop_end_x && yMatrix == DICTIONARY_[loop_anim_].loop_end_y)
     {
-        //‰¡‚ÌÅ‘å” * –Ú“I‚Ìc‚ÌêŠ + –Ú“I‚Ì‰¡‚ÌêŠ(10*4+6=46‚İ‚½‚¢‚È)
-        now_matrix_number_ = x_matrix_num_ * DICTIONARY_[loop_anim_].loop_start_y + DICTIONARY_[loop_anim_].loop_start_x - 1;//‚±‚ÌŒãƒCƒ“ƒNƒŠƒƒ“ƒg‚·‚é‚Ì‚Å1ˆø‚¢‚Ä‚¨‚­
+        //æ¨ªã®æœ€å¤§æ•° * ç›®çš„ã®ç¸¦ã®å ´æ‰€ + ç›®çš„ã®æ¨ªã®å ´æ‰€(10*4+6=46ã¿ãŸã„ãª)
+        now_matrix_number_ = x_matrix_num_ * DICTIONARY_[loop_anim_].loop_start_y + DICTIONARY_[loop_anim_].loop_start_x - 1;//ã“ã®å¾Œã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã™ã‚‹ã®ã§1å¼•ã„ã¦ãŠã
     }
 }
 
 void Animator::Reset(void)
 {
     loop_anim_ = loop_anim_next_;
-    now_matrix_number_ = x_matrix_num_ * DICTIONARY_[loop_anim_].loop_start_y + DICTIONARY_[loop_anim_].loop_start_x - 1;//‚±‚ÌŒãƒCƒ“ƒNƒŠƒƒ“ƒg‚·‚é‚Ì‚Å1ˆø‚¢‚Ä‚¨‚­
+    now_matrix_number_ = x_matrix_num_ * DICTIONARY_[loop_anim_].loop_start_y + DICTIONARY_[loop_anim_].loop_start_x - 1;//ã“ã®å¾Œã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã™ã‚‹ã®ã§1å¼•ã„ã¦ãŠã
 }
