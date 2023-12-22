@@ -59,7 +59,7 @@ private:
     int now_matrix_number_ = 0;   //現在の行列の位置
     float u_ = 0.0f, v_ = 0.0f;
     Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
-
+    GameObject *parent_ = nullptr;
 
 
 public:
