@@ -1,6 +1,6 @@
 
 #include "animator.h"
-#include "game.h"
+#include "gamebase.h"
 #include "renderer.h"
 #include "gameobject.h"
 
@@ -20,7 +20,7 @@ Animator::Animator(GameObject* game_object)
 {
     InitDictionary();
 
-    if (!Game::GetRenderer()->Add(this))
+    if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
@@ -32,7 +32,7 @@ Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_n
 {
     InitDictionary();
 
-    if (!Game::GetRenderer()->Add(this))
+    if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
@@ -45,13 +45,13 @@ Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_n
 {
     InitDictionary();
 
-    if (!Game::GetRenderer()->Add(this))
+    if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
 void Animator::RendererRegister(void)
 {
-    if (!Game::GetRenderer()->Add(this))
+    if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
