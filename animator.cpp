@@ -19,8 +19,6 @@ Animator::Animator(Vector2 pos, Vector2 scale, int texNo)
 {
     InitDictionary();
 
-    if (!Game::GetRenderer()->Add(this))
-        std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
 Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time)
@@ -31,8 +29,6 @@ Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, 
 {
     InitDictionary();
 
-    if (!Game::GetRenderer()->Add(this))
-        std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
 Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop, LOOP_ANIM loop_anim)
@@ -44,6 +40,10 @@ Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, 
 {
     InitDictionary();
 
+}
+
+void Animator::RendererRegister(void)
+{
     if (!Game::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }

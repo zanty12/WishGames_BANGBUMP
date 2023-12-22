@@ -141,6 +141,8 @@ public:
         rot_ = rot;
     }
 
+    void RendererRegister(void);    //ƒŒƒ“ƒ_ƒ‰[‚É“o˜^
+
 private:
     void InitDictionary(void);
     void LoopAnimation(void);
