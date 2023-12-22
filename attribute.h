@@ -2,15 +2,24 @@
 #include "lib/vector.h"
 #include "player.h"
 
+enum ATTRIBUTE
+{
+	ATTR_FIRE = 1,
+	ATTR_DARK,
+	ATTR_WIND,
+	ATTR_THUNDER,
+};
+
 class Player;
 class Attribute
 {
 protected:
 	Player *player_;
+	ATTRIBUTE attr_;
 
 public:
 	Attribute() = delete;
-	Attribute(Player *player) : player_(player) { }
+	Attribute(Player* player, ATTRIBUTE attr) : player_(player), attr_(attr) {}
 
 	virtual ~Attribute() = default;
 
@@ -23,4 +32,6 @@ public:
 	virtual void DebugMenu() = 0;
 
 	virtual void Gravity() = 0;
+
+	ATTRIBUTE GetAttribute() { return attr_; }
 };
