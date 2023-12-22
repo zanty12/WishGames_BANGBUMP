@@ -14,8 +14,8 @@ void Animator::InitDictionary(void)
 
 }
 
-Animator::Animator(Vector2 pos, Vector2 scale, int texNo)
-    : pos_(pos), scale_(scale), texNo_(texNo),
+Animator::Animator(GameObject* game_object)
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
     now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false)//初期化
 {
     InitDictionary();
@@ -24,8 +24,8 @@ Animator::Animator(Vector2 pos, Vector2 scale, int texNo)
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
-Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time)
-    : pos_(pos), scale_(scale), texNo_(texNo), img_change_time_(img_change_time),
+Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time)
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), img_change_time_(img_change_time),
     fps_(fps), isAnim_(isAnim),
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(false),
     now_matrix_number_(0), u_(0.0f), v_(0.0f)//初期化
@@ -36,11 +36,11 @@ Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, 
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }
 
-Animator::Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop, LOOP_ANIM loop_anim)
-    : pos_(pos), scale_(scale), texNo_(texNo),
+Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop, LOOP_ANIM loop_anim)
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
     fps_(fps), isAnim_(isAnim), img_change_time_(img_change_time),
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(is_loop),
-    loop_anim_next_(loop_anim),
+    loop_anim_(loop_anim),
     now_matrix_number_(0), u_(0.0f), v_(0.0f)//初期化
 {
     InitDictionary();
