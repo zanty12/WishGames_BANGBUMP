@@ -29,11 +29,14 @@ enum LOOP_ANIM
 
 };
 
+class GameObject;
 
 class Animator
 {
 private:
     std::map<LOOP_ANIM, ANIM_DATA> DICTIONARY_;
+
+    GameObject* parent_;  //アニメーション対象のゲームオブジェクト
 
     Vector2 pos_, scale_;
     float rot_ = 0.0f;
@@ -62,8 +65,7 @@ private:
 public:
     Animator() = delete;
 
-    Animator(Vector2 pos, Vector2 scale, int texNo);
-
+    Animator(GameObject* game_object);
     //--------------------------------------------------------------------------------
     // fps              フレームレート
     // isAnim           アニメーションするかどうか
@@ -71,7 +73,7 @@ public:
     // y_matrix_num     縦の画像の数
     // img_change_time  次の画像に切り替えるまでの秒数
     //--------------------------------------------------------------------------------
-    Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time);
+    Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time);
     //--------------------------------------------------------------------------------
     // fps              フレームレート
     // isAnim           アニメーションするかどうか
@@ -81,7 +83,7 @@ public:
     // is_loop          特定の場所をループするかどうか
     // loop_anim        ループさせるアニメーション
     //--------------------------------------------------------------------------------
-    Animator(Vector2 pos, Vector2 scale, int texNo, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop,
+    Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop,
         LOOP_ANIM loop_anim);
 
     ~Animator() = default;
@@ -131,6 +133,9 @@ public:
     float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)の高さを取得
     float GetU(void) const { return u_; }   //UV(U)の値を取得
     float GetV(void) const { return v_; }   //UV(V)の値を取得
+
+    void SetParent(GameObject* parent) { parent_ = parent; }
+    GameObject* GetParent(void) const { return parent_; }
 
     void Discard() {is_discard_ = true;}
     bool GetDiscard() const { return is_discard_; }
