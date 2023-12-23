@@ -38,6 +38,7 @@ public:
 	static CollMngr *GetCollMngr() { return coll_mngr_; }
 	static ProjectileMngr *GetProjectileMngr() { return projectile_mngr_; }
 	static SkillOrbMngr *GetSkillOrbMngr() { return orb_mngr_; }
+	static void PutCellOther(int MAP_READ);
 
 	std::list<Player *> &GetPlayers(void) { return players_; }
 	Player *GetPlayer(void) { return players_.size() != 0 ? *players_.begin() : nullptr; }
