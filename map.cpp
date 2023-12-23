@@ -15,6 +15,7 @@
 #include "wall.h"
 #include "mapenum.h"
 #include "spike.h"
+#include "area_capture.h"
 #include "camera.h"
 
 /**
@@ -171,6 +172,13 @@ void Map::PutCell(int x, int y, int MAP_READ) const
     case MAP_READ_SPIKE_RIGHT:
         {
             Spike* spike = new Spike(x, y, MAP_READ_SPIKE_RIGHT);
+            map_[y * width_ + x] = spike;
+            break;
+        }
+
+    case MAP_READ_MULTI_AREA_CAPTURE:
+        {
+            AreaCapture *spike = new AreaCapture(x, y);
             map_[y * width_ + x] = spike;
             break;
         }

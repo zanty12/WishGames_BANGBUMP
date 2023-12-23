@@ -60,7 +60,6 @@ private:
     float u_ = 0.0f, v_ = 0.0f;
     Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-
 public:
     Animator() = delete;
 
