@@ -9,6 +9,14 @@
 #pragma comment(lib, "lib/lib.lib")
 
 
+MultiPlayServer::MultiPlayServer() {
+	WSAData data;
+	Startup(v2_2, data);
+
+	mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
+	gameMode = new MultiPlayCharacterSelectModeServerSide();//new MultiPlayAreaCaptureModeServerSide(mapmngr_);
+}
+
 int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	// ロック解除待機
 	while (isListLock);
@@ -119,6 +127,10 @@ void MultiPlayServer::PlayerUpdate(REQUEST_PLAYER req) {
 	Vector2 pos = iterator->player_->GetPos();
 	v.y *= -1;
 	iterator->player_->SetPos(v * speed + pos);
+
+	// 入力情報を格納する
+	iterator->currentInput = req.input.curInput;
+	iterator->currentInput = req.input.preInput;
 }
 
 REQUEST_PLAYER MultiPlayServer::RecvUpdate(void) {
@@ -275,7 +287,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	Startup(v2_2, data);
 
 	mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
-	gameMode = new MultiPlayAreaCaptureModeClientSide(mapmngr_);
+	gameMode = new MultiPlayCharacterSelectModeClientSide();//new MultiPlayAreaCaptureModeClientSide(mapmngr_);
 
 	// スレッドを立てる
 	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);

@@ -41,6 +41,13 @@ struct CLIENT_DATA_SERVER_SIDE {
 	Socket sockfd_;
 	Address clientAddr_;
 	Player* player_;
+	XINPUT_GAMEPAD currentInput = XINPUT_GAMEPAD();
+	XINPUT_GAMEPAD previousInput = XINPUT_GAMEPAD();
+	ATTRIBUTE_TYPE actionAttribute = ATTRIBUTE_TYPE_FIRE;
+	ATTRIBUTE_TYPE moveAttribute = ATTRIBUTE_TYPE_FIRE;
+
+	CLIENT_DATA_SERVER_SIDE(HEADER header, Socket sockfd, Address addr, Player *player)
+		: header(header), sockfd_(sockfd), clientAddr_(addr), player_(player) { };
 };
 
 
@@ -138,6 +145,41 @@ struct REQUEST_PLAYER {
 };
 
 
+
+// レスポンス（キャラクター選択）
+struct RESPONSE_CHARACTER_SELECT {
+	struct DESC {
+		int id = -1;						// 属性のID
+		ATTRIBUTE_TYPE moveAttributeType;	// 移動属性タイプ
+		ATTRIBUTE_TYPE attackAttributeType;	// 攻撃属性タイプ
+	};
+
+	std::list<DESC> characters;
+
+	void CreateResponse(Storage &out) {
+		// レスポンス作成（ヘッダー）
+		out << characters.size();
+
+		// レスポンス作成（ボディ）
+		for (DESC &character : characters) {
+			out << character;
+		}
+	}
+
+	void ParseResponse(Storage &in) {
+		size_t characterNum;
+
+		// ヘッダー取得
+		in >> characterNum;
+
+		// ボディ取得
+		for (int i = 0; i < characterNum; i++) {
+			DESC area;
+			in >> area;
+			characters.push_back(area);
+		}
+	}
+};
 // レスポンス（占領モード）
 struct RESPONSE_AREA_CAPTURE {
 	struct DESC {

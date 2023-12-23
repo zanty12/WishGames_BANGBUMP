@@ -1,10 +1,11 @@
 #pragma once
 #include <thread>
+#include "lib/network.h"
 #include "gamebase.h"
 #include "multi_header.h"
-#include "multi_area_capture_mode_.h"
 #include "multi_client_gameobject.h"
-#include "lib/network.h"
+#include "multi_character_select_mode.h"
+#include "multi_area_capture_mode_.h"
 
 #define SERVER_ADDRESS "192.168.0.7"
 #define MAX_MEMBER (4)
@@ -26,13 +27,7 @@ private:
 	MultiPlayServerSide *gameMode = nullptr;			// ÉQÅ[ÉÄÉÇÅ[Éh
 
 public:
-	MultiPlayServer() {
-		WSAData data;
-		Startup(v2_2, data);
-
-		mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
-		gameMode = new MultiPlayAreaCaptureModeServerSide(mapmngr_);
-	}
+	MultiPlayServer();
 
 	~MultiPlayServer() {
 		// âï˙
