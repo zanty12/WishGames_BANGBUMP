@@ -37,6 +37,7 @@ typedef enum {
     MAP_READ_SPIKE_RIGHT, ///< 右向きのトゲセルを表します。
     MAP_READ_SPIKE_UP, ///< 上向きのトゲセルを表します。
     MAP_READ_SPIKE_DOWN, ///< 下向きのトゲセルを表します。
+    MAP_READ_MULTI_AREA_CAPTURE, ///< マルチの占領エリアを表します。
     // 英語名標準
     MAP_READ_KOOPA, // ノコノコ
     MAP_READ_HAMMERBRO,

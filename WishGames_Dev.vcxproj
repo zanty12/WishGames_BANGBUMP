@@ -184,6 +184,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animator.h" />
+    <ClInclude Include="area_capture.h" />
     <ClInclude Include="attribute_type.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collider.h" />
