@@ -99,7 +99,6 @@ private:
 
 public:
 	int texNo = 0;
-	MapMngr mapMngr = MapMngr("data/map/1.csv", nullptr);
 
 	MultiPlayClient();
 

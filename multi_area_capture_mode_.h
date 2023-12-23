@@ -125,6 +125,7 @@ public:
 	void Draw(void) override {
 		// ƒGƒŠƒA‚Ì•`‰æ
 		for (auto area : res.areas) {
+			anim.SetTexNo(areaTexNo);
 			anim.SetPos(area.position);
 			anim.SetScale(Vector2(area.radius, area.radius));
 			anim.Draw();

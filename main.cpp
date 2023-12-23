@@ -28,26 +28,8 @@ int main()
     }
     else {
         MSG msg;
-        //MultiPlayClient client;
-        //client.Register();
-
-        //SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
-        //auto func = [&]() {
-        //    DWORD dwStartTime = timeGetTime();
-        //    DWORD dwCurrentTime = timeGetTime();
-        //    DWORD dwOnceFrameTime = 1000 / 60;
-
-        //    while (true) {
-        //        dwCurrentTime = timeGetTime();
-        //        if (dwCurrentTime - dwStartTime > dwOnceFrameTime * 2) {
-        //            dwStartTime = dwCurrentTime;
-        //            Input::Update();
-        //            client.SendUpdate();
-        //        }
-        //        if (GetAsyncKeyState(VK_ESCAPE)) return;
-        //    }
-        //    };
-        //std::thread sendInputFunc(func);
+        MultiPlayClient client;
+        client.Register();
 
         while (true)
         {
@@ -91,10 +73,8 @@ int main()
                     ImGui::End();
 
                 }
-                //Time::Update();
-                //client.Update();
-                Input::Update();
-                std::cout << "111 : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
+                Time::Update();
+                client.Update();
 
 
                 if (GetAsyncKeyState(VK_ESCAPE)) {
@@ -106,8 +86,7 @@ int main()
                 }
             }
         }
-        //client.Unregister();
-        //sendInputFunc.join();
+        client.Unregister();
         std::cout << "Hello World!\n"; //基本
     }
     Time::Release();

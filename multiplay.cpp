@@ -275,7 +275,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	Startup(v2_2, data);
 
 	mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
-	gameMode = new MultiPlayAreaCaptureModeClientSide(&mapMngr);
+	gameMode = new MultiPlayAreaCaptureModeClientSide(mapmngr_);
 
 	// スレッドを立てる
 	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);
@@ -355,6 +355,7 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	}
 
 	if (gameMode) gameMode->Draw();
+	renderer_->Draw();
 	//Camera camera = Camera();
 	//mapMngr.Draw();
 }
