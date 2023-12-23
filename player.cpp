@@ -101,6 +101,44 @@ void Player::Update(void)
 
 }
 
+SkillOrb* Player::DropSkillOrb(void)
+{
+	SKILLORB_ATTRIBUTE_DESC skillorb_attr;
+	switch (hit_attack_attr)
+	{
+	case ATTRIBUTE_TYPE_FIRE:
+		skillorb_attr = SKILLORB_ATTRIBUTE_DESC::Fire();
+		break;
+	case ATTRIBUTE_TYPE_DARK:
+		skillorb_attr = SKILLORB_ATTRIBUTE_DESC::Dark();
+		break;
+	case ATTRIBUTE_TYPE_WIND:
+		skillorb_attr = SKILLORB_ATTRIBUTE_DESC::Wind();
+		break;
+	case ATTRIBUTE_TYPE_THUNDER:
+		skillorb_attr = SKILLORB_ATTRIBUTE_DESC::Thunder();
+		break;
+	}
+
+	if (drop_point_ >= 10)
+	{
+		drop_point_ -= 10;
+		return new SkillOrb(GetPos(), skillorb_attr, SKILLORB_SIZE_DESC::Big());
+	}
+	if (drop_point_ >= 3)
+	{
+		drop_point_ -= 3;
+		return new SkillOrb(GetPos(), skillorb_attr, SKILLORB_SIZE_DESC::Mid());
+	}
+	if (drop_point_ >= 1)
+	{
+		drop_point_ -= 1;
+		return new SkillOrb(GetPos(), skillorb_attr, SKILLORB_SIZE_DESC::Small());
+	}
+
+	return nullptr;
+}
+
 //サンダーはチャージ中は落ちない
 
 void Player::Draw(Camera* camera)
@@ -164,7 +202,15 @@ void Player::CollisionAction(void)
 			break;
 		}
 		case OBJ_ATTACK:
+		{
+			GameObject* attack = collision->GetParent();
+			if (attack != nullptr)
+			{
+				CollisionAttack(attack);
+			}
+
 			break;
+		}
 		case OBJ_ITEM:
 		{
 			GameObject* skillPoint = collision->GetParent();
@@ -219,22 +265,27 @@ void Player::CollisionSpike(void)
 	}
 }
 
-void Player::CollisionSkillPoint(GameObject* skill_point)
+void Player::CollisionSkillPoint(GameObject* obj)
 {
 	if (attack_attribute_ == nullptr || move_attribute_ == nullptr)
 	{
 		return;
 	}
 
-	SkillOrb* skillPoint = dynamic_cast<SkillOrb*>(skill_point);
+	SkillOrb* skill_point = dynamic_cast<SkillOrb*>(obj);
 
-	ATTRIBUTE_TYPE pt_attr = skillPoint->GetAttribute();	//スキルポイント属性
-	SKILLORB_SIZE_TYPE pt_size = skillPoint->GetSize();		//スキルポイントサイズ
+	if (skill_point == nullptr)
+	{
+		return;
+	}
+
+	ATTRIBUTE_TYPE pt_attr = skill_point->GetAttribute();	//スキルポイント属性
+	SKILLORB_SIZE_TYPE pt_size = skill_point->GetSize();	//スキルポイントサイズ
 
 	if (pt_size == SKILLORB_SIZE_TYPE_BIG)
 	{
 		skillpt_ += 40;		//10ポイント * 4
-		skillPoint->Discard();
+		skill_point->Discard();
 		return;
 	}
 
@@ -257,7 +308,22 @@ void Player::CollisionSkillPoint(GameObject* skill_point)
 			skillpt_ += 12;	//3ポイント * 4
 	}
 
-	skillPoint->Discard();
+	skill_point->Discard();
+}
+
+void Player::CollisionAttack(GameObject* obj)
+{
+	Attribute* attack = dynamic_cast<Attribute*>(obj);
+
+	if (attack == nullptr || attack == attack_attribute_)//そんなことはないかもしれないけど念のため
+	{
+		return;
+	}
+
+	hit_attack_attr = attack->GetAttribute();
+
+	SkillPointDown(0);	//実際に受けたダメージ分減らす
+	drop_point_ += 0;	//実際に受けたダメージを蓄積する
 }
 
 void Player::LvUp(void)

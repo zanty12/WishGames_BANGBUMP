@@ -26,6 +26,8 @@ enum PLAYER_STATE
 
 class MapMngr;
 class Camera;
+class SkillOrb;
+
 class Player : public MovableObj
 {
 private:
@@ -43,6 +45,9 @@ private:
 	int skillpt_;
 	int lv_;
 
+	int drop_point_;		//落とすポイント
+	ATTRIBUTE_TYPE hit_attack_attr = ATTRIBUTE_TYPE_FIRE;	//受けた攻撃属性
+
 	bool change_scene_;		//シーン遷移フラグ
 
 	MapMngr* map_mangr_;
@@ -55,10 +60,10 @@ private:
 	PLAYER_STATE player_state_;
 
 public:
-	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
-		:MovableObj(pos,rot,tex_number,vel),hp_(INITIAL_HP_),skillpt_(0),lv_(1),
-		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0),
-		change_scene_(false)
+	Player(Vector2 pos, float rot, int tex_number, Vector2 vel, MapMngr* map_mangr)
+		:MovableObj(pos, rot, tex_number, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
+		dir_(Vector2(0.0f, 0.0f)), map_mangr_(map_mangr), clash_spike_(0), knock_back_dir_(0),
+		change_scene_(false), drop_point_(0)
 	{}
 
 	~Player() { delete move_attribute_; delete attack_attribute_; }
@@ -81,6 +86,8 @@ public:
 	//HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
 	void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
+	SkillOrb* DropSkillOrb(void);
+
 	void Update(void) override;
 	void Draw(Camera* camera);
 
@@ -95,7 +102,9 @@ private:
 	//当たり判定（トゲ）
 	void CollisionSpike(void);
 	//当たり判定（スキルポイント）
-	void CollisionSkillPoint(GameObject* skill_point);
+	void CollisionSkillPoint(GameObject* obj);
+	//当たり判定（アタックアトリビュート）
+	void CollisionAttack(GameObject* obj);
 
 	//レベルアップ（ゲットしたスキルポイントを引数にする）
 	void LvUp(void);
