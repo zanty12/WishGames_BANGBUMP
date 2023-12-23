@@ -86,7 +86,23 @@ private:
 	}
 public:
 	MultiPlayAreaCaptureModeServerSide(MapMngr *map_) : MultiPlayServerSide(map_) {
-		Spawn(Vector2(900, 600) / 2);
+		int WIDTH = map_->GetMap()->GetWidth();					// 幅
+		int HEIGHT = map_->GetMap()->GetHeight();				// 高さ
+
+		// マップを取得
+		for (int y = 0; y < HEIGHT; y++) {
+			for (int x = 0; x < WIDTH; x++) {
+
+				// セルを取得
+				Cell* cell = map_->GetMap()->GetCell(x, y);
+				if (cell == nullptr) continue;
+
+				// エリアなら
+				if (cell->GetType() == MAP_READ_MULTI_AREA_CAPTURE) {
+					Spawn(cell->GetPos());
+				}
+			}
+		}
 	}
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE>& clients) override {
