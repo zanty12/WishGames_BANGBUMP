@@ -4,25 +4,16 @@
 #include "attribute_type.h"
 
 
-enum ATTRIBUTE
-{
-	ATTR_FIRE = 1,
-	ATTR_DARK,
-	ATTR_WIND,
-	ATTR_THUNDER,
-};
-
 class Player;
 class Attribute
 {
 protected:
 	ATTRIBUTE_TYPE attributeType_;
 	Player *player_;
-	ATTRIBUTE attr_;
 
 public:
 	Attribute() = delete;
-	Attribute(Player* player, ATTRIBUTE attr) : player_(player), attr_(attr) {}
+	Attribute(Player* player, ATTRIBUTE_TYPE attr) : player_(player), attributeType_(attr) {}
 
 	virtual ~Attribute() = default;
 
@@ -36,5 +27,5 @@ public:
 
 	virtual void Gravity() = 0;
 
-	ATTRIBUTE GetAttribute() { return attr_; }
+	ATTRIBUTE_TYPE GetAttribute() { return attributeType_; }
 };
