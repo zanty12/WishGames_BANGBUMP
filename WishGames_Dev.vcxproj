@@ -157,6 +157,7 @@
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapmngr.cpp" />
     <ClCompile Include="movableobj.cpp" />
+    <ClCompile Include="multiplay.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="colliderrect.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="skillorb.cpp" />
     <ClCompile Include="skillorbmngr.cpp" />
     <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="storage.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="thunder.cpp" />
     <ClCompile Include="time.cpp" />
@@ -209,6 +211,12 @@
     <ClInclude Include="menu.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="mapmngr.h" />
+    <ClInclude Include="multiplay.h" />
+    <ClInclude Include="multi_area_capture_mode_.h" />
+    <ClInclude Include="multi_client_gameobject.h" />
+    <ClInclude Include="multi_enemy_rush_mode.h" />
+    <ClInclude Include="multi_header.h" />
+    <ClInclude Include="multi_mode.h" />
     <ClInclude Include="original_window.h" />
     <ClInclude Include="movableobj.h" />
     <ClInclude Include="penfloor.h" />
@@ -226,6 +234,7 @@
     <ClInclude Include="skillorbmngr.h" />
     <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
+    <ClInclude Include="storage.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />

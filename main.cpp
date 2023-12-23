@@ -23,31 +23,31 @@ int main()
     Time::Initialize();
 
     if (mode == 0) {
-        MultiServer server;
+        MultiPlayServer server;
         server.OpenTerminal(); 
     }
     else {
         MSG msg;
-        Client client;
-        client.Register();
+        //MultiPlayClient client;
+        //client.Register();
 
         //SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
-        auto func = [&]() {
-            DWORD dwStartTime = timeGetTime();
-            DWORD dwCurrentTime = timeGetTime();
-            DWORD dwOnceFrameTime = 1000 / 60;
+        //auto func = [&]() {
+        //    DWORD dwStartTime = timeGetTime();
+        //    DWORD dwCurrentTime = timeGetTime();
+        //    DWORD dwOnceFrameTime = 1000 / 60;
 
-            while (true) {
-                dwCurrentTime = timeGetTime();
-                if (dwCurrentTime - dwStartTime > dwOnceFrameTime * 2) {
-                    dwStartTime = dwCurrentTime;
-                    Input::Update();
-                    client.SendUpdate();
-                }
-                if (GetAsyncKeyState(VK_ESCAPE)) return;
-            }
-            };
-        std::thread sendInputFunc(func);
+        //    while (true) {
+        //        dwCurrentTime = timeGetTime();
+        //        if (dwCurrentTime - dwStartTime > dwOnceFrameTime * 2) {
+        //            dwStartTime = dwCurrentTime;
+        //            Input::Update();
+        //            client.SendUpdate();
+        //        }
+        //        if (GetAsyncKeyState(VK_ESCAPE)) return;
+        //    }
+        //    };
+        //std::thread sendInputFunc(func);
 
         while (true)
         {
@@ -90,12 +90,12 @@ int main()
                     ImGui::Text("DeltaTime:%.4f", Time::GetDeltaTime());
                     ImGui::End();
 
-                    //scene_mngr->DebugMenu();
                 }
-                Time::Update();
-                client.Update();
-                //scene_mngr->Update();
-                //scene_mngr->Draw();
+                //Time::Update();
+                //client.Update();
+                Input::Update();
+                std::cout << "111 : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
+
 
                 if (GetAsyncKeyState(VK_ESCAPE)) {
                     break;
@@ -106,8 +106,8 @@ int main()
                 }
             }
         }
-        client.Unregister();
-        sendInputFunc.join();
+        //client.Unregister();
+        //sendInputFunc.join();
         std::cout << "Hello World!\n"; //基本
     }
     Time::Release();

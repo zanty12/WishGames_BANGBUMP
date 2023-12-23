@@ -4,24 +4,24 @@
 #include "fire.h"
 #include "wind.h"
 #include "dark.h"
+#include "time.h"
 #include <thread>
 #pragma comment(lib, "lib/lib.lib")
 
 
-int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
+int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	// ロック解除待機
 	while (isListLock);
 
 	// ロック
 	isListLock = true;
 
-
-
+	// プレイヤー作成
 	Vector2 pos = Vector2::Zero;
 	float rot = 0.0f;
 	int texNo = 0;
 	Vector2 vel = Vector2::Zero;
-	Player *player = new Player(pos, rot, texNo, vel, &map_);
+	Player *player = new Player(pos, rot, texNo, vel, mapmngr_);
 	player->SetAttribute(new Fire(player));
 	player->SetAttackAttribute(new Fire(player));
 
@@ -55,7 +55,7 @@ int MultiServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	return maxID - 1;
 }
 
-void MultiServer::Unregister(int id) {
+void MultiPlayServer::Unregister(int id) {
 	// ロック解除待機
 	while (isListLock);
 
@@ -90,14 +90,14 @@ void MultiServer::Unregister(int id) {
 	isListLock = false;
 }
 
-void MultiServer::AllUnregister(void) {
+void MultiPlayServer::AllUnregister(void) {
 	while (clients_.size())
 	{
 		Unregister(clients_.begin()->header.id);
 	}
 }
 
-void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
+void MultiPlayServer::PlayerUpdate(REQUEST_PLAYER req) {
 
 	// プレイヤーの検索
 	auto iterator = find(req.input.id);
@@ -121,17 +121,15 @@ void MultiServer::PlayerUpdate(REQUEST_PLAYER req) {
 	iterator->player_->SetPos(v * speed + pos);
 }
 
-REQUEST_PLAYER MultiServer::RecvUpdate(void) {
+REQUEST_PLAYER MultiPlayServer::RecvUpdate(void) {
 	// リクエスト情報を書き出す
 	REQUEST_PLAYER req;
 	req.ParseRequest(recvBuff);
 
-	//ParseRequestFromClient(recvBuff, req);
-
 	return req;
 }
 
-void MultiServer::SendUpdate(void) {
+void MultiPlayServer::SendUpdate(void) {
 	DWORD startTime, currentTime, onceFrameTime;
 	startTime = currentTime = timeGetTime();
 	onceFrameTime = 1000 / 60;
@@ -175,7 +173,7 @@ void MultiServer::SendUpdate(void) {
 	}
 }
 
-void MultiServer::Update() {
+void MultiPlayServer::Update() {
 	REQUEST_PLAYER req = RecvUpdate();
 	// プレイヤーアップデート
 	PlayerUpdate(req);
@@ -183,7 +181,7 @@ void MultiServer::Update() {
 	gameMode->Update(clients_);
 }
 
-void MultiServer::OpenTerminal(void) {
+void MultiPlayServer::OpenTerminal(void) {
 	// ソケット作成
 	sockfd_ = Socket(AddressFamily::IPV4, Type::UDP, 0);
 	// バインド用アドレス作成
@@ -191,15 +189,15 @@ void MultiServer::OpenTerminal(void) {
 	// バインド
 	sockfd_.Bind(addr);
 
-	const int MAX_BUFF = 1024;
-	MSG msg;
+
 
 	// SendUpdate()をスレッドを立てて関数を呼び出す
-	std::thread sendUpdateFunc(&MultiServer::SendUpdate, this);
+	std::thread sendUpdateFunc(&MultiPlayServer::SendUpdate, this);
 
-	// ゲームモード
-	gameMode = new MultiPlayAreaCaptureModeServerSide(&map_);
 
+
+	const int MAX_BUFF = 1024;
+	MSG msg;
 	while (true) {
 		// メッセージ
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -259,8 +257,6 @@ void MultiServer::OpenTerminal(void) {
 		sendBuff = nullptr;
 	}
 
-	delete gameMode;
-
 	sendUpdateFunc.join();
 }
 
@@ -274,7 +270,18 @@ void MultiServer::OpenTerminal(void) {
 
 
 
-int Client::Register() {
+MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png")), anim(Animator(&playerObject, 2, true, 1, 1, 1)) {
+	WSAData data;
+	Startup(v2_2, data);
+
+	mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
+	gameMode = new MultiPlayAreaCaptureModeClientSide(&mapMngr);
+
+	// スレッドを立てる
+	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);
+}
+
+int MultiPlayClient::Register() {
 	HEADER header;
 
 	// ソケット作成
@@ -307,7 +314,7 @@ int Client::Register() {
 	return header.id;
 }
 
-void Client::Unregister() {
+void MultiPlayClient::Unregister() {
 	HEADER header;
 
 	// コマンド設定
@@ -336,7 +343,7 @@ void Client::Unregister() {
 	sockfd_.Close();
 }
 
-void Client::PlayerUpdate(RESPONSE_PLAYER &res) {
+void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	//playerAnim.Update(res);
 	//playerAnim.Draw();
 	//if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
@@ -352,23 +359,41 @@ void Client::PlayerUpdate(RESPONSE_PLAYER &res) {
 	//mapMngr.Draw();
 }
 
-void Client::SendUpdate(void) {
-	// リクエストの作成
-	REQUEST_PLAYER req;
-	req.input = { id, Input::GetState(0), Input::GetPreviousState(0) };
-	req.CreateRequest(sendBuff, id);
+void MultiPlayClient::SendUpdate(void) {
+	DWORD startTime, currentTime, onceFrameTime;
+	startTime = currentTime = timeGetTime();
+	onceFrameTime = 1000 / 60;
 
-	// 送信
-	SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, serverAddr);
-	sendBuff = nullptr;
+	while (true) {
+		currentTime = timeGetTime();
+
+		if (currentTime - startTime > onceFrameTime) {
+			startTime = currentTime;
+
+			// 入力更新
+			Input::Update();
+
+			// リクエストの作成
+			REQUEST_PLAYER req;
+			req.input = { id, Input::GetState(0), Input::GetPreviousState(0) };
+			req.CreateRequest(sendBuff, id);
+
+			//std::cout << "0000 : : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
+
+			// 送信
+			SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, serverAddr);
+			sendBuff = nullptr;
+		}
+	}
 }
 
-void Client::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
+void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
+	// ファイルディスクリプタ
 	FD tmp;
+	const int MAX_BUFF = 1024;
 	memcpy(&tmp, &readfd_, sizeof(FD));
 
 	// 検知する
-	const int MAX_BUFF = 1024;
 	if (Select(&tmp, nullptr, nullptr, 0, waitTime)) {
 		char buff[MAX_BUFF] = {};
 
@@ -390,12 +415,10 @@ void Client::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 	}
 }
 
-void Client::Update() {
+void MultiPlayClient::Update() {
 	RESPONSE_PLAYER res;
 
 	RecvUpdate(1, res);
 	PlayerUpdate(res);
-	// SendUpdate();
 	recvBuff = nullptr;
-	// sendBuff = nullptr;
 }

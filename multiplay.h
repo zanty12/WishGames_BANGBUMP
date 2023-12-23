@@ -1,40 +1,52 @@
 #pragma once
-#include <iostream>
-#include <list>
-#include <tuple>
-#include <algorithm>
-#include "lib/network.h"
-#include "lib/vector.h"
-#include "mapmngr.h"
-#include "player.h"
-#include "storage.h"
-#include "xinput.h"
+#include <thread>
+#include "gamebase.h"
 #include "multi_header.h"
-#include "renderer.h"
 #include "multi_area_capture_mode_.h"
-#include "game.h"
+#include "multi_client_gameobject.h"
+#include "lib/network.h"
 
-#define SERVER_ADDRESS "192.168.0.121"
+#define SERVER_ADDRESS "192.168.0.7"
 #define MAX_MEMBER (4)
 #define PORT (8080)
 
 using namespace Network;
 
-
-class MultiServer : Server {
+/*******************************************************
+  Server
+********************************************************/
+class MultiPlayServer : GameBase {
 private:
+	int maxID = 0;										// IDの最大値				
+	Socket sockfd_;										// ソケット
+	std::list<CLIENT_DATA_SERVER_SIDE> clients_;		// クライアントデータ
+	bool isListLock = false;							// データベースのロック
+	Storage sendBuff = Storage(1024);					// 送信バッファ
+	Storage recvBuff = Storage(1024);					// 受信バッファ
+	MultiPlayServerSide *gameMode = nullptr;			// ゲームモード
 
+public:
+	MultiPlayServer() {
+		WSAData data;
+		Startup(v2_2, data);
 
-	int maxID = 0;
-	Socket sockfd_;
-	std::list<CLIENT_DATA_SERVER_SIDE> clients_;
-	Storage sendBuff = Storage(1024), sendContentBuff = Storage(1024), recvBuff = Storage(1024);
-	bool isListLock = false;
-	MultiPlayServerSide* gameMode = nullptr;
-	MapMngr map_ = MapMngr("data/map/1.csv", nullptr);
-	//MULTI_SCENE scene = SELECT;
+		mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
+		gameMode = new MultiPlayAreaCaptureModeServerSide(mapmngr_);
+	}
 
-private:
+	~MultiPlayServer() {
+		// 解放
+		delete gameMode;
+		sendBuff.Release();
+		recvBuff.Release();
+
+		// 登録解除
+		AllUnregister();
+
+		// クリーンアップ
+		Cleanup();
+	}
+
 	// 登録
 	int Register(Address clientAddr, HEADER &header, Socket sockfd);
 	// 解除
@@ -48,11 +60,11 @@ private:
 	// 送信
 	void SendUpdate(void);
 
-	void Update();
+	void Update() override;
 
 
 	std::list<CLIENT_DATA_SERVER_SIDE>::iterator find(int id) {
-		return std::find_if(clients_.begin(), clients_.end(), [&](CLIENT_DATA_SERVER_SIDE client) { 
+		return std::find_if(clients_.begin(), clients_.end(), [&](CLIENT_DATA_SERVER_SIDE client) {
 			return client.header.id == id;
 			}
 		);
@@ -60,41 +72,52 @@ private:
 
 
 public:
-	~MultiServer() { 
-		sendBuff.Release();
-		sendContentBuff.Release();
-		recvBuff.Release();
-		AllUnregister();
-	}
 
 	void OpenTerminal(void);
 };
 
 
+/*******************************************************
+  Client
+********************************************************/
 
 
-
-
-class Client : public Server {
+class MultiPlayClient : public GameBase {
 private:
-	Socket sockfd_;
-	Address serverAddr;
-	FD readfd_;
-	Storage sendBuff = Storage(1024), recvBuff = Storage(1024);
-	MultiPlayClientSide *gameMode = nullptr;
-	//Renderer renderer_;
+	int id = -1;										// ID
+	Socket sockfd_;										// ソケット
+	Address serverAddr;									// アドレス
+	FD readfd_;											// ファイルディスクリプタ
+	Storage sendBuff = Storage(1024);					// 送信バッファ
+	Storage recvBuff = Storage(1024);					// 受信バッファ
+	MultiPlayClientSide *gameMode = nullptr;			// ゲームモード
+
+	ClientGameObject playerObject;
 	Animator anim;
+	std::thread sendUpdateFunc;							// 送信関数
 
 
 public:
-	int id = -1;
-	//RESPONSE_PLAYER::DESC player;
 	int texNo = 0;
 	MapMngr mapMngr = MapMngr("data/map/1.csv", nullptr);
-	Client() : texNo(LoadTexture("data/texture/player.png")), anim(Animator(Vector2(0, 0), Vector2(50, 50), texNo)) {
-		gameMode = new MultiPlayAreaCaptureModeClientSide(&mapMngr);
+
+	MultiPlayClient();
+
+	~MultiPlayClient() {
+		// スレッド終了まで待機
+		sendUpdateFunc.join();
+
+		// 解放
+		delete gameMode;
+		sendBuff.Release();
+		recvBuff.Release();
+
+		// 登録解除
+		Unregister();
+
+		// クリーンアップ
+		Cleanup();
 	}
-	~Client() { Unregister(); delete gameMode; }
 
 	// 登録
 	int Register();

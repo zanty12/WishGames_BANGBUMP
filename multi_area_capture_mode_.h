@@ -1,5 +1,6 @@
 #pragma once
 #include "multi_mode.h"
+#include "multi_client_gameobject.h"
 #include "sprite.h"
 #include "time.h"
 
@@ -113,19 +114,20 @@ class MultiPlayAreaCaptureModeClientSide : public MultiPlayClientSide {
 private:
 	RESPONSE_AREA_CAPTURE res;
 	int areaTexNo = -1;
-	Animator areaAnim;
+	ClientGameObject playerObject;
+	Animator anim;
 	//MapMngr map_ = MapMngr("data/map/1.csv", nullptr);
 
 
 public:
-	MultiPlayAreaCaptureModeClientSide(MapMngr *map) : areaTexNo(LoadTexture("data/texture/area_capture.png")), areaAnim(Animator(Vector2::Zero, Vector2(100,100), areaTexNo)), MultiPlayClientSide(map){ }
+	MultiPlayAreaCaptureModeClientSide(MapMngr *map) : areaTexNo(LoadTexture("data/texture/area_capture.png")), anim(Animator(&playerObject, 1, true, 1,1,1)), MultiPlayClientSide(map){ }
 
 	void Draw(void) override {
 		// ƒGƒŠƒA‚Ì•`‰æ
 		for (auto area : res.areas) {
-			areaAnim.SetPos(area.position);
-			areaAnim.SetScale(Vector2(area.radius, area.radius));
-			areaAnim.Draw();
+			anim.SetPos(area.position);
+			anim.SetScale(Vector2(area.radius, area.radius));
+			anim.Draw();
 		}
 	}
 
