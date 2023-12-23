@@ -1,11 +1,14 @@
 ﻿#include "graphical.h"
 #include "sprite.h"
 #include <iostream>
+#include <thread>
+
 #include "DebugUI.h"
 #include "xinput.h"
 #include "mapmngr.h"
 #include "scenemngr.h"
 #include "time.h"
+#include "video.h"
 
 bool debug_mode = true;
 
@@ -15,6 +18,11 @@ int main()
     DebugUI::Initialize();
     MSG msg;
     SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
+    Video* video = new Video("data/test.mp4");
+    video->SetScale(0.5f);
+    video->SetLoop(true);
+    //Video* video2 = new Video("data/test1q.mp4");
+    //video2->SetScale(0.5f);
     Time::Initialize();
     while (true)
     {
@@ -56,15 +64,19 @@ int main()
                     ImGui::Text("DeltaTime:%.4f", Time::GetDeltaTime());
                     ImGui::End();
 
-                    scene_mngr->DebugMenu();
+                    //scene_mngr->DebugMenu();
                 }
             }
             Input::Update();
 
             Time::Update();
+            video->Update();
+            //video2->Update();
+            video->Draw();
+            //video2->Draw();
+
             scene_mngr->Update();
             scene_mngr->Draw();
-
             DebugUI::EndDraw();
             Graphical::Present();
         }
