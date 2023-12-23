@@ -12,7 +12,7 @@
 #include "player.h"
 #include "lib/collider2d.h"
 #include "spike.h"
-#include "skillorbattribute.h"
+#include "skillorb.h"
 #include "xinput.h"
 
 #define LV_NUM (10)
@@ -229,21 +229,17 @@ void Player::CollisionSpike(void)
 
 void Player::CollisionSkillPoint(GameObject* skill_point)
 {
-	SkillOrbAttribute* skillPoint = dynamic_cast<SkillOrbAttribute*>(skill_point);
-	MAP_READ point_attribute = skillPoint->GetCellType();
+	SkillOrb* skillPoint = dynamic_cast<SkillOrb*>(skill_point);
 
-	int point_type = -1;
+	ATTRIBUTE_TYPE pt_attr = skillPoint->GetAttribute();	//スキルポイント属性
+	SKILLORB_SIZE_TYPE pt_size = skillPoint->GetSize();		//スキルポイントサイズ
 
-	if (point_attribute == MAP_READ_ORB_SMALL_FIRE || point_attribute == MAP_READ_ORB_MID_FIRE)
-		point_type = 1;
-	else if (point_attribute == MAP_READ_ORB_SMALL_DARK || point_attribute == MAP_READ_ORB_MID_DARK)
-		point_type = 2;
-	else if (point_attribute == MAP_READ_ORB_SMALL_WIND || point_attribute == MAP_READ_ORB_MID_WIND)
-		point_type = 3;
-	else if (point_attribute == MAP_READ_ORB_SMALL_THUNDER || point_attribute == MAP_READ_ORB_MID_THUNDER)
-		point_type = 4;
-	else
-		point_type = 5;
+	if (pt_attr == move_attribute_->GetAttribute() || pt_attr == attack_attribute_->GetAttribute())
+	{
+
+	}
+
+
 
 	bool get_point = false;
 	switch (0/*プレイヤーの移動属性*/)
