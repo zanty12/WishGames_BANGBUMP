@@ -1,9 +1,16 @@
 #pragma once
-#include <map>
+#include <unordered_map>
+#include <thread>
 
 #include "graphical.h"
 #include "time.h"
 #include "lib/video_reader.hpp"
+
+struct frame_data
+{
+    int64_t ts;
+    uint8_t* data;
+};
 
 class Video
 {
@@ -15,10 +22,14 @@ private:
     bool first_frame_ = true;
     double time_ = 0.0;
     float scale_ = 1.0f;
-    std::map<double, uint8_t*> frame_buffer_;
+    std::list<frame_data> frame_buffer_;
     std::string filename_;
     bool loop_ = false;
-    int64_t end_pts = 0;
+    int64_t end_pts_ = 0;
+    double pts_ = 0;
+    bool loaded_ = false;
+    std::list<frame_data>::iterator frame_it_;
+
 
 public:
     Video(const char* filename)
@@ -74,40 +85,51 @@ public:
     {
         time_ += Time::GetDeltaTime();
 
-        //load frame into buffer
-        int64_t pts;
-        if (!video_reader_read_frame(&vr_state_, frame_data_, &pts))
+        //load frame data
+        int64_t pts = 0;
+        if(!loaded_)
         {
-            std::cout << "Couldn't load video frame\n";
-            return;
-        }
-        if(pts == end_pts && loop_)
-        {
-            time_ = 0.0;
-            video_reader_seek_frame(&vr_state_, 0);
-        }
-        if (end_pts < pts)
-        {
-            end_pts = pts;
-        }
-
-        double pt_in_seconds = pts * (double)vr_state_.time_base.num / (double)vr_state_.time_base.den;
-
-        frame_buffer_.insert(std::make_pair(pt_in_seconds, frame_data_));
-
-        //Get frame from buffer
-        if (frame_buffer_.size() > 0)
-        {
-            double pts = frame_buffer_.begin()->first;
-
-            if (time_ < pts)
+            if (!video_reader_read_frame(&vr_state_, frame_data_, &pts))
             {
+                std::cout << "Couldn't load video frame\n";
                 return;
             }
+            //buffer frame
+            frame_data frame;
+            frame.ts = pts;
+            frame.data = (uint8_t*)_aligned_malloc(vr_state_.width * vr_state_.height * 4, 128);
+            memcpy(frame.data, frame_data_, vr_state_.width * vr_state_.height * 4);
+            frame_buffer_.push_back(frame);
+            if(first_frame_)
+            {
+                frame_it_ = frame_buffer_.begin();
+                first_frame_ = false;
+            }
+        }
+        if(pts == end_pts_ && !loaded_)
+        {
+            loaded_ = true;
+        }
+        //loop back if at end of video
+        if(loop_ && frame_it_->ts == end_pts_)
+        {
+            frame_it_ = frame_buffer_.begin();
+            time_ = 0.0;
+        }
 
-            frame_data_ = frame_buffer_.begin()->second;
-            frame_buffer_.erase(frame_buffer_.begin());
+        //count max pts
+        if(pts>end_pts_)
+        {
+            end_pts_ = pts;
+        }
 
+        //load next frame
+        if (frame_buffer_.size() > 0 && time_ > frame_it_->ts * (double)vr_state_.time_base.num / (double)vr_state_.time_base.den)
+        {
+            frame_data frame = *frame_it_;
+            memcpy(frame_data_, frame.data, vr_state_.width * vr_state_.height * 4);
+            pts_ = frame.ts;
+            //load frame data to texture
             D3D11_MAPPED_SUBRESOURCE resource;
             Graphical::GetDevice().GetContext()->Map(texture_, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
             uint8_t* dest = (uint8_t*)resource.pData;
@@ -125,6 +147,8 @@ public:
             srvDesc.Texture2D.MipLevels = 1;
             srvDesc.Texture2D.MostDetailedMip = 0;
             Graphical::GetDevice().Get()->CreateShaderResourceView(texture_, &srvDesc, &texture_view_);
+            if(frame_it_ != --frame_buffer_.end())
+                ++frame_it_;
         }
     }
 
@@ -132,6 +156,7 @@ public:
     {
         // Draw the texture with ImGui
         ImGui::Begin(filename_.c_str());
+        ImGui::Text("time: %.2f, pts: %.2f", time_, pts_);
         ImGui::Image((void*)texture_view_, ImVec2(vr_state_.width * scale_, vr_state_.height * scale_));
         ImGui::End();
     }

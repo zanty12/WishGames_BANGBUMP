@@ -64,12 +64,13 @@ int main()
                     ImGui::Text("DeltaTime:%.4f", Time::GetDeltaTime());
                     ImGui::End();
 
-                    //scene_mngr->DebugMenu();
+                    scene_mngr->DebugMenu();
                 }
             }
             Input::Update();
 
             Time::Update();
+
             video->Update();
             //video2->Update();
             video->Draw();
