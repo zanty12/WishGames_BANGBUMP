@@ -4,11 +4,12 @@
 #include "mapmngr.h"
 #include "enemymngr.h"
 
-#include "game.h"
+#include "gamebase.h"
 
 class EnemyMngr;
 class Game;
 class Camera;
+class GameBase;
 
 class MapMngr
 {
@@ -17,10 +18,10 @@ private:
 	Vector2 spawn_;
 	EnemyMngr* enemy_mngr_;
 
-	Game* game_; //‚ ‚½‚è”»’è—p
+	GameBase* game_; //‚ ‚½‚è”»’è—p
 public:
 	MapMngr() = delete;
-	MapMngr(const char* file_name,Game* game);
+	MapMngr(const char* file_name,GameBase* game);
 	~MapMngr()
 	{
 		delete map_;
@@ -43,7 +44,7 @@ public:
 		return enemy_mngr_;
 	}
 
-	Game* GetGame() const
+	GameBase* GetGame() const
 	{
 		return game_;
 	}

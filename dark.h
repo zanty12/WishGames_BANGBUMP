@@ -28,7 +28,7 @@ class Dark : public Attribute
 
 public:
 
-	Dark(Player *player) : Attribute(player) {}
+	Dark(Player* player) : Attribute(player, ATTR_DARK) {}
 	~Dark() override = default;
 	Vector2 Move() override;
 	void Action() override;
