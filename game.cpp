@@ -1,39 +1,30 @@
 #include "game.h"
 #include "dark.h"
 #include "fire.h"
-#include "mapmngr.h"
+//#include "mapmngr.h"
 #include "thunder.h"
 #include "wind.h"
-#include "renderer.h"
-
-Renderer* Game::renderer_ = new Renderer();
-CollMngr* Game::coll_mngr_ = new CollMngr();
+//#include "renderer.h"
 
 Game::Game(SceneMngr* scene_mngr)
-    :scene_mngr_(scene_mngr)
+    : GameBase(scene_mngr)
 {
     mapmngr_ = new MapMngr("data/map/1.csv", this);
     int playertex = LoadTexture("data/texture/player.png");
-    player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, playertex, Vector2(0.0f, 0.0f), mapmngr_);
+    Player *player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, playertex, Vector2(0.0f, 0.0f), mapmngr_);
+    players_.push_back(player_);
     camera_ = new Camera(player_);
 }
 
-Game::~Game() {
-    delete mapmngr_;
-    delete player_;
-    delete camera_;
-    delete renderer_;
-    delete coll_mngr_;
-}
 
 void Game::Update()
 {
     coll_mngr_->Update();
     mapmngr_->Update();
-    player_->Update();
+    GetPlayer()->Update();
     camera_->Update();
     renderer_->Update();
-    if (player_->GetChangeSceneFlag())
+    if (GetPlayer()->GetChangeSceneFlag())
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
     }
@@ -45,8 +36,14 @@ void Game::Draw()
     renderer_->Draw(camera_ ->GetCameraOffset());
 }
 
+Player *Game::GetPlayer() {
+    return *GetPlayers().begin();
+}
+
 void Game::DebugMenu()
 {
+    auto player_ = GetPlayer();
+
     ImGui::Begin("Game");
     ImGui::Text(u8"プレイヤー座標");
     ImGui::Text("x:%f, y: %f", player_->GetPos().x, player_->GetPos().y);

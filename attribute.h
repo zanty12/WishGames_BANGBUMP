@@ -1,6 +1,16 @@
 #pragma once
 #include "lib/vector.h"
 #include "player.h"
+#include "attribute_type.h"
+
+
+enum ATTRIBUTE
+{
+	ATTR_FIRE = 1,
+	ATTR_DARK,
+	ATTR_WIND,
+	ATTR_THUNDER,
+};
 
 enum ATTRIBUTE
 {
@@ -14,6 +24,7 @@ class Player;
 class Attribute
 {
 protected:
+	ATTRIBUTE_TYPE attributeType_;
 	Player *player_;
 	ATTRIBUTE attr_;
 
