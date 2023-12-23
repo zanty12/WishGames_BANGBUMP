@@ -22,14 +22,14 @@ static const int LvUpPoint[LV_NUM] =
 {
 	0,
 	20,
-	30,
-	40,
 	50,
-	60,
 	90,
-	120,
 	140,
-	160,
+	200,
+	290,
+	410,
+	550,
+	710,
 };
 
 
@@ -113,6 +113,7 @@ void Player::Draw(Camera* camera)
 void Player::DebugMenu()
 {
 	ImGui::Begin("Player");
+	ImGui::Text("LV:%d", lv_);
 	ImGui::Text("HP:%d", hp_);
 	ImGui::Text("SkillPoint:%d", skillpt_);
 	ImGui::Text("PlayerState:%d", player_state_);
@@ -220,6 +221,11 @@ void Player::CollisionSpike(void)
 
 void Player::CollisionSkillPoint(GameObject* skill_point)
 {
+	if (attack_attribute_ == nullptr || move_attribute_ == nullptr)
+	{
+		return;
+	}
+
 	SkillOrb* skillPoint = dynamic_cast<SkillOrb*>(skill_point);
 
 	ATTRIBUTE_TYPE pt_attr = skillPoint->GetAttribute();	//スキルポイント属性
@@ -228,6 +234,7 @@ void Player::CollisionSkillPoint(GameObject* skill_point)
 	if (pt_size == SKILLORB_SIZE_TYPE_BIG)
 	{
 		skillpt_ += 40;		//10ポイント * 4
+		skillPoint->Discard();
 		return;
 	}
 
@@ -250,6 +257,7 @@ void Player::CollisionSkillPoint(GameObject* skill_point)
 			skillpt_ += 12;	//3ポイント * 4
 	}
 
+	skillPoint->Discard();
 }
 
 void Player::LvUp(void)
@@ -261,8 +269,31 @@ void Player::LvUp(void)
 			if (lv_ < i + 1)	//Lv下げはしない
 			{
 				lv_ = i + 1;
+				HpMaxUp();
 			}
 		}
+	}
+
+}
+
+void Player::HpMaxUp(void)
+{
+	if (lv_ == 1)
+		return;
+
+	if (lv_ == 5)
+	{
+		hp_ = 775;
+		return;
+	}
+
+	if (lv_ < 5)
+	{
+		hp_ = INITIAL_HP_ * (1.1f + (0.1f * lv_));
+	}
+	else
+	{
+		hp_ = INITIAL_HP_ * (1 + (0.1f * lv_));
 	}
 
 }

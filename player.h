@@ -29,8 +29,8 @@ class Camera;
 class Player : public MovableObj
 {
 private:
-	const int SKILL_GAUGE_MAX_ = 10;	//所持スキルポイントの上限
-	const int HP_MAX_ = 10000000;		//HPの上限
+
+	const int INITIAL_HP_ = 500;		//HPの初期値
 	const float GRAVITY_SCALE_ = -6.0f;	//重力（仮）
 	const int SPIKE_SURPRISE_ = 15;		//トゲに当たってノックバックするフレーム数
 
@@ -56,7 +56,7 @@ private:
 
 public:
 	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
-		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),lv_(1),
+		:MovableObj(pos,rot,tex_number,vel),hp_(INITIAL_HP_),skillpt_(0),lv_(1),
 		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0),
 		change_scene_(false)
 	{}
@@ -100,4 +100,5 @@ private:
 	//レベルアップ（ゲットしたスキルポイントを引数にする）
 	void LvUp(void);
 
+	void HpMaxUp(void);
 };
