@@ -13,6 +13,7 @@
 #include "lib/collider2d.h"
 #include "spike.h"
 #include "skillorb.h"
+#include "enemy.h"
 #include "xinput.h"
 
 #define LV_NUM (10)
@@ -32,23 +33,6 @@ static const int LvUpPoint[LV_NUM] =
 };
 
 
-bool Player::LvUp(int get_skill_pt)
-{
-
-
-	for (int i = 0; i < LV_NUM; i++)
-	{
-		if (skillpt_ > LvUpPoint[i])
-		{
-			if (lv_ < i)	//Lv下げはしない
-			{
-				lv_ = i;
-			}
-		}
-	}
-
-	return false;
-}
 
 void Player::Update(void)
 {
@@ -101,6 +85,8 @@ void Player::Update(void)
 	AddVel(GetVel());
 
 	CollisionAction();
+
+	LvUp();
 
 	//上に上がっている
 	if (GetVel().y > 0.0f)
@@ -166,11 +152,16 @@ void Player::CollisionAction(void)
 		case OBJ_PLAYER:
 			break;
 		case OBJ_ENEMY:	//とりあえず止まるようにする
+		{
 			if (GetVel().x != 0.0f)
 				SetVel(Vector2(0.0f, GetVel().y));
 			if (GetVel().y != 0.0f)
 				SetVel(Vector2(GetVel().x, 0.0f));
+			GameObject* gameObj = collision->GetParent();
+			Enemy* enemy = dynamic_cast<Enemy*>(gameObj);
+
 			break;
+		}
 		case OBJ_ATTACK:
 			break;
 		case OBJ_ITEM:
@@ -234,48 +225,48 @@ void Player::CollisionSkillPoint(GameObject* skill_point)
 	ATTRIBUTE_TYPE pt_attr = skillPoint->GetAttribute();	//スキルポイント属性
 	SKILLORB_SIZE_TYPE pt_size = skillPoint->GetSize();		//スキルポイントサイズ
 
+	if (pt_size == SKILLORB_SIZE_TYPE_BIG)
+	{
+		skillpt_ += 40;		//10ポイント * 4
+		return;
+	}
+
 	if (pt_attr == move_attribute_->GetAttribute() || pt_attr == attack_attribute_->GetAttribute())
 	{
-
+		//小さいスキルポイントの時
+		if (pt_size == SKILLORB_SIZE_TYPE_SMALL)
+			skillpt_ += 8;	//3ポイント * 2 + 1ポイント * 2
+		//中くらいのスキルポイントの時
+		if (pt_size == SKILLORB_SIZE_TYPE_MID)
+			skillpt_ += 16;	//5ポイント * 2 + 3ポイント * 2
 	}
-
-
-
-	bool get_point = false;
-	switch (0/*プレイヤーの移動属性*/)
+	else
 	{
-	case 0://何とか
-
-		break;
-	default:
-		break;
+		//小さいスキルポイントの時
+		if (pt_size == SKILLORB_SIZE_TYPE_SMALL)
+			skillpt_ += 4;	//1ポイント * 4
+		//中くらいのスキルポイントの時
+		if (pt_size == SKILLORB_SIZE_TYPE_MID)
+			skillpt_ += 12;	//3ポイント * 4
 	}
 
 }
 
-void Player::PointUp(int point_type, int attribute, MAP_READ point_attribute)
+void Player::LvUp(void)
 {
-	if (point_type == attribute)
+	for (int i = 0; i < LV_NUM; i++)
 	{
-
+		if (skillpt_ > LvUpPoint[i])
+		{
+			if (lv_ < i + 1)	//Lv下げはしない
+			{
+				lv_ = i + 1;
+			}
+		}
 	}
 
-
-	if (point_type == 5)
-	{
-		skillpt_ += 30;
-	}
 }
 
-void Player::SkillPointAttribute(MAP_READ point_attribute)
-{
-	switch (point_attribute)
-	{
-
-	default:
-		break;
-	}
-}
 
 /*
 	MAP_READ_ORB_SMALL_FIRE, ///< 小スキル玉セルを表します。

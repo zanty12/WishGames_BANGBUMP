@@ -69,16 +69,13 @@ public:
 	void SetHp(int hp) { hp_ = hp; }			//HPのセット
 	void SetAttribute(Attribute* move_attribute) {delete move_attribute_; move_attribute_ = move_attribute; }				//ムーブアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
 	void SetAttackAttribute(Attribute* attack_attribute) {delete attack_attribute_; attack_attribute_ = attack_attribute; }	//アタックアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
-	Attribute* GetAttribute(void) { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
-	Attribute* GetAttackAttribute(void) { return attack_attribute_; }	//アタックアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
-	MapMngr* GetMapMngr(void) { return map_mangr_; }	//MapMngrのポインタをゲット
-	bool GetChangeSceneFlag(void) { return change_scene_; }	//シーンチェンジのフラグ true=別のシーンへ
-	PLAYER_STATE GetPlayerState(void) { return player_state_; }	//プレイヤーのステータスをゲット
+	Attribute* GetAttribute(void) const { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
+	Attribute* GetAttackAttribute(void) const { return attack_attribute_; }	//アタックアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
+	MapMngr* GetMapMngr(void) const { return map_mangr_; }	//MapMngrのポインタをゲット
+	bool GetChangeSceneFlag(void) const { return change_scene_; }	//シーンチェンジのフラグ true=別のシーンへ
+	PLAYER_STATE GetPlayerState(void) const { return player_state_; }	//プレイヤーのステータスをゲット
+	int GetSkillPoint(void) const { return skillpt_; }	//現在所有しているスキルポイントのゲット
 
-	//レベルアップ（ゲットしたスキルポイントを引数にする）
-	bool LvUp(int get_skill_pt);
-	//スキルポイントの増加（ゲットしたポイントと所持スキルポイントの合計が所持スキルポイントの上限を超える場合、所持スキルポイントは10になる）
-	void SkillPointUp(int point) { skillpt_ + point <= SKILL_GAUGE_MAX_ ? skillpt_ += point : skillpt_ = SKILL_GAUGE_MAX_; }
 	//スキルポイントの減少（ダメージが所持スキルポイントを超える場合、スキルポイントは0になる）
 	void SkillPointDown(int damage) { damage <= skillpt_ ? skillpt_ -= damage : skillpt_ = 0; }
 	//HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
@@ -93,15 +90,14 @@ private:
 	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）
 	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
 
-	//当たり判定（マップ）
+	//当たり判定
 	void CollisionAction(void);
-
 	//当たり判定（トゲ）
 	void CollisionSpike(void);
-
+	//当たり判定（スキルポイント）
 	void CollisionSkillPoint(GameObject* skill_point);
 
-	void PointUp(int point_type, int attribute, MAP_READ point_attribute);
+	//レベルアップ（ゲットしたスキルポイントを引数にする）
+	void LvUp(void);
 
-	void SkillPointAttribute(MAP_READ point_attribute);
 };
