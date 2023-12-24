@@ -14,7 +14,7 @@ MultiPlayServer::MultiPlayServer() {
 	Startup(v2_2, data);
 
 	mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
-	gameMode = new MultiPlayCharacterSelectModeServerSide();//new MultiPlayAreaCaptureModeServerSide(mapmngr_);
+	gameMode = new MultiPlayAreaCaptureModeServerSide(mapmngr_);
 }
 
 int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
@@ -287,7 +287,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	Startup(v2_2, data);
 
 	mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
-	gameMode = new MultiPlayCharacterSelectModeClientSide();//new MultiPlayAreaCaptureModeClientSide(mapmngr_);
+	gameMode = new MultiPlayAreaCaptureModeClientSide(mapmngr_);
 
 	// スレッドを立てる
 	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);

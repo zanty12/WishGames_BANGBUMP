@@ -5,7 +5,7 @@
 #include "multi_header.h"
 #include "multi_client_gameobject.h"
 #include "multi_character_select_mode.h"
-#include "multi_area_capture_mode_.h"
+#include "multi_area_capture_mode.h"
 
 #define SERVER_ADDRESS "192.168.0.7"
 #define MAX_MEMBER (4)
@@ -118,9 +118,9 @@ public:
 	// 解除
 	void Unregister();
 	// 更新
-	void PlayerUpdate(RESPONSE_PLAYER &res/*, std::list<RESPONSE_PLAYER> &reses*/);
+	void PlayerUpdate(RESPONSE_PLAYER &res);
 	// 受信
-	void RecvUpdate(int waitTime, RESPONSE_PLAYER &res/*, std::list<RESPONSE_PLAYER> &reses*/);
+	void RecvUpdate(int waitTime, RESPONSE_PLAYER &res);
 	// 送信
 	void SendUpdate(void);
 

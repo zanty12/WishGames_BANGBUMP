@@ -158,6 +158,7 @@
     <ClCompile Include="mapmngr.cpp" />
     <ClCompile Include="movableobj.cpp" />
     <ClCompile Include="multiplay.cpp" />
+    <ClCompile Include="multi_area_capture_mode.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="colliderrect.cpp" />
@@ -213,7 +214,7 @@
     <ClInclude Include="map.h" />
     <ClInclude Include="mapmngr.h" />
     <ClInclude Include="multiplay.h" />
-    <ClInclude Include="multi_area_capture_mode_.h" />
+    <ClInclude Include="multi_area_capture_mode.h" />
     <ClInclude Include="multi_client_gameobject.h" />
     <ClInclude Include="multi_enemy_rush_mode.h" />
     <ClInclude Include="multi_header.h" />
