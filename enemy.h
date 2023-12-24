@@ -3,6 +3,7 @@
 #include "mapmngr.h"
 
 class EnemyMngr;
+class SkillOrb;
 
 class Enemy : public MovableObj
 {
@@ -20,4 +21,7 @@ public:
     EnemyMngr* GetEnemyMngr() const { return enemy_mngr_; }
     bool IsDead() const { return dead; }
     void Die(){ this->dead = true; }
+
+    virtual SkillOrb* DropSkillOrb() = 0;
+
 };

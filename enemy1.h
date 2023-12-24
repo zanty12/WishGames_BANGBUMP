@@ -4,6 +4,8 @@
 #include "animator.h"
 #include "time.h"
 
+class SKILLORB_ATTRIBUTE_DESC;
+
 class Enemy1 : public Enemy
 {
 private:
@@ -14,6 +16,8 @@ private:
     const float x_spd_ = 96.0f;
     const float y_spd_ = 0.5f;
     Vector2 startPosition;
+    SKILLORB_ATTRIBUTE_DESC drop;
+
 
 public:
     Enemy1() = delete;
@@ -24,6 +28,7 @@ public:
         startPosition = GetPos();
         float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //初期化時のエラーを回避する
         SetVel(Vector2(-x_spd_ * dt, GetVel().y));
+        SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
     }
 
     int GetAtk(void) const { return atk_; }
@@ -34,6 +39,8 @@ public:
     void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
     void Update() override;
+
+    SkillOrb* DropSkillOrb() override;
 
 /*private:
     void CellAction();

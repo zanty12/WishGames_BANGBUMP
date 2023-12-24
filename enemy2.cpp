@@ -10,6 +10,11 @@
 
 bool CheckEnemy2Length(Vector2 a, Vector2 b, float len);
 
+Bullet* Enemy2::CreatBullet(void)
+{
+    return new Bullet(startPosition, bullet_vel_);
+}
+
 void Enemy2::Update()
 {
     std::list<Collider*> collisions = GetCollider()->GetCollision();
@@ -41,10 +46,21 @@ void Enemy2::Update()
             {
                 close_player = player;
                 Spos_old = Spos_now;
+
             }
+
 
         }
     }
+
+    if (close_player != nullptr)
+    {
+        Vector2 distance = close_player->GetPos() - startPosition;
+        distance.Normalize();
+
+    }
+
+
 
 
 
@@ -74,6 +90,32 @@ void Enemy2::Update()
 
 
 
+}
+
+SkillOrb* Enemy2::DropSkillOrb()
+{
+    if (GetDiscard() == false)
+        return nullptr;
+
+    switch (rand() % 4)
+    {
+    case 0:
+        drop = SKILLORB_ATTRIBUTE_DESC::Fire();
+        break;
+    case 1:
+        drop = SKILLORB_ATTRIBUTE_DESC::Dark();
+        break;
+    case 2:
+        drop = SKILLORB_ATTRIBUTE_DESC::Wind();
+        break;
+    case 3:
+        drop = SKILLORB_ATTRIBUTE_DESC::Thunder();
+        break;
+    default:
+        break;
+    }
+
+    return new SkillOrb(GetPos(), drop, SKILLORB_SIZE_DESC::Mid());
 }
 
 //void Enemy2::Spawn(int x, int y, int type)

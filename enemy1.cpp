@@ -8,7 +8,9 @@ bool CheckLength(Vector2 a, Vector2 b, float len);
 
 void Enemy1::Update()
 {
+
     std::list<Collider*> collisions = GetCollider()->GetCollision();
+   
     for (auto collision : collisions)
     {
         OBJECT_TYPE type = collision->GetParent()->GetType();
@@ -50,6 +52,32 @@ void Enemy1::Update()
     
 
     this->AddVel(GetVel());
+}
+
+SkillOrb* Enemy1::DropSkillOrb()
+{
+    if (GetDiscard() == false)
+        return nullptr;
+
+    switch (rand() % 4)
+    {
+    case 0:
+        drop = SKILLORB_ATTRIBUTE_DESC::Fire();
+        break;
+    case 1:
+        drop = SKILLORB_ATTRIBUTE_DESC::Dark();
+        break;
+    case 2:
+        drop = SKILLORB_ATTRIBUTE_DESC::Wind();
+        break;
+    case 3:
+        drop = SKILLORB_ATTRIBUTE_DESC::Thunder();
+        break;
+    default:
+        break;
+    }
+
+    return new SkillOrb(GetPos(), drop, SKILLORB_SIZE_DESC::Small());
 }
 
 /*void Enemy1::CellAction()

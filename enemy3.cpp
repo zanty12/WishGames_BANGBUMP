@@ -103,6 +103,33 @@ void Enemy3::Update()
     this->AddVel(GetVel());
 }
 
+SkillOrb* Enemy3::DropSkillOrb()
+{
+    if (GetDiscard() == false)
+        return nullptr;
+
+    switch (rand()%4)
+    {
+    case 0:
+        drop = SKILLORB_ATTRIBUTE_DESC::Fire();
+        break;
+    case 1:
+        drop = SKILLORB_ATTRIBUTE_DESC::Dark();
+        break;
+    case 2:
+        drop = SKILLORB_ATTRIBUTE_DESC::Wind();
+        break;
+    case 3:
+        drop = SKILLORB_ATTRIBUTE_DESC::Thunder();
+        break;
+    default:
+        break;
+    }
+
+    return new SkillOrb(GetPos(), drop, SKILLORB_SIZE_DESC::Big());
+}
+
+
 /*
 void Enemy3::CellActions()
 {
