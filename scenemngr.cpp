@@ -1,5 +1,6 @@
 #include "scenemngr.h"
 #include "game.h"
+#include "prep.h"
 #include "title.h"
 #include "result.h"
 
@@ -12,6 +13,7 @@ SceneMngr::SceneMngr(SCENE scene) {
 	case SCENE_MENU:
 		break;
 	case SCENE_PREP:
+		scene_ = new Prep(this);
 		break;
 	case SCENE_GAME:
 		scene_ = new Game(this);
@@ -34,6 +36,7 @@ void SceneMngr::ChangeScene(SCENE scene) {
 	case SCENE_MENU:
 		break;
 	case SCENE_PREP:
+		scene_ = new Prep(this);
 		break;
 	case SCENE_GAME:
 		scene_ = new Game(this);
