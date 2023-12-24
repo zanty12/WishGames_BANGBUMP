@@ -13,12 +13,18 @@ void Enemy1::Update()
     {
         OBJECT_TYPE type = collision->GetParent()->GetType();
 
-        //実際の処理
-        if (type == OBJ_PLAYER)
-        {
-            Player* player =dynamic_cast<Player*> (collision->GetParent());
-            player->HpDown(15);//★仮★
-        }
+        ////実際の処理
+        //if (type == OBJ_PLAYER)
+        //{
+        //    Player* player =dynamic_cast<Player*> (collision->GetParent());
+        //    player->HpDown(15);//★仮★
+        //}
+    }
+
+    //HPが0になったらリザルトに移る
+    if (hp_ <= 0)
+    {
+        GameObject::Discard();
     }
 
     GetAnimator()->SetIsAnim(true);

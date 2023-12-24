@@ -16,27 +16,25 @@ void Enemy2::Update()
     for (auto collision : collisions)
     {
         OBJECT_TYPE type = collision->GetParent()->GetType();
+    }
 
-        //ÀÛ‚Ìˆ—
-        if (type == OBJ_PLAYER)
-        {
-            Player* player = dynamic_cast<Player*> (collision->GetParent());
-            player->HpDown(0);//š‰¼š
-        }
+    if (hp_ <= 0)
+    {
+        GameObject::Discard();
     }
 
     GetAnimator()->SetIsAnim(true);
 
-    std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayerList();
+    //std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayers();
 
-    for (auto player : players)
-    {
-        if (CheckEnemy2Length(startPosition, player->GetPos(), RANGE))
-        {
+    //for (auto player : players)
+    //{
+    //    if (CheckEnemy2Length(startPosition, player->GetPos(), RANGE))
+    //    {
+    //        
 
-
-        }
-    }
+    //    }
+    //}
 
 
 

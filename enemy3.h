@@ -8,7 +8,7 @@ class Enemy3 : public Enemy
 private:
     const int HP_MAX_ = 60;		//HPの上限
     int hp_;
-
+    int atk_ = 15;
     const float spd_ = 96.0f * 2;
     Vector2 startPosition;
     bool cheakRange_Enemy_;
@@ -22,7 +22,7 @@ public:
     {
         startPosition = GetPos();
     }
-
+    int GetAtk(void) const { return atk_; }
     int GetHp(void) const { return hp_; }		//HPのゲット
     void SetHp(int hp) { hp_ = hp; }			//HPのセット
     //HPの減少（ダメージが現在のHPを超える場合、HPは0になる）

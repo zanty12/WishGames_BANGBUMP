@@ -9,6 +9,7 @@ class Enemy1 : public Enemy
 private:
     const int HP_MAX_ = 20;		//HPの上限
     int hp_;
+    int atk_ = 5;
     Vector2 dir_;		//向き
     const float x_spd_ = 96.0f;
     const float y_spd_ = 0.5f;
@@ -24,6 +25,9 @@ public:
         float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //初期化時のエラーを回避する
         SetVel(Vector2(-x_spd_ * dt, GetVel().y));
     }
+
+    int GetAtk(void) const { return atk_; }
+    
     int GetHp(void) const { return hp_; }		//HPのゲット
     void SetHp(int hp) { hp_ = hp; }			//HPのセット
     //HPの減少（ダメージが現在のHPを超える場合、HPは0になる）

@@ -15,12 +15,18 @@ void Enemy3::Update()
     for (auto collision : collisions)
     {
         OBJECT_TYPE type = collision->GetParent()->GetType();
-        //ÀÛ‚Ìˆ—
-        if (type == OBJ_PLAYER)
-        {
-            Player* player = dynamic_cast<Player*> (collision->GetParent());
-            player->HpDown(15);//š‰¼š
-        }
+        ////ÀÛ‚Ìˆ—
+        //if (type == OBJ_PLAYER)
+        //{
+        //    Player* player = dynamic_cast<Player*> (collision->GetParent());
+        //    player->HpDown(15);//š‰¼š
+        //}
+    }
+
+
+    if (hp_ <= 0)
+    {
+        GameObject::Discard();
     }
 
     GetAnimator()->SetIsAnim(true);
@@ -31,7 +37,7 @@ void Enemy3::Update()
     //SetVel(Vector2(GetVel().x, GetVel().y - y_spd_ * dt));
 
     //ƒvƒŒƒCƒ„[’Ç]
-    std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayerList();
+    std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayers();
 
     for (auto player : players)
     {
@@ -118,16 +124,6 @@ void Enemy3::CellActions()
 }
 */
 
-bool CheckEnemy3Length(Vector2 a, Vector2 b, float len)
-{
-
-    if (Vector2::Distance(a, b) > len)
-    {
-        return true;
-    }
-
-    return false;
-}
 bool CheckEnemy3Length(Vector2 a, Vector2 b, float len)
 {
 
