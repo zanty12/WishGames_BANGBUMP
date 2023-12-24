@@ -104,10 +104,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\include;%(AdditionalIncludeDirectories);$(SolutionDir)\lib\ffmpeg\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(directxtex-LibPath);%(AdditionalLibraryDirectories);$(SolutionDir)\lib\ffmpeg\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -119,6 +122,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>;$(SolutionDir)\lib\ffmpeg\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -126,6 +130,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <AdditionalLibraryDirectories>;$(SolutionDir)\lib\ffmpeg\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>avcodec.lib;avdevice.lib;avfilter.lib;avformat.lib;avutil.lib;postproc.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -143,6 +149,7 @@
     <ClCompile Include="enemymngr.cpp" />
     <ClCompile Include="fire.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gamebase.cpp" />
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="enemy1.cpp" />
@@ -153,6 +160,7 @@
     <ClCompile Include="lib\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="lib\imgui\imgui_tables.cpp" />
     <ClCompile Include="lib\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="lib\video_reader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapmngr.cpp" />
@@ -165,6 +173,8 @@
     <ClCompile Include="result.cpp" />
     <ClCompile Include="scenemngr.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="skillorb.cpp" />
+    <ClCompile Include="skillorbmngr.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="thunder.cpp" />
@@ -175,7 +185,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animator.h" />
-    <ClInclude Include="bullet.h" />
+    <ClInclude Include="area_capture.h" />
+    <ClInclude Include="attribute_type.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collider.h" />
     <ClInclude Include="collidercir.h" />
@@ -188,6 +199,7 @@
     <ClInclude Include="block.h" />
     <ClInclude Include="cloud.h" />
     <ClInclude Include="floor.h" />
+    <ClInclude Include="gamebase.h" />
     <ClInclude Include="gamemodules.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="cell.h" />
@@ -202,6 +214,7 @@
     <ClInclude Include="lib\imgui\imstb_rectpack.h" />
     <ClInclude Include="lib\imgui\imstb_textedit.h" />
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
+    <ClInclude Include="lib\video_reader.hpp" />
     <ClInclude Include="mapenum.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="map.h" />
@@ -220,11 +233,13 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
     <ClInclude Include="skillorbattribute.h" />
+    <ClInclude Include="skillorbmngr.h" />
     <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />
+    <ClInclude Include="video.h" />
     <ClInclude Include="xinput.h" />
     <ClInclude Include="thundercloud.h" />
     <ClInclude Include="wall.h" />

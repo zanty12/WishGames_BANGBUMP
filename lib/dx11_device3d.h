@@ -17,7 +17,7 @@
 
 
 /*------------------------------------------------------------------------------
-* includeéŒ¾
+* includeå®£è¨€
 ------------------------------------------------------------------------------*/
 #include <d3d11.h>
 #include "dx_device_model.h"
@@ -25,22 +25,22 @@
 #pragma comment(lib, "d3d11.lib")
 
 /*------------------------------------------------------------------------------
-* defineéŒ¾
+* defineå®£è¨€
 ------------------------------------------------------------------------------*/
 
 
 /*------------------------------------------------------------------------------
-* externéŒ¾
+* externå®£è¨€
 ------------------------------------------------------------------------------*/
 
 
 /*------------------------------------------------------------------------------
-* prototypeéŒ¾
+* prototypeå®£è¨€
 ------------------------------------------------------------------------------*/
 
 
 /*------------------------------------------------------------------------------
-* classéŒ¾
+* classå®£è¨€
 ------------------------------------------------------------------------------*/
 namespace DX {
 	namespace DX11 {
@@ -48,90 +48,90 @@ namespace DX {
 		public:
 
 			/// <summary>
-			/// ƒfƒoƒCƒX3D‚Ìì¬
+			/// ãƒ‡ãƒã‚¤ã‚¹3Dã®ä½œæˆ
 			/// </summary>
 			/// <returns></returns>
 			HRESULT Create() override;
 
 			/// <summary>
-			/// ƒ^[ƒQƒbƒg‚·‚é
+			/// ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã™ã‚‹
 			/// </summary>
-			/// <param name="renderer">ƒŒƒ“ƒ_ƒ‰[</param>
+			/// <param name="renderer">ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼</param>
 			void Target(Renderer &renderer);
 
 			/// <summary>
-			/// ƒoƒbƒtƒ@[‚Ìİ’è
+			/// ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®è¨­å®š
 			/// </summary>
-			/// <param name="slot">ƒXƒƒbƒg”Ô†</param>
-			/// <param name="buffNum">ƒoƒbƒtƒ@”</param>
-			/// <param name="buffer">ƒoƒbƒtƒ@</param>
+			/// <param name="slot">ã‚¹ãƒ­ãƒƒãƒˆç•ªå·</param>
+			/// <param name="buffNum">ãƒãƒƒãƒ•ã‚¡æ•°</param>
+			/// <param name="buffer">ãƒãƒƒãƒ•ã‚¡</param>
 			static HRESULT SetConstantBuffer(UINT slot, UINT buffNum, ID3D11Buffer *buffer);
 
 			/// <summary>
-			/// ƒoƒbƒtƒ@[‚ÌXV
+			/// ãƒãƒƒãƒ•ã‚¡ãƒ¼ã®æ›´æ–°
 			/// </summary>
-			/// <param name="src">ƒ\[ƒX</param>
+			/// <param name="src">ã‚½ãƒ¼ã‚¹</param>
 			static HRESULT UpdateConstantBuffer(void *src, ID3D11Buffer* buffer);
 
 			/// <summary>
-			/// ƒTƒ“ƒvƒ‰[‚Ìİ’è
+			/// ã‚µãƒ³ãƒ—ãƒ©ãƒ¼ã®è¨­å®š
 			/// </summary>
-			/// <param name="sampler">ƒTƒ“ƒvƒ‰[</param>
+			/// <param name="sampler">ã‚µãƒ³ãƒ—ãƒ©ãƒ¼</param>
 			static HRESULT SetResource(ID3D11SamplerState *sampler);
 
 			/// <summary>
-			/// ƒ‰ƒXƒ^ƒ‰ƒCƒU[‚Ìİ’è
+			/// ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ãƒ¼ã®è¨­å®š
 			/// </summary>
-			/// <param name="rasterizer">ƒ‰ƒXƒ^ƒ‰ƒCƒU[</param>
+			/// <param name="rasterizer">ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚¶ãƒ¼</param>
 			static HRESULT SetResource(ID3D11RasterizerState *rasterizer);
 
 			/// <summary>
-			/// ƒuƒŒƒ“ƒh‚Ìİ’è
+			/// ãƒ–ãƒ¬ãƒ³ãƒ‰ã®è¨­å®š
 			/// </summary>
-			/// <param name="blend">ƒuƒŒƒ“ƒh</param>
+			/// <param name="blend">ãƒ–ãƒ¬ãƒ³ãƒ‰</param>
 			static HRESULT SetResource(ID3D11BlendState *blend);
 
 			/// <summary>
-			/// [“xƒXƒeƒ“ƒVƒ‹‚Ìİ’è
+			/// æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã®è¨­å®š
 			/// </summary>
-			/// <param name="depthstencil">[“xƒXƒeƒ“ƒVƒ‹</param>
+			/// <param name="depthstencil">æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«</param>
 			static HRESULT SetResource(ID3D11DepthStencilState *depthstencil);
 
 			/// <summary>
-			/// ƒŠƒ\[ƒX‚Ìİ’è
+			/// ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 			/// </summary>
-			/// <param name="resource">ƒŠƒ\[ƒX</param>
+			/// <param name="resource">ãƒªã‚½ãƒ¼ã‚¹</param>
 			static HRESULT SetResource(ID3D11ShaderResourceView *resource);
 
 			/// <summary>
-			/// ƒŠƒ\[ƒX‚Ìİ’è
+			/// ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 			/// </summary>
-			/// <param name="shader">’¸“_ƒVƒF[ƒ_[</param>
-			/// <param name="inputLayout">“ü—ÍƒŒƒCƒAƒEƒg</param>
+			/// <param name="shader">é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼</param>
+			/// <param name="inputLayout">å…¥åŠ›ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ</param>
 			static HRESULT SetResource(ID3D11VertexShader *shader, ID3D11InputLayout *inputLayout);
 
 			/// <summary>
-			/// ƒŠƒ\[ƒX‚Ìİ’è
+			/// ãƒªã‚½ãƒ¼ã‚¹ã®è¨­å®š
 			/// </summary>
-			/// <param name="shader">ƒsƒNƒZƒ‹ƒVƒF[ƒ_[</param>
+			/// <param name="shader">ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼</param>
 			static HRESULT SetResource(ID3D11PixelShader *shader);
 
 			/// <summary>
-			/// ƒoƒbƒtƒ@‚É‘‚«‚Ş
+			/// ãƒãƒƒãƒ•ã‚¡ã«æ›¸ãè¾¼ã‚€
 			/// </summary>
-			/// <param name="vertex">’¸“_ƒoƒbƒtƒ@</param>
-			/// <param name="vertexNum">’¸“_”</param>
-			/// <param name="vertexSize">’¸“_ƒoƒbƒtƒ@‚ÌƒTƒCƒY</param>
-			/// <param name="index">ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@</param>
-			/// <param name="indexNum">ƒCƒ“ƒfƒbƒNƒX”</param>
-			/// <param name="indexSize">ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ÌƒTƒCƒY</param>
-			/// <param name="deviceContext">ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg</param>
+			/// <param name="vertex">é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡</param>
+			/// <param name="vertexNum">é ‚ç‚¹æ•°</param>
+			/// <param name="vertexSize">é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º</param>
+			/// <param name="index">ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡</param>
+			/// <param name="indexNum">ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹æ•°</param>
+			/// <param name="indexSize">ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º</param>
+			/// <param name="deviceContext">ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ</param>
 			static HRESULT Draw(ID3D11Buffer *vertex, UINT vertexNum, UINT vertexStructSize, ID3D11Buffer *index, UINT indexNum, UINT indexStructSize);
 
 			/// <summary>
-			/// ƒgƒ|ƒƒW[‚Ìİ’è
+			/// ãƒˆãƒãƒ­ã‚¸ãƒ¼ã®è¨­å®š
 			/// </summary>
-			/// <param name="topology">ƒgƒ|ƒƒW[</param>
+			/// <param name="topology">ãƒˆãƒãƒ­ã‚¸ãƒ¼</param>
 			/// <param name="deviceContext"></param>
 			static void SetTopology(D3D11_PRIMITIVE_TOPOLOGY topology);
 		};

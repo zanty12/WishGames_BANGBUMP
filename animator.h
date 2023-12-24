@@ -5,7 +5,6 @@
 #include "lib/vector.h"
 #include "graphical.h"
 #include "sprite.h"
-#include "gameobject.h"
 
 struct ANIM_DATA
 {
@@ -22,7 +21,7 @@ struct ANIM_DATA
     }
 };
 
-//‚±‚±‚É‘S‚Ä‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚Ì–¼‘O‚ğ‘‚­
+//ã“ã“ã«å…¨ã¦ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®åå‰ã‚’æ›¸ã
 enum LOOP_ANIM
 {
     FIRE,
@@ -30,59 +29,57 @@ enum LOOP_ANIM
 
 };
 
-
 class GameObject;
+
 class Animator
 {
 private:
     std::map<LOOP_ANIM, ANIM_DATA> DICTIONARY_;
 
-    GameObject* parent_;  //ƒAƒjƒ[ƒVƒ‡ƒ“‘ÎÛ‚ÌƒQ[ƒ€ƒIƒuƒWƒFƒNƒg
+    GameObject* parent_;  //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³å¯¾è±¡ã®ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 
     Vector2 pos_, scale_;
     float rot_ = 0.0f;
     int texNo_;
     bool is_discard_ = false;
 
-    LOOP_ANIM loop_anim_; //ƒ‹[ƒv‚·‚é‰æ‘œ‚Ìí—Ş
-    LOOP_ANIM loop_anim_next_; //ƒ‹[ƒv‚·‚é‰æ‘œ‚Ìí—Ş
+    LOOP_ANIM loop_anim_; //ãƒ«ãƒ¼ãƒ—ã™ã‚‹ç”»åƒã®ç¨®é¡
+    LOOP_ANIM loop_anim_next_; //ãƒ«ãƒ¼ãƒ—ã™ã‚‹ç”»åƒã®ç¨®é¡
 
-    int fps_;      //ƒtƒŒ[ƒ€ƒŒ[ƒg
-    bool isAnim_ = false;   //ƒAƒjƒ[ƒVƒ‡ƒ“‚·‚é‚©
-    bool isMovable_; //ˆÚ“®‚·‚é‚©
-    int x_matrix_num_, y_matrix_num_;   //‰¡‚Æc‚Ì‰æ‘œ‚Ì–‡”
-    int loop_start_x_, loop_start_y_;   //ƒ‹[ƒv‚·‚é‰‚ß‚ÌêŠ
-    int loop_end_x_, loop_end_y_;       //ƒ‹[ƒv‚·‚éI‚í‚è‚ÌêŠ
-    bool is_loop_ = false;              //ƒ‹[ƒv”»’èitreu=ƒ‹[ƒvj
-    float img_change_time_ = 0.0f;          //‰æ‘œ‚ğØ‚è‘Ö‚¦‚éŠÔ‚ÌŠÔŠu
+    int fps_;      //ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¬ãƒ¼ãƒˆ
+    bool isAnim_ = false;   //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã™ã‚‹ã‹
+    bool isMovable_; //ç§»å‹•ã™ã‚‹ã‹
+    int x_matrix_num_, y_matrix_num_;   //æ¨ªã¨ç¸¦ã®ç”»åƒã®æšæ•°
+    int loop_start_x_, loop_start_y_;   //ãƒ«ãƒ¼ãƒ—ã™ã‚‹åˆã‚ã®å ´æ‰€
+    int loop_end_x_, loop_end_y_;       //ãƒ«ãƒ¼ãƒ—ã™ã‚‹çµ‚ã‚ã‚Šã®å ´æ‰€
+    bool is_loop_ = false;              //ãƒ«ãƒ¼ãƒ—åˆ¤å®šï¼ˆtreu=ãƒ«ãƒ¼ãƒ—ï¼‰
+    float img_change_time_ = 0.0f;          //ç”»åƒã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹æ™‚é–“ã®é–“éš”
     float now_time_ = 0.0f;
 
-    int now_matrix_number_ = 0;   //Œ»İ‚Ìs—ñ‚ÌˆÊ’u
+    int now_matrix_number_ = 0;   //ç¾åœ¨ã®è¡Œåˆ—ã®ä½ç½®
     float u_ = 0.0f, v_ = 0.0f;
     Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
-
-
 
 public:
     Animator() = delete;
 
     Animator(GameObject* game_object);
     //--------------------------------------------------------------------------------
-    // fps              ƒtƒŒ[ƒ€ƒŒ[ƒg
-    // isAnim           ƒAƒjƒ[ƒVƒ‡ƒ“‚·‚é‚©‚Ç‚¤‚©
-    // x_matrix_num     ‰¡‚Ì‰æ‘œ‚Ì”
-    // y_matrix_num     c‚Ì‰æ‘œ‚Ì”
-    // img_change_time  Ÿ‚Ì‰æ‘œ‚ÉØ‚è‘Ö‚¦‚é‚Ü‚Å‚Ì•b”
+    // fps              ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¬ãƒ¼ãƒˆ
+    // isAnim           ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã™ã‚‹ã‹ã©ã†ã‹
+    // x_matrix_num     æ¨ªã®ç”»åƒã®æ•°
+    // y_matrix_num     ç¸¦ã®ç”»åƒã®æ•°
+    // img_change_time  æ¬¡ã®ç”»åƒã«åˆ‡ã‚Šæ›¿ãˆã‚‹ã¾ã§ã®ç§’æ•°
     //--------------------------------------------------------------------------------
     Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time);
     //--------------------------------------------------------------------------------
-    // fps              ƒtƒŒ[ƒ€ƒŒ[ƒg
-    // isAnim           ƒAƒjƒ[ƒVƒ‡ƒ“‚·‚é‚©‚Ç‚¤‚©
-    // x_matrix_num     ‰¡‚Ì‰æ‘œ‚Ì”
-    // y_matrix_num     c‚Ì‰æ‘œ‚Ì”
-    // img_change_time  Ÿ‚Ì‰æ‘œ‚ÉØ‚è‘Ö‚¦‚é‚Ü‚Å‚Ì•b”
-    // is_loop          “Á’è‚ÌêŠ‚ğƒ‹[ƒv‚·‚é‚©‚Ç‚¤‚©
-    // loop_anim        ƒ‹[ƒv‚³‚¹‚éƒAƒjƒ[ƒVƒ‡ƒ“
+    // fps              ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¬ãƒ¼ãƒˆ
+    // isAnim           ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã™ã‚‹ã‹ã©ã†ã‹
+    // x_matrix_num     æ¨ªã®ç”»åƒã®æ•°
+    // y_matrix_num     ç¸¦ã®ç”»åƒã®æ•°
+    // img_change_time  æ¬¡ã®ç”»åƒã«åˆ‡ã‚Šæ›¿ãˆã‚‹ã¾ã§ã®ç§’æ•°
+    // is_loop          ç‰¹å®šã®å ´æ‰€ã‚’ãƒ«ãƒ¼ãƒ—ã™ã‚‹ã‹ã©ã†ã‹
+    // loop_anim        ãƒ«ãƒ¼ãƒ—ã•ã›ã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
     //--------------------------------------------------------------------------------
     Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time, bool is_loop,
         LOOP_ANIM loop_anim);
@@ -117,28 +114,37 @@ public:
     Color GetColor(void) const { return color_; }
     void SetRot(float rot) { rot_ = rot; }
     float GetRot(void) const { return rot_; }
-    void SetParent(GameObject* parent) { parent_ = parent; }
-    GameObject* GetParent(void) const { return parent_; }
     bool GetIsAnim(void) const { return isAnim_; }
     void SetIsAnim(bool isAnim) {
-        if (x_matrix_num_ != 0 && y_matrix_num_ != 0)//ƒZƒbƒg‚³‚ê‚Ä‚¢‚È‚¢‚à‚Ì‚ÍƒAƒjƒ[ƒVƒ‡ƒ“‚·‚é‚±‚Æ‚ª‹–‚³‚ê‚È‚¢
+        if (x_matrix_num_ != 0 && y_matrix_num_ != 0)//ã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ãªã„ã‚‚ã®ã¯ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã™ã‚‹ã“ã¨ãŒè¨±ã•ã‚Œãªã„
             isAnim_ = isAnim;
     }
     bool GetIsMovable(void) const { return isMovable_; }
     void SetIsMovable(bool isMovable) { isMovable_ = isMovable; }
 
-    void SetIsLoop(bool is_loop) { is_loop_ = is_loop; }    //ƒ‹[ƒv‚Ìİ’èitreu=ƒ‹[ƒvj
-    void SetImgChangeTime(float img_change_time) { img_change_time_ = img_change_time; }    //Ÿ‚Ì‰æ‘œ‚ÉØ‚è‘Ö‚¦‚éŠÔŠu [1.0f=‚P•b]
+    void SetIsLoop(bool is_loop) { is_loop_ = is_loop; }    //ãƒ«ãƒ¼ãƒ—ã®è¨­å®šï¼ˆtreu=ãƒ«ãƒ¼ãƒ—ï¼‰
+    void SetImgChangeTime(float img_change_time) { img_change_time_ = img_change_time; }    //æ¬¡ã®ç”»åƒã«åˆ‡ã‚Šæ›¿ãˆã‚‹é–“éš” [1.0f=ï¼‘ç§’]
 
-    void SetLoopImg(LOOP_ANIM loop_anim) { loop_anim_next_ = loop_anim; }    //ƒ‹[ƒv‚·‚éƒCƒ[ƒW‚Ìİ’è
+    void SetLoopImg(LOOP_ANIM loop_anim) { loop_anim_next_ = loop_anim; }    //ãƒ«ãƒ¼ãƒ—ã™ã‚‹ã‚¤ãƒ¡ãƒ¼ã‚¸ã®è¨­å®š
 
-    float UWidth(void) const { return 1.0f / x_matrix_num_; }    //UV(U)‚Ì•‚ğæ“¾
-    float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)‚Ì‚‚³‚ğæ“¾
-    float GetU(void) const { return u_; }   //UV(U)‚Ì’l‚ğæ“¾
-    float GetV(void) const { return v_; }   //UV(V)‚Ì’l‚ğæ“¾
+    float UWidth(void) const { return 1.0f / x_matrix_num_; }    //UV(U)ã®å¹…ã‚’å–å¾—
+    float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)ã®é«˜ã•ã‚’å–å¾—
+    float GetU(void) const { return u_; }   //UV(U)ã®å€¤ã‚’å–å¾—
+    float GetV(void) const { return v_; }   //UV(V)ã®å€¤ã‚’å–å¾—
 
-    void Discard() {is_discard_ = true;}
+    void SetParent(GameObject* parent) { parent_ = parent; }
+    GameObject* GetParent(void) const { return parent_; }
+
+    void Discard() { is_discard_ = true; }
     bool GetDiscard() const { return is_discard_; }
+
+    void StatusUpdate(Vector2 pos, Vector2 scale, float rot) {
+        pos_ = pos;
+        scale_ = scale;
+        rot_ = rot;
+    }
+
+    void RendererRegister(void);    //ãƒ¬ãƒ³ãƒ€ãƒ©ãƒ¼ã«ç™»éŒ²
 
 private:
     void InitDictionary(void);

@@ -49,7 +49,8 @@ VSOutput VS(float4 pos : POSITION,
 
 float4 PS(VSOutput input) : SV_Target0
 {
-
-	return g_texture.Sample(g_sampler, input.uv);// mul(g_texture.Sample(g_sampler, input.uv), input.col);
+	float4 tex = g_texture.Sample(g_sampler, input.uv);
+	float4 col = input.col;
+	return tex * col;
 
 }

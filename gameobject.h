@@ -70,7 +70,7 @@ public:
     void SetCollider(Collider* collider) { collider_ = collider; } //コライダーセット
     OBJECT_TYPE GetType(void) const { return type_; } //オブジェクトタイプゲット
     void SetType(OBJECT_TYPE type) { type_ = type; } //オブジェクトタイプセット
-    void Discard(){is_discard_ = true; animator_->Discard(); collider_->Discard();} //破棄する
+    void Discard(); //破棄する
     bool GetDiscard() const { return is_discard_; } //破棄するかどうか
 
 
