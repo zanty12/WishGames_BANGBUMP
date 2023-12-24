@@ -21,8 +21,6 @@ enum VIDEO_FILE
     DARK_ATTACK,
 };
 
-
-
 class SceneMngr;
 class Prep : public Scene
 {
