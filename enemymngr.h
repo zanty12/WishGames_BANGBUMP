@@ -9,12 +9,13 @@ class Enemy;
 class EnemyMngr
 {
 private:
-    std::vector<Enemy*> enemies_;
+    //std::vector<Enemy*> enemies_;
+    std::list<Enemy*> enemies_;
     MapMngr* map_mngr_;
 public:
     EnemyMngr(MapMngr* map_mngr){
         map_mngr_ = map_mngr;
-        enemies_.reserve(20);
+        //enemies_.reserve(20);
     }
 
     ~EnemyMngr()
@@ -32,5 +33,6 @@ public:
         enemies_.push_back(enemy);
     }
     MapMngr* GetMapMngr() const { return map_mngr_; }
-    std::vector<Enemy*> GetEnemies() const { return enemies_; }
+    //std::vector<Enemy*> GetEnemies() const { return enemies_; }
+    std::list<Enemy*> GetEnemies() const { return enemies_; }
 };
