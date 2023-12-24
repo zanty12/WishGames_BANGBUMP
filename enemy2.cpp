@@ -25,16 +25,26 @@ void Enemy2::Update()
 
     GetAnimator()->SetIsAnim(true);
 
-    //std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayers();
+    std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayers();
 
-    //for (auto player : players)
-    //{
-    //    if (CheckEnemy2Length(startPosition, player->GetPos(), RANGE))
-    //    {
-    //        
+    float Spos_now = 0.0f;
+    float Spos_old = 0.0f;
 
-    //    }
-    //}
+    Player* close_player = nullptr;
+
+    for (auto player : players)
+    {
+        if (CheckEnemy2Length(startPosition, player->GetPos(), RANGE))
+        {
+            Spos_now = Vector2::Distance(GetPos(), player->GetPos());
+            if (Spos_now < Spos_old)
+            {
+                close_player = player;
+                Spos_old = Spos_now;
+            }
+
+        }
+    }
 
 
 

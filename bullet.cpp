@@ -13,13 +13,7 @@ void Bullet::Update()
     for (auto collision : collisions)
     {
         OBJECT_TYPE type = collision->GetParent()->GetType();
-
-        //ÀÛ‚Ìˆ—
-        if (type == OBJ_PLAYER)
-        {
-            Player* player = dynamic_cast<Player*> (collision->GetParent());
-            player->HpDown(15);//š‰¼š
-        }
     }
+
 
 }
