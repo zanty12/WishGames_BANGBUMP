@@ -17,15 +17,17 @@ Bullet* Enemy2::CreatBullet(void)
 
 void Enemy2::Update()
 {
+    //HPÇ™0Ç…Ç»Ç¡ÇΩÇÁè¡Ç∑
+    if (hp_ <= 0)
+    {
+        GameObject::Discard();
+        Die();
+    }
+
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
         OBJECT_TYPE type = collision->GetParent()->GetType();
-    }
-
-    if (hp_ <= 0)
-    {
-        GameObject::Discard();
     }
 
     GetAnimator()->SetIsAnim(true);

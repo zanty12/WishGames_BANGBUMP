@@ -5,19 +5,19 @@
 
 void EnemyMngr::Update()
 {
-    /*for(int i = 0; i < enemies_.size(); i++)
-    {
-        if(enemies_[i] == nullptr)
-            continue;
-
-        enemies_[i]->Update();
-
-        if(enemies_[i]->IsDead())
-        {
-            delete enemies_[i];
-            enemies_[i] = nullptr;
+    //破棄する
+    enemies_.remove_if(
+        [](Enemy* enemy) {
+            if (enemy->IsDead()) {
+                delete enemy;
+                enemy = nullptr;
+                return true;
+            }
+            return false;
         }
-    }*/
+    );
+
+    //アップデート
     for (auto enemy : enemies_)
     {
         if (enemy == nullptr)
@@ -25,11 +25,6 @@ void EnemyMngr::Update()
 
         enemy->Update();
 
-        if (enemy->IsDead())
-        {
-            delete enemy;
-            enemy = nullptr;
-        }
     }
 }
 
