@@ -25,7 +25,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	isListLock = true;
 
 	// プレイヤー作成
-	Vector2 pos = Vector2::Zero;
+	Vector2 pos = Vector2(200, 200);
 	float rot = 0.0f;
 	int texNo = 0;
 	Vector2 vel = Vector2::Zero;
@@ -122,11 +122,7 @@ void MultiPlayServer::PlayerUpdate(REQUEST_PLAYER req) {
 
 
 	// プレイヤーの処理を行う
-	float speed = 10;
-	Vector2 v = Input::GetStickLeft(0);
-	Vector2 pos = iterator->player_->GetPos();
-	v.y *= -1;
-	iterator->player_->SetPos(v * speed + pos);
+	iterator->player_->Update();
 
 	// 入力情報を格納する
 	iterator->currentInput = req.input.curInput;
@@ -187,10 +183,13 @@ void MultiPlayServer::SendUpdate(void) {
 
 void MultiPlayServer::Update() {
 	REQUEST_PLAYER req = RecvUpdate();
+	// 衝突判定
+	coll_mngr_->Update();
 	// プレイヤーアップデート
 	PlayerUpdate(req);
 	// ゲームモードアップデート
 	gameMode->Update(clients_);
+	
 }
 
 void MultiPlayServer::OpenTerminal(void) {

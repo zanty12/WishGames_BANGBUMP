@@ -34,6 +34,7 @@ struct HEADER {
 struct CLIENT_DATA_CLIENT_SIDE {
 	int id = -1;
 	Vector2 position;
+	int score = 0;
 };
 // クライアントデータ（サーバー側）
 struct CLIENT_DATA_SERVER_SIDE {
@@ -45,6 +46,7 @@ struct CLIENT_DATA_SERVER_SIDE {
 	XINPUT_GAMEPAD previousInput = XINPUT_GAMEPAD();
 	ATTRIBUTE_TYPE actionAttribute = ATTRIBUTE_TYPE_FIRE;
 	ATTRIBUTE_TYPE moveAttribute = ATTRIBUTE_TYPE_FIRE;
+	int score = 0;
 
 	CLIENT_DATA_SERVER_SIDE(HEADER header, Socket sockfd, Address addr, Player *player)
 		: header(header), sockfd_(sockfd), clientAddr_(addr), player_(player) { };

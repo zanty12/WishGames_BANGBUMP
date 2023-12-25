@@ -20,7 +20,7 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::list<CLIENT_DATA_SER
 	// エリア
 	for (auto &area : activeAreas) {
 		Vertex1 areaCollider = Vertex1(area.position, area.radius * 0.5f);	// エリアのコライダー
-		int touchID = -1;													// エリアに触れているID
+		CLIENT_DATA_SERVER_SIDE *pTouchClient = nullptr;					// エリアに触れているプレイヤー
 
 		// プレイヤー
 		for (auto &client : clients) {
@@ -32,30 +32,35 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::list<CLIENT_DATA_SER
 
 				if (area.id == id ||	// 自分のエリアなら
 					area.id == -1 ||	// だれのエリアでもないなら
-					touchID == -1) {	// touchIDが初期値なら
-					touchID = id;			// 更新する
+					pTouchClient == nullptr) {	// 誰もいないなら
+					pTouchClient = &client;		// 更新する
+					area.id = id;
 				}
 
-				// 誰も占領していないなら占領状態にする
-				if (area.id == -1)
-					area.id = client.header.id;
+				//// 誰も占領していないなら占領状態にする
+				//if (area.id == -1)
+				//	area.id = id;
+
 
 			}
 		}
 
 		// だれも触れていないなら
-		if (touchID == -1) continue;
+		if (pTouchClient == nullptr) continue;
 
 		// 占領し続けているならゲージの更新
-		if (area.id == touchID) {
+		if (area.id == pTouchClient->header.id) {
 			area.captureNowTime += Time::GetDeltaTime();
 		}
 		// 別のプレイヤーに占領されたなら初期化
 		else {
-			area.id = touchID;
+			area.id = pTouchClient->header.id;
 		}
 
 		area.captureRatio = area.captureNowTime / area.captureMaxTime;		// 割合計算
+
+		// 占領完了したなら得点
+		if (1.0f <= area.captureRatio) pTouchClient->score++;
 	}
 }
 // 占領削除
