@@ -105,7 +105,43 @@ void MultiPlayServer::AllUnregister(void) {
 	}
 }
 
-void MultiPlayServer::PlayerUpdate(REQUEST_PLAYER req) {
+void MultiPlayServer::PlayerUpdate(void) {
+
+	//// プレイヤーの検索
+	//auto iterator = find(req.input.id);
+
+	//// 検索不一致
+	//if (iterator == clients_.end()) return;
+
+	//// キー入力の更新
+	//Input::SetState(0, req.input.curInput);
+	//Input::SetPreviousState(0, req.input.preInput);
+
+	//std::cout << req.input.id << " : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
+
+	// プレイヤーの更新
+	for (auto client : clients_) {
+		// 入力の更新
+		Input::SetState(0, client.currentInput);
+		Input::SetPreviousState(0, client.previousInput);
+		
+		// プレイヤーの更新
+		client.player_->Update();
+	}
+
+	// コリジョンの更新
+	//if (coll_mngr_) coll_mngr_->Update();
+
+	// ゲームモードの更新
+	if (gameMode) gameMode->Update(clients_);
+}
+
+void MultiPlayServer::RecvUpdate(void) {
+	// リクエスト情報を書き出す
+	REQUEST_PLAYER req;
+	req.ParseRequest(recvBuff);
+
+
 
 	// プレイヤーの検索
 	auto iterator = find(req.input.id);
@@ -113,28 +149,9 @@ void MultiPlayServer::PlayerUpdate(REQUEST_PLAYER req) {
 	// 検索不一致
 	if (iterator == clients_.end()) return;
 
-	// キー入力の更新
-	Input::SetState(0, req.input.curInput);
-	Input::SetPreviousState(0, req.input.preInput);
-
-	std::cout << req.input.id << " : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
-
-
-
-	// プレイヤーの処理を行う
-	iterator->player_->Update();
-
-	// 入力情報を格納する
+	// 入力情報を設定
 	iterator->currentInput = req.input.curInput;
-	iterator->currentInput = req.input.preInput;
-}
-
-REQUEST_PLAYER MultiPlayServer::RecvUpdate(void) {
-	// リクエスト情報を書き出す
-	REQUEST_PLAYER req;
-	req.ParseRequest(recvBuff);
-
-	return req;
+	iterator->previousInput = req.input.preInput;
 }
 
 void MultiPlayServer::SendUpdate(void) {
@@ -182,13 +199,12 @@ void MultiPlayServer::SendUpdate(void) {
 }
 
 void MultiPlayServer::Update() {
-	REQUEST_PLAYER req = RecvUpdate();
-	// 衝突判定
-	coll_mngr_->Update();
-	// プレイヤーアップデート
-	PlayerUpdate(req);
-	// ゲームモードアップデート
-	gameMode->Update(clients_);
+	//// 衝突判定
+	//coll_mngr_->Update();
+	//// プレイヤーアップデート
+	//PlayerUpdate(req);
+	//// ゲームモードアップデート
+	//gameMode->Update(clients_);
 	
 }
 
@@ -200,6 +216,9 @@ void MultiPlayServer::OpenTerminal(void) {
 	// バインド
 	sockfd_.Bind(addr);
 
+	DWORD startTime, currentTime, onceFrameTime;
+	startTime = currentTime = timeGetTime();
+	onceFrameTime = 1000 / 60;
 
 
 	// SendUpdate()をスレッドを立てて関数を呼び出す
@@ -224,44 +243,55 @@ void MultiPlayServer::OpenTerminal(void) {
 			}
 		}
 
-
-		Address clientAddr;
-		int clientAddrLen = sizeof(clientAddr);
-		char buff[MAX_BUFF] = {};
-
 		// 受信
-		int buffLen = RecvFrom(sockfd_, buff, MAX_BUFF, 0, &clientAddr, &clientAddrLen);
+		{
+			Address clientAddr;
+			int clientAddrLen = sizeof(clientAddr);
+			char buff[MAX_BUFF] = {};
 
-		if (0 <= buffLen) {
-			HEADER *pHeader = (HEADER *)buff;
+			// 受信
+			int buffLen = RecvFrom(sockfd_, buff, MAX_BUFF, 0, &clientAddr, &clientAddrLen);
 
-			switch (pHeader->command)
-			{
-			case HEADER::COMMAND::REQUEST_LOGIN: {
-				// 登録
-				std::cout << "Req << ID:*" << " Login" << std::endl;
-				int id = Register(clientAddr, *pHeader, 0);
-				// 送信
-				//SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
-				std::cout << id << " : 登録しました" << std::endl;
-				break;
-			};
-			case HEADER::COMMAND::REQUEST_LOGOUT: {
-				// 解除
-				std::cout << "Req << ID:" << pHeader->id << " Logout" << std::endl;
-				Unregister(pHeader->id);
-				std::cout << pHeader->id << " : 解除しました" << std::endl;
-				break;
-			}
-			case HEADER::COMMAND::REQUEST_UPDATE: {
-				// 更新
-				recvBuff.Push(buff, buffLen);
-				Update();
-				break;
-			}
+			if (0 <= buffLen) {
+				HEADER *pHeader = (HEADER *)buff;
+
+				switch (pHeader->command)
+				{
+				case HEADER::COMMAND::REQUEST_LOGIN: {
+					// 登録
+					std::cout << "Req << ID:*" << " Login" << std::endl;
+					int id = Register(clientAddr, *pHeader, 0);
+					// 送信
+					//SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
+					std::cout << id << " : 登録しました" << std::endl;
+					break;
+				};
+				case HEADER::COMMAND::REQUEST_LOGOUT: {
+					// 解除
+					std::cout << "Req << ID:" << pHeader->id << " Logout" << std::endl;
+					Unregister(pHeader->id);
+					std::cout << pHeader->id << " : 解除しました" << std::endl;
+					break;
+				}
+				case HEADER::COMMAND::REQUEST_UPDATE: {
+					// 更新
+					recvBuff.Push(buff, buffLen);
+					RecvUpdate();
+					break;
+				}
+				}
 			}
 		}
 
+		{
+			currentTime = timeGetTime();
+			// 更新
+			if (currentTime - startTime > onceFrameTime) {
+				startTime = currentTime;
+
+				PlayerUpdate();
+			}
+		}
 		Time::Update();
 
 		recvBuff = nullptr;

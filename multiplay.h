@@ -49,9 +49,9 @@ public:
 	// 全解除
 	void AllUnregister(void);
 	// 更新
-	void PlayerUpdate(REQUEST_PLAYER req);
+	void PlayerUpdate(void);
 	// 受信
-	REQUEST_PLAYER RecvUpdate(void);
+	void RecvUpdate(void);
 	// 送信
 	void SendUpdate(void);
 
