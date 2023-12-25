@@ -13,7 +13,7 @@ MultiPlayServer::MultiPlayServer() {
 	WSAData data;
 	Startup(v2_2, data);
 
-	mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
+	mapmngr_ = new MapMngr("data/map/1.csv", this);
 	gameMode = new MultiPlayAreaCaptureModeServerSide(mapmngr_);
 }
 
@@ -130,7 +130,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 	}
 
 	// コリジョンの更新
-	//if (coll_mngr_) coll_mngr_->Update();
+	if (coll_mngr_) coll_mngr_->Update();
 
 	// ゲームモードの更新
 	if (gameMode) gameMode->Update(clients_);
@@ -315,7 +315,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	WSAData data;
 	Startup(v2_2, data);
 
-	mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
+	mapmngr_ = new MapMngr("data/map/1.csv", this);
 	gameMode = new MultiPlayAreaCaptureModeClientSide(mapmngr_);
 
 	// スレッドを立てる
