@@ -8,6 +8,12 @@ bool CheckLength(Vector2 a, Vector2 b, float len);
 
 void Enemy1::Update()
 {
+    //HPが0になったら消す
+    if (hp_ <= 0)
+    {
+        GameObject::Discard();
+        Die();
+    }
 
     std::list<Collider*> collisions = GetCollider()->GetCollision();
    
@@ -21,12 +27,6 @@ void Enemy1::Update()
         //    Player* player =dynamic_cast<Player*> (collision->GetParent());
         //    player->HpDown(15);//★仮★
         //}
-    }
-
-    //HPが0になったらリザルトに移る
-    if (hp_ <= 0)
-    {
-        GameObject::Discard();
     }
 
     GetAnimator()->SetIsAnim(true);

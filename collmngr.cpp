@@ -15,21 +15,25 @@ void CollMngr::Update()
     {
         collider->SetCollision(std::list<Collider*>());
     }
+
     //ˆê‰ñˆÊ’uXV
-    for(auto it = colliders_.begin(); it != colliders_.end();)
+    for (auto it : colliders_)
     {
-        if((*it)->GetDiscard())
-        {
-            delete *it;
-            it = colliders_.erase(it);
-        }
-        else
-        {
-            if((*it)->GetIsMovable())
-                (*it)->Update();
-            ++it;
-        }
+        if (it->GetIsMovable())
+            it->Update();
     }
+
+    //”jŠü‚·‚é
+    colliders_.remove_if(
+        [](Collider* collider) {
+            if (collider->GetDiscard()) {
+                delete collider;
+                return true;
+            }
+            return false;
+        }
+    );
+
 
     //Õ“Ë
     for(const auto collider : colliders_)

@@ -11,6 +11,13 @@ bool CheckEnemy3Length(Vector2 a, Vector2 b, float len);
 
 void Enemy3::Update()
 {
+    //HPÇ™0Ç…Ç»Ç¡ÇΩÇÁè¡Ç∑
+    if (hp_ <= 0)
+    {
+        GameObject::Discard();
+        Die();
+    }
+
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
@@ -24,10 +31,6 @@ void Enemy3::Update()
     }
 
 
-    if (hp_ <= 0)
-    {
-        GameObject::Discard();
-    }
 
     GetAnimator()->SetIsAnim(true);
 
