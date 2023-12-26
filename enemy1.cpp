@@ -94,39 +94,39 @@ SkillOrb* Enemy1::DropSkillOrb()
     {
         if (cells[i] == nullptr)
             continue;
-        if (Collision(cells[i]))
-        {
-            switch (i)
-            {
-            case 0:
-                if (GetVel().y > 0)
-                {
-                    SetVel(Vector2(GetVel().x, GetVel().y * -1));
-                }
-                break;
-            case 1:
-                if (GetVel().y < 0)
-                {
-                    SetVel(Vector2(GetVel().x, GetVel().y * -1));
-                }
-                break;
-            case 2:
-                if (GetVel().x < 0)
-                {
-                    SetVel(Vector2(GetVel().x * -1, GetVel().y));
-                }
-                break;
-            case 3:
-                if (GetVel().x > 0)
-                {
-                    SetVel(Vector2(GetVel().x * -1, GetVel().y));
-                }
-                break;
-            default:
-                break;
-            }
-            break;
-        }
+        //if (Collision(cells[i]))
+        //{
+        //    switch (i)
+        //    {
+        //    case 0:
+        //        if (GetVel().y > 0)
+        //        {
+        //            SetVel(Vector2(GetVel().x, GetVel().y * -1));
+        //        }
+        //        break;
+        //    case 1:
+        //        if (GetVel().y < 0)
+        //        {
+        //            SetVel(Vector2(GetVel().x, GetVel().y * -1));
+        //        }
+        //        break;
+        //    case 2:
+        //        if (GetVel().x < 0)
+        //        {
+        //            SetVel(Vector2(GetVel().x * -1, GetVel().y));
+        //        }
+        //        break;
+        //    case 3:
+        //        if (GetVel().x > 0)
+        //        {
+        //            SetVel(Vector2(GetVel().x * -1, GetVel().y));
+        //        }
+        //        break;
+        //    default:
+        //        break;
+        //    }
+        //    break;
+        //}
     }
 }
 
@@ -188,7 +188,7 @@ void Enemy1::CellActionSpike()
                 break;
             }
 
-        }
+        //}
 
     }
 }*/
