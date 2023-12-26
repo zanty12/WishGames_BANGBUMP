@@ -25,10 +25,12 @@ private:
     std::list<frame_data> frame_buffer_;
     std::string filename_;
     bool loop_ = false;
-    int64_t end_pts_ = 30000;
+    int64_t end_pts_ = 0;
     double pts_ = 0;
     bool loaded_ = false;
     std::list<frame_data>::iterator frame_it_;
+    Vector2 size_;
+    Vector2 window_pos_ = Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2);
 
 public:
     Video(const char* filename)
@@ -71,6 +73,8 @@ public:
         {
             std::cout << "Couldn't allocate frame buffer\n";
         }
+
+        size_ = Vector2(frame_width, frame_height);
     }
 
     ~Video()
@@ -109,12 +113,12 @@ public:
                 first_frame_ = false;
             }
         }
-        if (pts == end_pts_ && !loaded_)
+        if (pts == end_pts_ && !loaded_ && end_pts_ != 0)
         {
             loaded_ = true;
         }
         //loop back if at end of video
-        if (loop_ && frame_it_->ts == end_pts_)
+        if (loop_ && frame_it_->ts == end_pts_ && end_pts_ != 0)
         {
             frame_it_ = frame_buffer_.begin();
             time_ = 0.0;
@@ -158,10 +162,15 @@ public:
 
     void Draw()
     {
+        ImGuiWindowFlags window_flags = 0;
+        window_flags |= ImGuiWindowFlags_NoBackground;
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+        bool open = true;
+        ImGui::SetNextWindowPos(ImVec2(window_pos_.x - size_.x * scale_ / 2, window_pos_.y - size_.y * scale_ / 2));
         // Draw the texture with ImGui
-        ImGui::Begin(filename_.c_str());
-        ImGui::Text("time: %.2f, pts: %.2f", time_, pts_);
-        ImGui::Image((void*)texture_view_, ImVec2(vr_state_.width * scale_, vr_state_.height * scale_));
+        ImGui::Begin(filename_.c_str(), &open, window_flags);
+        //ImGui::Text("time: %.2f, pts: %.2f", time_, pts_);
+        ImGui::Image((void*)texture_view_, ImVec2(size_.x * scale_, size_.y * scale_));
         ImGui::End();
     }
 
@@ -174,4 +183,15 @@ public:
     {
         loop_ = loop;
     }
+
+    void SetSize(Vector2 size)
+    {
+        size_ = size;
+    }
+
+    void SetWindowPos(Vector2 pos)
+    {
+        window_pos_ = pos;
+    }
+
 };

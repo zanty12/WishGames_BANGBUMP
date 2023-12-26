@@ -35,6 +35,22 @@ private:
 
     SceneMngr* scene_mngr_;
 
+    bool is_move_ = true;
+
+    //通常テキスチャー
+    int character_;
+    int tex_fire_move_;
+    int tex_fire_attack_;
+    int tex_wind_move_;
+    int tex_wind_attack_;
+    int tex_thunder_move_;
+    int tex_thunder_attack_;
+    int tex_dark_move_;
+    int tex_dark_attack_;
+    //uiテキスチャー
+    int tex_bg_;
+    int tex_select_arrow_;
+
 public:
     Prep() = delete;
     Prep(SceneMngr* scene_mngr);
@@ -50,4 +66,7 @@ public:
     void Update() override;
     void Draw() override;
     void DebugMenu() override;
+
+private:
+    void SetNewVideo(VIDEO_FILE video_file);
 };
