@@ -76,7 +76,7 @@ private:
 public:
 	MultiPlayCharacterSelectModeClientSide() : MultiPlayClientSide(nullptr) { }
 
-	void Draw(void) override {
+	void Draw(RESPONSE_PLAYER& players) override {
 		const int SCREEN_WIDTH = Graphical::GetWidth();					// ‰æ–Ê‚Ì•
 		const int SCREEN_HEIGHT = Graphical::GetHeight();				// ‰æ–Ê‚Ì‚‚³
 		const int SCREEN_HORIZONTAL_CENTER = SCREEN_WIDTH * 0.5f;		// ‰æ–Ê‚Ì‰¡²‚Ì’†S

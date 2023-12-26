@@ -130,7 +130,7 @@ void MultiPlayAreaCaptureModeServerSide::CreateResponse(Storage &out) {
 
 
 
-void MultiPlayAreaCaptureModeClientSide::Draw(void) {
+void MultiPlayAreaCaptureModeClientSide::Draw(RESPONSE_PLAYER &players) {
 	// ƒGƒŠƒA‚Ì•`‰æ
 	for (auto &area : res.areas) {
 		anim.SetTexNo(areaTexNo);

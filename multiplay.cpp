@@ -172,6 +172,10 @@ void MultiPlayServer::SendUpdate(void) {
 				// レスポンスの作成
 				RESPONSE_PLAYER res;
 
+				// 制限時間の登録
+				res.timeLimit = gameMode->GetTimeLimit();
+				res.maxTimeLimit = gameMode->GetMaxTimeLimit();
+
 				// クライアント情報の登録
 				for (auto &client : clients_) {
 					res.clients.push_back({ client.header.id , client.player_->GetPos(), 0, 0 });
@@ -395,7 +399,7 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 		anim.Draw();
 	}
 
-	if (gameMode) gameMode->Draw();
+	if (gameMode) gameMode->Draw(res);
 	renderer_->Draw();
 	//Camera camera = Camera();
 	//mapMngr.Draw();

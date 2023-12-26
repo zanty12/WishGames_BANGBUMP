@@ -32,10 +32,11 @@ struct HEADER {
 };
 // クライアントデータ（クライアント側）
 struct CLIENT_DATA_CLIENT_SIDE {
-	int id = -1;
-	Vector2 position;
-	int skillPoint = 0;
-	int score = 0;
+	int id = -1;					// ID
+	Vector2 position;				// 座標
+	int score = 0;					// スコア
+	int skillPoint = 0;				// スキルポイント
+	int previousSkillPoint = 0;		// 1ゲーム前のスキルポイント
 };
 // クライアントデータ（サーバー側）
 struct CLIENT_DATA_SERVER_SIDE {
@@ -48,6 +49,7 @@ struct CLIENT_DATA_SERVER_SIDE {
 	ATTRIBUTE_TYPE actionAttribute = ATTRIBUTE_TYPE_FIRE;
 	ATTRIBUTE_TYPE moveAttribute = ATTRIBUTE_TYPE_FIRE;
 	int score = 0;
+	int previousSkillPoint = 0;
 
 	CLIENT_DATA_SERVER_SIDE(HEADER header, Socket sockfd, Address addr, Player *player)
 		: header(header), sockfd_(sockfd), clientAddr_(addr), player_(player) { };
@@ -61,6 +63,8 @@ struct CLIENT_DATA_SERVER_SIDE {
 struct RESPONSE_PLAYER {
 	typedef CLIENT_DATA_CLIENT_SIDE DESC;
 
+	float timeLimit = 0;
+	float maxTimeLimit = 0;
 	std::list<CLIENT_DATA_CLIENT_SIDE> clients;
 
 	void CreateResponse(Storage& out, int id) {
@@ -74,6 +78,8 @@ struct RESPONSE_PLAYER {
 
 		// レスポンス作成（ヘッダー）
 		out << header;
+		out << maxTimeLimit;
+		out << timeLimit;
 		out << clients.size();
 
 		// レスポンス作成（プレイヤー）
@@ -89,6 +95,8 @@ struct RESPONSE_PLAYER {
 
 		// ヘッダー取得
 		in >> recvHeader;
+		in >> maxTimeLimit;
+		in >> timeLimit;
 		in >> playerNum;
 
 
@@ -218,3 +226,11 @@ struct RESPONSE_AREA_CAPTURE {
 		}
 	}
 };
+//// レスポンス（中間リザルト）
+//struct RESPONSE_INTERMEDIATE_RESULT {
+//	struct DESC {
+//		int previousSkillPoint = 0;
+//	};
+//
+//	std::list<DESC> 
+//};

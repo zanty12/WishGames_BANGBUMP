@@ -57,7 +57,7 @@ private:
 public:
 	MultiPlayAreaCaptureModeClientSide(MapMngr *map) : areaTexNo(LoadTexture("data/texture/area_capture.png")), anim(Animator(&playerObject, 1, true, 1,1,1)), MultiPlayClientSide(map){ }
 
-	void Draw(void) override;
+	void Draw(RESPONSE_PLAYER &players) override;
 
 	void ParseResponse(Storage &in);
 };

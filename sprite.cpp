@@ -49,6 +49,11 @@ void InitSprite(void) {
 }
 
 void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
+	pos.y = -pos.y + Graphical::GetHeight();
+	DrawSpriteLeftTop(texNo, pos, rot, scale, color);
+}
+
+void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 	using namespace DX;
 	using namespace DX::DX11;
 	if (texNo == -1) return;
@@ -61,13 +66,12 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 
 	// アフィン変換
 	MATRIX translation, rotation, scaler, transform;
-	pos.y = -pos.y + Graphical::GetHeight();
 	translation.SetTranslation(pos);
 	rotation.SetRotation(Vector3(0.0f, 0.0f, rot));
 	scaler.SetScaling(scale);
 	transform = scaler * rotation;
 	transform = translation * transform;
-	g_WorldMatrix = transform;	
+	g_WorldMatrix = transform;
 
 	// シェーダーの設定
 	ShaderManager::SetTextureMode();
@@ -81,6 +85,13 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 		g_Square.GetVertexBuffer(), g_Square.GetVertexCount(), g_Square.GetVertexStructByteSize(),
 		g_Square.GetIndexBuffer(), g_Square.GetIndexCount(), g_Square.GetIndexStructByteSize()
 	);
+}
+
+void DrawSpriteCenter(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
+	pos.x += Graphical::GetWidth() * 0.5f;
+	pos.y *= -1.0f;
+	pos.y += Graphical::GetHeight() * 0.5f;
+	DrawSpriteLeftTop(texNo, pos, rot, scale, color);
 }
 
 void DrawSprite(int texNo, Vector2 *vertices, Vector2 *uvs, Color color) {
