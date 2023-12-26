@@ -39,7 +39,7 @@ typedef enum {
     MAP_READ_SPIKE_DOWN, ///< 下向きのトゲセルを表します。
     MAP_READ_MULTI_AREA_CAPTURE, ///< マルチの占領エリアを表します。
     // 英語名標準
-    MAP_READ_KOOPA, // ノコノコ
-    MAP_READ_HAMMERBRO,
-    MAP_READ_PHANTOM,
+    MAP_READ_KOOPA, // エネミー_1
+    MAP_READ_HAMMERBRO, // エネミー_2
+    MAP_READ_PHANTOM, // エネミー_3
 }MAP_READ;

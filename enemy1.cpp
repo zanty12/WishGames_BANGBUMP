@@ -8,8 +8,26 @@ bool CheckLength(Vector2 a, Vector2 b, float len);
 
 void Enemy1::Update()
 {
-    Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //正直これのメモリ操作多すぎ
-    
+    //HPが0になったら消す
+    if (hp_ <= 0)
+    {
+        GameObject::Discard();
+        Die();
+    }
+
+    std::list<Collider*> collisions = GetCollider()->GetCollision();
+   
+    for (auto collision : collisions)
+    {
+        OBJECT_TYPE type = collision->GetParent()->GetType();
+
+        ////実際の処理
+        //if (type == OBJ_PLAYER)
+        //{
+        //    Player* player =dynamic_cast<Player*> (collision->GetParent());
+        //    player->HpDown(15);//★仮★
+        //}
+    }
 
     GetAnimator()->SetIsAnim(true);
 
@@ -34,6 +52,32 @@ void Enemy1::Update()
     
 
     this->AddVel(GetVel());
+}
+
+SkillOrb* Enemy1::DropSkillOrb()
+{
+    if (GetDiscard() == false)
+        return nullptr;
+
+    switch (rand() % 4)
+    {
+    case 0:
+        drop = SKILLORB_ATTRIBUTE_DESC::Fire();
+        break;
+    case 1:
+        drop = SKILLORB_ATTRIBUTE_DESC::Dark();
+        break;
+    case 2:
+        drop = SKILLORB_ATTRIBUTE_DESC::Wind();
+        break;
+    case 3:
+        drop = SKILLORB_ATTRIBUTE_DESC::Thunder();
+        break;
+    default:
+        break;
+    }
+
+    return new SkillOrb(GetPos(), drop, SKILLORB_SIZE_DESC::Small());
 }
 
 /*void Enemy1::CellAction()

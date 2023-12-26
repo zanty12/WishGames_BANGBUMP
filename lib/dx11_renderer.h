@@ -1,7 +1,7 @@
 /*==============================================================================
 
 	Title		: GRAPHICAL
-	Description : ƒOƒ‰ƒtƒBƒJƒ‹
+	Description : ã‚°ãƒ©ãƒ•ã‚£ã‚«ãƒ«
 	Date		:
 	Author		:
 
@@ -17,61 +17,61 @@
 
 
 /*------------------------------------------------------------------------------
-* includeéŒ¾
+* includeå®£è¨€
 ------------------------------------------------------------------------------*/
 #include <d3d11.h>
-// •`‰æ
+// æç”»
 #include "dx11_swapchain.h"
 #include "dx11_viewport.h"
 #include "dx11_depthstencilview.h"
 #include "dx11_rtv.h"
-// ƒXƒe[ƒg
+// ã‚¹ãƒ†ãƒ¼ãƒˆ
 #include "dx11_blend.h"
 #include "dx11_depthstencil.h"
 #include "dx11_rasterizer.h"
 #include "dx11_sampler.h"
-// ƒVƒF[ƒ_[
+// ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼
 #include "dx11_vertex_shader.h"
 #include "dx11_pixel_shader.h"
 #include "dx11_inputlayout.h"
-// ƒoƒbƒtƒ@
+// ãƒãƒƒãƒ•ã‚¡
 #include "dx11_constant_buffer.h"
 #include "dx_matrix.h"
 
 #include "stdlib.h"
 
 /*------------------------------------------------------------------------------
-* defineéŒ¾
+* defineå®£è¨€
 ------------------------------------------------------------------------------*/
 
 
 /*------------------------------------------------------------------------------
-* externéŒ¾
+* externå®£è¨€
 ------------------------------------------------------------------------------*/
 
 
 /*------------------------------------------------------------------------------
-* prototypeéŒ¾
+* prototypeå®£è¨€
 ------------------------------------------------------------------------------*/
 
 
 /*------------------------------------------------------------------------------
-* classéŒ¾
+* classå®£è¨€
 ------------------------------------------------------------------------------*/
 namespace DX {
 	namespace DX11 {
 		class Renderer {
 		private:
-			CORE::VIEWPORT viewport;				// ƒrƒ…[ƒ|[ƒg
+			CORE::VIEWPORT viewport;				// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆ
 			
-			CORE::SWAPCHAIN swapchain;				// ƒXƒƒbƒvƒ`ƒF[ƒ“
-			CORE::DEPTHSTENCILVIEW depthstencilview;// [“xƒXƒeƒ“ƒVƒ‹
-			CORE::RTV rtv;							// ƒŒƒ“ƒ_\ƒ^[ƒQƒbƒgƒrƒ…[
+			CORE::SWAPCHAIN swapchain;				// ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ãƒ¼ãƒ³
+			CORE::DEPTHSTENCILVIEW depthstencilview;// æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«
+			CORE::RTV rtv;							// ãƒ¬ãƒ³ãƒ€â€•ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ“ãƒ¥ãƒ¼
 
-			CORE::BLEND blend;						// ƒuƒŒƒ“ƒh
-			CORE::DEPTHSTENCIL depthstencil;		// ƒfƒvƒXƒXƒeƒ“ƒVƒ‹
-			CORE::RASTERIZER rasterizer;			// ƒ‰ƒXƒ^ƒ‰ƒCƒY
-			CORE::SAMPLER sampler;					// ƒTƒ“ƒvƒ‰\
+			CORE::BLEND blend;						// ãƒ–ãƒ¬ãƒ³ãƒ‰
+			CORE::DEPTHSTENCIL depthstencil;		// ãƒ‡ãƒ—ã‚¹ã‚¹ãƒ†ãƒ³ã‚·ãƒ«
+			CORE::RASTERIZER rasterizer;			// ãƒ©ã‚¹ã‚¿ãƒ©ã‚¤ã‚º
+			CORE::SAMPLER sampler;					// ã‚µãƒ³ãƒ—ãƒ©â€•
 
 
 
@@ -79,10 +79,10 @@ namespace DX {
 			~Renderer() { Release(); }
 
 			/// <summary>
-			/// ƒXƒƒbƒvƒ`ƒF[ƒ“‚ÆƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgƒrƒ…[‚Ìì¬
+			/// ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ãƒ¼ãƒ³ã¨ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ“ãƒ¥ãƒ¼ã®ä½œæˆ
 			/// </summary>
-			/// <param name="hwnd">ƒnƒ“ƒhƒ‹ƒEƒBƒ“ƒhƒE</param>
-			/// <param name="device3d">ƒfƒoƒCƒX3D</param>
+			/// <param name="hwnd">ãƒãƒ³ãƒ‰ãƒ«ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦</param>
+			/// <param name="device3d">ãƒ‡ãƒã‚¤ã‚¹3D</param>
 			/// <returns></returns>
 			HRESULT Create(HWND hwnd, ID3D11Device *device);
 
@@ -97,55 +97,55 @@ namespace DX {
 			CORE::SAMPLER &GetSampler() { return sampler; }
 
 			/// <summary>
-			/// ’¸“_ƒVƒF[ƒ_‚ğƒZƒbƒg‚·‚é
+			/// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 			/// </summary>
-			/// <param name="shader">’¸“_ƒVƒF[ƒ_</param>
-			/// <param name="inputLayout">ƒCƒ“ƒvƒbƒgƒŒƒCƒAƒEƒg</param>
-			/// <param name="deviceContext">ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg</param>
+			/// <param name="shader">é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€</param>
+			/// <param name="inputLayout">ã‚¤ãƒ³ãƒ—ãƒƒãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ</param>
+			/// <param name="deviceContext">ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ</param>
 			/// <returns></returns>
 			HRESULT SetShader(ID3D11VertexShader *shader, ID3D11InputLayout *inputLayout, ID3D11DeviceContext* deviceContext);
 
 			/// <summary>
-			/// ƒsƒNƒZƒ‹ƒVƒF[ƒ_‚ğƒZƒbƒg‚·‚é
+			/// ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
 			/// </summary>
-			/// <param name="shader">ƒsƒNƒZƒ‹ƒVƒF[ƒ_</param>
-			/// <param name="deviceContext">ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg</param>
+			/// <param name="shader">ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€</param>
+			/// <param name="deviceContext">ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ</param>
 			/// <returns></returns>
 			HRESULT SetShader(ID3D11PixelShader *shader, ID3D11DeviceContext* deviceContext);
 
 			/// <summary>
-			/// ƒoƒbƒtƒ@‚É‘‚«‚Ş
+			/// ãƒãƒƒãƒ•ã‚¡ã«æ›¸ãè¾¼ã‚€
 			/// </summary>
-			/// <param name="vertex">’¸“_ƒoƒbƒtƒ@</param>
-			/// <param name="vertexNum">’¸“_”</param>
-			/// <param name="vertexSize">’¸“_ƒoƒbƒtƒ@‚ÌƒTƒCƒY</param>
-			/// <param name="index">ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@</param>
-			/// <param name="indexNum">ƒCƒ“ƒfƒbƒNƒX”</param>
-			/// <param name="indexSize">ƒCƒ“ƒfƒbƒNƒXƒoƒbƒtƒ@‚ÌƒTƒCƒY</param>
-			/// <param name="deviceContext">ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg</param>
+			/// <param name="vertex">é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡</param>
+			/// <param name="vertexNum">é ‚ç‚¹æ•°</param>
+			/// <param name="vertexSize">é ‚ç‚¹ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º</param>
+			/// <param name="index">ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡</param>
+			/// <param name="indexNum">ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹æ•°</param>
+			/// <param name="indexSize">ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒãƒƒãƒ•ã‚¡ã®ã‚µã‚¤ã‚º</param>
+			/// <param name="deviceContext">ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ</param>
 			HRESULT Draw(ID3D11Buffer *vertex, UINT vertexNum, UINT vertexStructSize, ID3D11Buffer *index, UINT indexNum, UINT indexStructSize, ID3D11DeviceContext *deviceContext);
 			
 			/// <summary>
-			/// ‰æ–Ê‚ÌƒNƒŠƒA
+			/// ç”»é¢ã®ã‚¯ãƒªã‚¢
 			/// </summary>
-			/// <param name="color">ƒNƒŠƒA‚É‚·‚éF</param>
-			/// <param name="deviceContext">ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg</param>
+			/// <param name="color">ã‚¯ãƒªã‚¢ã«ã™ã‚‹è‰²</param>
+			/// <param name="deviceContext">ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ</param>
 			HRESULT Clear(Color color, ID3D11DeviceContext *deviceContext);
 
 			/// <summary>
-			/// ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒW[‚Ìİ’è
+			/// ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–ãƒˆãƒãƒ­ã‚¸ãƒ¼ã®è¨­å®š
 			/// </summary>
-			/// <param name="topology">ƒvƒŠƒ~ƒeƒBƒuƒgƒ|ƒƒW[</param>
-			/// <param name="deviceContext">ƒfƒoƒCƒXƒRƒ“ƒeƒLƒXƒg</param>
+			/// <param name="topology">ãƒ—ãƒªãƒŸãƒ†ã‚£ãƒ–ãƒˆãƒãƒ­ã‚¸ãƒ¼</param>
+			/// <param name="deviceContext">ãƒ‡ãƒã‚¤ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ</param>
 			HRESULT SetTopology(D3D11_PRIMITIVE_TOPOLOGY topology, ID3D11DeviceContext *deviceContext);
 
 			/// <summary>
-			/// •`‰æ‚·‚é
+			/// æç”»ã™ã‚‹
 			/// </summary>
 			void Present(void);
 
 			/// <summary>
-			/// ‰ğ•ú
+			/// è§£æ”¾
 			/// </summary>
 			/// <param name=""></param>
 			void Release(void);
