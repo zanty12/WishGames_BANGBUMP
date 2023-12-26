@@ -83,6 +83,39 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 	);
 }
 
+void DrawSprite(int texNo, Vector2 *vertices, Vector2 *uvs, Color color) {
+	using namespace DX;
+	using namespace DX::DX11;
+	if (texNo == -1) return;
+
+	// トポロジの設定
+	Device3D::SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	// テクスチャの設定
+	auto texture = GetTexture(texNo);
+	Device3D::SetResource(*GetTexture(texNo));
+
+	// 頂点の更新
+	for (int i = 0; i < g_Line.GetVertexCount(); i++) {
+		g_Line.GetVertexPointer()[i].position = vertices[i];
+		g_Line.GetVertexPointer()[i].uv = uvs[i];
+	}
+	g_Line.Update();
+
+	// シェーダーの設定
+	ShaderManager::SetTextureMode();
+
+	// 定数バッファの設定
+	g_WorldMatrix.SetTranslation(Vector2::Zero);
+	Device3D::UpdateConstantBuffer(&g_WorldMatrix, g_WorldBuffer);
+	Device3D::UpdateConstantBuffer(&color, g_ColorBuffer);
+
+	// 描画
+	Device3D::Draw(
+		g_Line.GetVertexBuffer(), g_Line.GetVertexCount(), g_Line.GetVertexStructByteSize(),
+		g_Line.GetIndexBuffer(), g_Line.GetIndexCount(), g_Line.GetIndexStructByteSize()
+	);
+}
+
 void DrawLine(Vector2 startPosition, Vector2 endPosition, Color color, float width) {
 	using namespace DX;
 	using namespace DX::DX11;
@@ -94,15 +127,15 @@ void DrawLine(Vector2 startPosition, Vector2 endPosition, Color color, float wid
 	Vector2 direction = endPosition - startPosition;
 	Vector2 normal = direction.Normal().Normalize();
 	Vector2 centerLine = (startPosition + endPosition) / 2.0f;
-	float rad = atan2f(direction.x, direction.y);
+	float rad = atan2f(direction.x, direction.y * -1.0f);
 	float distance = direction.Distance();
 
 
 	// アフィン変換
 	MATRIX translation, rotation, scaler, transform;
 	Vector2 pos, scale;
-	pos += centerLine;
-	pos.y = -pos.y + Graphical::GetHeight();
+	pos = centerLine;
+	//pos.y = -pos.y + Graphical::GetHeight();
 	scale = Vector2(width, distance);
 
 

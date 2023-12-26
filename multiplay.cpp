@@ -14,7 +14,7 @@ MultiPlayServer::MultiPlayServer() {
 	Startup(v2_2, data);
 
 	mapmngr_ = new MapMngr("data/map/1.csv", this);
-	gameMode = new MultiPlayAreaCaptureModeServerSide(mapmngr_);
+	gameMode = new MultiPlayCharacterSelectModeServerSide();//new MultiPlayAreaCaptureModeServerSide(mapmngr_);
 }
 
 int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
@@ -174,7 +174,7 @@ void MultiPlayServer::SendUpdate(void) {
 
 				// クライアント情報の登録
 				for (auto &client : clients_) {
-					res.clients.push_back({ client.header.id , client.player_->GetPos() });
+					res.clients.push_back({ client.header.id , client.player_->GetPos(), 0, 0 });
 				}
 
 				// クライアント全員に送信する
@@ -316,7 +316,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	Startup(v2_2, data);
 
 	mapmngr_ = new MapMngr("data/map/1.csv", this);
-	gameMode = new MultiPlayAreaCaptureModeClientSide(mapmngr_);
+	gameMode = new MultiPlayCharacterSelectModeClientSide();//new MultiPlayAreaCaptureModeClientSide(mapmngr_);
 
 	// スレッドを立てる
 	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);

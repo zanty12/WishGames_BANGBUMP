@@ -34,6 +34,7 @@ struct HEADER {
 struct CLIENT_DATA_CLIENT_SIDE {
 	int id = -1;
 	Vector2 position;
+	int skillPoint = 0;
 	int score = 0;
 };
 // クライアントデータ（サーバー側）

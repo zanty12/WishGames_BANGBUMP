@@ -375,6 +375,9 @@
     <ClInclude Include="multi_character_select_mode.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="multi_intermediate_result_mode.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="color-shader.hlsl">

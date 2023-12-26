@@ -86,6 +86,13 @@ void MultiPlayAreaCaptureModeServerSide::Spawn(Vector2 position) {
 }
 
 
+// ゲームアップデート
+void MultiPlayAreaCaptureModeServerSide::GameUpdate(std::list<CLIENT_DATA_SERVER_SIDE> &clients) {
+	ActiveUpdate();
+	CaptureUpdate(clients);
+	DestroyUpdate();
+}
+
 
 MultiPlayAreaCaptureModeServerSide::MultiPlayAreaCaptureModeServerSide(MapMngr *map_) : MultiPlayServerSide(map_) {
 	int WIDTH = map_->GetMap()->GetWidth();					// 幅
@@ -105,12 +112,6 @@ MultiPlayAreaCaptureModeServerSide::MultiPlayAreaCaptureModeServerSide(MapMngr *
 			}
 		}
 	}
-}
-
-void MultiPlayAreaCaptureModeServerSide::Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) {
-	ActiveUpdate();
-	CaptureUpdate(clients);
-	DestroyUpdate();
 }
 
 void MultiPlayAreaCaptureModeServerSide::CreateResponse(Storage &out) {

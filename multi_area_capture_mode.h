@@ -31,10 +31,12 @@ private:
 	void DestroyUpdate(void);
 	// ÉXÉ|Å[Éì
 	void Spawn(Vector2 position);
+
+protected:
+	void GameUpdate(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override;
+
 public:
 	MultiPlayAreaCaptureModeServerSide(MapMngr *map_);
-
-	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients);
 
 	void CreateResponse(Storage &out) override;
 };

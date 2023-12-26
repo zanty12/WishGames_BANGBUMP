@@ -218,6 +218,7 @@
     <ClInclude Include="multi_client_gameobject.h" />
     <ClInclude Include="multi_enemy_rush_mode.h" />
     <ClInclude Include="multi_header.h" />
+    <ClInclude Include="multi_intermediate_result_mode.h" />
     <ClInclude Include="multi_mode.h" />
     <ClInclude Include="multi_character_select_mode.h" />
     <ClInclude Include="original_window.h" />
