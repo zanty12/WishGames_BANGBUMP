@@ -40,7 +40,8 @@ public:
     bool GetIsMovable() const { return is_movable_; }
     void SetIsMovable(bool is_move) { is_movable_ = is_move; }
     GameObject* GetParent() const { return parent_; }
-    std::list<Collider*> GetCollision() const { return collision_; }
+    std::list<Collider*> GetCollision() const { if (!collision_.empty())return collision_; return std::list<Collider*>(); }
+
     void SetCollision(const std::list<Collider*>& collision) { collision_ = collision; }
     float GetBounciness() const { return bounciness_; }
     void SetBounciness(float bounciness) { if(bounciness > 1.0f) bounciness_ = bounciness; else bounciness_ = 1.0f;}

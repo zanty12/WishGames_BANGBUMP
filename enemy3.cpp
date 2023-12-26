@@ -4,14 +4,33 @@
 #include "lib/collider2d.h"
 #include "time.h"
 
-#define RANGE (SIZE_ * 5.0f)                            //範囲
+#define RANGE (SIZE_ * 20.0f)                            //範囲
 
 
 bool CheckEnemy3Length(Vector2 a, Vector2 b, float len);
 
 void Enemy3::Update()
 {
-    Player* player = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayer(); //正直これのメモリ操作多すぎ
+    //HPが0になったら消す
+    if (hp_ <= 0)
+    {
+        GameObject::Discard();
+        Die();
+    }
+
+    std::list<Collider*> collisions = GetCollider()->GetCollision();
+    for (auto collision : collisions)
+    {
+        OBJECT_TYPE type = collision->GetParent()->GetType();
+        ////実際の処理
+        //if (type == OBJ_PLAYER)
+        //{
+        //    Player* player = dynamic_cast<Player*> (collision->GetParent());
+        //    player->HpDown(15);//★仮★
+        //}
+    }
+
+
 
     GetAnimator()->SetIsAnim(true);
 
@@ -20,39 +39,58 @@ void Enemy3::Update()
     //重力
     //SetVel(Vector2(GetVel().x, GetVel().y - y_spd_ * dt));
 
-    Range(startPosition.x, startPosition.y, GetPos().x, GetPos().y);
-
-
     //プレイヤー追従
-    if (CheckEnemy3Length(GetPos(), startPosition, RANGE))//仮
+    std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayers();
+
+    for (auto player : players)
     {
-        if (cheakRange == true)
+        RangeEnemy(startPosition.x, startPosition.y, GetPos().x, GetPos().y);
+        RangePlayer(startPosition.x, startPosition.y, player->GetPos().x, player->GetPos().y);
+
+        if (cheakRange_Player_ == true)
+        {
+            if (CheckEnemy3Length(GetPos(), startPosition, RANGE))//仮
+            {
+                if (cheakRange_Enemy_ == true)
+                {
+                    Vector2 v = startPosition - GetPos();
+                    SetVel(v.Normalize() * spd_ * dt);
+                }
+            }
+            else
+            {
+                if (cheakRange_Enemy_ == false)
+                {
+
+                    Vector2 v = player->GetPos() - GetPos();
+                    SetVel(v.Normalize() * spd_ * dt);
+                }
+            }
+        }
+        else
         {
             Vector2 v = startPosition - GetPos();
             SetVel(v.Normalize() * spd_ * dt);
         }
     }
-    else
-    {
-        if (cheakRange == false)
-        {
+      
+    //if (CheckEnemy3Length(GetPos(), startPosition, RANGE))//仮
+    //{
+    //    if (cheakRange == true)
+    //    {
+    //        Vector2 v = startPosition - GetPos();
+    //        SetVel(v.Normalize() * spd_ * dt);
+    //    }
+    //}
+    //else
+    //{
+    //    if (cheakRange == false)
+    //    {
 
-            Vector2 v = player->GetPos() - GetPos();
-            SetVel(v.Normalize() * spd_ * dt);
-        }
-    }
-
-    /*
-    //壁判定
-    CellActions();
-
-    //プレイヤーとの当たり判定
-    if (Collision(player))
-    {
-        player->HpDown(15);//★仮★
-        //Die();
-    }
-    */
+    //        Vector2 v = player->GetPos() - GetPos();
+    //        SetVel(v.Normalize() * spd_ * dt);
+    //    }
+    //}
 
     //他の敵との当たり判定
    /* for (auto& enemy : GetEnemyMngr()->GetEnemies())
@@ -67,6 +105,33 @@ void Enemy3::Update()
 
     this->AddVel(GetVel());
 }
+
+SkillOrb* Enemy3::DropSkillOrb()
+{
+    if (GetDiscard() == false)
+        return nullptr;
+
+    switch (rand()%4)
+    {
+    case 0:
+        drop = SKILLORB_ATTRIBUTE_DESC::Fire();
+        break;
+    case 1:
+        drop = SKILLORB_ATTRIBUTE_DESC::Dark();
+        break;
+    case 2:
+        drop = SKILLORB_ATTRIBUTE_DESC::Wind();
+        break;
+    case 3:
+        drop = SKILLORB_ATTRIBUTE_DESC::Thunder();
+        break;
+    default:
+        break;
+    }
+
+    return new SkillOrb(GetPos(), drop, SKILLORB_SIZE_DESC::Big());
+}
+
 
 /*
 void Enemy3::CellActions()
@@ -100,7 +165,7 @@ bool CheckEnemy3Length(Vector2 a, Vector2 b, float len)
     return false;
 }
 
-void Enemy3::Range(float a, float b, float c, float d)
+void Enemy3::RangeEnemy(float a, float b, float c, float d)
 {
     // 円の情報
     float x = a;
@@ -114,11 +179,31 @@ void Enemy3::Range(float a, float b, float c, float d)
 
     if (g > radius_0)
     {
-        cheakRange = true;
+        cheakRange_Enemy_ = true;
     }
     else if (g < radius_1)
     {
-        cheakRange = false;
+        cheakRange_Enemy_ = false;
+    }
+}
+void Enemy3::RangePlayer(float a, float b, float c, float d)
+{
+    // 円の情報
+    float x = a;
+    float y = b;
+    float radius_0 = RANGE;
+
+    float h = c - x;
+    float i = d - y;
+    float g = sqrt(h * h + i * i);
+
+    if (g < radius_0)
+    {
+        cheakRange_Player_ = true;
+    }
+    else if (g > radius_0)
+    {
+        cheakRange_Player_ = false;
     }
 }
 
