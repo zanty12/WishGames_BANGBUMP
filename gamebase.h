@@ -16,7 +16,7 @@ class SceneMngr;
 class GameBase :public Scene
 {
 protected:
-	std::list<Player *> players_;
+	static std::list<Player *> players_;
 	MapMngr *mapmngr_ = nullptr;
 	Camera *camera_ = nullptr;
 
@@ -25,6 +25,9 @@ protected:
 	static CollMngr *coll_mngr_;
 	static ProjectileMngr *projectile_mngr_;
 	static SkillOrbMngr *orb_mngr_;
+
+private:
+	constexpr static float LoD_threshold_ = 2500.0f;
 
 public:
 	GameBase() = default;
@@ -42,4 +45,5 @@ public:
 
 	std::list<Player *> &GetPlayers(void) { return players_; }
 	Player *GetPlayer(void) { return players_.size() != 0 ? *players_.begin() : nullptr; }
+	static bool UpdateLoD(const Vector2 pos);
 };

@@ -148,8 +148,8 @@ void Enemy3::CellActions()
     {
         if (cells[i] == nullptr)
             continue;
-        if (Collision(cells[i]))
-            MapCellInteract(cells[i]);
+        //if (Collision(cells[i]))
+        //    MapCellInteract(cells[i]);
     }
 }
 */
