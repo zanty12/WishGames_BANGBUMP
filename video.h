@@ -25,7 +25,7 @@ private:
     std::list<frame_data> frame_buffer_;
     std::string filename_;
     bool loop_ = false;
-    int64_t end_pts_ = 0;
+    int64_t end_pts_ = 30000;
     double pts_ = 0;
     bool loaded_ = false;
     std::list<frame_data>::iterator frame_it_;

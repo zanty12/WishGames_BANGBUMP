@@ -2,14 +2,14 @@
 
 std::map<VIDEO_FILE, std::string> video_file_map =
 {
-    {FIRE_MOVE, "./data/video/test.mp4"},
+    {FIRE_MOVE, "./data/fire_move.mp4"},
     {FIRE_ATTACK, "./data/video/test1.mp4"},
     {WIND_MOVE, "./data/video/test.mp4"},
     {WIND_ATTACK, "./data/video/test1.mp4"},
     {THUNDER_MOVE, "./data/video/test.mp4"},
     {THUNDER_ATTACK, "./data/video/test1.mp4"},
     {DARK_MOVE, "./data/video/test.mp4"},
-    {DARK_ATTACK, "./data/video/test1.mp4"},
+    {DARK_ATTACK, "./data/dark_attack.mp4"},
 };
 
 Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
