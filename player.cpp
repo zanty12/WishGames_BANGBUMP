@@ -55,7 +55,7 @@ void Player::Update(void)
 
 	//----------------------------------------★アトリビュートができるまでのしのぎ
 	Vector2 stick = Input::GetStickLeft(0);
-	stick.y * -1;
+	stick.y *= -1;
 	Vector2 player_vel = stick * 5.0f;
 	SetVel(player_vel);
 	//----------------------------------------★アトリビュートができるまでのしのぎ
