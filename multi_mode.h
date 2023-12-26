@@ -4,8 +4,8 @@
 
 class MultiPlayServerSide {
 protected:
-	float maxTimeLimit_ = 100.0f;
-	float timeLimit_ = maxTimeLimit_;
+	float maxTime_ = 100.0f;
+	float time_ = 0.0f;
 	MapMngr *map_ = nullptr;
 
 
@@ -15,19 +15,19 @@ public:
 	MultiPlayServerSide(MapMngr *map) : map_(map) { }
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) {
-		if (timeLimit_ <= 0.0f) {
+		if (maxTime_ < time_) {
 			
 		}
 		else {
-			timeLimit_ -= Time::GetDeltaTime();
+			time_ += Time::GetDeltaTime();
 			GameUpdate(clients);
 		}
 	}
 
 	virtual void CreateResponse(Storage& out) = 0;
 
-	float GetTimeLimit(void) { return timeLimit_; }
-	float GetMaxTimeLimit(void) { return maxTimeLimit_; }
+	float GetTime(void) { return time_; }
+	float GetMaxTime(void) { return maxTime_; }
 };
 
 class MultiPlayClientSide {

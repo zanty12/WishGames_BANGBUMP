@@ -5,6 +5,7 @@
 #include "multi_header.h"
 #include "multi_client_gameobject.h"
 #include "multi_character_select_mode.h"
+#include "multi_intermediate_result_mode.h"
 #include "multi_area_capture_mode.h"
 
 #define SERVER_ADDRESS "192.168.0.7"

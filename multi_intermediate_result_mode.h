@@ -4,14 +4,14 @@
 
 class MultiPlayIntermediateResultModeServerSide : public MultiPlayServerSide {
 protected:
-	void GameUpdate(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {
-
-	}
+	void GameUpdate(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {	}
 
 public:
 	MultiPlayIntermediateResultModeServerSide() : MultiPlayServerSide(nullptr) {
-		timeLimit_ = 20.0f;
+		maxTime_ = 1000.0f;
 	}
+
+	void CreateResponse(Storage &out) override { };
 };
 
 class MultiPlayIntermediateResultModeClientSide : public MultiPlayClientSide {
@@ -50,13 +50,14 @@ public:
 	MultiPlayIntermediateResultModeClientSide() : MultiPlayClientSide(nullptr) {};
 
 	void Draw(RESPONSE_PLAYER &players) override {
-		const float RANKING_SORT_ANIMATION_TIME = 5.0f;				// ランキングのアニメーション時間
-		float time = players.maxTimeLimit - players.timeLimit;		// 現在の時間
+		const float RANKING_SORT_ANIMATION_TIME = 60.0f;			// ランキングのアニメーション時間
+		float time = players.time;									// 現在の時間
 
 
 
 		// ランキングのアニメーション
 		if (time <= RANKING_SORT_ANIMATION_TIME) {
+			int playerNum = players.clients.size();					// プレイヤー数
 			float t = time / RANKING_SORT_ANIMATION_TIME;			// 時間の割合
 			auto ranking = players.clients;							// 現在のランキング表
 			auto preRanking = players.clients;						// 1ゲーム前のランキング表
@@ -64,13 +65,18 @@ public:
 			// ランキングをソートする
 			sort(ranking, preRanking);
 
-
 			for (auto &client : players.clients) {
 				int id = client.id;									// ID
 				int rank = get_rank(ranking, id);					// 現在のランク
 				int preRank = get_rank(preRanking, id);				// 1ゲーム前のランク
 
-				DrawSprite
+				float height = 100.0f;								// キャラクター絵の高さ
+				float y = rank - playerNum * 0.5f;					// 現在のランキングのY座標
+				float preY = preRank - playerNum * 0.5f;			// 1ゲーム前のランキングのY座標
+				Vector2 startPosition = Vector2::Up * y * height;	// 始点の座標
+				Vector2 endPosition = Vector2::Up * preY * height;	// 終点の座標
+				Vector2 position = MATH::Leap(startPosition, endPosition, t);	// 線形補完
+				DrawSpriteCenter(0, position, 0.0f, Vector2(600, height), Color::White);
 			}
 		}
 	}

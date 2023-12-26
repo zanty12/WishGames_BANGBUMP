@@ -14,7 +14,7 @@ MultiPlayServer::MultiPlayServer() {
 	Startup(v2_2, data);
 
 	mapmngr_ = new MapMngr("data/map/1.csv", this);
-	gameMode = new MultiPlayCharacterSelectModeServerSide();//new MultiPlayAreaCaptureModeServerSide(mapmngr_);
+	gameMode = new MultiPlayIntermediateResultModeServerSide();//new MultiPlayAreaCaptureModeServerSide(mapmngr_);
 }
 
 int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
@@ -106,19 +106,6 @@ void MultiPlayServer::AllUnregister(void) {
 }
 
 void MultiPlayServer::PlayerUpdate(void) {
-
-	//// プレイヤーの検索
-	//auto iterator = find(req.input.id);
-
-	//// 検索不一致
-	//if (iterator == clients_.end()) return;
-
-	//// キー入力の更新
-	//Input::SetState(0, req.input.curInput);
-	//Input::SetPreviousState(0, req.input.preInput);
-
-	//std::cout << req.input.id << " : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
-
 	// プレイヤーの更新
 	for (auto client : clients_) {
 		// 入力の更新
@@ -173,8 +160,8 @@ void MultiPlayServer::SendUpdate(void) {
 				RESPONSE_PLAYER res;
 
 				// 制限時間の登録
-				res.timeLimit = gameMode->GetTimeLimit();
-				res.maxTimeLimit = gameMode->GetMaxTimeLimit();
+				res.time= gameMode->GetTime();
+				res.maxTime = gameMode->GetMaxTime();
 
 				// クライアント情報の登録
 				for (auto &client : clients_) {
@@ -320,7 +307,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	Startup(v2_2, data);
 
 	mapmngr_ = new MapMngr("data/map/1.csv", this);
-	gameMode = new MultiPlayCharacterSelectModeClientSide();//new MultiPlayAreaCaptureModeClientSide(mapmngr_);
+	gameMode = new MultiPlayIntermediateResultModeClientSide();//new MultiPlayAreaCaptureModeClientSide(mapmngr_);
 
 	// スレッドを立てる
 	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);

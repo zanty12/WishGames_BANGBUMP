@@ -63,8 +63,8 @@ struct CLIENT_DATA_SERVER_SIDE {
 struct RESPONSE_PLAYER {
 	typedef CLIENT_DATA_CLIENT_SIDE DESC;
 
-	float timeLimit = 0;
-	float maxTimeLimit = 0;
+	float time = 0;
+	float maxTime = 0;
 	std::list<CLIENT_DATA_CLIENT_SIDE> clients;
 
 	void CreateResponse(Storage& out, int id) {
@@ -78,8 +78,8 @@ struct RESPONSE_PLAYER {
 
 		// レスポンス作成（ヘッダー）
 		out << header;
-		out << maxTimeLimit;
-		out << timeLimit;
+		out << maxTime;
+		out << time;
 		out << clients.size();
 
 		// レスポンス作成（プレイヤー）
@@ -95,8 +95,8 @@ struct RESPONSE_PLAYER {
 
 		// ヘッダー取得
 		in >> recvHeader;
-		in >> maxTimeLimit;
-		in >> timeLimit;
+		in >> maxTime;
+		in >> time;
 		in >> playerNum;
 
 
