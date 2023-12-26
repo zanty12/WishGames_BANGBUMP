@@ -8,11 +8,12 @@ class Enemy3 : public Enemy
 private:
     const int HP_MAX_ = 60;		//HPの上限
     int hp_;
-    //const float x_spd_ = 96.0f * 2;
-    //const float y_spd_ = 96.0f * 2;
+    int atk_ = 15;
     const float spd_ = 96.0f * 2;
     Vector2 startPosition;
-    bool cheakRange;
+    bool cheakRange_Enemy_;
+    bool cheakRange_Player_;
+    SKILLORB_ATTRIBUTE_DESC drop;
 
 public:
     Enemy3() = delete;
@@ -21,8 +22,9 @@ public:
     Enemy3(int x, int y, EnemyMngr* enemy_mngr) : Enemy(x, y, LoadTexture("data/texture/enemy3.png"), enemy_mngr)
     {
         startPosition = GetPos();
+        SetScale(Vector2(SIZE_ * 5, SIZE_ * 5));
     }
-
+    int GetAtk(void) const { return atk_; }
     int GetHp(void) const { return hp_; }		//HPのゲット
     void SetHp(int hp) { hp_ = hp; }			//HPのセット
     //HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
@@ -30,8 +32,10 @@ public:
 
     void Update() override;
 
-    void Range(float a, float b, float c, float d);
+    SkillOrb* DropSkillOrb() override;
 
+    void RangeEnemy(float a, float b, float c, float d);
+    void RangePlayer(float a, float b, float c, float d);
 
 /*private:
     void CellActions();*/

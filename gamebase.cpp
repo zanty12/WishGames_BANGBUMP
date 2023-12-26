@@ -4,6 +4,7 @@ Renderer *GameBase::renderer_ = new Renderer();
 CollMngr *GameBase::coll_mngr_ = new CollMngr();
 ProjectileMngr *GameBase::projectile_mngr_ = new ProjectileMngr();
 SkillOrbMngr *GameBase::orb_mngr_ = new SkillOrbMngr();
+std::list<Player *> GameBase::players_ = std::list<Player *>();
 
 GameBase::~GameBase() {
     if (mapmngr_) delete mapmngr_;
@@ -16,4 +17,25 @@ GameBase::~GameBase() {
     for (auto player : players_) {
         delete player;
     }
+    players_.clear();
 }
+
+bool GameBase::UpdateLoD(const Vector2 pos)
+{
+    bool ret = false;
+    // get distance from the closest player
+    float dist = 0.0f;
+    for (auto player : players_) {
+        float d = Vector2::Distance(pos, player->GetPos());
+        if (dist == 0.0f || d < dist) {
+            dist = d;
+        }
+    }
+    if(dist > LoD_threshold_) {
+        ret = true;
+    }
+    return ret;
+}
+
+
+
