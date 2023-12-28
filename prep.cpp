@@ -12,6 +12,33 @@ std::map<VIDEO_FILE, std::string> video_file_map =
     {DARK_ATTACK, "./data/video/dark_attack.mp4"},
 };
 
+std::map<int, float> rot_pos =
+{
+    {1, 3 * M_PI / 2},
+    {2, 0},
+    {3, M_PI / 2},
+    {4, M_PI},
+};
+
+std::list<VIDEO_FILE> pos_move =
+{
+    FIRE_MOVE,
+    WIND_MOVE,
+    THUNDER_MOVE,
+    DARK_MOVE
+};
+
+std::list<VIDEO_FILE> pos_attack =
+{
+    FIRE_ATTACK,
+    WIND_ATTACK,
+    THUNDER_ATTACK,
+    DARK_ATTACK
+};
+
+constexpr float x_radius = 300.0f;
+constexpr float y_radius = 80.0f;
+
 Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
 {
     SetNewVideo(move_);
@@ -40,6 +67,11 @@ void Prep::Update()
         video_list_.erase(move_);
         move_ = move_next_;
         SetNewVideo(move_);
+        while (pos_move.front() != move_)
+        {
+            pos_move.push_back(pos_move.front());
+            pos_move.pop_front();
+        }
     }
     if (attack_ != attack_next_)
     {
@@ -47,6 +79,11 @@ void Prep::Update()
         video_list_.erase(attack_);
         attack_ = attack_next_;
         SetNewVideo(attack_);
+        while (pos_attack.front() != attack_)
+        {
+            pos_attack.push_back(pos_attack.front());
+            pos_attack.pop_front();
+        }
     }
     if (is_move_)
     {
@@ -60,61 +97,88 @@ void Prep::Update()
 
 void Prep::Draw()
 {
-    //îwåi
     const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
     const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
+    //îwåi
     DrawSprite(tex_bg_, Vector2(static_cast<float>(Graphical::GetWidth()) / 2,
                                 static_cast<float>(Graphical::GetHeight()) / 2), 0.0f,
                Vector2(1920 * scale_x, 1080 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
-    //ÉLÉÉÉâÉNÉ^Å[
-    DrawSprite(character_, Vector2(700 * scale_x, 1080 / 2 * scale_y), 0.0f,
-               Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
-    //à⁄ìÆëÆê´
-    int move_tex;
-    switch (move_)
+
+    //à⁄ìÆÇ∆çUåÇëIë
+    auto move_it = pos_move.rbegin();
+    auto attack_it = pos_attack.rbegin();
+
+    for (int i = 4; i >= 1; --i)
     {
-    case FIRE_MOVE:
-        move_tex = tex_fire_move_;
-        break;
-    case WIND_MOVE:
-        move_tex = tex_wind_move_;
-        break;
-    case THUNDER_MOVE:
-        move_tex = tex_thunder_move_;
-        break;
-    case DARK_MOVE:
-        move_tex = tex_dark_move_;
-        break;
-    default:
-        move_tex = tex_fire_move_;
-        break;
+        int move_tex, attack_tex;
+
+        switch (*move_it)
+        {
+        case FIRE_MOVE:
+            move_tex = tex_fire_move_;
+            break;
+        case WIND_MOVE:
+            move_tex = tex_wind_move_;
+            break;
+        case THUNDER_MOVE:
+            move_tex = tex_thunder_move_;
+            break;
+        case DARK_MOVE:
+            move_tex = tex_dark_move_;
+            break;
+        default:
+            move_tex = tex_fire_move_;
+            break;
+        }
+
+        switch (*attack_it)
+        {
+        case FIRE_ATTACK:
+            attack_tex = tex_fire_attack_;
+            break;
+        case WIND_ATTACK:
+            attack_tex = tex_wind_attack_;
+            break;
+        case THUNDER_ATTACK:
+            attack_tex = tex_thunder_attack_;
+            break;
+        case DARK_ATTACK:
+            attack_tex = tex_dark_attack_;
+            break;
+        default:
+            attack_tex = tex_fire_attack_;
+            break;
+        }
+
+        float alpha = 1.0f;
+        if (is_move_ && i == 1)
+            alpha = 1.0f;
+        else
+            alpha = 0.5f;
+
+        DrawSprite(move_tex, Vector2(540 * scale_x + cos(rot_pos.at(i)) * x_radius,
+                                     1080 / 2 * scale_y + (sin(rot_pos.at(i)) + 1) * y_radius), 0.0f,
+                   Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));
+
+        if (!is_move_ && i == 1)
+            alpha = 1.0f;
+        else
+            alpha = 0.5f;
+
+        DrawSprite(attack_tex, Vector2(540 * scale_x + cos(rot_pos.at(i)) * x_radius,
+                                       1080 / 2 * scale_y + (sin(rot_pos.at(i)) + 1) * y_radius), 0.0f,
+                   Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));
+
+        if(i == 3)
+            //ÉLÉÉÉâÉNÉ^Å[
+                DrawSprite(character_, Vector2(540 * scale_x, 1080 / 2 * scale_y), 0.0f,
+                           Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+        ++move_it;
+        ++attack_it;
     }
-    //draw move at same position
-    DrawSprite(move_tex, Vector2(700 * scale_x, 1080 / 2 * scale_y), 0.0f,
-               Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
-    //çUåÇëÆê´
-    int attack_tex;
-    switch (attack_)
-    {
-    case FIRE_ATTACK:
-        attack_tex = tex_fire_attack_;
-        break;
-    case WIND_ATTACK:
-        attack_tex = tex_wind_attack_;
-        break;
-    case THUNDER_ATTACK:
-        attack_tex = tex_thunder_attack_;
-        break;
-    case DARK_ATTACK:
-        attack_tex = tex_dark_attack_;
-        break;
-    default:
-        attack_tex = tex_fire_attack_;
-        break;
-    }
-    //draw attack at same position
-    DrawSprite(attack_tex, Vector2(700 * scale_x, 1080 / 2 * scale_y), 0.0f,
-               Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    //ìÆâÊ
     if (is_move_)
     {
         video_list_.at(move_)->Draw();
@@ -171,10 +235,8 @@ void Prep::SetNewVideo(VIDEO_FILE video_file)
 {
     video_list_.emplace(video_file, new Video(video_file_map.at(video_file).c_str()));
     video_list_.at(video_file)->SetSize(Vector2(853.3 * static_cast<float>(Graphical::GetWidth()) / 1920,
-                                           480 * static_cast<float>(Graphical::GetHeight()) / 1080));
+                                                480 * static_cast<float>(Graphical::GetHeight()) / 1080));
     video_list_.at(video_file)->SetLoop(true);
     video_list_.at(video_file)->SetWindowPos(Vector2(1400 * static_cast<float>(Graphical::GetWidth()) / 1920,
-                                                1000 / 2 * static_cast<float>(Graphical::GetHeight()) / 1080));
+                                                     1000 / 2 * static_cast<float>(Graphical::GetHeight()) / 1080));
 }
-
-
