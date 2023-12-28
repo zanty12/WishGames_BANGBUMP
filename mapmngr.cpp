@@ -87,7 +87,7 @@ bool MapMngr::Read(const char* file_name)
 void MapMngr::Update() const
 {
     map_->Update();
-    enemy_mngr_->Update();
+    //enemy_mngr_->Update();
 }
 
 void MapMngr::DebugMenu()
