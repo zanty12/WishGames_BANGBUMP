@@ -18,11 +18,6 @@ int main()
     DebugUI::Initialize();
     MSG msg;
     SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
-    Video* video = new Video("data/test.mp4");
-    video->SetScale(0.5f);
-    video->SetLoop(true);
-    //Video* video2 = new Video("data/test1q.mp4");
-    //video2->SetScale(0.5f);
     Time::Initialize();
     while (true)
     {
@@ -70,11 +65,6 @@ int main()
             Input::Update();
 
             Time::Update();
-
-            video->Update();
-            //video2->Update();
-            video->Draw();
-            //video2->Draw();
 
             scene_mngr->Update();
             scene_mngr->Draw();
