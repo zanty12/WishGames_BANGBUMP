@@ -9,7 +9,7 @@ bool CheckLength(Vector2 a, Vector2 b, float len);
 void Enemy1::Update()
 {
     //HPが0になったら消す
-    if (hp_ <= 0)
+    if (GetHp() <= 0)
     {
         GameObject::Discard();
         Die();

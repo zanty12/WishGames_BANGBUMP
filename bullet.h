@@ -20,6 +20,7 @@ public:
 	~Bullet() override = default;
 
 	int GetAtk(void) const { return atk_; }
+	void SetAtk(int atk) { atk_ = atk; }
 
 	Bullet(Vector2 pos, int texNo, Vector2 vel) : MovableObj(pos, 0.0f, texNo, vel)
 	{

@@ -35,4 +35,5 @@ public:
     MapMngr* GetMapMngr() const { return map_mngr_; }
     //std::vector<Enemy*> GetEnemies() const { return enemies_; }
     std::list<Enemy*> GetEnemies() const { return enemies_; }
+
 };
