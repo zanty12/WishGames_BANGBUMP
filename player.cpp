@@ -20,18 +20,21 @@
 
 static const int LvUpPoint[LV_NUM] =
 {
-	0,
-	20,
-	50,
-	90,
-	140,
-	200,
-	290,
-	410,
-	550,
-	710,
+	0  ,
+	10 ,
+	25 ,
+	45 ,
+	70 ,
+	100,
+	145,
+	205,
+	275,
+	355,
 };
 
+const int Player::INITIAL_HP_ = 500;
+const float Player::GRAVITY_SCALE_ = -6.0f;
+const float Player::INVINCIBILITY_MAX_TIME_ = 1 + (1.0f / 4);
 
 
 void Player::Update(void)
@@ -103,6 +106,9 @@ void Player::Update(void)
 
 SkillOrb* Player::DropSkillOrb(void)
 {
+
+	//★SkillOrbクラスが変更されるまで保留★
+
 	SKILLORB_ATTRIBUTE_DESC skillorb_attr;
 	switch (hit_attack_attr)
 	{
@@ -228,41 +234,11 @@ void Player::CollisionAction(void)
 
 void Player::CollisionSpike(void)
 {
-	if (GetVel().x > 0.0f)
-		dir_.x = -1;
-	if (GetVel().x < 0.0f)
-		dir_.x = 1;
-	if (GetVel().y > 0.0f)
-		dir_.y = -1;
-	if (GetVel().y < 0.0f)
-		dir_.y = 1;
+	dir_ = GetVel().Normalize();
 
-	Vector2 clash_vel(0.0f,0.0f);	//クラッシュしたときの速度
-	if (clash_spike_ > 0)
-	{
-		float knock_back = 2.0f * clash_spike_;
-		
-		switch (knock_back_dir_)
-		{
-		case 0:	//頭
-			clash_vel = Vector2(GetVel().x, dir_.y * knock_back);
-			break;
-		case 1:	//足
-			clash_vel = Vector2(GetVel().x, dir_.y * knock_back);
-			break;
-		case 2:	//左
-			clash_vel = Vector2(dir_.x * knock_back, GetVel().y);
-			break;
-		case 3:	//右
-			clash_vel = Vector2(dir_.x * knock_back, GetVel().y);
-			break;
-		default:
-			break;
-		}
+	dir_ *= -1;	//反転させる
 
-		SetVel(clash_vel);
-		clash_spike_--;
-	}
+	skillpt_ -= 5;
 }
 
 void Player::CollisionSkillPoint(GameObject* obj)
@@ -279,33 +255,28 @@ void Player::CollisionSkillPoint(GameObject* obj)
 		return;
 	}
 
-	ATTRIBUTE_TYPE pt_attr = skill_point->GetAttribute();	//スキルポイント属性
-	SKILLORB_SIZE_TYPE pt_size = skill_point->GetSize();	//スキルポイントサイズ
-
-	if (pt_size == SKILLORB_SIZE_TYPE_BIG)
+	switch (skill_point->GetSize())
 	{
-		skillpt_ += 40;		//10ポイント * 4
-		skill_point->Discard();
-		return;
+	case SKILLORB_SIZE_TYPE_SMALL:
+	{
+		int point = SKILLORB_SIZE_DESC::Small().value;
+		skillpt_ += (point * 4);
+		break;
 	}
-
-	if (pt_attr == move_attribute_->GetAttribute() || pt_attr == attack_attribute_->GetAttribute())
+	case SKILLORB_SIZE_TYPE_MID:
 	{
-		//小さいスキルポイントの時
-		if (pt_size == SKILLORB_SIZE_TYPE_SMALL)
-			skillpt_ += 8;	//3ポイント * 2 + 1ポイント * 2
-		//中くらいのスキルポイントの時
-		if (pt_size == SKILLORB_SIZE_TYPE_MID)
-			skillpt_ += 16;	//5ポイント * 2 + 3ポイント * 2
+		int point = SKILLORB_SIZE_DESC::Mid().value;
+		skillpt_ += (point * 4);
+		break;
 	}
-	else
+	case SKILLORB_SIZE_TYPE_BIG:
 	{
-		//小さいスキルポイントの時
-		if (pt_size == SKILLORB_SIZE_TYPE_SMALL)
-			skillpt_ += 4;	//1ポイント * 4
-		//中くらいのスキルポイントの時
-		if (pt_size == SKILLORB_SIZE_TYPE_MID)
-			skillpt_ += 12;	//3ポイント * 4
+		int point = SKILLORB_SIZE_DESC::Big().value;
+		skillpt_ += (point * 4);
+		break;
+	}
+	default:
+		break;
 	}
 
 	skill_point->Discard();
@@ -324,6 +295,12 @@ void Player::CollisionAttack(GameObject* obj)
 
 	SkillPointDown(0);	//実際に受けたダメージ分減らす
 	drop_point_ += 0;	//実際に受けたダメージを蓄積する
+}
+
+void Player::CollisionEnemy(GameObject* obj)
+{
+
+
 }
 
 void Player::LvUp(void)

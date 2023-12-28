@@ -17,6 +17,7 @@
 #include "collidercir.h"
 #include "mapmngr.h"
 
+
 enum PLAYER_STATE
 {
 	MOVE_UP,		//上に移動
@@ -32,9 +33,9 @@ class Player : public MovableObj
 {
 private:
 
-	const int INITIAL_HP_ = 500;		//HPの初期値
-	const float GRAVITY_SCALE_ = -6.0f;	//重力（仮）
-	const int SPIKE_SURPRISE_ = 15;		//トゲに当たってノックバックするフレーム数
+	static const int INITIAL_HP_;			//HPの初期値
+	static const float GRAVITY_SCALE_;		//重力（仮）
+	static const float INVINCIBILITY_MAX_TIME_;	//無敵時間
 
 	Vector2 dir_;		//向き
 
@@ -55,6 +56,8 @@ private:
 	int clash_spike_;		//トゲに衝突したら15フレームの間ノックバック
 	int knock_back_dir_;	//トゲに衝突した方向
 
+	float invincibility_time_;	//無敵の経過時間
+
 	int not_stick_working_;
 
 	PLAYER_STATE player_state_;
@@ -63,7 +66,7 @@ public:
 	Player(Vector2 pos, float rot, int tex_number, Vector2 vel, MapMngr* map_mangr)
 		:MovableObj(pos, rot, tex_number, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
 		dir_(Vector2(0.0f, 0.0f)), map_mangr_(map_mangr), clash_spike_(0), knock_back_dir_(0),
-		change_scene_(false), drop_point_(0)
+		change_scene_(false), drop_point_(0),invincibility_time_(INVINCIBILITY_MAX_TIME_)
 	{}
 
 	~Player() { delete move_attribute_; delete attack_attribute_; }
@@ -105,6 +108,8 @@ private:
 	void CollisionSkillPoint(GameObject* obj);
 	//当たり判定（アタックアトリビュート）
 	void CollisionAttack(GameObject* obj);
+	//当たり判定（エネミー）
+	void CollisionEnemy(GameObject* obj);
 
 	//レベルアップ（ゲットしたスキルポイントを引数にする）
 	void LvUp(void);
