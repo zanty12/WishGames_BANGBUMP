@@ -1,10 +1,10 @@
 #include "game.h"
 #include "dark.h"
 #include "fire.h"
-//#include "mapmngr.h"
+
 #include "thunder.h"
 #include "wind.h"
-//#include "renderer.h"
+#include <thread>
 
 Game::Game(SceneMngr* scene_mngr)
     : GameBase(scene_mngr)
@@ -20,10 +20,26 @@ Game::Game(SceneMngr* scene_mngr)
 void Game::Update()
 {
     coll_mngr_->Update();
-    mapmngr_->Update();
-    GetPlayer()->Update();
-    camera_->Update();
-    renderer_->Update();
+    std::thread map(&MapMngr::Update, mapmngr_);
+    //mapmngr_->Update();
+    std::thread enemy(&EnemyMngr::Update, mapmngr_->GetEnemyMngr());
+    std::thread player(&Player::Update, GetPlayer());
+    //GetPlayer()->Update();
+    //std::thread projectile(&ProjectileMngr::Update, projectile_mngr_);
+    //projectile_mngr_->Update();
+    //std::thread orb(&SkillOrbMngr::Update, orb_mngr_);
+    //orb_mngr_->Update();
+    //projectile.join();
+    //orb.join();
+    std::thread camera(&Camera::Update, camera_);
+    //camera_->Update();
+    std::thread renderer(&Renderer::Update, renderer_);
+    //renderer_->Update();
+    map.join();
+    enemy.join();
+    player.join();
+    camera.join();
+    renderer.join();
     if (GetPlayer()->GetChangeSceneFlag())
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
