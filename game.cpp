@@ -133,7 +133,6 @@ void Game::DebugMenu()
         delete mapmngr_;
         coll_mngr_->CheckDiscard();
         renderer_->CheckDiscard();
-        int i = 0;
         mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
     }
     ImGui::End();
