@@ -13,7 +13,7 @@ bool CheckPlayerLength(Vector2 a, Vector2 b, float len);
 void Enemy3::Update()
 {
     //HP‚ª0‚É‚È‚Á‚½‚çÁ‚·
-    if (hp_ <= 0)
+    if (GetHp() <= 0)
     {
         GameObject::Discard();
         Die();

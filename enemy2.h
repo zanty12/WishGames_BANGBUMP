@@ -8,8 +8,6 @@ class Bullet;
 class Enemy2 : public Enemy
 {
 private:
-    const int HP_MAX_ = 30;		//HPの上限
-    int hp_;
     Vector2 startPosition;
     Vector2 bullet_vel_ = Vector2(0.0f, 0.0f);
     SKILLORB_ATTRIBUTE_DESC drop;
@@ -22,14 +20,10 @@ public:
     {
         SetScale(Vector2(SIZE_ * 4, SIZE_ * 4));
         SetAtk(10);
+        SetHp(30);
     }
 
     Bullet* CreatBullet(void);
-
-    int GetHp(void) const { return hp_; }		//HPのゲット
-    void SetHp(int hp) { hp_ = hp; }			//HPのセット
-    //HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
-    void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
     void Update() override;
 

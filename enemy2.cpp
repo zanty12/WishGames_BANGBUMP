@@ -18,7 +18,7 @@ Bullet* Enemy2::CreatBullet(void)
 void Enemy2::Update()
 {
     //HP‚ª0‚É‚È‚Á‚½‚çÁ‚·
-    if (hp_ <= 0)
+    if (GetHp() <= 0)
     {
         GameObject::Discard();
         Die();
