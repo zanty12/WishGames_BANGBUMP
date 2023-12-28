@@ -44,5 +44,8 @@ public:
 
 	std::list<Player *> &GetPlayers(void) { return players_; }
 	Player *GetPlayer(void) { return players_.size() != 0 ? *players_.begin() : nullptr; }
+	void AddPlayer(Player *player) { players_.push_back(player); }
+	void AddCamera(Camera *camera) { camera_ = camera; }
+	MapMngr *GetMapMngr(void) { return mapmngr_; }
 	static bool UpdateLoD(const Vector2 pos);
 };

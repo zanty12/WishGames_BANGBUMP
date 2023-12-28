@@ -1,5 +1,7 @@
 #include "prep.h"
 
+#include "xinput.h"
+
 std::map<VIDEO_FILE, std::string> video_file_map =
 {
     {FIRE_MOVE, "./data/video/fire_move.mp4"},
@@ -60,6 +62,45 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
 
 void Prep::Update()
 {
+    //ÉLÅ[ì¸óÕ
+    if(Input::GetKeyUp(0,Input::Left))
+    {
+        if(is_move_)
+        {
+            move_next_ = pos_move.back();
+        }
+        else
+        {
+            attack_next_ = pos_attack.back();
+        }
+    }
+    if(Input::GetKeyUp(0,Input::Right))
+    {
+        if(is_move_)
+        {
+            std::list<VIDEO_FILE>::iterator it = pos_move.begin();
+            ++it;
+            move_next_ = *it;
+        }
+        else
+        {
+            std::list<VIDEO_FILE>::iterator it = pos_attack.begin();
+            ++it;
+            attack_next_ = *it;
+        }
+    }
+    if(Input::GetKeyUp(0,Input::Up))
+    {
+        if(is_move_)
+            is_move_ = false;
+    }
+
+    if(Input::GetKeyUp(0,Input::Down))
+    {
+        if(!is_move_)
+            is_move_ = true;
+    }
+
     //ìÆâÊÇÃêÿÇËë÷Ç¶
     if (move_ != move_next_)
     {
@@ -226,7 +267,43 @@ void Prep::DebugMenu()
     ImGui::Begin("Game Start");
     if (ImGui::Button("Start"))
     {
-        scene_mngr_->ChangeScene(SCENE_GAME);
+        std::string message;
+        switch (move_)
+        {
+            case FIRE_MOVE:
+                message += "FIRE ";
+                break;
+            case WIND_MOVE:
+                message += "WIND ";
+                break;
+            case THUNDER_MOVE:
+                message += "THUNDER ";
+                break;
+            case DARK_MOVE:
+                message += "DARK ";
+                break;
+            default:
+                message += "FIRE ";
+                break;
+        }
+        switch (attack_)
+        {
+            case FIRE_ATTACK:
+                message += "FIRE ";
+                break;
+            case WIND_ATTACK:
+                message += "WIND ";
+                break;
+            case THUNDER_ATTACK:
+                message += "THUNDER ";
+                break;
+            case DARK_ATTACK:
+                message += "DARK ";
+                break;
+            default:
+                message += "FIRE ";
+        }
+        scene_mngr_->ChangeScene(SCENE_GAME,message);
     }
     ImGui::End();
 }

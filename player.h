@@ -60,11 +60,15 @@ private:
 	PLAYER_STATE player_state_;
 
 public:
-	Player(Vector2 pos, float rot, int tex_number, Vector2 vel, MapMngr* map_mangr)
-		:MovableObj(pos, rot, tex_number, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
+	Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr)
+		:MovableObj(pos, rot, 0, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
 		dir_(Vector2(0.0f, 0.0f)), map_mangr_(map_mangr), clash_spike_(0), knock_back_dir_(0),
 		change_scene_(false), drop_point_(0)
-	{}
+	{
+		int tex = LoadTexture("data/texture/player.png");
+		SetTexNo(tex);
+		GetAnimator()->SetTexNo(tex);
+	}
 
 	~Player() { delete move_attribute_; delete attack_attribute_; }
 
