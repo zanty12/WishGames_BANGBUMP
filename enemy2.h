@@ -21,6 +21,7 @@ public:
     Enemy2(int x, int y, EnemyMngr* enemy_mngr) : Enemy(x, y, LoadTexture("data/texture/enemy2.png"), enemy_mngr)
     {
         SetScale(Vector2(SIZE_ * 4, SIZE_ * 4));
+        SetAtk(10);
     }
 
     Bullet* CreatBullet(void);

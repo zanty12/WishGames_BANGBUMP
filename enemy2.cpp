@@ -24,6 +24,7 @@ void Enemy2::Update()
         Die();
     }
 
+
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
@@ -60,7 +61,7 @@ void Enemy2::Update()
 
     }
 
-
+    
 
 
 

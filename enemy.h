@@ -6,19 +6,14 @@ class EnemyMngr;
 class SkillOrb;
 
 
-enum ENEMY_TYPE
-{
-    ENEMY_TYPE_KOOPA,
-    ENEMY_TYPE_HAMMERBRO,
-    ENEMY_TYPE_PHANTOM,
-};
-
 
 class Enemy : public MovableObj
 {
 private:
     EnemyMngr* enemy_mngr_;
+    EnemyMngr* enemy_type_;
     bool dead = false; //Ž€‚ñ‚Å‚¢‚é‚©‚Ç‚¤‚©
+    int atk_ = 0;
 public:
     Enemy() = delete;
     Enemy(int x, int y,int texNo,EnemyMngr* enemy_mngr) : MovableObj(Vector2((x + 0.5f) * SIZE_, (y + 0.5f) * SIZE_),0.0f,texNo,Vector2(0.0f,0.0f))
@@ -33,5 +28,9 @@ public:
 
     virtual SkillOrb* DropSkillOrb() = 0;
 
-    static ENEMY_TYPE GetEnemyType(MAP_READ type);
+    EnemyMngr* GetEnemyType() const { return enemy_type_; }
+
+    int GetAtk(void) const { return atk_; }
+    void SetAtk(int atk) { atk_ = atk; }
+
 };
