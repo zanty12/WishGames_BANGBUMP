@@ -5,6 +5,15 @@
 class EnemyMngr;
 class SkillOrb;
 
+
+enum ENEMY_TYPE
+{
+    ENEMY_TYPE_KOOPA,
+    ENEMY_TYPE_HAMMERBRO,
+    ENEMY_TYPE_PHANTOM,
+};
+
+
 class Enemy : public MovableObj
 {
 private:
@@ -24,4 +33,5 @@ public:
 
     virtual SkillOrb* DropSkillOrb() = 0;
 
+    static ENEMY_TYPE GetEnemyType(MAP_READ type);
 };

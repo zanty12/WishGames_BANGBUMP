@@ -50,8 +50,6 @@ void Enemy2::Update()
                 Spos_old = Spos_now;
 
             }
-
-
         }
     }
 
