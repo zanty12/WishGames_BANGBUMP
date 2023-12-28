@@ -69,13 +69,6 @@ void Map::PutCell(int x, int y, int MAP_READ) const
             break;
         }
 
-    case MAP_READ_THUNDERCLOUD:
-        {
-            ThunderCloud * thundercloud = new ThunderCloud(x, y);
-            map_[y * width_ + x] = thundercloud;
-            break;
-        }
-
     case MAP_READ_ORB_SMALL_FIRE:
         {
             GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_SMALL);
