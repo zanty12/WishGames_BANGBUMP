@@ -1,7 +1,7 @@
 /** 準備シーン
  * プレイヤーの属性を選択するシーン
  *
- * Author: Cheung To Hung Date: 2023/12/29
+ * Author: Cheung To Hung Date: 2023/12/23
  */
 
 #pragma once
