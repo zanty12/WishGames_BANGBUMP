@@ -45,6 +45,7 @@ void Game::Update()
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
     }
+
 }
 
 void Game::Draw()
@@ -124,6 +125,15 @@ void Game::DebugMenu()
             player_->SetAttackAttribute(new Dark(player_));
         }
         ImGui::EndCombo();
+    }
+    ImGui::End();
+    ImGui::Begin("map test");
+    if(ImGui::Button("map1"))
+    {
+        delete mapmngr_;
+        coll_mngr_->CheckDiscard();
+        renderer_->CheckDiscard();
+        mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
     }
     ImGui::End();
     player_->DebugMenu();

@@ -17,17 +17,7 @@ bool CollMngr::Add(Collider* collider)
 void CollMngr::Update()
 {
     //破棄する
-    colliders_.remove_if(
-        [](Collider* collider)
-        {
-            if (collider->GetDiscard())
-            {
-                delete collider;
-                return true;
-            }
-            return false;
-        }
-    );
+    CheckDiscard();
 
     //前のフレームでの衝突情報をリセット
     for (const auto collider : colliders_)
@@ -98,4 +88,19 @@ void CollMngr::Collision(Collider* collider, Collider* other)
         if (other->GetIsMovable())
             other->AddCollision(collider);
     }
+}
+
+void CollMngr::CheckDiscard()
+{
+    colliders_.remove_if(
+        [](Collider* collider)
+        {
+            if (collider->GetDiscard())
+            {
+                delete collider;
+                return true;
+            }
+            return false;
+        }
+    );
 }

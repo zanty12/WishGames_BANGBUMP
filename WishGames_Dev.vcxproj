@@ -242,7 +242,6 @@
     <ClInclude Include="title.h" />
     <ClInclude Include="video.h" />
     <ClInclude Include="xinput.h" />
-    <ClInclude Include="thundercloud.h" />
     <ClInclude Include="wall.h" />
   </ItemGroup>
   <ItemGroup>
