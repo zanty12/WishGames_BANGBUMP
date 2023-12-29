@@ -11,7 +11,6 @@
 #include "floor.h"
 #include "penfloor.h"
 #include "skillorb.h"
-#include "thundercloud.h"
 #include "wall.h"
 #include "mapenum.h"
 #include "spike.h"
