@@ -57,6 +57,10 @@ private:
 	int knock_back_dir_;	//トゲに衝突した方向
 
 	float invincibility_time_;	//無敵の経過時間
+	float flash_time_;			//点滅間隔
+	float knockback_distance_;	//ノックバックする距離
+	Vector2 knockback_start_;	//ノックバックの初めのポジション
+	Vector2 knockback_end_;		//ノックバックの終わりのポジション
 
 	int not_stick_working_;
 
@@ -66,7 +70,7 @@ public:
 	Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr)
 		:MovableObj(pos, rot, 0, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
 		dir_(Vector2(0.0f, 0.0f)), map_mangr_(map_mangr), clash_spike_(0), knock_back_dir_(0),
-		change_scene_(false), drop_point_(0)
+		change_scene_(false), drop_point_(0),invincibility_time_(INVINCIBILITY_MAX_TIME_),knockback_distance_(0.0f)
 	{
 		int tex = LoadTexture("data/texture/player.png");
 		SetTexNo(tex);
@@ -104,16 +108,19 @@ private:
 	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）
 	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
 
-	//当たり判定
+	//何かに当たったときのアクション
 	void CollisionAction(void);
-	//当たり判定（トゲ）
-	void CollisionSpike(void);
 	//当たり判定（スキルポイント）
 	void CollisionSkillPoint(GameObject* obj);
 	//当たり判定（アタックアトリビュート）
 	void CollisionAttack(GameObject* obj);
+	//当たり判定（トゲ）
+	void CollisionSpike(void);
 	//当たり判定（エネミー）
 	void CollisionEnemy(GameObject* obj);
+
+	//無敵の時
+	void Invincibility(void);
 
 	//レベルアップ（ゲットしたスキルポイントを引数にする）
 	void LvUp(void);

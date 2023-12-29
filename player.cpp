@@ -89,6 +89,8 @@ void Player::Update(void)
 
 	CollisionAction();
 
+	Invincibility();
+
 	LvUp();
 
 	//上に上がっている
@@ -171,6 +173,9 @@ void Player::DebugMenu()
 // ↓パブリック関数↓
 //================================================================================
 
+//================================================================================
+// 当たった時のアクション
+//================================================================================
 void Player::CollisionAction(void)
 {
 	std::list<Collider*> collisions = GetCollider()->GetCollision();
@@ -184,6 +189,8 @@ void Player::CollisionAction(void)
 				SetVel(Vector2(0.0f, GetVel().y));
 			if (GetVel().y != 0.0f)
 				SetVel(Vector2(GetVel().x, 0.0f));
+			if (invincibility_time_ < 1.0f / 4)
+				invincibility_time_ = 1.0f / 4;
 			break;
 		case OBJ_PENETRABLE:
 			if (GetVel().x != 0.0f)
@@ -196,15 +203,10 @@ void Player::CollisionAction(void)
 			break;
 		case OBJ_PLAYER:
 			break;
-		case OBJ_ENEMY:	//とりあえず止まるようにする
+		case OBJ_ENEMY:
 		{
-			if (GetVel().x != 0.0f)
-				SetVel(Vector2(0.0f, GetVel().y));
-			if (GetVel().y != 0.0f)
-				SetVel(Vector2(GetVel().x, 0.0f));
 			GameObject* gameObj = collision->GetParent();
-			Enemy* enemy = dynamic_cast<Enemy*>(gameObj);
-
+			CollisionEnemy(gameObj);
 			break;
 		}
 		case OBJ_ATTACK:
@@ -232,15 +234,9 @@ void Player::CollisionAction(void)
 	}
 }
 
-void Player::CollisionSpike(void)
-{
-	dir_ = GetVel().Normalize();
-
-	dir_ *= -1;	//反転させる
-
-	skillpt_ -= 5;
-}
-
+//================================================================================
+// スキルポイントに当たった時のアクション
+//================================================================================
 void Player::CollisionSkillPoint(GameObject* obj)
 {
 	if (attack_attribute_ == nullptr || move_attribute_ == nullptr)
@@ -282,6 +278,9 @@ void Player::CollisionSkillPoint(GameObject* obj)
 	skill_point->Discard();
 }
 
+//================================================================================
+// アトリビュートのアタックに当たった時のアクション
+//================================================================================
 void Player::CollisionAttack(GameObject* obj)
 {
 	Attribute* attack = dynamic_cast<Attribute*>(obj);
@@ -297,12 +296,136 @@ void Player::CollisionAttack(GameObject* obj)
 	drop_point_ += 0;	//実際に受けたダメージを蓄積する
 }
 
+//================================================================================
+// トゲに当たった時のアクション
+//================================================================================
+void Player::CollisionSpike(void)
+{
+	if (invincibility_time_ < INVINCIBILITY_MAX_TIME_)
+	{
+		//めり込まないように止める
+		if (GetVel().x != 0.0f)
+			SetVel(Vector2(0.0f, GetVel().y));
+		if (GetVel().y != 0.0f)
+			SetVel(Vector2(GetVel().x, 0.0f));
+		return;
+	}
+
+	SkillPointDown(5);
+
+	invincibility_time_ = 0.0f;
+
+	dir_ = GetVel().Normalize();
+	if (abs(GetVel().x) < 0.1f && abs(GetVel().y < 0.1f))
+	{
+		if (GetVel().x != 0.0f)
+			SetVel(Vector2(0.0f, GetVel().y));
+		if (GetVel().y != 0.0f)
+			SetVel(Vector2(GetVel().x, 0.0f));
+
+		//knockback_end_がバグるのでそのまま
+		knockback_start_ = GetPos();
+		knockback_end_ = GetPos();
+		return;
+	}
+	dir_ *= -1;	//反転させる
+
+	knockback_distance_ = SIZE_;
+
+	knockback_start_ = GetPos();
+	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+}
+
+//================================================================================
+// エネミーに当たった時のアクション
+//================================================================================
 void Player::CollisionEnemy(GameObject* obj)
 {
+	Enemy* enemy = dynamic_cast<Enemy*>(obj);
 
+	if (enemy == nullptr)
+	{
+		return;
+	}
+	if (invincibility_time_ < INVINCIBILITY_MAX_TIME_)
+	{
+		return;
+	}
+
+	invincibility_time_ = 0.0f;
+
+	dir_ = GetVel().Normalize();
+	if (abs(GetVel().x) < 0.1f && abs(GetVel().y < 0.1f))
+	{
+		dir_ = -enemy->GetVel().Normalize();
+	}
+	dir_ *= -1;	//反転させる
+
+	SkillPointDown(enemy->GetAtk());
+
+
+	switch (enemy->GetEnemyType())
+	{
+	case TYPE__KOOPA:
+		knockback_distance_ = SIZE_;
+		break;
+	case TYPE__HAMMERBRO:
+		knockback_distance_ = SIZE_;
+		break;
+	case TYPE__PHANTOM:
+		knockback_distance_ = SIZE_ * 3;
+		break;
+	default:
+		break;
+	}
+
+	knockback_start_ = GetPos();
+	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
 
 }
 
+//================================================================================
+// 無敵時間のアクション
+//================================================================================
+void Player::Invincibility(void)
+{
+	invincibility_time_ += Time::GetDeltaTime();
+
+	if (invincibility_time_ > INVINCIBILITY_MAX_TIME_)
+	{
+		SetColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
+		return;
+	}
+
+	//----------------------------------------
+	// 点滅
+	//----------------------------------------
+	flash_time_ += Time::GetDeltaTime();
+	if (flash_time_ > 0.3f)
+	{
+		flash_time_ = 0.0f;
+		if (GetColor().a == 1.0f)
+			SetColor(Color(1.0f, 1.0f, 1.0f, 0.0f));
+		else
+			SetColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
+	}
+
+	if (invincibility_time_ > 1.0f / 4)
+	{
+		return;
+	}
+
+	//----------------------------------------
+	// ノックバック
+	//----------------------------------------
+	//線形補間
+	Vector2 lerp = knockback_start_ + (knockback_end_ - knockback_start_) * (invincibility_time_ / (1.0f / 4));
+	SetPos(lerp);
+}
+
+//================================================================================
+// レベルアップ
+//================================================================================
 void Player::LvUp(void)
 {
 	for (int i = 0; i < LV_NUM; i++)
@@ -319,6 +442,9 @@ void Player::LvUp(void)
 
 }
 
+//================================================================================
+// 最大HPの変化
+//================================================================================
 void Player::HpMaxUp(void)
 {
 	if (lv_ == 1)
@@ -332,15 +458,19 @@ void Player::HpMaxUp(void)
 
 	if (lv_ < 5)
 	{
-		hp_ = INITIAL_HP_ * (1.1f + (0.1f * lv_));
+		hp_ = (int)(INITIAL_HP_ * (1.1f + (0.1f * lv_)));
 	}
 	else
 	{
-		hp_ = INITIAL_HP_ * (1 + (0.1f * lv_));
+		hp_ = (int)(INITIAL_HP_ * (1 + (0.1f * lv_)));
 	}
 
 }
 
+
+/*
+線形補間 vector2_1 + (vector2_2 - vector2_1) * float
+*/
 
 /*
 	MAP_READ_ORB_SMALL_FIRE, ///< 小スキル玉セルを表します。
