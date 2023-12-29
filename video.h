@@ -135,8 +135,7 @@ public:
 
         //load next frame
         if (frame_buffer_.size() > 0 && time_ > frame_buffer_.begin()->ts * (double)vr_state_.time_base.num / (double)
-            vr_state_.
-            time_base.den)
+            vr_state_.time_base.den)
         {
             frame_data frame = *frame_buffer_.begin();
             memcpy(frame_data_, frame.data, vr_state_.width * vr_state_.height * 4);
