@@ -134,7 +134,8 @@ public:
         }
 
         //load next frame
-        if (frame_buffer_.size() > 0 && time_ > frame_buffer_.begin()->ts * (double)vr_state_.time_base.num / (double)vr_state_.
+        if (frame_buffer_.size() > 0 && time_ > frame_buffer_.begin()->ts * (double)vr_state_.time_base.num / (double)
+            vr_state_.
             time_base.den)
         {
             frame_data frame = *frame_buffer_.begin();
@@ -159,6 +160,7 @@ public:
             srvDesc.Texture2D.MostDetailedMip = 0;
             Graphical::GetDevice().Get()->CreateShaderResourceView(texture_, &srvDesc, &texture_view_);
             // Remove the consumed frame from the buffer.
+            _aligned_free(frame.data);
             frame_buffer_.pop_front();
         }
     }
