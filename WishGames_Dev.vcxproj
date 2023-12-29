@@ -226,7 +226,6 @@
     <ClInclude Include="penfloor.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="colliderrect.h" />
-    <ClInclude Include="prep.h" />
     <ClInclude Include="projectilemngr.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
