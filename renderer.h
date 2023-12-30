@@ -23,4 +23,5 @@ public:
         animators_.push_back(animator);
         return true;
     }
+    void CheckDiscard();
 };

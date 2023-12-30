@@ -168,6 +168,7 @@
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="colliderrect.cpp" />
+    <ClCompile Include="prep.cpp" />
     <ClCompile Include="projectilemngr.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="animator.h" />
     <ClInclude Include="area_capture.h" />
     <ClInclude Include="attribute_type.h" />
+    <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collider.h" />
     <ClInclude Include="collidercir.h" />
@@ -223,8 +225,8 @@
     <ClInclude Include="movableobj.h" />
     <ClInclude Include="penfloor.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="prep.h" />
     <ClInclude Include="colliderrect.h" />
+    <ClInclude Include="prep.h" />
     <ClInclude Include="projectilemngr.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
@@ -241,7 +243,6 @@
     <ClInclude Include="title.h" />
     <ClInclude Include="video.h" />
     <ClInclude Include="xinput.h" />
-    <ClInclude Include="thundercloud.h" />
     <ClInclude Include="wall.h" />
   </ItemGroup>
   <ItemGroup>
@@ -266,8 +267,12 @@
     <Content Include="data\map\1.csv" />
     <Content Include="data\map\mariomaker.csv" />
     <Content Include="data\map\mariomaker.xlsx" />
+    <Content Include="data\texture\bg.png" />
     <Content Include="data\texture\block.png" />
     <Content Include="data\texture\cloud.png" />
+    <Content Include="data\texture\enemy1.png" />
+    <Content Include="data\texture\enemy2.png" />
+    <Content Include="data\texture\enemy3.png" />
     <Content Include="data\texture\floor.png" />
     <Content Include="data\texture\floor_end.png" />
     <Content Include="data\texture\floor_start.png" />
@@ -275,9 +280,13 @@
     <Content Include="data\texture\NotoSansJP-Bold.ttf" />
     <Content Include="data\texture\penfloor.png" />
     <Content Include="data\texture\player.png" />
+    <Content Include="data\texture\result.png" />
+    <Content Include="data\texture\result.webp" />
     <Content Include="data\texture\skillorb.png" />
     <Content Include="data\texture\spike.png" />
     <Content Include="data\texture\thundercloud.png" />
+    <Content Include="data\texture\title.png" />
+    <Content Include="data\texture\title.webp" />
     <Content Include="data\texture\wall.png" />
   </ItemGroup>
   <ItemGroup>

@@ -18,11 +18,12 @@ Bullet* Enemy2::CreatBullet(void)
 void Enemy2::Update()
 {
     //HPÇ™0Ç…Ç»Ç¡ÇΩÇÁè¡Ç∑
-    if (hp_ <= 0)
+    if (GetHp() <= 0)
     {
         GameObject::Discard();
         Die();
     }
+
 
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
@@ -50,8 +51,6 @@ void Enemy2::Update()
                 Spos_old = Spos_now;
 
             }
-
-
         }
     }
 
@@ -62,7 +61,7 @@ void Enemy2::Update()
 
     }
 
-
+    
 
 
 

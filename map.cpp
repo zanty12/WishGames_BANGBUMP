@@ -11,7 +11,6 @@
 #include "floor.h"
 #include "penfloor.h"
 #include "skillorb.h"
-#include "thundercloud.h"
 #include "wall.h"
 #include "mapenum.h"
 #include "spike.h"
@@ -66,13 +65,6 @@ void Map::PutCell(int x, int y, int MAP_READ) const
         {
             Cloud * cloud = new Cloud(x, y);
             map_[y * width_ + x] = cloud;
-            break;
-        }
-
-    case MAP_READ_THUNDERCLOUD:
-        {
-            ThunderCloud * thundercloud = new ThunderCloud(x, y);
-            map_[y * width_ + x] = thundercloud;
             break;
         }
 
