@@ -40,14 +40,13 @@ private:
 		}
 	}
 
-protected:
-	void GameUpdate(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {
+public:
+	MultiPlayCharacterSelectModeServerSide() : MultiPlayServerSide(nullptr) { };
+
+	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {
 		pCharacters_ = &clients;
 		PlayerUpdate(clients);
 	}
-
-public:
-	MultiPlayCharacterSelectModeServerSide() : MultiPlayServerSide(nullptr) { };
 
 	void CreateResponse(Storage &out) override {
 		RESPONSE_CHARACTER_SELECT res;

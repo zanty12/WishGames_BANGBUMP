@@ -29,7 +29,13 @@ public:
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) {
 		if (gameMode) {
-			gameMode->Update(clients);
+			if (gameMode->maxTime_ < gameMode->time_) {
+
+			}
+			else {
+				gameMode->time_ += Time::GetDeltaTime();
+				gameMode->Update(clients);
+			}
 		}
 	}
 

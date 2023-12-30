@@ -13,19 +13,10 @@ protected:
 
 
 protected:
-	virtual void GameUpdate(std::list<CLIENT_DATA_SERVER_SIDE>& clients) = 0;
 public:
 	MultiPlayServerSide(MapMngr *map) : map_(map) { }
 
-	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) {
-		if (maxTime_ < time_) {
-			
-		}
-		else {
-			time_ += Time::GetDeltaTime();
-			GameUpdate(clients);
-		}
-	}
+	virtual void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) = 0;
 
 	virtual void CreateResponse(Storage& out) = 0;
 

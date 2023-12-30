@@ -9,7 +9,7 @@ class MultiPlayEnemyRushMode : public MultiPlayServerSide {
 public:
 	MultiPlayEnemyRushMode(MapMngr *map) : MultiPlayServerSide(map) { }
 
-	void GameUpdate(std::list<CLIENT_DATA_SERVER_SIDE>& clients) override {
+	void Update(std::list<CLIENT_DATA_SERVER_SIDE>& clients) override {
 		
 	}
 

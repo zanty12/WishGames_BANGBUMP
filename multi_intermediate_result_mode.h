@@ -3,13 +3,12 @@
 #include "lib/math.h"
 
 class MultiPlayIntermediateResultModeServerSide : public MultiPlayServerSide {
-protected:
-	void GameUpdate(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {	}
-
 public:
 	MultiPlayIntermediateResultModeServerSide() : MultiPlayServerSide(nullptr) {
 		maxTime_ = 1000.0f;
 	}
+
+	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {	}
 
 	void CreateResponse(Storage &out) override { };
 };
