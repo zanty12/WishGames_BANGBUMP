@@ -19,7 +19,6 @@ typedef enum {
     MAP_READ_FLOOR, ///< 床セルを表します。
     MAP_READ_PENFLOOR, ///< 貫通可能な床セルを表します。
     MAP_READ_CLOUD, ///< 雲セルを表します。
-    MAP_READ_THUNDERCLOUD, ///< 雷雲セルを表します。
     MAP_READ_BLOCK, ///< ブロックセルを表します。
     MAP_READ_ORB_SMALL_FIRE, ///< 小スキル玉セルを表します。
     MAP_READ_ORB_MID_FIRE, ///< 中スキル玉セルを表します。
