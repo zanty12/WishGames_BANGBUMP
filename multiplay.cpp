@@ -8,6 +8,9 @@
 #include <thread>
 #pragma comment(lib, "lib/lib.lib")
 
+// #define DEBUG_CONNECT
+#define DEBUG_LOCKED
+
 
 MultiPlayServer::MultiPlayServer() {
 	WSAData data;
@@ -19,6 +22,9 @@ MultiPlayServer::MultiPlayServer() {
 int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	// ロック
 	lock_.Lock();
+#ifdef DEBUG_LOCKED
+	std::cout << "REGISTER LOCK";
+#endif
 
 	// プレイヤー作成
 	Vector2 pos = Vector2(200, 200);
@@ -53,6 +59,9 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 
 
 	// ロック解除
+#ifdef DEBUG_LOCKED
+	std::cout << " - REGISTER UNLOCK" << std::endl;
+#endif
 	lock_.Unlock();
 
 	return maxID - 1;
@@ -61,6 +70,9 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 void MultiPlayServer::Unregister(int id) {
 	// ロック
 	lock_.Lock();
+#ifdef DEBUG_LOCKED
+	std::cout << "UNREGISTER LOCK";
+#endif
 
 
 
@@ -87,6 +99,9 @@ void MultiPlayServer::Unregister(int id) {
 
 
 	// ロック解除
+#ifdef DEBUG_LOCKED
+	std::cout << " - UNREGISTER UNLOCK" << std::endl;
+#endif
 	lock_.Unlock();
 }
 
@@ -100,6 +115,9 @@ void MultiPlayServer::AllUnregister(void) {
 void MultiPlayServer::PlayerUpdate(void) {
 	// ロック
 	lock_.Lock();
+#ifdef DEBUG_LOCKED
+	std::cout << "UPD LOCK";
+#endif
 
 	// プレイヤーの更新
 	for (auto client : clients_) {
@@ -121,6 +139,9 @@ void MultiPlayServer::PlayerUpdate(void) {
 	if (gameMode) gameMode->Update(clients_);
 
 	// ロック解除
+#ifdef DEBUG_LOCKED
+	std::cout << " - UPD UNLOCK" << std::endl;
+#endif
 	lock_.Unlock();
 }
 
@@ -131,6 +152,12 @@ void MultiPlayServer::RecvUpdate(void) {
 
 
 
+	// ロック
+	lock_.Lock();
+#ifdef DEBUG_LOCKED
+	std::cout << "RCV LOCK";
+#endif
+
 	// プレイヤーの検索
 	auto iterator = find(req.input.id);
 
@@ -140,6 +167,17 @@ void MultiPlayServer::RecvUpdate(void) {
 	// 入力情報を設定
 	iterator->currentInput = req.input.curInput;
 	iterator->previousInput = req.input.preInput;
+
+#ifdef DEBUG_CONNECT
+	Input::SetState(1, iterator->currentInput);
+	std::cout << Input::GetStickLeft(1).x << ", " << Input::GetStickLeft(1).y << std::endl;
+#endif
+
+	// ロック解除
+#ifdef DEBUG_LOCKED
+	std::cout << " - RCV UNLOCK" << std::endl;
+#endif
+	lock_.Unlock();
 }
 
 void MultiPlayServer::SendUpdate(void) {
@@ -156,6 +194,9 @@ void MultiPlayServer::SendUpdate(void) {
 
 			// ロック
 			lock_.Lock();
+#ifdef DEBUG_LOCKED
+			std::cout << "SND LOCK";
+#endif
 
 			// レスポンスの作成
 			RESPONSE_PLAYER res;
@@ -186,6 +227,9 @@ void MultiPlayServer::SendUpdate(void) {
 			}
 
 			// ロック解除
+#ifdef DEBUG_LOCKED
+			std::cout << " - SND UNLOCK" << std::endl;
+#endif
 			lock_.Unlock();
 		}
 	}
@@ -377,20 +421,14 @@ void MultiPlayClient::Unregister() {
 }
 
 void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
-	//playerAnim.Update(res);
-	//playerAnim.Draw();
-	//if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
-
 	for (auto &client : res.clients) {
-		//std::cout << client.position.x << ", " << client.position.y << std::endl;
 		anim.SetPos(client.position);
 		anim.Draw();
 	}
 
 	if (gameMode) gameMode->Draw(res);
+	// renderer_->CheckDiscard();
 	renderer_->Draw();
-	//Camera camera = Camera();
-	//mapMngr.Draw();
 }
 
 void MultiPlayClient::SendUpdate(void) {
@@ -441,7 +479,8 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 		// レスポンスの解析
 		res.ParseResponse(recvBuff);
-		if (gameMode) gameMode->ParseResponse(recvBuff);
+		// 受信したモードと実行しているゲームモードが同じなら解析する
+		if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
 
 
 		// 初期化

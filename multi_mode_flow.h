@@ -73,7 +73,7 @@ class MultiPlayFlowClientSide {
 private:
 	MultiPlayClientSide *gameMode_ = nullptr;
 	GameBase *game_ = nullptr;
-	MULTI_MODE previousMode_ = MULTI_MODE::NONE;
+	MULTI_MODE currentMode_ = MULTI_MODE::NONE;
 
 
 
@@ -96,10 +96,13 @@ public:
 	MultiPlayFlowClientSide(GameBase *game) : game_(game) {
 
 	}
+	~MultiPlayFlowClientSide() {
+		if (gameMode_) delete gameMode_;
+	}
 
 	void Draw(RESPONSE_PLAYER &res) {
 		// モードが切り替わったなら、次のモードへ移行
-		if (previousMode_ != res.mode) {
+		if (currentMode_ != res.mode) {
 			// 現在のモードの取得
 			MULTI_MODE mode_ = GetMode();
 
@@ -111,11 +114,17 @@ public:
 
 			// 次のモードの作成
 			gameMode_ = CreateMode(mode_);
-		}
 
-		if (gameMode_) {
+			// 次のモードの取得
+			currentMode_ = GetMode();
+		}
+		// モードの実行
+		else if (gameMode_) {
 			gameMode_->Draw(res);
 			std::cout << res.mode << " : " << (int)res.time << std::endl;
+			if ((int)res.time == 5) {
+				int i = 0;
+			}
 		}
 	}
 

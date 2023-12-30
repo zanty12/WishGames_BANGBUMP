@@ -111,9 +111,12 @@ public:
 	}
 
 	template<class T>
-	T &operator >>(T &dst) {
+	void operator >>(T &dst) {
 		// Žæ“¾‚·‚é
-		return dst = *Pop<T>();
+		T* tmp = Pop<T>();
+
+		// ‘ã“ü‚·‚é
+		if (tmp) dst = *tmp;
 	}
 
 	template<>

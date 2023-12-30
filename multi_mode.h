@@ -5,7 +5,7 @@
 class MultiPlayFlowServerSide;
 class MultiPlayServerSide {
 protected:
-	float maxTime_ = 20.0f;
+	float maxTime_ = 5.0f;
 	float time_ = 0.0f;
 	MapMngr *map_ = nullptr;
 
@@ -15,7 +15,7 @@ protected:
 protected:
 public:
 	MultiPlayServerSide(MapMngr *map) : map_(map) { }
-	~MultiPlayServerSide() {
+	virtual ~MultiPlayServerSide() {
 		if (map_) delete map_;
 		map_ = nullptr;
 	}
@@ -42,6 +42,10 @@ protected:
 
 public:
 	MultiPlayClientSide(MapMngr *map) : map_(map) { }
+	virtual ~MultiPlayClientSide() {
+		if (map_) delete map_;
+		map_ = nullptr;
+	}
 	virtual void Draw(RESPONSE_PLAYER &players) = 0;
 	virtual void ParseResponse(Storage& in) = 0;
 
