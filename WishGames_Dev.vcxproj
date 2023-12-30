@@ -230,6 +230,7 @@
     <ClInclude Include="multi_intermediate_result_mode.h" />
     <ClInclude Include="multi_mode.h" />
     <ClInclude Include="multi_character_select_mode.h" />
+    <ClInclude Include="multi_mode_flow.h" />
     <ClInclude Include="original_window.h" />
     <ClInclude Include="movableobj.h" />
     <ClInclude Include="penfloor.h" />
@@ -248,6 +249,7 @@
     <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="storage.h" />
+    <ClInclude Include="storage_lock.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />

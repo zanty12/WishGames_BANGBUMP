@@ -13,16 +13,12 @@ MultiPlayServer::MultiPlayServer() {
 	WSAData data;
 	Startup(v2_2, data);
 
-	mapmngr_ = new MapMngr("data/map/1.csv", this);
-	gameMode = new MultiPlayIntermediateResultModeServerSide();//new MultiPlayAreaCaptureModeServerSide(mapmngr_);
+	gameMode = new MultiPlayFlowServerSide(this);
 }
 
 int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
-	// ロック解除待機
-	while (isListLock);
-
 	// ロック
-	isListLock = true;
+	lock_.Lock();
 
 	// プレイヤー作成
 	Vector2 pos = Vector2(200, 200);
@@ -58,17 +54,14 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 
 
 	// ロック解除
-	isListLock = false;
+	lock_.Unlock();
 
 	return maxID - 1;
 }
 
 void MultiPlayServer::Unregister(int id) {
-	// ロック解除待機
-	while (isListLock);
-
 	// ロック
-	isListLock = true;
+	lock_.Lock();
 
 
 
@@ -95,7 +88,7 @@ void MultiPlayServer::Unregister(int id) {
 
 
 	// ロック解除
-	isListLock = false;
+	lock_.Unlock();
 }
 
 void MultiPlayServer::AllUnregister(void) {
@@ -106,6 +99,9 @@ void MultiPlayServer::AllUnregister(void) {
 }
 
 void MultiPlayServer::PlayerUpdate(void) {
+	// ロック
+	lock_.Lock();
+
 	// プレイヤーの更新
 	for (auto client : clients_) {
 		// 入力の更新
@@ -121,6 +117,9 @@ void MultiPlayServer::PlayerUpdate(void) {
 
 	// ゲームモードの更新
 	if (gameMode) gameMode->Update(clients_);
+
+	// ロック解除
+	lock_.Unlock();
 }
 
 void MultiPlayServer::RecvUpdate(void) {
@@ -147,44 +146,44 @@ void MultiPlayServer::SendUpdate(void) {
 	onceFrameTime = 1000 / 60;
 
 	while (true) {
-		if (!isListLock) {
+
+		currentTime = timeGetTime();
+
+		if (currentTime - startTime > onceFrameTime) {
+			startTime = currentTime;
+
 			// ロック
-			isListLock = true;
+			lock_.Lock();
 
-			currentTime = timeGetTime();
+			// レスポンスの作成
+			RESPONSE_PLAYER res;
 
-			if (currentTime - startTime > onceFrameTime) {
-				startTime = currentTime;
+			// 制限時間の登録
+			res.time = gameMode->GetTime();
+			res.maxTime = gameMode->GetMaxTime();
 
-				// レスポンスの作成
-				RESPONSE_PLAYER res;
-
-				// 制限時間の登録
-				res.time= gameMode->GetTime();
-				res.maxTime = gameMode->GetMaxTime();
-
-				// クライアント情報の登録
-				for (auto &client : clients_) {
-					res.clients.push_back({ client.header.id , client.player_->GetPos(), 0, 0 });
-				}
-
-				// クライアント全員に送信する
-				for (auto &client : clients_) {
-					// 登録されていないならスキップ
-					if (client.header.id < 0) continue;
-
-					// 宛先の登録とレスポンス内容の結合
-					res.CreateResponse(sendBuff, client.header.id);
-
-					// ゲームモードのレスポンス内容の結合
-					gameMode->CreateResponse(sendBuff);
-
-					// 送信
-					SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
-				}
+			// クライアント情報の登録
+			for (auto &client : clients_) {
+				res.clients.push_back({ client.header.id , client.player_->GetPos(), 0, 0 });
 			}
+
+			// クライアント全員に送信する
+			for (auto &client : clients_) {
+				// 登録されていないならスキップ
+				if (client.header.id < 0) continue;
+
+				// 宛先の登録とレスポンス内容の結合
+				res.CreateResponse(sendBuff, client.header.id);
+
+				// ゲームモードのレスポンス内容の結合
+				gameMode->CreateResponse(sendBuff);
+
+				// 送信
+				SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
+			}
+
 			// ロック解除
-			isListLock = false;
+			lock_.Unlock();
 		}
 	}
 }
@@ -306,8 +305,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	WSAData data;
 	Startup(v2_2, data);
 
-	mapmngr_ = new MapMngr("data/map/1.csv", this);
-	gameMode = new MultiPlayIntermediateResultModeClientSide();//new MultiPlayAreaCaptureModeClientSide(mapmngr_);
+	gameMode = new MultiPlayFlowClientSide(this);
 
 	// スレッドを立てる
 	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);

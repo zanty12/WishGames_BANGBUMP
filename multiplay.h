@@ -3,10 +3,8 @@
 #include "lib/network.h"
 #include "gamebase.h"
 #include "multi_header.h"
-#include "multi_client_gameobject.h"
-#include "multi_character_select_mode.h"
-#include "multi_intermediate_result_mode.h"
-#include "multi_area_capture_mode.h"
+#include "multi_mode_flow.h"
+#include "storage_lock.h"
 
 #define SERVER_ADDRESS "192.168.0.7"
 #define MAX_MEMBER (4)
@@ -22,10 +20,10 @@ private:
 	int maxID = 0;										// IDの最大値				
 	Socket sockfd_;										// ソケット
 	std::list<CLIENT_DATA_SERVER_SIDE> clients_;		// クライアントデータ
-	bool isListLock = false;							// データベースのロック
 	Storage sendBuff = Storage(1024);					// 送信バッファ
 	Storage recvBuff = Storage(1024);					// 受信バッファ
-	MultiPlayServerSide *gameMode = nullptr;			// ゲームモード
+	MultiPlayFlowServerSide *gameMode = nullptr;		// ゲームモード
+	StorageLock	lock_;									// リストロック
 
 public:
 	MultiPlayServer();
@@ -86,7 +84,7 @@ private:
 	FD readfd_;											// ファイルディスクリプタ
 	Storage sendBuff = Storage(1024);					// 送信バッファ
 	Storage recvBuff = Storage(1024);					// 受信バッファ
-	MultiPlayClientSide *gameMode = nullptr;			// ゲームモード
+	MultiPlayFlowClientSide *gameMode = nullptr;		// ゲームモード
 
 	ClientGameObject playerObject;
 	Animator anim;
