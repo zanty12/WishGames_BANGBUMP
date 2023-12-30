@@ -5,7 +5,7 @@
 class MultiPlayFlowServerSide;
 class MultiPlayServerSide {
 protected:
-	float maxTime_ = 100.0f;
+	float maxTime_ = 20.0f;
 	float time_ = 0.0f;
 	MapMngr *map_ = nullptr;
 
@@ -15,12 +15,17 @@ protected:
 protected:
 public:
 	MultiPlayServerSide(MapMngr *map) : map_(map) { }
+	~MultiPlayServerSide() {
+		if (map_) delete map_;
+		map_ = nullptr;
+	}
 
 	virtual void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) = 0;
 
 	virtual void CreateResponse(Storage& out) = 0;
 
 	MapMngr *GetMap(void) const { return map_; }
+	virtual MULTI_MODE GetMode(void) const = 0;
 	float GetTime(void) const { return time_; }
 	float GetMaxTime(void) const { return maxTime_; }
 };
@@ -42,4 +47,5 @@ public:
 
 
 	MapMngr *GetMap(void) const { return map_; }
+	virtual MULTI_MODE GetMode(void) const = 0;
 };

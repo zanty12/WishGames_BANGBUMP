@@ -4,13 +4,15 @@
 
 class MultiPlayIntermediateResultModeServerSide : public MultiPlayServerSide {
 public:
-	MultiPlayIntermediateResultModeServerSide() : MultiPlayServerSide(nullptr) {
-		maxTime_ = 1000.0f;
+	MultiPlayIntermediateResultModeServerSide()
+		: MultiPlayServerSide(nullptr) {
 	}
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {	}
 
 	void CreateResponse(Storage &out) override { };
+
+	MULTI_MODE GetMode(void) const override { return INTERMEDIATE_RESULT_1; }
 };
 
 class MultiPlayIntermediateResultModeClientSide : public MultiPlayClientSide {
@@ -80,8 +82,10 @@ public:
 		}
 	}
 
-
 	void ParseResponse(Storage &in) override {
 
 	}
+
+	MULTI_MODE GetMode(void) const override { return INTERMEDIATE_RESULT_1; }
 };
+

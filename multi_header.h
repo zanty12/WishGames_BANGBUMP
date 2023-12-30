@@ -6,6 +6,18 @@
 
 using namespace Network;
 
+enum MULTI_MODE {
+	NONE = -1,
+	CHARACTER_SELECT = 0,
+	AREA_CAPTURE,
+	INTERMEDIATE_RESULT_1,
+	OBSTACLE_RACE,
+	INTERMEDIATE_RESULT_2,
+	ENEMY_RUSH,
+	INTERMEDIATE_RESULT_3,
+	FINAL_BATTLE,
+};
+
 // ヘッダー
 struct HEADER {
 	enum {
@@ -20,15 +32,11 @@ struct HEADER {
 		REQUEST_UPDATE,
 		RESPONSE_UPDATE
 	};
-	enum SCENE {
-		SELECT,
-		AREA_CAPTURE
-	};
+
 
 
 	int id = -1;
 	int command = NONE;
-	int scene = NONE;
 };
 // クライアントデータ（クライアント側）
 struct CLIENT_DATA_CLIENT_SIDE {
@@ -62,9 +70,9 @@ struct CLIENT_DATA_SERVER_SIDE {
 // レスポンス（プレイヤー）
 struct RESPONSE_PLAYER {
 	typedef CLIENT_DATA_CLIENT_SIDE DESC;
-
-	float time = 0;
+	MULTI_MODE mode = MULTI_MODE::NONE;
 	float maxTime = 0;
+	float time = 0;
 	std::list<CLIENT_DATA_CLIENT_SIDE> clients;
 
 	void CreateResponse(Storage& out, int id) {
@@ -78,6 +86,7 @@ struct RESPONSE_PLAYER {
 
 		// レスポンス作成（ヘッダー）
 		out << header;
+		out << mode;
 		out << maxTime;
 		out << time;
 		out << clients.size();
@@ -95,6 +104,7 @@ struct RESPONSE_PLAYER {
 
 		// ヘッダー取得
 		in >> recvHeader;
+		in >> mode;
 		in >> maxTime;
 		in >> time;
 		in >> playerNum;

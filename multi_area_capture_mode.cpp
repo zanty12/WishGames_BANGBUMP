@@ -85,7 +85,8 @@ void MultiPlayAreaCaptureModeServerSide::Spawn(Vector2 position) {
 	areas.push_back(area);
 }
 
-MultiPlayAreaCaptureModeServerSide::MultiPlayAreaCaptureModeServerSide(MapMngr *map_) : MultiPlayServerSide(map_) {
+MultiPlayAreaCaptureModeServerSide::MultiPlayAreaCaptureModeServerSide(GameBase*game)
+	: MultiPlayServerSide(new MapMngr("data/map/MultiPlay_Map1.csv", game)) {
 	int WIDTH = map_->GetMap()->GetWidth();					// •
 	int HEIGHT = map_->GetMap()->GetHeight();				// ‚‚³
 

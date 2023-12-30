@@ -41,7 +41,9 @@ private:
 	}
 
 public:
-	MultiPlayCharacterSelectModeServerSide() : MultiPlayServerSide(nullptr) { };
+	MultiPlayCharacterSelectModeServerSide()
+		: MultiPlayServerSide(nullptr) {
+	}
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {
 		pCharacters_ = &clients;
@@ -60,6 +62,8 @@ public:
 		// レスポンス作成
 		res.CreateResponse(out);
 	}
+
+	MULTI_MODE GetMode(void) const override { return CHARACTER_SELECT; }
 };
 
 
@@ -76,6 +80,9 @@ public:
 	MultiPlayCharacterSelectModeClientSide() : MultiPlayClientSide(nullptr) { }
 
 	void Draw(RESPONSE_PLAYER& players) override {
+		// キャラクターが存在しないなら処理しない
+		if (res.characters.size() == 0) return;
+
 		const int SCREEN_WIDTH = Graphical::GetWidth();					// 画面の幅
 		const int SCREEN_HEIGHT = Graphical::GetHeight();				// 画面の高さ
 		const int SCREEN_HORIZONTAL_CENTER = SCREEN_WIDTH * 0.5f;		// 画面の横軸の中心
@@ -139,4 +146,6 @@ public:
 		// レスポンス解析
 		res.ParseResponse(in);
 	}
+
+	MULTI_MODE GetMode(void) const override { return CHARACTER_SELECT; }
 };

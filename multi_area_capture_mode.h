@@ -33,11 +33,13 @@ private:
 	void Spawn(Vector2 position);
 
 public:
-	MultiPlayAreaCaptureModeServerSide(MapMngr *map_);
+	MultiPlayAreaCaptureModeServerSide(GameBase *game);
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override;
 
 	void CreateResponse(Storage &out) override;
+
+	MULTI_MODE GetMode(void) const override { return AREA_CAPTURE; }
 };
 
 
@@ -54,9 +56,13 @@ private:
 
 
 public:
-	MultiPlayAreaCaptureModeClientSide(MapMngr *map) : areaTexNo(LoadTexture("data/texture/area_capture.png")), anim(Animator(&playerObject, 1, true, 1,1,1)), MultiPlayClientSide(map){ }
+	MultiPlayAreaCaptureModeClientSide(GameBase *game) : areaTexNo(LoadTexture("data/texture/area_capture.png")), anim(Animator(&playerObject, 1, true, 1, 1, 1)),
+		MultiPlayClientSide(new MapMngr("data/map/MultiPlay_Map1.csv", game)) {
 
+	}
 	void Draw(RESPONSE_PLAYER &players) override;
 
 	void ParseResponse(Storage &in);
+
+	MULTI_MODE GetMode(void) const override { return AREA_CAPTURE; }
 };

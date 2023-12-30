@@ -23,9 +23,8 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	// プレイヤー作成
 	Vector2 pos = Vector2(200, 200);
 	float rot = 0.0f;
-	int texNo = 0;
 	Vector2 vel = Vector2::Zero;
-	Player *player = new Player(pos, rot, texNo, vel, mapmngr_);
+	Player *player = new Player(pos, rot, vel, mapmngr_);
 	player->SetAttribute(new Fire(player));
 	player->SetAttackAttribute(new Fire(player));
 
@@ -113,7 +112,10 @@ void MultiPlayServer::PlayerUpdate(void) {
 	}
 
 	// コリジョンの更新
-	if (coll_mngr_) coll_mngr_->Update();
+	if (coll_mngr_) {
+		coll_mngr_->Update();
+		coll_mngr_->CheckDiscard();
+	}
 
 	// ゲームモードの更新
 	if (gameMode) gameMode->Update(clients_);
@@ -158,9 +160,10 @@ void MultiPlayServer::SendUpdate(void) {
 			// レスポンスの作成
 			RESPONSE_PLAYER res;
 
-			// 制限時間の登録
-			res.time = gameMode->GetTime();
+			// レスポンス情報の登録
+			res.mode = gameMode->GetMode();
 			res.maxTime = gameMode->GetMaxTime();
+			res.time = gameMode->GetTime();
 
 			// クライアント情報の登録
 			for (auto &client : clients_) {
