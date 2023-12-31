@@ -3,6 +3,7 @@
 #include "multi_character_select_mode.h"
 #include "multi_intermediate_result_mode.h"
 #include "multi_area_capture_mode.h"
+#include "multi_obstacle_race_mode.h"
 #include "multi_enemy_rush_mode.h"
 
 class MultiPlayFlowServerSide {
@@ -19,7 +20,7 @@ private:
 		case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeServerSide();
 		case AREA_CAPTURE: return new MultiPlayAreaCaptureModeServerSide(game_);
 		case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResultModeServerSide();
-		case OBSTACLE_RACE: return nullptr;
+		case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeServerSide(game_);
 		case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResultModeServerSide();
 		case ENEMY_RUSH: return new MultiPlayEnemyRushModeServerSide(game_);
 		case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResultModeServerSide();
@@ -84,7 +85,7 @@ private:
 		case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeClientSide();
 		case AREA_CAPTURE: return new MultiPlayAreaCaptureModeClientSide(game_);
 		case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResultModeClientSide();
-		case OBSTACLE_RACE: return nullptr;
+		case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeClientSide(game_);
 		case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResultModeClientSide();
 		case ENEMY_RUSH: return new MultiPlayEnemyRushModeClientSide(game_);
 		case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResultModeClientSide();
@@ -122,9 +123,7 @@ public:
 		else if (gameMode_) {
 			gameMode_->Draw(res);
 			std::cout << res.mode << " : " << (int)res.time << std::endl;
-			if ((int)res.time == 5) {
-				int i = 0;
-			}
+
 		}
 	}
 

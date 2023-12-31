@@ -26,7 +26,7 @@ public:
 class MultiPlayEnemyRushModeClientSide : public MultiPlayClientSide {
 
 public:
-	MultiPlayEnemyRushModeClientSide(GameBase *game) : MultiPlayClientSide(new MapMngr("data/map/MultiPlay_Map1.csv", game)) {};
+	MultiPlayEnemyRushModeClientSide(GameBase *game) : MultiPlayClientSide(new MapMngr("data/map/MultiPlay_Map3.csv", game)) {};
 
 
 	void Draw(RESPONSE_PLAYER &players) override {

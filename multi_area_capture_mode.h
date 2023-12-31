@@ -52,14 +52,20 @@ private:
 	RESPONSE_AREA_CAPTURE res;
 	int areaTexNo = -1;
 	ClientGameObject playerObject;
-	Animator anim;
+	Animator *anim = nullptr;
 
 
 public:
-	MultiPlayAreaCaptureModeClientSide(GameBase *game) : areaTexNo(LoadTexture("data/texture/area_capture.png")), anim(Animator(&playerObject, 1, true, 1, 1, 1)),
+	MultiPlayAreaCaptureModeClientSide(GameBase *game) : 
+		areaTexNo(LoadTexture("data/texture/area_capture.png")), 
+		anim(new Animator(&playerObject, 1, true, 1, 1, 1)),
 		MultiPlayClientSide(new MapMngr("data/map/MultiPlay_Map1.csv", game)) {
 
 	}
+	~MultiPlayAreaCaptureModeClientSide() {
+		anim->Discard();
+	}
+
 	void Draw(RESPONSE_PLAYER &players) override;
 
 	void ParseResponse(Storage &in);

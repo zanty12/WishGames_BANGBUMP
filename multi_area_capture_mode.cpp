@@ -130,14 +130,16 @@ void MultiPlayAreaCaptureModeServerSide::CreateResponse(Storage &out) {
 
 
 void MultiPlayAreaCaptureModeClientSide::Draw(RESPONSE_PLAYER &players) {
+	if (anim == nullptr) return;
+
 	// ƒGƒŠƒA‚Ì•`‰æ
 	for (auto &area : res.areas) {
-		anim.SetTexNo(areaTexNo);
-		anim.SetPos(area.position);
-		anim.SetScale(Vector2(area.radius, area.radius));
-		anim.Draw();
+		anim->SetTexNo(areaTexNo);
+		anim->SetPos(area.position);
+		anim->SetScale(Vector2(area.radius, area.radius));
+		anim->Draw();
 	}
-	anim.SetTexNo(-1);
+	anim->SetTexNo(-1);
 }
 
 void MultiPlayAreaCaptureModeClientSide::ParseResponse(Storage &in) {

@@ -8,8 +8,8 @@
 #include <thread>
 #pragma comment(lib, "lib/lib.lib")
 
-// #define DEBUG_CONNECT
-#define DEBUG_LOCKED
+ #define DEBUG_CONNECT
+//#define DEBUG_LOCKED
 
 
 MultiPlayServer::MultiPlayServer() {
@@ -427,7 +427,8 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	}
 
 	if (gameMode) gameMode->Draw(res);
-	// renderer_->CheckDiscard();
+	renderer_->CheckDiscard();
+	coll_mngr_->CheckDiscard();
 	renderer_->Draw();
 }
 
@@ -465,12 +466,14 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 	const int MAX_BUFF = 1024;
 	memcpy(&tmp, &readfd_, sizeof(FD));
 
-	// 検知する
-	if (Select(&tmp, nullptr, nullptr, 0, waitTime)) {
-		char buff[MAX_BUFF] = {};
+	Address serverAddr;
+	int serverAddrLen = sizeof(serverAddr);
+	char buff[MAX_BUFF] = {};
 
+
+	{
 		// 受信する
-		int buffLen = Recv(sockfd_, (char *)buff, MAX_BUFF);
+		int buffLen = RecvFrom(sockfd_, (char *)buff, MAX_BUFF, 0, &serverAddr, &serverAddrLen);
 		// 失敗なら終了
 		if (buffLen <= 0) return;
 		recvBuff.Push(buff, buffLen);
@@ -486,6 +489,28 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 		// 初期化
 		recvBuff = nullptr;
 	}
+	//// 検知する
+	//if (Select(&tmp, nullptr, nullptr, 0, waitTime)) {
+	//	Address serverAddr;
+	//	int serverAddrLen = sizeof(serverAddr);
+	//	char buff[MAX_BUFF] = {};
+
+	//	// 受信する
+	//	int buffLen = RecvFrom(sockfd_, (char *)buff, MAX_BUFF, 0, &serverAddr, &serverAddrLen);
+	//	// 失敗なら終了
+	//	if (buffLen <= 0) return;
+	//	recvBuff.Push(buff, buffLen);
+
+
+
+	//	// レスポンスの解析
+	//	res.ParseResponse(recvBuff);
+	//	// 受信したモードと実行しているゲームモードが同じなら解析する
+	//	if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
+
+
+	//	// 初期化
+	//	recvBuff = nullptr;
 }
 
 void MultiPlayClient::Update() {
