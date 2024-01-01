@@ -4,6 +4,7 @@
 #include "gamebase.h"
 #include "multi_header.h"
 #include "multi_mode_flow.h"
+#include "multi_connect_renderer.h"
 #include "storage_lock.h"
 
 #define SERVER_ADDRESS "192.168.0.7"
@@ -24,6 +25,8 @@ private:
 	Storage recvBuff = Storage(1024);					// 受信バッファ
 	MultiPlayFlowServerSide *gameMode = nullptr;		// ゲームモード
 	StorageLock	lock_;									// リストロック
+
+
 
 public:
 	MultiPlayServer();
@@ -87,6 +90,7 @@ private:
 	MultiPlayFlowClientSide *gameMode = nullptr;		// ゲームモード
 
 	ClientGameObject playerObject;
+	MultiRenderer *multiRenderer_ = nullptr;			// 描画
 	Animator anim;
 	std::thread sendUpdateFunc;							// 送信関数
 
@@ -102,6 +106,7 @@ public:
 
 		// 解放
 		delete gameMode;
+		delete multiRenderer_;
 		sendBuff.Release();
 		recvBuff.Release();
 

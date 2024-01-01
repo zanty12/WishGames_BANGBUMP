@@ -5,12 +5,12 @@
 #include "wind.h"
 #include "dark.h"
 #include "time.h"
+#include "enemy1.h"
 #include <thread>
 #pragma comment(lib, "lib/lib.lib")
 
  #define DEBUG_CONNECT
 //#define DEBUG_LOCKED
-
 
 MultiPlayServer::MultiPlayServer() {
 	WSAData data;
@@ -211,6 +211,10 @@ void MultiPlayServer::SendUpdate(void) {
 				res.clients.push_back({ client.header.id , client.player_->GetPos(), 0, 0 });
 			}
 
+			// オブジェクト情報の登録
+			//for(auto &skillorb : orb_mngr_->)
+			res.objects.push_back({ 0, OBJECT_DATA_CLIENT_SIDE::ENEMY, OBJECT_DATA_CLIENT_SIDE::NONE, Vector2(200,200),0,Vector2(100,100) });
+
 			// クライアント全員に送信する
 			for (auto &client : clients_) {
 				// 登録されていないならスキップ
@@ -353,6 +357,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	Startup(v2_2, data);
 
 	gameMode = new MultiPlayFlowClientSide(this);
+	multiRenderer_ = new MultiRenderer();
 
 	// スレッドを立てる
 	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);
@@ -429,6 +434,7 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	if (gameMode) gameMode->Draw(res);
 	renderer_->CheckDiscard();
 	coll_mngr_->CheckDiscard();
+	multiRenderer_->Draw(res);
 	renderer_->Draw();
 }
 

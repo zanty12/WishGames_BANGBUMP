@@ -402,6 +402,9 @@
     <ClInclude Include="multi_obstacle_race_mode.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="multi_connect_renderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="color-shader.hlsl">

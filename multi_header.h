@@ -62,6 +62,31 @@ struct CLIENT_DATA_SERVER_SIDE {
 	CLIENT_DATA_SERVER_SIDE(HEADER header, Socket sockfd, Address addr, Player *player)
 		: header(header), sockfd_(sockfd), clientAddr_(addr), player_(player) { };
 };
+// オブジェクトデータ（クライアント側）
+struct OBJECT_DATA_CLIENT_SIDE {
+	enum {
+		NONE = -1,
+	};
+
+	enum TAG {
+		ENEMY,
+		SKILL_POINT,
+	};
+
+	enum ANIMATION {
+		IDEL,
+		MOVE,
+		ATTACK,
+	};
+
+
+	int id = 0;
+	int tag = NONE;
+	int anim = NONE;
+	Vector2 position;
+	float rotation = 0.0f;
+	Vector2 scale = Vector2(75, 75);
+};
 
 
 
@@ -74,6 +99,7 @@ struct RESPONSE_PLAYER {
 	float maxTime = 0;
 	float time = 0;
 	std::list<CLIENT_DATA_CLIENT_SIDE> clients;
+	std::list<OBJECT_DATA_CLIENT_SIDE> objects;
 
 	void CreateResponse(Storage& out, int id) {
 		// 初期化
@@ -90,17 +116,25 @@ struct RESPONSE_PLAYER {
 		out << maxTime;
 		out << time;
 		out << clients.size();
+		out << objects.size();
 
 		// レスポンス作成（プレイヤー）
 		for (auto& client : clients) {
 			// レスポンス情報の設定
 			out << client;
 		}
+
+		// レスポンス作成（オブジェクト）
+		for (auto& object : objects) {
+			// レスポンス情報の設定
+			out << object;
+		}
 	}
 
 	void ParseResponse(Storage& in) {
 		HEADER recvHeader;
 		size_t playerNum = 0;
+		size_t objectNum = 0;
 
 		// ヘッダー取得
 		in >> recvHeader;
@@ -108,6 +142,7 @@ struct RESPONSE_PLAYER {
 		in >> maxTime;
 		in >> time;
 		in >> playerNum;
+		in >> objectNum;
 
 
 		// レスポンス解析（プレイヤー）
@@ -122,6 +157,13 @@ struct RESPONSE_PLAYER {
 			else {
 				clients.push_back(res);
 			}
+		}
+
+		// レスポンス解析（オブジェクト）
+		for (int i = 0; i < objectNum; i++) {
+			OBJECT_DATA_CLIENT_SIDE res;
+			in >> res;
+			objects.push_back(res);
 		}
 	}
 };
