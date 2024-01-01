@@ -9,7 +9,7 @@
 #include "player.h"
 #include "video.h"
 
-enum VIDEO_FILE
+enum ATTRIBUTE_ACTION
 {
     FIRE_MOVE,
     FIRE_ATTACK,
@@ -21,17 +21,30 @@ enum VIDEO_FILE
     DARK_ATTACK,
 };
 
+struct attribute_select
+{
+    ATTRIBUTE_ACTION attribute;
+    int order;
+    float rot;
+    float target_rot;
+    int tex;
+    Vector2 pos;
+    Vector2 target_pos;
+};
+
 class SceneMngr;
 class Prep : public Scene
 {
 private:
     //プレイヤーの属性
-    VIDEO_FILE move_ = FIRE_MOVE;
-    VIDEO_FILE attack_ = FIRE_ATTACK;
-    VIDEO_FILE move_next_ = FIRE_MOVE;
-    VIDEO_FILE attack_next_ = FIRE_ATTACK;
-    //仕様上二つしかないけど、一応
-    std::map<VIDEO_FILE, Video*> video_list_;
+    ATTRIBUTE_ACTION move_ = FIRE_MOVE;
+    ATTRIBUTE_ACTION attack_ = FIRE_ATTACK;
+    ATTRIBUTE_ACTION move_next_ = FIRE_MOVE;
+    ATTRIBUTE_ACTION attack_next_ = FIRE_ATTACK;
+    Video* video_;
+
+    bool clockwise_ = true;
+    bool moving_ = false;
 
     SceneMngr* scene_mngr_;
 
@@ -57,10 +70,7 @@ public:
 
     ~Prep() override
     {
-        for (auto& video : video_list_)
-        {
-            delete video.second;
-        }
+        delete video_;
     }
 
     void Update() override;
@@ -68,5 +78,5 @@ public:
     void DebugMenu() override;
 
 private:
-    void SetNewVideo(VIDEO_FILE video_file);
+    void SetNewVideo(ATTRIBUTE_ACTION video_file);
 };
