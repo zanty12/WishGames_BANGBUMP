@@ -401,7 +401,7 @@ void Player::Invincibility(void)
 	// “_–Å
 	//----------------------------------------
 	flash_time_ += Time::GetDeltaTime();
-	if (flash_time_ > 0.3f)
+	if (flash_time_ > 0.1f)
 	{
 		flash_time_ = 0.0f;
 		if (GetColor().a == 1.0f)

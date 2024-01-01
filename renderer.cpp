@@ -2,6 +2,8 @@
 
 void Renderer::Update()
 {
+    CheckDiscard();
+
     for (auto it = animators_.begin(); it != animators_.end();)
     {
         if ((*it)->GetIsMovable() || (*it)->GetIsAnim())

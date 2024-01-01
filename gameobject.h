@@ -53,8 +53,8 @@ public:
 	GameObject() = default;
     GameObject(Vector2 pos, float rot, int tex_number);
     virtual ~GameObject(){
-        if(animator_) animator_->Discard();
-        if(collider_) collider_->Discard();
+        if (animator_)animator_->Discard();
+        if (collider_)collider_->Discard();
 }
 
     void SetPos(Vector2 pos) { pos_ = pos; } //ポジションセット

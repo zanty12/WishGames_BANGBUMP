@@ -62,9 +62,16 @@ void Animator::Update(void)
     //今のゲームオブジェクトの状態を反映させる
     if (parent_ != nullptr)
     {
+        if (parent_->GetDiscard() == true)
+        {
+            Discard();
+            return;
+        }
+
         pos_ = parent_->GetPos();
         scale_ = parent_->GetScale();
         rot_ = parent_->GetRot();
+        color_ = parent_->GetColor();
     }
 
     if (!isAnim_)
