@@ -18,7 +18,7 @@ class Fire :public Attribute
 	float attackWidthLength = 5.0f;
 
 public:
-	Fire(Player *player) : Attribute(player) { }
+	Fire(Player *player) : Attribute(player, ATTRIBUTE_TYPE_FIRE) { }
 	~Fire() override = default;
 	Vector2 Move() override;
 	void Action() override;

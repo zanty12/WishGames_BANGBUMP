@@ -11,10 +11,10 @@
 #include "floor.h"
 #include "penfloor.h"
 #include "skillorb.h"
-#include "thundercloud.h"
 #include "wall.h"
 #include "mapenum.h"
 #include "spike.h"
+#include "area_capture.h"
 #include "camera.h"
 
 /**
@@ -68,82 +68,75 @@ void Map::PutCell(int x, int y, int MAP_READ) const
             break;
         }
 
-    case MAP_READ_THUNDERCLOUD:
-        {
-            ThunderCloud * thundercloud = new ThunderCloud(x, y);
-            map_[y * width_ + x] = thundercloud;
-            break;
-        }
-
     case MAP_READ_ORB_SMALL_FIRE:
         {
-            Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_SMALL);
+            GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_SMALL);
             break;
         }
 
     case MAP_READ_ORB_MID_FIRE:
         {
-            Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_MID);
+            GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_MID);
             break;
         }
 
     case MAP_READ_ORB_BIG_FIRE:
         {
-            Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_BIG);
+            GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_BIG);
             break;
         }
 
     case MAP_READ_ORB_SMALL_DARK:
     {
-        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_SMALL);
+        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_SMALL);
         break;
     }
 
     case MAP_READ_ORB_MID_DARK:
     {
-        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_MID);
+        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_MID);
         break;
     }
 
     case MAP_READ_ORB_BIG_DARK:
     {
-        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_BIG);
+        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_BIG);
         break;
     }
 
     case MAP_READ_ORB_SMALL_THUNDER:
     {
-        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_SMALL);
+        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_SMALL);
         break;
     }
 
     case MAP_READ_ORB_MID_THUNDER:
     {
-        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_MID);
+        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_MID);
         break;
     }
 
     case MAP_READ_ORB_BIG_THUNDER:
     {
-        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_BIG);
+        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_BIG);
         break;
     }
 
     case MAP_READ_ORB_SMALL_WIND:
     {
-        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_SMALL);
+        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_SMALL);
         break;
     }
 
     case MAP_READ_ORB_MID_WIND:
     {
-        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_MID);
+        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_MID);
         break;
     }
 
     case MAP_READ_ORB_BIG_WIND:
     {
-        Game::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_BIG);
+        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_BIG);
         break;
     }
 
@@ -171,6 +164,13 @@ void Map::PutCell(int x, int y, int MAP_READ) const
     case MAP_READ_SPIKE_RIGHT:
         {
             Spike* spike = new Spike(x, y, MAP_READ_SPIKE_RIGHT);
+            map_[y * width_ + x] = spike;
+            break;
+        }
+
+    case MAP_READ_MULTI_AREA_CAPTURE:
+        {
+            AreaCapture *spike = new AreaCapture(x, y);
             map_[y * width_ + x] = spike;
             break;
         }

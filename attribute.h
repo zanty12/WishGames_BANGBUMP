@@ -13,7 +13,7 @@ protected:
 
 public:
 	Attribute() = delete;
-	Attribute(Player *player) : player_(player) { }
+	Attribute(Player* player, ATTRIBUTE_TYPE attr) : player_(player), attributeType_(attr) {}
 
 	virtual ~Attribute() = default;
 
@@ -26,4 +26,6 @@ public:
 	virtual void DebugMenu() = 0;
 
 	virtual void Gravity() = 0;
+
+	ATTRIBUTE_TYPE GetAttribute() { return attributeType_; }
 };

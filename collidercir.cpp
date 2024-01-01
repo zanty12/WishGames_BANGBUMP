@@ -1,13 +1,13 @@
 ﻿#include "collidercir.h"
 #include "animator.h"
-#include "game.h"
+#include "gamebase.h"
 
 ColliderCir::ColliderCir(GameObject* parent, float radius): Collider(CIRCLE, parent)
 {
     cir_.a = parent->GetPos();
     radius_ = radius;
 
-    Game::GetCollMngr()->Add(this);
+    GameBase::GetCollMngr()->Add(this);
 }
 
 bool ColliderCir::Collide(Collider* other)
@@ -55,6 +55,8 @@ void ColliderCir::CollisionInteract()
             CollisionPen(other);
             break;
         case OBJ_VOID:
+            break;
+        case OBJ_ITEM:
             break;
         default:
             CollisionSolid(other);

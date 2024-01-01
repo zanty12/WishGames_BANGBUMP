@@ -1,6 +1,6 @@
 #include "colliderrect.h"
 
-#include "game.h"
+#include "gamebase.h"
 
 ColliderRect::ColliderRect(GameObject* parent) : Collider(RECTANGLE, parent)
 {
@@ -9,7 +9,7 @@ ColliderRect::ColliderRect(GameObject* parent) : Collider(RECTANGLE, parent)
         Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),
         Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2),
         Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2));
-    Game::GetCollMngr()->Add(this);
+    GameBase::GetCollMngr()->Add(this);
 }
 
 bool ColliderRect::Collide(Collider* other)
@@ -61,6 +61,8 @@ void ColliderRect::CollisionInteract()
             }
             break;
         case OBJ_VOID:
+            break;
+        case OBJ_ITEM:
             break;
         default:
             CollisionSolid(other);

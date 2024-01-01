@@ -19,7 +19,6 @@ typedef enum {
     MAP_READ_FLOOR, ///< 床セルを表します。
     MAP_READ_PENFLOOR, ///< 貫通可能な床セルを表します。
     MAP_READ_CLOUD, ///< 雲セルを表します。
-    MAP_READ_THUNDERCLOUD, ///< 雷雲セルを表します。
     MAP_READ_BLOCK, ///< ブロックセルを表します。
     MAP_READ_ORB_SMALL_FIRE, ///< 小スキル玉セルを表します。
     MAP_READ_ORB_MID_FIRE, ///< 中スキル玉セルを表します。
@@ -37,8 +36,9 @@ typedef enum {
     MAP_READ_SPIKE_RIGHT, ///< 右向きのトゲセルを表します。
     MAP_READ_SPIKE_UP, ///< 上向きのトゲセルを表します。
     MAP_READ_SPIKE_DOWN, ///< 下向きのトゲセルを表します。
+    MAP_READ_MULTI_AREA_CAPTURE, ///< マルチの占領エリアを表します。
     // 英語名標準
-    MAP_READ_KOOPA, // ノコノコ
-    MAP_READ_HAMMERBRO,
-    MAP_READ_PHANTOM,
+    MAP_READ_KOOPA, // エネミー_1
+    MAP_READ_HAMMERBRO, // エネミー_2
+    MAP_READ_PHANTOM, // エネミー_3
 }MAP_READ;

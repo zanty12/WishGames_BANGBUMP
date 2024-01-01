@@ -1,11 +1,14 @@
 ﻿#include "graphical.h"
 #include "sprite.h"
 #include <iostream>
+#include <thread>
+
 #include "DebugUI.h"
 #include "xinput.h"
 #include "mapmngr.h"
 #include "scenemngr.h"
 #include "time.h"
+#include "video.h"
 
 bool debug_mode = true;
 
@@ -62,9 +65,9 @@ int main()
             Input::Update();
 
             Time::Update();
+
             scene_mngr->Update();
             scene_mngr->Draw();
-
             DebugUI::EndDraw();
             Graphical::Present();
         }

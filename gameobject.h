@@ -28,6 +28,7 @@ enum OBJECT_TYPE
     OBJ_SPIKE, //トゲ
     OBJ_PLAYER, //プレイヤー
     OBJ_ENEMY, //敵
+    OBJ_BULLET, //敵２のバレット
     OBJ_ATTACK, //攻撃
     OBJ_ITEM, //アイテム(スキル玉しかないけど)
 };
@@ -51,7 +52,10 @@ public:
     static constexpr float SIZE_ = 64.0f; //１マスの標準サイズ
 	GameObject() = default;
     GameObject(Vector2 pos, float rot, int tex_number);
-    virtual ~GameObject() = default;
+    virtual ~GameObject(){
+        if (animator_)animator_->Discard();
+        if (collider_)collider_->Discard();
+}
 
     void SetPos(Vector2 pos) { pos_ = pos; } //ポジションセット
     Vector2 GetPos(void) const { return pos_; } //ポジションゲット

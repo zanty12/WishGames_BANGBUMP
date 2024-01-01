@@ -1,44 +1,51 @@
 #include "game.h"
 #include "dark.h"
 #include "fire.h"
-#include "mapmngr.h"
+
 #include "thunder.h"
 #include "wind.h"
-#include "renderer.h"
-
-Renderer* Game::renderer_ = new Renderer();
-CollMngr* Game::coll_mngr_ = new CollMngr();
-SkillOrbMngr * Game::orb_mngr_ = new SkillOrbMngr();
+#include <thread>
 
 Game::Game(SceneMngr* scene_mngr)
-    :scene_mngr_(scene_mngr)
+    : GameBase(scene_mngr)
 {
-    mapmngr_ = new MapMngr("data/map/1.csv", this);
-    int playertex = LoadTexture("data/texture/player.png");
-    player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, playertex, Vector2(0.0f, 0.0f), mapmngr_);
-    camera_ = new Camera(player_);
+    mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
+    //int playertex = LoadTexture("data/texture/player.png");
+
+    /*Player *player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, Vector2(0.0f, 0.0f), mapmngr_);
+    players_.push_back(player_);
+    camera_ = new Camera(player_);*/
 }
 
-Game::~Game() {
-    delete mapmngr_;
-    delete player_;
-    delete camera_;
-    delete renderer_;
-    delete coll_mngr_;
-    delete orb_mngr_;
-}
 
 void Game::Update()
 {
     coll_mngr_->Update();
-    mapmngr_->Update();
-    player_->Update();
-    camera_->Update();
-    renderer_->Update();
-    if (player_->GetChangeSceneFlag())
+    std::thread map(&MapMngr::Update, mapmngr_);
+    //mapmngr_->Update();
+    std::thread enemy(&EnemyMngr::Update, mapmngr_->GetEnemyMngr());
+    std::thread player(&Player::Update, GetPlayer());
+    //GetPlayer()->Update();
+    //std::thread projectile(&ProjectileMngr::Update, projectile_mngr_);
+    //projectile_mngr_->Update();
+    //std::thread orb(&SkillOrbMngr::Update, orb_mngr_);
+    //orb_mngr_->Update();
+    //projectile.join();
+    //orb.join();
+    std::thread camera(&Camera::Update, camera_);
+    //camera_->Update();
+    std::thread renderer(&Renderer::Update, renderer_);
+    //renderer_->Update();
+    map.join();
+    enemy.join();
+    player.join();
+    camera.join();
+    renderer.join();
+    if (GetPlayer()->GetChangeSceneFlag())
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
     }
+
 }
 
 void Game::Draw()
@@ -47,8 +54,14 @@ void Game::Draw()
     renderer_->Draw(camera_ ->GetCameraOffset());
 }
 
+Player *Game::GetPlayer() {
+    return *GetPlayers().begin();
+}
+
 void Game::DebugMenu()
 {
+    auto player_ = GetPlayer();
+
     ImGui::Begin("Game");
     ImGui::Text(u8"プレイヤー座標");
     ImGui::Text("x:%f, y: %f", player_->GetPos().x, player_->GetPos().y);
@@ -112,6 +125,15 @@ void Game::DebugMenu()
             player_->SetAttackAttribute(new Dark(player_));
         }
         ImGui::EndCombo();
+    }
+    ImGui::End();
+    ImGui::Begin("map test");
+    if(ImGui::Button("map1"))
+    {
+        delete mapmngr_;
+        coll_mngr_->CheckDiscard();
+        renderer_->CheckDiscard();
+        mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
     }
     ImGui::End();
     player_->DebugMenu();

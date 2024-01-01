@@ -21,7 +21,7 @@ private:
 	float friction_ = 0.95f;
 	float attackRadius = 100.0f;
 public:
-	Wind(Player *player) : Attribute(player) { }
+	Wind(Player* player) : Attribute(player, ATTRIBUTE_TYPE_WIND) { }
 	~Wind() override = default;
 	bool StickTrigger(Vector2 stick, Vector2 previousStick);
 	Vector2 Move(void) override;

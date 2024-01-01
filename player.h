@@ -17,6 +17,7 @@
 #include "collidercir.h"
 #include "mapmngr.h"
 
+
 enum PLAYER_STATE
 {
 	MOVE_UP,		//上に移動
@@ -26,13 +27,15 @@ enum PLAYER_STATE
 
 class MapMngr;
 class Camera;
+class SkillOrb;
+
 class Player : public MovableObj
 {
 private:
-	const int SKILL_GAUGE_MAX_ = 10;	//所持スキルポイントの上限
-	const int HP_MAX_ = 10000000;		//HPの上限
-	const float GRAVITY_SCALE_ = -6.0f;	//重力（仮）
-	const int SPIKE_SURPRISE_ = 15;		//トゲに当たってノックバックするフレーム数
+
+	static const int INITIAL_HP_;			//HPの初期値
+	static const float GRAVITY_SCALE_;		//重力（仮）
+	static const float INVINCIBILITY_MAX_TIME_;	//無敵時間
 
 	Vector2 dir_;		//向き
 
@@ -41,6 +44,10 @@ private:
 
 	int hp_;
 	int skillpt_;
+	int lv_;
+
+	int drop_point_;		//落とすポイント
+	ATTRIBUTE_TYPE hit_attack_attr = ATTRIBUTE_TYPE_FIRE;	//受けた攻撃属性
 
 	bool change_scene_;		//シーン遷移フラグ
 
@@ -49,16 +56,26 @@ private:
 	int clash_spike_;		//トゲに衝突したら15フレームの間ノックバック
 	int knock_back_dir_;	//トゲに衝突した方向
 
+	float invincibility_time_;	//無敵の経過時間
+	float flash_time_;			//点滅間隔
+	float knockback_distance_;	//ノックバックする距離
+	Vector2 knockback_start_;	//ノックバックの初めのポジション
+	Vector2 knockback_end_;		//ノックバックの終わりのポジション
+
 	int not_stick_working_;
 
 	PLAYER_STATE player_state_;
 
 public:
-	Player(Vector2 pos,float rot, int tex_number,Vector2 vel , MapMngr* map_mangr)
-		:MovableObj(pos,rot,tex_number,vel),hp_(HP_MAX_),skillpt_(0),
-		dir_(Vector2(0.0f,0.0f)),map_mangr_(map_mangr) ,clash_spike_(0), knock_back_dir_(0),
-		change_scene_(false)
-	{}
+	Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr)
+		:MovableObj(pos, rot, 0, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
+		dir_(Vector2(0.0f, 0.0f)), map_mangr_(map_mangr), clash_spike_(0), knock_back_dir_(0),
+		change_scene_(false), drop_point_(0),invincibility_time_(INVINCIBILITY_MAX_TIME_),knockback_distance_(0.0f)
+	{
+		int tex = LoadTexture("data/texture/player.png");
+		SetTexNo(tex);
+		GetAnimator()->SetTexNo(tex);
+	}
 
 	~Player() { delete move_attribute_; delete attack_attribute_; }
 
@@ -68,20 +85,19 @@ public:
 	void SetHp(int hp) { hp_ = hp; }			//HPのセット
 	void SetAttribute(Attribute* move_attribute) {delete move_attribute_; move_attribute_ = move_attribute; }				//ムーブアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
 	void SetAttackAttribute(Attribute* attack_attribute) {delete attack_attribute_; attack_attribute_ = attack_attribute; }	//アタックアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
-	Attribute* GetAttribute(void) { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
-	Attribute* GetAttackAttribute(void) { return attack_attribute_; }	//アタックアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
-	MapMngr* GetMapMngr(void) { return map_mangr_; }	//MapMngrのポインタをゲット
-	bool GetChangeSceneFlag(void) { return change_scene_; }	//シーンチェンジのフラグ true=別のシーンへ
-	PLAYER_STATE GetPlayerState(void) { return player_state_; }	//プレイヤーのステータスをゲット
+	Attribute* GetAttribute(void) const { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
+	Attribute* GetAttackAttribute(void) const { return attack_attribute_; }	//アタックアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
+	MapMngr* GetMapMngr(void) const { return map_mangr_; }	//MapMngrのポインタをゲット
+	bool GetChangeSceneFlag(void) const { return change_scene_; }	//シーンチェンジのフラグ true=別のシーンへ
+	PLAYER_STATE GetPlayerState(void) const { return player_state_; }	//プレイヤーのステータスをゲット
+	int GetSkillPoint(void) const { return skillpt_; }	//現在所有しているスキルポイントのゲット
 
-	//スキルポイントの使用（使えるとき=true 使うとスキルポイントは0になる）
-	bool UseSkillPoint(void);
-	//スキルポイントの増加（ゲットしたポイントと所持スキルポイントの合計が所持スキルポイントの上限を超える場合、所持スキルポイントは10になる）
-	void SkillPointUp(int point) { skillpt_ + point <= SKILL_GAUGE_MAX_ ? skillpt_ += point : skillpt_ = SKILL_GAUGE_MAX_; }
 	//スキルポイントの減少（ダメージが所持スキルポイントを超える場合、スキルポイントは0になる）
 	void SkillPointDown(int damage) { damage <= skillpt_ ? skillpt_ -= damage : skillpt_ = 0; }
 	//HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
 	void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
+
+	SkillOrb* DropSkillOrb(void);
 
 	void Update(void) override;
 	void Draw(Camera* camera);
@@ -92,9 +108,22 @@ private:
 	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）
 	void UpdateDir(void) { if (GetVel() != Vector2(0.0f, 0.0f)) dir_ = GetVel().Normalize(); }
 
-	//当たり判定（マップ）
-	//void CollisionMap(void);
-
+	//何かに当たったときのアクション
+	void CollisionAction(void);
+	//当たり判定（スキルポイント）
+	void CollisionSkillPoint(GameObject* obj);
+	//当たり判定（アタックアトリビュート）
+	void CollisionAttack(GameObject* obj);
 	//当たり判定（トゲ）
-	//void CollisionSpike(void);
+	void CollisionSpike(void);
+	//当たり判定（エネミー）
+	void CollisionEnemy(GameObject* obj);
+
+	//無敵の時
+	void Invincibility(void);
+
+	//レベルアップ（ゲットしたスキルポイントを引数にする）
+	void LvUp(void);
+
+	void HpMaxUp(void);
 };

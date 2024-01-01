@@ -5,18 +5,26 @@
 
 void EnemyMngr::Update()
 {
-    for(int i = 0; i < enemies_.size(); i++)
+    //破棄する
+    enemies_.remove_if(
+        [](Enemy* enemy) {
+            if (enemy->IsDead()) {
+                delete enemy;
+                enemy = nullptr;
+                return true;
+            }
+            return false;
+        }
+    );
+
+    //アップデート
+    for (auto enemy : enemies_)
     {
-        if(enemies_[i] == nullptr)
+        if (enemy == nullptr)
             continue;
 
-        enemies_[i]->Update();
+        enemy->Update();
 
-        if(enemies_[i]->IsDead())
-        {
-            delete enemies_[i];
-            enemies_[i] = nullptr;
-        }
     }
 }
 
@@ -27,18 +35,18 @@ void EnemyMngr::Spawn(int x, int y, int type)
     switch (type)
     {
     case(MAP_READ_KOOPA):
-        {
-            Enemy* enemy = new Enemy1(x, y,this);
-            enemies_.push_back(enemy);
-            break;
-        }
-
-    case(MAP_READ_HAMMERBRO):
-    /*{
-        Enemy* enemy = new Enemy1(x, y, this);
+    {
+        Enemy* enemy = new Enemy1(x, y,this);
         enemies_.push_back(enemy);
         break;
-    }*/
+    }
+        break;
+    case(MAP_READ_HAMMERBRO):
+    {
+        Enemy* enemy = new Enemy2(x, y, this);
+        enemies_.push_back(enemy);
+        break;
+    }
         break;
     case(MAP_READ_PHANTOM):
     {
@@ -51,3 +59,4 @@ void EnemyMngr::Spawn(int x, int y, int type)
         break;
     }
 }
+
