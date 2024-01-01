@@ -23,4 +23,6 @@ public:
     * sizeType : ÉTÉCÉY
     */
     void Pop(Vector2 pos, ATTRIBUTE_TYPE attributeType, SKILLORB_SIZE_TYPE sizeType);
+
+    std::list<SkillOrb *> &GetSkillOrbs(void) { return skillOrbs_; }
 };
