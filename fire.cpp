@@ -19,17 +19,23 @@ Vector2 Fire::Move()
         float angle = acos(Vector2::Dot(dir, player_dir));
         if (acos(Vector2::Dot(dir, player_dir)) > M_PI_2)
             vel += dir * speed * Time::GetDeltaTime() * Time::GetDeltaTime();
+        player_->SetGravityState(GRAVITY_NONE);
         return vel;
     }
     else if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() > speed * Time::GetDeltaTime())
     {
         Vector2 dir = stick.Normalize();
         Vector2 vel = dir * speed * Time::GetDeltaTime();
+        player_->SetGravityState(GRAVITY_NONE);
         return vel;
     }
     else
     {
-        return player_->GetVel() * friction;
+        player_->SetGravityState(GRAVITY_FULL);
+        if(player_->GetVel().Distance() > Player::GRAVITY_SCALE_ * Time::GetDeltaTime())
+            return player_->GetVel() * friction;
+        else
+            return player_->GetVel();
     }
 };
 

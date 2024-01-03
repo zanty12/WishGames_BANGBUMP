@@ -33,13 +33,11 @@ static const int LvUpPoint[LV_NUM] =
 };
 
 const int Player::INITIAL_HP_ = 500;
-const float Player::GRAVITY_SCALE_ = -6.0f;
 const float Player::INVINCIBILITY_MAX_TIME_ = 1 + (1.0f / 4);
 
 
 void Player::Update(void)
 {
-
 	//HP‚ª0‚É‚È‚Á‚½‚çƒŠƒUƒ‹ƒg‚ÉˆÚ‚é
 	if (hp_ <= 0)
 	{
@@ -65,15 +63,29 @@ void Player::Update(void)
 
 	bool affected_gravity = false;	//d—Í‚ðŽó‚¯‚½‚©‚Ç‚¤‚©
 
+	Vector2 next_vel = GetVel();
 	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
-		SetVel(move_attribute_->Move());
+		next_vel = move_attribute_->Move();
 		move_attribute_->Gravity();
 	}
 	else if (clash_spike_ == 0)
-	{//‰½‚à‘®«‚ª‚È‚¯‚ê‚Î—Ž‚¿‚é
+	{/*//‰½‚à‘®«‚ª‚È‚¯‚ê‚Î—Ž‚¿‚é
 		if (GetVel().y >= GRAVITY_SCALE_)
-			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));
+			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));*/
+	}
+
+	if(GetGravityState() == GRAVITY_FULL)
+	{
+		SetVel(Vector2(next_vel.x, next_vel.y - GRAVITY_SCALE_ * Time::GetDeltaTime() * Time::GetDeltaTime()));
+	}
+	else if (GetGravityState() == GRAVITY_HALF)
+	{
+		SetVel(Vector2(next_vel.x, next_vel.y - GRAVITY_SCALE_ / 2 * Time::GetDeltaTime() * Time::GetDeltaTime()));
+	}
+	else if (GetGravityState() == GRAVITY_NONE)
+	{
+		SetVel(Vector2(next_vel.x, next_vel.y));
 	}
 
 
