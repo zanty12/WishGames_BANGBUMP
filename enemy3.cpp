@@ -8,11 +8,12 @@
 
 
 bool CheckEnemy3Length(Vector2 a, Vector2 b, float len);
+bool CheckPlayerLength(Vector2 a, Vector2 b, float len);
 
 void Enemy3::Update()
 {
     //HPÇ™0Ç…Ç»Ç¡ÇΩÇÁè¡Ç∑
-    if (hp_ <= 0)
+    if (GetHp() <= 0)
     {
         GameObject::Discard();
         Die();
@@ -42,10 +43,26 @@ void Enemy3::Update()
     //ÉvÉåÉCÉÑÅ[í«è]
     std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayers();
 
+    float Spos_now = 0.0f;
+    float Spos_old = 0.0f;
+    Player* close_player = nullptr;
+
     for (auto player : players)
     {
         RangeEnemy(startPosition.x, startPosition.y, GetPos().x, GetPos().y);
         RangePlayer(startPosition.x, startPosition.y, player->GetPos().x, player->GetPos().y);
+
+        if (CheckPlayerLength(startPosition, player->GetPos(), RANGE))
+        {
+            Spos_now = Vector2::Distance(GetPos(), player->GetPos());
+            if (Spos_now < Spos_old)
+            {
+                close_player = player;
+                Spos_old = Spos_now;
+
+            }
+        }
+
 
         if (cheakRange_Player_ == true)
         {
@@ -158,6 +175,17 @@ bool CheckEnemy3Length(Vector2 a, Vector2 b, float len)
 {
 
     if (Vector2::Distance(a, b) > len)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+bool CheckPlayerLength(Vector2 a, Vector2 b, float len)
+{
+
+    if (Vector2::Distance(a, b) < len)
     {
         return true;
     }

@@ -35,12 +35,12 @@ void EnemyMngr::Spawn(int x, int y, int type)
     switch (type)
     {
     case(MAP_READ_KOOPA):
-        {
-            Enemy* enemy = new Enemy1(x, y,this);
-            enemies_.push_back(enemy);
-            break;
-        }
-
+    {
+        Enemy* enemy = new Enemy1(x, y,this);
+        enemies_.push_back(enemy);
+        break;
+    }
+        break;
     case(MAP_READ_HAMMERBRO):
     {
         Enemy* enemy = new Enemy2(x, y, this);
@@ -59,3 +59,4 @@ void EnemyMngr::Spawn(int x, int y, int type)
         break;
     }
 }
+

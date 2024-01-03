@@ -370,3 +370,6 @@ bin/
 
 #imgui config
 imgui.ini
+
+#ffmpeg doc
+./lib/ffmpeg/doc/

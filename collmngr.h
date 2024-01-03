@@ -9,17 +9,25 @@ class CollMngr
 private:
     std::list<Collider*> colliders_;
     float prev_time_ = 0.0f;
+
 public:
-    CollMngr(){
+    CollMngr()
+    {
         colliders_ = std::list<Collider*>();
         prev_time_ = Time::GetCurrentTime();
     };
+
     ~CollMngr()
     {
-        for(auto collider : colliders_)
+        for (auto collider : colliders_)
             delete collider;
         colliders_.clear();
     }
+
     bool Add(Collider* collider);
     void Update();
+    void CheckDiscard();
+
+private:
+    static void Collision(Collider* collider, Collider* other);
 };

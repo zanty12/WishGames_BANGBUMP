@@ -28,8 +28,9 @@ private:
     int64_t end_pts_ = 0;
     double pts_ = 0;
     bool loaded_ = false;
-    std::list<frame_data>::iterator frame_it_;
-
+    int64_t first_frame_pts_ = 0;
+    Vector2 size_;
+    Vector2 window_pos_ = Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2);
 
 public:
     Video(const char* filename)
@@ -72,11 +73,17 @@ public:
         {
             std::cout << "Couldn't allocate frame buffer\n";
         }
+
+        size_ = Vector2(frame_width, frame_height);
     }
 
     ~Video()
     {
-        free(frame_data_);
+        _aligned_free(frame_data_);
+        for (auto frame : frame_buffer_)
+        {
+            _aligned_free(frame.data);
+        }
         video_reader_close(&vr_state_);
         texture_->Release();
     }
@@ -85,9 +92,12 @@ public:
     {
         time_ += Time::GetDeltaTime();
 
-        //load frame data
+        // Define a constant for the maximum buffer size.
+        const int MAX_BUFFER_SIZE = 10; // Change this value as needed.
+
         int64_t pts = 0;
-        if(!loaded_)
+        // Check if the buffer is not full before loading frame data.
+        if (!loaded_ && frame_buffer_.size() < MAX_BUFFER_SIZE)
         {
             if (!video_reader_read_frame(&vr_state_, frame_data_, &pts))
             {
@@ -100,33 +110,35 @@ public:
             frame.data = (uint8_t*)_aligned_malloc(vr_state_.width * vr_state_.height * 4, 128);
             memcpy(frame.data, frame_data_, vr_state_.width * vr_state_.height * 4);
             frame_buffer_.push_back(frame);
-            if(first_frame_)
+            if (first_frame_)
             {
-                frame_it_ = frame_buffer_.begin();
                 first_frame_ = false;
+                first_frame_pts_ = pts;
+            }
+            if (pts == end_pts_ && !loaded_ && end_pts_ != 0)
+            {
+                loaded_ = true;
+            }
+            //count max pts
+            if (pts > end_pts_)
+            {
+                end_pts_ = pts;
             }
         }
-        if(pts == end_pts_ && !loaded_)
-        {
-            loaded_ = true;
-        }
         //loop back if at end of video
-        if(loop_ && frame_it_->ts == end_pts_)
+        if (loop_ && loaded_ && end_pts_ != 0 && frame_buffer_.size() == 0)
         {
-            frame_it_ = frame_buffer_.begin();
+            loaded_ = false;
+            //int64_t start = vr_state_.av_format_ctx->streams[vr_state_.video_stream_index-1]->start_time;
+            video_reader_seek_frame(&vr_state_, first_frame_pts_);
             time_ = 0.0;
         }
 
-        //count max pts
-        if(pts>end_pts_)
-        {
-            end_pts_ = pts;
-        }
-
         //load next frame
-        if (frame_buffer_.size() > 0 && time_ > frame_it_->ts * (double)vr_state_.time_base.num / (double)vr_state_.time_base.den)
+        if (frame_buffer_.size() > 0 && time_ > frame_buffer_.begin()->ts * (double)vr_state_.time_base.num / (double)
+            vr_state_.time_base.den)
         {
-            frame_data frame = *frame_it_;
+            frame_data frame = *frame_buffer_.begin();
             memcpy(frame_data_, frame.data, vr_state_.width * vr_state_.height * 4);
             pts_ = frame.ts;
             //load frame data to texture
@@ -147,17 +159,23 @@ public:
             srvDesc.Texture2D.MipLevels = 1;
             srvDesc.Texture2D.MostDetailedMip = 0;
             Graphical::GetDevice().Get()->CreateShaderResourceView(texture_, &srvDesc, &texture_view_);
-            if(frame_it_ != --frame_buffer_.end())
-                ++frame_it_;
+            // Remove the consumed frame from the buffer.
+            _aligned_free(frame.data);
+            frame_buffer_.pop_front();
         }
     }
 
     void Draw()
     {
+        ImGuiWindowFlags window_flags = 0;
+        window_flags |= ImGuiWindowFlags_NoBackground;
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+        bool open = true;
+        ImGui::SetNextWindowPos(ImVec2(window_pos_.x - size_.x * scale_ / 2, window_pos_.y - size_.y * scale_ / 2));
         // Draw the texture with ImGui
-        ImGui::Begin(filename_.c_str());
-        ImGui::Text("time: %.2f, pts: %.2f", time_, pts_);
-        ImGui::Image((void*)texture_view_, ImVec2(vr_state_.width * scale_, vr_state_.height * scale_));
+        ImGui::Begin(filename_.c_str(), &open, window_flags);
+        //ImGui::Text("time: %.2f, pts: %.2f", time_, pts_);
+        ImGui::Image((void*)texture_view_, ImVec2(size_.x * scale_, size_.y * scale_));
         ImGui::End();
     }
 
@@ -169,5 +187,15 @@ public:
     void SetLoop(bool loop)
     {
         loop_ = loop;
+    }
+
+    void SetSize(Vector2 size)
+    {
+        size_ = size;
+    }
+
+    void SetWindowPos(Vector2 pos)
+    {
+        window_pos_ = pos;
     }
 };
