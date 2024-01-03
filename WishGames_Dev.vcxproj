@@ -136,7 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="animator.cpp" />
-    <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="boss.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collider.cpp" />
@@ -189,8 +189,8 @@
     <ClInclude Include="animator.h" />
     <ClInclude Include="area_capture.h" />
     <ClInclude Include="attribute_type.h" />
+    <ClInclude Include="boss.h" />
     <ClInclude Include="bullet.h" />
-    <ClInclude Include="Boss.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collider.h" />
     <ClInclude Include="collidercir.h" />

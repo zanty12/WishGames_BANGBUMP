@@ -4,8 +4,6 @@
 #include "animator.h"
 #include "time.h"
 
-class SKILLORB_ATTRIBUTE_DESC;
-
 class Enemy1 : public Enemy
 {
 private:
@@ -13,6 +11,9 @@ private:
     const float x_spd_ = 96.0f;
     const float y_spd_ = 0.5f;
     Vector2 startPosition;
+    float knockback_distance_;	//ノックバックする距離
+    Vector2 knockback_start_;	//ノックバックの初めのポジション
+    Vector2 knockback_end_;		//ノックバックの終わりのポジション
     SKILLORB_ATTRIBUTE_DESC drop;
 
 
@@ -33,6 +34,11 @@ public:
     void Update() override;
 
     SkillOrb* DropSkillOrb() override;
+
+    void CollisionAction(void);
+
+    void CollisionSpike(void);
+
 
 /*private:
     void CellAction();

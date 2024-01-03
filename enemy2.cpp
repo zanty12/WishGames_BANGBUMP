@@ -61,35 +61,6 @@ void Enemy2::Update()
 
     }
 
-    
-
-
-
-
-    /*//•Ç”»’è
-    CellActions();
-
-    //ƒvƒŒƒCƒ„[‚Æ‚Ì“–‚½‚è”»’è
-    if (Collision(player))
-    {
-        player->HpDown(3);//š‰¼š
-        //Die();
-    }*/
-
-    //‘¼‚Ì“G‚Æ‚Ì“–‚½‚è”»’è
- /*   for (auto& enemy : GetEnemyMngr()->GetEnemies())
-    {
-        if (enemy == this || enemy == nullptr)
-            continue;
-        if (Collision(enemy))
-        {
-            enemy->SetVel(Vector2(enemy->GetVel().x * -1, 0.0f));
-        }
-    }*/
-
-
-
-
 
 }
 
@@ -118,66 +89,6 @@ SkillOrb* Enemy2::DropSkillOrb()
 
     return new SkillOrb(GetPos(), drop, SKILLORB_SIZE_DESC::Mid());
 }
-
-//void Enemy2::Spawn(int x, int y, int type)
-//{
-//    //TODO: ‚±‚±‚Å’e‚ð¶¬‚·‚é
-//    if (type == OBJ_ENEMY_BULLET)
-//    {
-//        Bullet* bullet = new Bullet(x, y, this);
-//    }
-//}
-
-/*
-void Enemy2::CellActions()
-{
-    Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
-    Cell* cells[4] = { nullptr, nullptr, nullptr, nullptr };
-    int idx = std::floor((GetPos().x / SIZE_));
-    int idy = std::floor((GetPos().y / SIZE_));
-    cells[0] = map->GetCell(idx, idy + 1);
-    cells[1] = map->GetCell(idx, idy - 1);
-    cells[2] = map->GetCell(idx - 1, idy);
-    cells[3] = map->GetCell(idx + 1, idy);
-    for (int i = 0; i < 4; i++)
-    {
-        if (cells[i] == nullptr)
-            continue;
-        if (Collision(cells[i]))
-        {
-            switch (i)
-            {
-            case 0:
-                if (GetVel().y > 0)
-                {
-                    SetVel(Vector2(GetVel().x, GetVel().y * -1));
-                }
-                break;
-            case 1:
-                if (GetVel().y < 0)
-                {
-                    SetVel(Vector2(GetVel().x, GetVel().y * -1));
-                }
-                break;
-            case 2:
-                if (GetVel().x < 0)
-                {
-                    SetVel(Vector2(GetVel().x * -1, GetVel().y));
-                }
-                break;
-            case 3:
-                if (GetVel().x > 0)
-                {
-                    SetVel(Vector2(GetVel().x * -1, GetVel().y));
-                }
-                break;
-            default:
-                break;
-            }
-            break;
-        }
-    }
-}*/
 
 bool CheckEnemy2Length(Vector2 a, Vector2 b, float len)
 {
