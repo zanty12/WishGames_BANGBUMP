@@ -26,11 +26,17 @@ public:
         int id_hash = Hash(seed);
         id += std::to_string(id_hash);
         srand(seed);
-        id += std::to_string(rand() % 10000);
+        int id_rand = rand() % 10000;
+        id += std::to_string(id_rand);
         int id_int = std::stoi(id);
         while(std::binary_search(id_list_.begin(), id_list_.end(), id_int))
         {
-            id_int++;
+            id_rand++;
+            if(id_rand > 9999)
+            {
+                id_rand = 0;
+            }
+            id = std::to_string(id_hash) + std::to_string(id_rand);
         }
         id_list_.push_back(id_int);
         id_list_.sort();
