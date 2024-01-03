@@ -57,19 +57,18 @@ void Player::Update(void)
 	}
 
 	//----------------------------------------★アトリビュートができるまでのしのぎ
-	Vector2 stick = Input::GetStickLeft(0);
+	/*Vector2 stick = Input::GetStickLeft(0);
 	stick.y *= -1;
 	Vector2 player_vel = stick * 5.0f;
-	SetVel(player_vel);
+	SetVel(player_vel);*/
 	//----------------------------------------★アトリビュートができるまでのしのぎ
 
 	bool affected_gravity = false;	//重力を受けたかどうか
 
 	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
-		(void)move_attribute_->Move();
+		SetVel(move_attribute_->Move());
 		move_attribute_->Gravity();
-
 	}
 	else if (clash_spike_ == 0)
 	{//何も属性がなければ落ちる
