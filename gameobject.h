@@ -47,6 +47,7 @@ private:
     Collider* collider_;
     OBJECT_TYPE type_ = OBJ_SOLID;
     bool is_discard_ = false; //破棄するかどうか
+    std::string id_;
 
 public:
     static constexpr float SIZE_ = 64.0f; //１マスの標準サイズ
@@ -75,7 +76,11 @@ public:
     void SetType(OBJECT_TYPE type) { type_ = type; } //オブジェクトタイプセット
     void Discard(); //破棄する
     bool GetDiscard() const { return is_discard_; } //破棄するかどうか
+    std::string GetID() const { return id_; } //IDゲット
 
 
     virtual void Update(void) = 0;
+
+    static Vector2 GetWorldCoord(Vector2 pos);
+
 };
