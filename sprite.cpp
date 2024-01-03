@@ -56,7 +56,7 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 	using namespace DX;
 	using namespace DX::DX11;
-	if (texNo == -1) return;
+	if (texNo <= -1) return;
 
 	// トポロジの設定
 	Device3D::SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
