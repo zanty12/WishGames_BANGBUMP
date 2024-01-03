@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\include;%(AdditionalIncludeDirectories);$(SolutionDir)\lib\ffmpeg\include\</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,6 +154,7 @@
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="enemy1.cpp" />
+    <ClCompile Include="id.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
     <ClCompile Include="lib\imgui\imgui_draw.cpp" />
@@ -211,6 +213,7 @@
     <ClInclude Include="debugUI.h" />
     <ClInclude Include="graphical.h" />
     <ClInclude Include="enemy1.h" />
+    <ClInclude Include="id.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />
     <ClInclude Include="lib\imgui\imgui_impl_dx11.h" />
