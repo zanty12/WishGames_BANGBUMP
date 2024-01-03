@@ -9,9 +9,13 @@
 #include "gamebase.h"
 
 
-Bullet::Bullet(Vector2 pos, Vector2 vel) : Bullet(pos, LoadTexture("data/texture/bullet.png"), vel * spd_)
+Bullet::Bullet(Vector2 pos)
+    : MovableObj(pos,0.0f, LoadTexture("data/texture/skillorb.png"), Vector2::Zero)
 {
+    SetPos(pos);
+    SetType(OBJ_BULLET);
     SetAtk(10);
+    SetSpd(96.0f * 2);
 }
 
 void Bullet::Update()

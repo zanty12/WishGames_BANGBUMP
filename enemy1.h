@@ -35,12 +35,13 @@ public:
 
     SkillOrb* DropSkillOrb() override;
 
+
+
+
+private:
+
     void CollisionAction(void);
 
     void CollisionSpike(void);
 
-
-/*private:
-    void CellAction();
-    void CellActionSpike();*/
 };

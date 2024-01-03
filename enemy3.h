@@ -32,13 +32,12 @@ public:
 
     SkillOrb* DropSkillOrb() override;
 
-    void CollisionAction(void);
-
-    void CollisionSpike(void);
-
     void RangeEnemy(float a, float b, float c, float d);
     void RangePlayer(float a, float b, float c, float d);
 
-/*private:
-    void CellActions();*/
+private:
+
+    void CollisionAction(void);
+
+    void CollisionSpike(void);
 };

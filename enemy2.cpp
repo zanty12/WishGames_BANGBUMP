@@ -12,7 +12,7 @@ bool CheckEnemy2Length(Vector2 a, Vector2 b, float len);
 
 Bullet* Enemy2::CreatBullet(void)
 {
-    return new Bullet(startPosition, bullet_vel_);
+    return new Bullet(startPosition);
 }
 
 void Enemy2::Update()
@@ -24,6 +24,7 @@ void Enemy2::Update()
         Die();
     }
 
+    float dt = Time::GetDeltaTime(); //‰Šú‰»‚ÌƒGƒ‰[‚ğ‰ñ”ğ‚·‚é
 
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
@@ -39,6 +40,7 @@ void Enemy2::Update()
     float Spos_old = 0.0f;
 
     Player* close_player = nullptr;
+    Bullet* bullet = nullptr;
 
     for (auto player : players)
     {
@@ -57,8 +59,8 @@ void Enemy2::Update()
     if (close_player != nullptr)
     {
         Vector2 distance = close_player->GetPos() - startPosition;
-        distance.Normalize();
-
+        CreatBullet();
+        bullet->SetVel(distance.Normalize() * bullet->GetSpd() * dt);
     }
 
 

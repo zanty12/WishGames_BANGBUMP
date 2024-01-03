@@ -23,6 +23,7 @@ void Enemy1::Update()
     {
         startPosition = GetPos();
         SetVel(Vector2(GetVel().x * -1, GetVel().y));
+        dir_ *= -1;
     }
 
     this->AddVel(GetVel());

@@ -30,7 +30,7 @@ public:
 	Boss() = delete;
 	~Boss() override = default;
 
-	Boss(int x, int y, EnemyMngr* enemy_mngr) : Enemy(x, y, LoadTexture("data/texture/enemy3.png"), enemy_mngr)
+	Boss(int x, int y, EnemyMngr* enemy_mngr) : Enemy(x, y, LoadTexture("data/texture/ordin.png"), enemy_mngr)
 	{
 		startPosition = GetPos();
 		SetScale(Vector2(SIZE_ * 5, SIZE_ * 7));
