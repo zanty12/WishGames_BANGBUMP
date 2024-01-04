@@ -16,7 +16,7 @@ public:
 
 	void CreateResponse(Storage &out) override { };
 
-	MULTI_MODE GetMode(void) const override { return ENEMY_RUSH; }
+	MULTI_MODE GetMode(void) const override { return OBSTACLE_RACE; }
 
 };
 
@@ -37,5 +37,5 @@ public:
 
 	}
 
-	MULTI_MODE GetMode(void) const override { return INTERMEDIATE_RESULT_1; }
+	MULTI_MODE GetMode(void) const override { return OBSTACLE_RACE; }
 };

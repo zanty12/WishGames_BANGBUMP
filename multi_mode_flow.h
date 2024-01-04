@@ -54,6 +54,8 @@ public:
 		}
 		else {
 			gameMode_->time_ += Time::GetDeltaTime();
+			//std::cout << GetMode() <<  " | Time : " << gameMode_->time_ << std::endl;
+
 			gameMode_->Update(clients);
 		}
 	}
@@ -95,7 +97,6 @@ private:
 	}
 public:
 	MultiPlayFlowClientSide(GameBase *game) : game_(game) {
-
 	}
 	~MultiPlayFlowClientSide() {
 		if (gameMode_) delete gameMode_;
@@ -110,11 +111,8 @@ public:
 			// 現在のモードの削除
 			delete gameMode_;
 
-			// 次のモードを計算
-			mode_ = (MULTI_MODE)((int)mode_ + 1);
-
 			// 次のモードの作成
-			gameMode_ = CreateMode(mode_);
+			gameMode_ = CreateMode(res.mode);
 
 			// 次のモードの取得
 			currentMode_ = GetMode();

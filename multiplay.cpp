@@ -9,7 +9,8 @@
 #include <thread>
 #pragma comment(lib, "lib/lib.lib")
 
- #define DEBUG_CONNECT
+#define MAX_BUFF (2048)
+//#define DEBUG_CONNECT
 //#define DEBUG_LOCKED
 
 MultiPlayServer::MultiPlayServer() {
@@ -129,10 +130,10 @@ void MultiPlayServer::PlayerUpdate(void) {
 		client.player_->Update();
 	}
 
+	
 	// コリジョンの更新
 	if (coll_mngr_) {
 		coll_mngr_->Update();
-		coll_mngr_->CheckDiscard();
 	}
 
 	// ゲームモードの更新
@@ -212,8 +213,21 @@ void MultiPlayServer::SendUpdate(void) {
 			}
 
 			// オブジェクト情報の登録
-			//for(auto &skillorb : orb_mngr_->)
-			res.objects.push_back({ 0, OBJECT_DATA_CLIENT_SIDE::ENEMY, OBJECT_DATA_CLIENT_SIDE::NONE, Vector2(200,200),0,Vector2(100,100) });
+			for (auto &skillorb : orb_mngr_->GetSkillOrbs()) {
+				int id = std::atoi(skillorb->GetID().c_str());
+				Vector2 position = skillorb->GetPos();
+				float rotation = skillorb->GetRot();
+				Vector2 scale = skillorb->GetScale();
+				res.objects.push_back({
+					id,										// ID
+					OBJECT_DATA_CLIENT_SIDE::SKILL_POINT,	// tag
+					OBJECT_DATA_CLIENT_SIDE::NONE,			// animation
+					position,								// pos
+					rotation,								// rot
+					scale									// scl
+					}
+				);
+			}
 
 			// クライアント全員に送信する
 			for (auto &client : clients_) {
@@ -267,7 +281,6 @@ void MultiPlayServer::OpenTerminal(void) {
 
 
 
-	const int MAX_BUFF = 1024;
 	MSG msg;
 	while (true) {
 		// メッセージ
@@ -469,7 +482,6 @@ void MultiPlayClient::SendUpdate(void) {
 void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 	// ファイルディスクリプタ
 	FD tmp;
-	const int MAX_BUFF = 1024;
 	memcpy(&tmp, &readfd_, sizeof(FD));
 
 	Address serverAddr;
@@ -479,15 +491,16 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 	{
 		// 受信する
-		int buffLen = RecvFrom(sockfd_, (char *)buff, MAX_BUFF, 0, &serverAddr, &serverAddrLen);
-		// 失敗なら終了
+		int	buffLen = Recv(sockfd_, (char *)buff, MAX_BUFF, 0);
+		// 終了
 		if (buffLen <= 0) return;
+		// データを取り込む
 		recvBuff.Push(buff, buffLen);
-
 
 
 		// レスポンスの解析
 		res.ParseResponse(recvBuff);
+
 		// 受信したモードと実行しているゲームモードが同じなら解析する
 		if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
 

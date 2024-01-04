@@ -131,4 +131,5 @@ public:
 
 	unsigned int CapacityLength(void) { return capacitySize; }
 
+	unsigned int Current(void) { return end - begin; }
 };

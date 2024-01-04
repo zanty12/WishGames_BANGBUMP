@@ -80,7 +80,7 @@ struct OBJECT_DATA_CLIENT_SIDE {
 	};
 
 
-	int id = 0;
+	int id = -1;
 	int tag = NONE;
 	int anim = NONE;
 	Vector2 position;
@@ -143,12 +143,13 @@ struct RESPONSE_PLAYER {
 		in >> time;
 		in >> playerNum;
 		in >> objectNum;
-
+		int current = in.Current();
 
 		// レスポンス解析（プレイヤー）
 		for (int i = 0; i < playerNum; i++) {
 			CLIENT_DATA_CLIENT_SIDE res;
 			in >> res;
+			current = in.Current();
 
 			// 自分なら先頭に
 			if (res.id == recvHeader.id) {
@@ -163,6 +164,7 @@ struct RESPONSE_PLAYER {
 		for (int i = 0; i < objectNum; i++) {
 			OBJECT_DATA_CLIENT_SIDE res;
 			in >> res;
+			current = in.Current();
 			objects.push_back(res);
 		}
 	}
