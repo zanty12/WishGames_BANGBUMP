@@ -97,6 +97,7 @@ private:
 	MultiRenderer *multiRenderer_ = nullptr;			// 描画
 	Animator anim;
 	std::thread sendUpdateFunc;							// 送信関数
+	std::thread recvUpdateFunc;							// 受信関数
 
 
 public:
@@ -108,6 +109,7 @@ public:
 	~MultiPlayClient() {
 		// スレッド終了まで待機
 		sendUpdateFunc.join();
+		recvUpdateFunc.join();
 
 		// 解放
 		delete gameMode;

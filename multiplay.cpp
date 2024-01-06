@@ -398,6 +398,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// スレッドを立てる
 	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);
+	recvUpdateFunc = std::thread(&MultiPlayClient::Update, this);
 
 	// 受信用領域を確保する
 	recvTmpBuff = new char[MAX_BUFF];
@@ -547,10 +548,17 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 }
 
 void MultiPlayClient::Update() {
-	RESPONSE_PLAYER res;
+	while (!isFinish) {
+		RESPONSE_PLAYER res;
 
-
-	RecvUpdate(1, res);
-	PlayerUpdate(res);
-	recvBuff = nullptr;
+		if (GetAsyncKeyState(VK_ESCAPE)) {
+			isFinish = true;
+			break;
+		}
+		Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
+		RecvUpdate(1, res);
+		PlayerUpdate(res);
+		Graphical::Present();
+		recvBuff = nullptr;
+	}
 }
