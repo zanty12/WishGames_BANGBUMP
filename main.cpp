@@ -48,6 +48,7 @@ int main()
                     ImGui::Begin("Main System");
                     ImGui::Text("FPS:%.1f", io.Framerate);
 
+
                     //test controller
                     ImGui::Text(u8"コントローラー");
                     ImGui::Text("Left Stick");
@@ -69,6 +70,7 @@ int main()
             scene_mngr->Update();
             scene_mngr->Draw();
             DebugUI::EndDraw();
+
             Graphical::Present();
         }
     }
