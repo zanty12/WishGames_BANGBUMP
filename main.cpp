@@ -38,6 +38,7 @@ int main()
             {
                 if (msg.message == WM_QUIT)
                 {
+                    client.isFinish = true;
                     break;
                 }
                 else
@@ -78,6 +79,7 @@ int main()
 
 
                 if (GetAsyncKeyState(VK_ESCAPE)) {
+                    client.isFinish = true;
                     break;
                 }
 

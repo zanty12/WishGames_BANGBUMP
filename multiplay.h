@@ -10,6 +10,7 @@
 #define SERVER_ADDRESS "192.168.0.7"
 #define MAX_MEMBER (4)
 #define PORT (8080)
+#define MAX_BUFF (4096)
 
 using namespace Network;
 
@@ -25,6 +26,7 @@ private:
 	Storage recvBuff = Storage(1024);					// 受信バッファ
 	MultiPlayFlowServerSide *gameMode = nullptr;		// ゲームモード
 	StorageLock	lock_;									// リストロック
+	bool isFinish = false;								// 終了状態
 
 
 
@@ -88,6 +90,8 @@ private:
 	Storage sendBuff = Storage(1024);					// 送信バッファ
 	Storage recvBuff = Storage(1024);					// 受信バッファ
 	MultiPlayFlowClientSide *gameMode = nullptr;		// ゲームモード
+	RESPONSE_PLAYER res_;								// レスポンス
+	char *recvTmpBuff = nullptr;						// 受信バッファ（仮格納用）
 
 	ClientGameObject playerObject;
 	MultiRenderer *multiRenderer_ = nullptr;			// 描画
@@ -96,6 +100,7 @@ private:
 
 
 public:
+	bool isFinish = false;								// 終了状態
 	int texNo = 0;
 
 	MultiPlayClient();
@@ -107,6 +112,7 @@ public:
 		// 解放
 		delete gameMode;
 		delete multiRenderer_;
+		delete recvTmpBuff;
 		sendBuff.Release();
 		recvBuff.Release();
 

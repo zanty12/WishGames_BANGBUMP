@@ -19,11 +19,11 @@ private:
 		{
 		case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeServerSide();
 		case AREA_CAPTURE: return new MultiPlayAreaCaptureModeServerSide(game_);
-		case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResultModeServerSide();
+		case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeServerSide();
 		case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeServerSide(game_);
-		case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResultModeServerSide();
+		case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResult2ModeServerSide();
 		case ENEMY_RUSH: return new MultiPlayEnemyRushModeServerSide(game_);
-		case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResultModeServerSide();
+		case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResult3ModeServerSide();
 		case FINAL_BATTLE: return nullptr;
 		}
 		return nullptr;
@@ -45,6 +45,7 @@ public:
 
 			// 現在のモードの削除
 			delete gameMode_;
+			gameMode_ = nullptr;
 
 			// 次のモードを計算
 			mode_ = (MULTI_MODE)((int)mode_ + 1);
@@ -54,7 +55,6 @@ public:
 		}
 		else {
 			gameMode_->time_ += Time::GetDeltaTime();
-			//std::cout << GetMode() <<  " | Time : " << gameMode_->time_ << std::endl;
 
 			gameMode_->Update(clients);
 		}
@@ -70,6 +70,7 @@ public:
 	MULTI_MODE GetMode(void) const { return gameMode_ ? gameMode_->GetMode() : MULTI_MODE::NONE; }
 	float GetTime(void) const { return gameMode_ ? gameMode_->time_ : 0.0f; }
 	float GetMaxTime(void) const { return gameMode_ ? gameMode_->maxTime_ : 0.0f; }
+	MultiPlayServerSide *GetGame(void) const { return gameMode_; }
 };
 
 class MultiPlayFlowClientSide {
@@ -86,11 +87,11 @@ private:
 		{
 		case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeClientSide();
 		case AREA_CAPTURE: return new MultiPlayAreaCaptureModeClientSide(game_);
-		case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResultModeClientSide();
+		case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeClientSide();
 		case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeClientSide(game_);
-		case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResultModeClientSide();
+		case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResult2ModeClientSide();
 		case ENEMY_RUSH: return new MultiPlayEnemyRushModeClientSide(game_);
-		case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResultModeClientSide();
+		case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResult3ModeClientSide();
 		case FINAL_BATTLE: return nullptr;
 		}
 		return nullptr;
@@ -103,13 +104,15 @@ public:
 	}
 
 	void Draw(RESPONSE_PLAYER &res) {
+		std::cout << res.mode << std::endl;
+
 		// モードが切り替わったなら、次のモードへ移行
 		if (currentMode_ != res.mode) {
 			// 現在のモードの取得
 			MULTI_MODE mode_ = GetMode();
 
 			// 現在のモードの削除
-			delete gameMode_;
+			if (gameMode_) delete gameMode_;
 
 			// 次のモードの作成
 			gameMode_ = CreateMode(res.mode);
@@ -120,8 +123,6 @@ public:
 		// モードの実行
 		else if (gameMode_) {
 			gameMode_->Draw(res);
-			std::cout << res.mode << " : " << (int)res.time << std::endl;
-
 		}
 	}
 

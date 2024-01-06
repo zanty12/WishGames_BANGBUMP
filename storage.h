@@ -92,7 +92,6 @@ public:
 		Refresh((buffer *)&src, size__);
 	}
 
-	template<>
 	void operator =(nullptr_t p) {
 		// 先頭アドレス、末尾アドレスを移動する
 		begin = end = head;
@@ -119,7 +118,6 @@ public:
 		if (tmp) dst = *tmp;
 	}
 
-	template<>
 	void operator <<(Storage src) {
 		// 加算する
 		Push(src.head, src.maxSize);
@@ -132,4 +130,6 @@ public:
 	unsigned int CapacityLength(void) { return capacitySize; }
 
 	unsigned int Current(void) { return end - begin; }
+
+	void Allocate(unsigned int len) { allocate(end, len); }
 };

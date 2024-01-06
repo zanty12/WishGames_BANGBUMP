@@ -6,12 +6,13 @@
 #include "dark.h"
 #include "time.h"
 #include "enemy1.h"
+#include <windows.h>
 #include <thread>
 #pragma comment(lib, "lib/lib.lib")
 
-#define MAX_BUFF (2048)
 //#define DEBUG_CONNECT
 //#define DEBUG_LOCKED
+#define DEBUG_SENDLEN
 
 MultiPlayServer::MultiPlayServer() {
 	WSAData data;
@@ -139,6 +140,8 @@ void MultiPlayServer::PlayerUpdate(void) {
 	// ゲームモードの更新
 	if (gameMode) gameMode->Update(clients_);
 
+	std::cout << gameMode->GetMode() << " : " << gameMode->GetGame() << std::endl;
+
 	// ロック解除
 #ifdef DEBUG_LOCKED
 	std::cout << " - UPD UNLOCK" << std::endl;
@@ -186,7 +189,7 @@ void MultiPlayServer::SendUpdate(void) {
 	startTime = currentTime = timeGetTime();
 	onceFrameTime = 1000 / 60;
 
-	while (true) {
+	while (!isFinish) {
 
 		currentTime = timeGetTime();
 
@@ -214,6 +217,7 @@ void MultiPlayServer::SendUpdate(void) {
 
 			// オブジェクト情報の登録
 			for (auto &skillorb : orb_mngr_->GetSkillOrbs()) {
+				if (skillorb->GetDiscard()) continue;
 				int id = std::atoi(skillorb->GetID().c_str());
 				Vector2 position = skillorb->GetPos();
 				float rotation = skillorb->GetRot();
@@ -239,6 +243,10 @@ void MultiPlayServer::SendUpdate(void) {
 
 				// ゲームモードのレスポンス内容の結合
 				gameMode->CreateResponse(sendBuff);
+
+#ifdef DEBUG_SENDLEN
+				std::cout << "SENDBUFF : " << sendBuff.Length() << std::endl;
+#endif
 
 				// 送信
 				SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
@@ -288,6 +296,7 @@ void MultiPlayServer::OpenTerminal(void) {
 		{
 			if (msg.message == WM_QUIT)
 			{
+				isFinish = true;
 				break;
 			}
 			else
@@ -299,53 +308,68 @@ void MultiPlayServer::OpenTerminal(void) {
 
 		// 受信
 		{
-			Address clientAddr;
-			int clientAddrLen = sizeof(clientAddr);
-			char buff[MAX_BUFF] = {};
+			FD fd;
+			fd.Add(sockfd_);
+			Select(&fd, nullptr, nullptr, 0, 1);
+			if (fd.Contains(sockfd_)) {
+				Address clientAddr;
+				int clientAddrLen = sizeof(clientAddr);
+				char buff[MAX_BUFF] = {};
 
-			// 受信
-			int buffLen = RecvFrom(sockfd_, buff, MAX_BUFF, 0, &clientAddr, &clientAddrLen);
 
-			if (0 <= buffLen) {
-				HEADER *pHeader = (HEADER *)buff;
 
-				switch (pHeader->command)
-				{
-				case HEADER::COMMAND::REQUEST_LOGIN: {
-					// 登録
-					std::cout << "Req << ID:*" << " Login" << std::endl;
-					int id = Register(clientAddr, *pHeader, 0);
-					// 送信
-					//SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
-					std::cout << id << " : 登録しました" << std::endl;
-					break;
-				};
-				case HEADER::COMMAND::REQUEST_LOGOUT: {
-					// 解除
-					std::cout << "Req << ID:" << pHeader->id << " Logout" << std::endl;
-					Unregister(pHeader->id);
-					std::cout << pHeader->id << " : 解除しました" << std::endl;
-					break;
-				}
-				case HEADER::COMMAND::REQUEST_UPDATE: {
-					// 更新
-					recvBuff.Push(buff, buffLen);
-					RecvUpdate();
-					break;
-				}
+				// 受信
+				int buffLen = RecvFrom(sockfd_, buff, MAX_BUFF, 0, &clientAddr, &clientAddrLen);
+
+				if (0 <= buffLen) {
+					HEADER *pHeader = (HEADER *)buff;
+
+					switch (pHeader->command)
+					{
+					case HEADER::COMMAND::REQUEST_LOGIN: {
+						// 登録
+						std::cout << "Req << ID:*" << " Login" << std::endl;
+						int id = Register(clientAddr, *pHeader, 0);
+						// 送信
+						//SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
+						std::cout << id << " : 登録しました" << std::endl;
+						break;
+					};
+					case HEADER::COMMAND::REQUEST_LOGOUT: {
+						// 解除
+						std::cout << "Req << ID:" << pHeader->id << " Logout" << std::endl;
+						Unregister(pHeader->id);
+						std::cout << pHeader->id << " : 解除しました" << std::endl;
+						break;
+					}
+					case HEADER::COMMAND::REQUEST_UPDATE: {
+						// 更新
+						recvBuff.Push(buff, buffLen);
+						RecvUpdate();
+						break;
+					}
+					}
 				}
 			}
 		}
 
+		// 更新
 		{
-			currentTime = timeGetTime();
-			// 更新
-			if (currentTime - startTime > onceFrameTime) {
-				startTime = currentTime;
+			if (clients_.size()) {
+				currentTime = timeGetTime();
+				if (currentTime - startTime > onceFrameTime) {
+					startTime = currentTime;
 
-				PlayerUpdate();
+					PlayerUpdate();
+				}
 			}
 		}
+
+		if (GetAsyncKeyState(VK_ESCAPE)) {
+			isFinish = true;
+			break;
+		}
+
 		Time::Update();
 
 		recvBuff = nullptr;
@@ -374,6 +398,9 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// スレッドを立てる
 	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);
+
+	// 受信用領域を確保する
+	recvTmpBuff = new char[MAX_BUFF];
 }
 
 int MultiPlayClient::Register() {
@@ -421,17 +448,17 @@ void MultiPlayClient::Unregister() {
 	std::cout << "Req << ID:" << header.id << " Logout" << std::endl;
 	SendTo(sockfd_, (char *)&header, sizeof(HEADER), 0, serverAddr);
 
-	while (true) {
-		HEADER data;
-		Recv(sockfd_, (char *)&data, sizeof(HEADER), 0);
+	//while (true) {
+	//	HEADER data;
+	//	Recv(sockfd_, (char *)&data, sizeof(HEADER), 0);
 
-		// ㇿグラウト成功なら
-		if (data.command == HEADER::RESPONSE_LOGOUT &&
-			data.id == header.id) {
-			std::cout << "Res << ID:" << id << " Logout" << std::endl;
-			break;
-		}
-	}
+	//	// ㇿグラウト成功なら
+	//	if (data.command == HEADER::RESPONSE_LOGOUT &&
+	//		data.id == header.id) {
+	//		std::cout << "Res << ID:" << id << " Logout" << std::endl;
+	//		break;
+	//	}
+	//}
 
 	std::cout << id << "を解除しました。" << std::endl;
 
@@ -439,15 +466,20 @@ void MultiPlayClient::Unregister() {
 }
 
 void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
-	for (auto &client : res.clients) {
+	// モードがNONEなら終了
+	if (res_.mode == MULTI_MODE::NONE) {
+		return;
+	}
+
+	for (auto &client : res_.clients) {
 		anim.SetPos(client.position);
 		anim.Draw();
 	}
 
-	if (gameMode) gameMode->Draw(res);
+	if (gameMode) gameMode->Draw(res_);
 	renderer_->CheckDiscard();
 	coll_mngr_->CheckDiscard();
-	multiRenderer_->Draw(res);
+	multiRenderer_->Draw(res_);
 	renderer_->Draw();
 }
 
@@ -456,7 +488,7 @@ void MultiPlayClient::SendUpdate(void) {
 	startTime = currentTime = timeGetTime();
 	onceFrameTime = 1000 / 60;
 
-	while (true) {
+	while (!isFinish) {
 		currentTime = timeGetTime();
 
 		if (currentTime - startTime > onceFrameTime) {
@@ -470,8 +502,6 @@ void MultiPlayClient::SendUpdate(void) {
 			req.input = { id, Input::GetState(0), Input::GetPreviousState(0) };
 			req.CreateRequest(sendBuff, id);
 
-			//std::cout << "0000 : : " << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
-
 			// 送信
 			SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, serverAddr);
 			sendBuff = nullptr;
@@ -483,57 +513,42 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 	// ファイルディスクリプタ
 	FD tmp;
 	memcpy(&tmp, &readfd_, sizeof(FD));
+	Select(&tmp, nullptr, nullptr, 0, 1);
 
 	Address serverAddr;
 	int serverAddrLen = sizeof(serverAddr);
-	char buff[MAX_BUFF] = {};
 
 
-	{
+
+	if (tmp.Contains(sockfd_)) {
 		// 受信する
-		int	buffLen = Recv(sockfd_, (char *)buff, MAX_BUFF, 0);
+		int	buffLen = Recv(sockfd_, recvTmpBuff, MAX_BUFF, 0);
 		// 終了
 		if (buffLen <= 0) return;
 		// データを取り込む
-		recvBuff.Push(buff, buffLen);
+		recvBuff.Push(recvTmpBuff, buffLen);
 
 
 		// レスポンスの解析
 		res.ParseResponse(recvBuff);
 
-		// 受信したモードと実行しているゲームモードが同じなら解析する
-		if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
+		// モードがNONEではないなら
+		if (res.mode != MULTI_MODE::NONE) {
+			// 受信したモードと実行しているゲームモードが同じなら解析する
+			if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
 
+			// レスポンスの保存
+			res_ = res;
+		}
 
 		// 初期化
 		recvBuff = nullptr;
 	}
-	//// 検知する
-	//if (Select(&tmp, nullptr, nullptr, 0, waitTime)) {
-	//	Address serverAddr;
-	//	int serverAddrLen = sizeof(serverAddr);
-	//	char buff[MAX_BUFF] = {};
-
-	//	// 受信する
-	//	int buffLen = RecvFrom(sockfd_, (char *)buff, MAX_BUFF, 0, &serverAddr, &serverAddrLen);
-	//	// 失敗なら終了
-	//	if (buffLen <= 0) return;
-	//	recvBuff.Push(buff, buffLen);
-
-
-
-	//	// レスポンスの解析
-	//	res.ParseResponse(recvBuff);
-	//	// 受信したモードと実行しているゲームモードが同じなら解析する
-	//	if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
-
-
-	//	// 初期化
-	//	recvBuff = nullptr;
 }
 
 void MultiPlayClient::Update() {
 	RESPONSE_PLAYER res;
+
 
 	RecvUpdate(1, res);
 	PlayerUpdate(res);
