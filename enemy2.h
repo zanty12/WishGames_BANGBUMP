@@ -19,7 +19,8 @@ public:
 
     Enemy2(int x, int y, EnemyMngr* enemy_mngr) : Enemy(x, y, LoadTexture("data/texture/enemy2.png"), enemy_mngr)
     {
-        SetScale(Vector2(SIZE_ * 4, SIZE_ * 4));
+        startPosition = GetPos();
+        SetScale(Vector2(SIZE_ * 2.5f, SIZE_ * 2.5f));
         SetAtk(10);
         SetHp(30);
         atk_time_ = 0;

@@ -14,6 +14,7 @@ Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
     time_ = 0;
     atk_time_ = 0;
     atk_now = false;
+    srand((unsigned int)time(NULL));
 }
 
 void Boss::Update()
@@ -33,7 +34,7 @@ void Boss::Update()
         OBJECT_TYPE type = collision->GetParent()->GetType();
     }
 
-    if (time_ > 5.0f)
+    if (time_ > 0.5f)
     {
         time_ = 0;
         if (atk_now == false)
@@ -66,21 +67,21 @@ SkillOrb* Boss::DropSkillOrb()
 
 void Boss::Atk()
 {
-    int rrand = rand() % 100;
+    int boosrand = rand() % 100;
 
-    if (rrand < 10)
+    if (boosrand < 10)
     {
 
     }
-    else if (rrand > 10 && rrand < 30)
+    else if (boosrand > 10 && boosrand < 30)
     {
         Fire();
     }
-    else if (rrand > 30 && rrand < 60)
+    else if (boosrand > 30 && boosrand < 60)
     {
 
     }
-    else if (rrand > 60 && rrand < 100)
+    else if (boosrand > 60 && boosrand < 100)
     {
 
     }
