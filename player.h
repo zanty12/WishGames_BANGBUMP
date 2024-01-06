@@ -72,6 +72,7 @@ public:
 		dir_(Vector2(0.0f, 0.0f)), map_mangr_(map_mangr), clash_spike_(0), knock_back_dir_(0),
 		change_scene_(false), drop_point_(0),invincibility_time_(INVINCIBILITY_MAX_TIME_),knockback_distance_(0.0f)
 	{
+		SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
 		int tex = LoadTexture("data/texture/player.png");
 		SetTexNo(tex);
 		GetAnimator()->SetTexNo(tex);

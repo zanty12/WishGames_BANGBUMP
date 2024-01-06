@@ -9,7 +9,7 @@
 Game::Game(SceneMngr* scene_mngr)
     : GameBase(scene_mngr)
 {
-    mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
+    mapmngr_ = new MapMngr("data/map/2.csv", this);
     /*mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);*/
     //int playertex = LoadTexture("data/texture/player.png");
 

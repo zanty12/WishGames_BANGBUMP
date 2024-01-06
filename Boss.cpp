@@ -1,8 +1,20 @@
 #include "Boss.h"
+#include "bossatk.h"
 #include "Cell.h"
 #include "MapMngr.h"
 #include "lib/collider2d.h"
 #include "time.h"
+
+Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
+    : Enemy(x, y, LoadTexture("data/texture/boss.png"), enemy_mngr)
+{
+    startPosition = GetPos();
+    SetScale(Vector2(SIZE_ * 6, SIZE_ * 6));
+    SetHp(300);
+    time_ = 0;
+    atk_time_ = 0;
+    atk_now = false;
+}
 
 void Boss::Update()
 {
@@ -37,6 +49,7 @@ void Boss::Update()
     if (atk_now == true)
     {
         Atk();
+        atk_now = false;
     }
 
     GetAnimator()->SetIsAnim(true);
@@ -61,13 +74,13 @@ void Boss::Atk()
     }
     else if (rrand > 10 && rrand < 30)
     {
-
+        Fire();
     }
     else if (rrand > 30 && rrand < 60)
     {
 
     }
-    else if (rrand > 60 && rrand <= 100)
+    else if (rrand > 60 && rrand < 100)
     {
 
     }
@@ -76,12 +89,16 @@ void Boss::Atk()
 void Boss::Fire()
 {
     //3•ª‚Ì‚P•b‚É‚Pƒqƒbƒg@‚T‚Oƒ_ƒ[ƒW
+    Boss_Fire* fire = new Boss_Fire(GetPos());
     atk_time_ += Time::GetDeltaTime();
+    GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(fire);
     if (atk_time_ > (1.0f / 3))
     {
         atk_time_ = 0;
         SetAtk(50);
     }
+
+
 
 
 }
