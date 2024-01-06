@@ -10,10 +10,6 @@
 
 bool CheckEnemy2Length(Vector2 a, Vector2 b, float len);
 
-Bullet* Enemy2::CreatBullet(void)
-{
-    return new Bullet(startPosition);
-}
 
 void Enemy2::Update()
 {
@@ -22,9 +18,11 @@ void Enemy2::Update()
     {
         GameObject::Discard();
         Die();
+        DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_MID);
     }
 
     float dt = Time::GetDeltaTime(); //èâä˙âªéûÇÃÉGÉâÅ[ÇâÒîÇ∑ÇÈ
+    atk_time_ += Time::GetDeltaTime();
 
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
@@ -37,7 +35,7 @@ void Enemy2::Update()
     std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayers();
 
     float Spos_now = 0.0f;
-    float Spos_old = 0.0f;
+    float Spos_old = 10000.0f;
 
     Player* close_player = nullptr;
     Bullet* bullet = nullptr;
@@ -58,39 +56,23 @@ void Enemy2::Update()
 
     if (close_player != nullptr)
     {
-        Vector2 distance = close_player->GetPos() - startPosition;
-        CreatBullet();
-        bullet->SetVel(distance.Normalize() * bullet->GetSpd() * dt);
+        if (atk_time_ > 2.0f)
+        {
+            atk_time_ = 0;
+            Vector2 bullet_pos;
+            bullet = new Bullet(GetPos());
+            Vector2 distance = close_player->GetPos() - startPosition;
+            bullet_pos = distance.Normalize();
+            bullet->SetVel(-distance.Normalize() * (96.0f * 2) * dt);
+            bullet->SetPos(GetPos() - (bullet_pos * SIZE_ * 4));
+            GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(bullet);
+        }
     }
 
 
 }
 
-SkillOrb* Enemy2::DropSkillOrb()
-{
-    if (GetDiscard() == false)
-        return nullptr;
 
-    switch (rand() % 4)
-    {
-    case 0:
-        drop = SKILLORB_ATTRIBUTE_DESC::Fire();
-        break;
-    case 1:
-        drop = SKILLORB_ATTRIBUTE_DESC::Dark();
-        break;
-    case 2:
-        drop = SKILLORB_ATTRIBUTE_DESC::Wind();
-        break;
-    case 3:
-        drop = SKILLORB_ATTRIBUTE_DESC::Thunder();
-        break;
-    default:
-        break;
-    }
-
-    return new SkillOrb(GetPos(), drop, SKILLORB_SIZE_DESC::Mid());
-}
 
 bool CheckEnemy2Length(Vector2 a, Vector2 b, float len)
 {

@@ -14,7 +14,6 @@ private:
     float knockback_distance_;	//ノックバックする距離
     Vector2 knockback_start_;	//ノックバックの初めのポジション
     Vector2 knockback_end_;		//ノックバックの終わりのポジション
-    SKILLORB_ATTRIBUTE_DESC drop;
 
 
 public:
@@ -32,10 +31,6 @@ public:
     }
 
     void Update() override;
-
-    SkillOrb* DropSkillOrb() override;
-
-
 
 
 private:

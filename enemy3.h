@@ -30,7 +30,6 @@ public:
 
     void Update() override;
 
-    SkillOrb* DropSkillOrb() override;
 
     void RangeEnemy(float a, float b, float c, float d);
     void RangePlayer(float a, float b, float c, float d);

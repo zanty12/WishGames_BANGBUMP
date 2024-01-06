@@ -9,9 +9,8 @@
 class Bullet : public MovableObj
 {
 private:
-	int spd_;
+	Vector2 startPosition;
 	int atk_;
-	bool dead = false; //死んでいるかどうか
 
 public:
 
@@ -23,14 +22,11 @@ public:
 
 	Bullet(Vector2 pos);
 
-	//Bullet(Vector2 pos, Vector2 vel);
 
 	void Update() override;
 
-	int GetSpd(void) { return spd_; }		//HPのゲット
-	void SetSpd(int spd) { spd_ = spd; }			//HPのセット
 
-	void Die() { this->dead = true; }
+	void Die() { Discard(); }
 
 private:
 

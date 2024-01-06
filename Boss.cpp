@@ -13,12 +13,30 @@ void Boss::Update()
         Die();
     }
 
-    Atk();
+    time_ += Time::GetDeltaTime();
 
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
         OBJECT_TYPE type = collision->GetParent()->GetType();
+    }
+
+    if (time_ > 5.0f)
+    {
+        time_ = 0;
+        if (atk_now == false)
+        {
+            atk_now = true;
+        }
+        else
+        {
+            atk_now = false;
+        }
+    }
+
+    if (atk_now == true)
+    {
+        Atk();
     }
 
     GetAnimator()->SetIsAnim(true);
@@ -39,38 +57,64 @@ void Boss::Atk()
 
     if (rrand < 10)
     {
-        SetAtk(200);
+
     }
     else if (rrand > 10 && rrand < 30)
     {
-        SetAtk(50);
+
     }
     else if (rrand > 30 && rrand < 60)
     {
-        SetAtk(30);
+
     }
     else if (rrand > 60 && rrand <= 100)
     {
-        SetAtk(30);
+
     }
 }
 
 void Boss::Fire()
 {
+    //3•ª‚Ì‚P•b‚É‚Pƒqƒbƒg@‚T‚Oƒ_ƒ[ƒW
+    atk_time_ += Time::GetDeltaTime();
+    if (atk_time_ > (1.0f / 3))
+    {
+        atk_time_ = 0;
+        SetAtk(50);
+    }
+
+
 }
 
 void Boss::Thunder()
 {
+    //‚Pƒqƒbƒg@‚Q‚O‚Oƒ_ƒ[ƒW
+    
+    SetAtk(200);
+
 }
 
 void Boss::Wind()
 {
-
-
+    //‚S•ª‚Ì‚P•b‚É‚Pƒqƒbƒg@‚R‚Oƒ_ƒ[ƒW
+    atk_time_ += Time::GetDeltaTime();
+    if (atk_time_ > (1.0f / 4))
+    {
+        atk_time_ = 0;
+        SetAtk(30);
+    }
 }
 
 void Boss::Water()
 {
+    //‚Q•ª‚Ì‚P•b‚É‚Pƒqƒbƒg@‚R‚Oƒ_ƒ[ƒW
+    atk_time_ += Time::GetDeltaTime();
+    if (atk_time_ > (1.0f / 2))
+    {
+        atk_time_ = 0;
+        SetAtk(30);
+    }
+    
 }
 
 

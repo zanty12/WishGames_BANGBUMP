@@ -8,6 +8,9 @@
 #include "time.h"
 #include "gamebase.h"
 
+#define RANGE (SIZE_ * 10.0f)                            //”ÍˆÍ
+
+bool CheckBulletLength(Vector2 a, Vector2 b, float len);
 
 Bullet::Bullet(Vector2 pos)
     : MovableObj(pos,0.0f, LoadTexture("data/texture/skillorb.png"), Vector2::Zero)
@@ -15,12 +18,19 @@ Bullet::Bullet(Vector2 pos)
     SetPos(pos);
     SetType(OBJ_BULLET);
     SetAtk(10);
-    SetSpd(96.0f * 2);
+    startPosition = GetPos();
 }
 
 void Bullet::Update()
 {
+    AddVel(GetVel());
     CollisionAction();
+    
+    if (CheckBulletLength(GetPos(), startPosition, RANGE))
+    {
+        Die();
+    }
+
 }
 void Bullet::CollisionAction(void)
 {
@@ -41,4 +51,14 @@ void Bullet::CollisionAction(void)
             break;
         }
     }
+}
+bool CheckBulletLength(Vector2 a, Vector2 b, float len)
+{
+
+    if (Vector2::Distance(a, b) > len)
+    {
+        return true;
+    }
+
+    return false;
 }
