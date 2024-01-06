@@ -48,6 +48,7 @@ int main()
                     ImGui::Begin("Main System");
                     ImGui::Text("FPS:%.1f", io.Framerate);
 
+
                     //test controller
                     ImGui::Text(u8"コントローラー");
                     ImGui::Text("Left Stick");
@@ -69,6 +70,11 @@ int main()
             scene_mngr->Update();
             scene_mngr->Draw();
             DebugUI::EndDraw();
+            static float rrrr = 0.0f;
+            rrrr += 0.01f;
+            std::cout << rrrr << std::endl;
+            DrawUICircle(0, Vector2(500, 500), 0, Vector2(500, 500), Color::White, rrrr);
+
             Graphical::Present();
         }
     }
