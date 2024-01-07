@@ -2,7 +2,7 @@
 
 #include "gamebase.h"
 
-ColliderRect::ColliderRect(GameObject* parent) : Collider(RECTANGLE, parent)
+ColliderRect::ColliderRect(GameObject* parent,bool movable) : Collider(RECTANGLE, parent,movable)
 {
     rect_ = Vertex4(
         Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),

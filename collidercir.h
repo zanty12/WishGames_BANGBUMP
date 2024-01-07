@@ -15,6 +15,8 @@ private:
 public:
     ColliderCir() = delete;
     ColliderCir(GameObject* parent, float radius);
+    ColliderCir(GameObject* parent, float radius, bool movable);
+    ~ColliderCir() override = default;
     Vertex1 GetCircle() const { return cir_; }
     float GetRadius() const { return radius_; }
     bool Collide(Collider* other) override;

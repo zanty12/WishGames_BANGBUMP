@@ -24,10 +24,9 @@ private:
 
 public:
 	MovableObj(Vector2 pos,float rot,int tex_number,Vector2 vel)
-		:GameObject(pos,rot,tex_number),vel_(vel)
+		:GameObject(pos,rot,tex_number,true),vel_(vel)
 	{
 		GetAnimator()->SetIsMovable(true);
-		GetCollider()->SetIsMovable(true);
 	}
 
 	void SetVel(Vector2 vel) { vel_ = vel; }		//速度セット
