@@ -25,6 +25,13 @@ enum PLAYER_STATE
 	TOUCH_GROUND,	//地面にいる
 };
 
+enum GRAVITY_STATE
+{
+	GRAVITY_FULL,
+	GRAVITY_HALF,
+	GRAVITY_NONE,
+};
+
 class MapMngr;
 class Camera;
 class SkillOrb;
@@ -34,7 +41,7 @@ class Player : public MovableObj
 private:
 
 	static const int INITIAL_HP_;			//HPの初期値
-	static const float GRAVITY_SCALE_;		//重力（仮）
+
 	static const float INVINCIBILITY_MAX_TIME_;	//無敵時間
 
 	Vector2 dir_;		//向き
@@ -65,6 +72,7 @@ private:
 	int not_stick_working_;
 
 	PLAYER_STATE player_state_;
+	GRAVITY_STATE gravity_state_ = GRAVITY_FULL;
 
 public:
 	Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr)
@@ -103,6 +111,10 @@ public:
 	void Draw(Camera* camera);
 
 	void DebugMenu();
+
+	void SetGravityState(GRAVITY_STATE gravity_state) { gravity_state_ = gravity_state; }
+	GRAVITY_STATE GetGravityState(void) const { return gravity_state_; }
+	static constexpr float GRAVITY_SCALE_ = 3 * SIZE_;		//重力
 
 private:
 	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）

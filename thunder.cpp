@@ -17,16 +17,18 @@ bool Thunder::StickTrigger(Vector2 stick, Vector2 previousStick) {
 	float distance = stick.Distance();
 	float previousDistance = previousStick.Distance();
 
+	//Charge
 	if (responseMinStickDistance <= distance) {
-		charge += distance;
-		if (maxCharge < charge) charge = maxCharge;
+		charge_ += distance;
+		player_->SetGravityState(GRAVITY_NONE);
+		if (maxCharge_ < charge_) charge_ = maxCharge_;
 	}
 
+	//Release
 	if (distance < responseMinStickDistance && responseMinStickDistance < previousDistance &&
 		responseMinOneFrameDistance < (stick - previousStick).Distance()) {
 		return true;
 	}
-
 	return false;
 }
 
@@ -37,18 +39,29 @@ Vector2 Thunder::Move() {
 	previousStick.y *= -1;
 	float distance = stick.Distance();
 
+	if(StickTrigger(stick, previousStick))
+	{
+		move_dir_ = -previousStick.Normalize();
+		move_cd_ = move_cd_max_;
+		moving_ = true;
+	}
 
-	if (StickTrigger(stick, previousStick)) {
-		Vector2 direction = -previousStick * 10 * movePower;
-		charge = 0.0f;
-
+	if (moving_){
+		Vector2 direction = move_dir_ * movePower * Time::GetDeltaTime();
+		player_->SetGravityState(GRAVITY_NONE);
+		charge_ -= maxCharge_ * Time::GetDeltaTime();
+		if (charge_ < 0.0f) {
+			charge_ = 0.0f;
+			moving_ = false;
+			player_->SetGravityState(GRAVITY_FULL);
+		}
 		return direction;
 	}
-	else if(stick!=Vector2::Zero)
-	{
-		return Vector2::Zero;
-	}
 
+	if(stick != Vector2::Zero)
+	{
+		player_->SetGravityState(GRAVITY_NONE);
+	}
 	return player_->GetVel();
 }
 
@@ -59,8 +72,8 @@ void Thunder::Action() {
 
 	if (StickTrigger(stick, previousStick)) {
 		previousStick.y *= -1.0f;
-		Vector2 direction = -previousStick * charge;
-		charge = 0.0f;
+		Vector2 direction = -previousStick * charge_;
+		charge_ = 0.0f;
 
 		for (int i = 0; i < _countof(arrows_); i++)
 			if (!arrows_[i].isVisible) arrows_[i] = { player_->GetPos(), direction, true };
@@ -110,8 +123,8 @@ void Thunder::Draw(Vector2 offset) {
 void Thunder::DebugMenu()
 {
 	ImGui::Begin("Thunder");
-	ImGui::Text("charge:%f", charge);
-	ImGui::SliderFloat("maxCharge", &maxCharge, 0.0f, 100.0f);
+	ImGui::Text("charge:%f", charge_);
+	ImGui::SliderFloat("maxCharge", &maxCharge_, 0.0f, 100.0f);
 	ImGui::SliderFloat("movePower", &movePower, 0.0f, 5.0f);
 	ImGui::SliderFloat("attackPower", &attackPower, 0.0f, 10.0f);
 	ImGui::End();
