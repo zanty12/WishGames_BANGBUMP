@@ -74,7 +74,7 @@ void Player::Update(void)
 		if (GetVel().y >= GRAVITY_SCALE_)
 			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));*/
 	}
-
+	//èdóÕ
 	if(GetGravityState() == GRAVITY_FULL)
 	{
 		SetVel(Vector2(next_vel.x, next_vel.y - GRAVITY_SCALE_ * Time::GetDeltaTime() * Time::GetDeltaTime()));
@@ -87,7 +87,6 @@ void Player::Update(void)
 	{
 		SetVel(Vector2(next_vel.x, next_vel.y));
 	}
-
 
 	if (attack_attribute_ != nullptr)
 	{
