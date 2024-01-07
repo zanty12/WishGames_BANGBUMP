@@ -10,7 +10,8 @@ private:
 public:
     static int Hash(int seed)
     {
-        return seed % 59;
+        //the prime number could be better
+        return seed / 10;
     }
 
     /**

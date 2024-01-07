@@ -10,7 +10,7 @@ private:
 
 public:
     ColliderRect() = delete;
-    ColliderRect(GameObject* parent);
+    ColliderRect(GameObject* parent,bool movable);
     Vertex4 GetRect() const { return rect_; }
     bool Collide(Collider* other) override;
     void Update() override;
