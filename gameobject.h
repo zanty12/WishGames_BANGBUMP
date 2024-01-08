@@ -53,6 +53,7 @@ public:
     static constexpr float SIZE_ = 64.0f; //１マスの標準サイズ
 	GameObject() = default;
     GameObject(Vector2 pos, float rot, int tex_number);
+    //this is here only for movable objects
     GameObject(Vector2 pos, float rot, int tex_number,bool movable);
     virtual ~GameObject(){
         if (animator_)animator_->Discard();

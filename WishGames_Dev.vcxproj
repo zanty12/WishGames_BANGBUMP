@@ -239,7 +239,6 @@
     <ClInclude Include="scenemngr.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
-    <ClInclude Include="skillorbattribute.h" />
     <ClInclude Include="skillorbmngr.h" />
     <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />

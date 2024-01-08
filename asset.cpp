@@ -1,7 +1,10 @@
 #include "asset.h"
 
+#include "skillorb.h"
+
 const std::map<textures,std::string> Asset::textures_ = {
     {textures::player,"data/texture/player.png"},
+    {textures::skill_orb,"data/texture/blocks/skillorb.png"},
     {textures::bg_stage1_front,"data/texture/bg/BG_stage1_front.png"},
     {textures::bg_stage1_back,"data/texture/bg/BG_stage1_back.png"},
     {textures::bg_stage2_front,"data/texture/bg/BG_stage2_front.png"},

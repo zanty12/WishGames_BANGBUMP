@@ -13,7 +13,6 @@ private:
     const float x_spd_ = 96.0f;
     const float y_spd_ = 0.5f;
     Vector2 startPosition;
-    SKILLORB_ATTRIBUTE_DESC drop;
 
 
 public:

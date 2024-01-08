@@ -254,7 +254,10 @@ void Player::CollisionSkillPoint(GameObject* obj)
 		return;
 	}
 
-	SkillOrb* skill_point = dynamic_cast<SkillOrb*>(obj);
+
+	SkillOrbMovable* skill_point = dynamic_cast<SkillOrbMovable*>(obj);
+	if(skill_point == nullptr)
+		SkillOrbStatic* skill_point = dynamic_cast<SkillOrbStatic*>(obj);
 
 	if (skill_point == nullptr)
 	{
