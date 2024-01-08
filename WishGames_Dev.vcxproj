@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="animator.cpp" />
+    <ClCompile Include="asset.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collider.cpp" />
@@ -189,6 +190,7 @@
   <ItemGroup>
     <ClInclude Include="animator.h" />
     <ClInclude Include="area_capture.h" />
+    <ClInclude Include="asset.h" />
     <ClInclude Include="attribute_type.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
