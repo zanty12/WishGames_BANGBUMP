@@ -43,6 +43,7 @@ private:
 public:
 	MultiPlayCharacterSelectModeServerSide()
 		: MultiPlayServerSide(nullptr) {
+		maxTime_ = 1000;
 	}
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {

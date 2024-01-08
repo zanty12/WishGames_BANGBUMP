@@ -31,7 +31,7 @@ private:
 
 public:
 	MultiPlayFlowServerSide(GameBase* game) : game_(game) {
-		gameMode_ = CreateMode(AREA_CAPTURE);
+		gameMode_ = CreateMode(CHARACTER_SELECT);
 	}
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) {
