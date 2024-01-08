@@ -105,7 +105,7 @@ public:
 	//HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
 	void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
-	SkillOrb* DropSkillOrb(void);
+	void DropSkillOrb(void);
 
 	void Update(void) override;
 	void Draw(Camera* camera);

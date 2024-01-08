@@ -116,45 +116,35 @@ void Player::Update(void)
 
 }
 
-SkillOrb* Player::DropSkillOrb(void)
+void Player::DropSkillOrb(void)
 {
 
-	//★SkillOrbクラスが変更されるまで保留★
+	//★ATTRIBUTE_TYPE_FIREを外すだけ。bool isMovable = trueにする★
 
-	SKILLORB_ATTRIBUTE_DESC skillorb_attr;
-	switch (hit_attack_attr)
+	while (true)
 	{
-	case ATTRIBUTE_TYPE_FIRE:
-		skillorb_attr = SKILLORB_ATTRIBUTE_DESC::Fire();
-		break;
-	case ATTRIBUTE_TYPE_DARK:
-		skillorb_attr = SKILLORB_ATTRIBUTE_DESC::Dark();
-		break;
-	case ATTRIBUTE_TYPE_WIND:
-		skillorb_attr = SKILLORB_ATTRIBUTE_DESC::Wind();
-		break;
-	case ATTRIBUTE_TYPE_THUNDER:
-		skillorb_attr = SKILLORB_ATTRIBUTE_DESC::Thunder();
-		break;
-	}
+		if (drop_point_ >= SKILLORB_SIZE_DESC::Big().value)	//大きいスキルオーブ
+		{
+			map_mangr_->GetGame()->GetSkillOrbMngr()->Pop(GetPos(), ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_BIG);
+			drop_point_ -= SKILLORB_SIZE_DESC::Big().value;
+		}
+		else if (drop_point_ >= SKILLORB_SIZE_DESC::Mid().value)	//中くらいのスキルオーブ
+		{
+			map_mangr_->GetGame()->GetSkillOrbMngr()->Pop(GetPos(), ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_MID);
+			drop_point_ -= SKILLORB_SIZE_DESC::Mid().value;
+		}
+		else if (drop_point_ >= SKILLORB_SIZE_DESC::Small().value)	//小さいスキルオーブ
+		{
+			map_mangr_->GetGame()->GetSkillOrbMngr()->Pop(GetPos(), ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_SMALL);
+			drop_point_ -= SKILLORB_SIZE_DESC::Small().value;
+		}
 
-	if (drop_point_ >= 10)
-	{
-		drop_point_ -= 10;
-		return new SkillOrb(GetPos(), skillorb_attr, SKILLORB_SIZE_DESC::Big());
-	}
-	if (drop_point_ >= 3)
-	{
-		drop_point_ -= 3;
-		return new SkillOrb(GetPos(), skillorb_attr, SKILLORB_SIZE_DESC::Mid());
-	}
-	if (drop_point_ >= 1)
-	{
-		drop_point_ -= 1;
-		return new SkillOrb(GetPos(), skillorb_attr, SKILLORB_SIZE_DESC::Small());
+		if (drop_point_ <= 0)
+		{
+			break;
+		}
 	}
 
-	return nullptr;
 }
 
 //サンダーはチャージ中は落ちない
