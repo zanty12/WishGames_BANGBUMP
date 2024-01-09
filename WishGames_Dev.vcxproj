@@ -202,6 +202,7 @@
     <ClInclude Include="enemy2.h" />
     <ClInclude Include="enemy3.h" />
     <ClInclude Include="enemymngr.h" />
+    <ClInclude Include="follow.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="block.h" />
     <ClInclude Include="cloud.h" />
@@ -232,6 +233,7 @@
     <ClInclude Include="multi_client_gameobject.h" />
     <ClInclude Include="multi_connect_renderer.h" />
     <ClInclude Include="multi_enemy_rush_mode.h" />
+    <ClInclude Include="multi_final_battle_mode.h" />
     <ClInclude Include="multi_header.h" />
     <ClInclude Include="multi_intermediate_result_mode.h" />
     <ClInclude Include="multi_mode.h" />

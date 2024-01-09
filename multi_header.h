@@ -40,11 +40,13 @@ struct HEADER {
 };
 // クライアントデータ（クライアント側）
 struct CLIENT_DATA_CLIENT_SIDE {
-	int id = -1;					// ID
-	Vector2 position;				// 座標
-	int score = 0;					// スコア
-	int skillPoint = 0;				// スキルポイント
-	int previousSkillPoint = 0;		// 1ゲーム前のスキルポイント
+	int id = -1;						// ID
+	ATTRIBUTE_TYPE moveAttributeType;	// 移動属性タイプ
+	ATTRIBUTE_TYPE attackAttributeType;	// 攻撃属性タイプ
+	Vector2 position;					// 座標
+	int score = 0;						// スコア
+	int skillPoint = 0;					// スキルポイント
+	int previousSkillPoint = 0;			// 1ゲーム前のスキルポイント
 };
 // クライアントデータ（サーバー側）
 struct CLIENT_DATA_SERVER_SIDE {

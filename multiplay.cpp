@@ -10,9 +10,9 @@
 #include <thread>
 #pragma comment(lib, "lib/lib.lib")
 
-//#define DEBUG_CONNECT
+//#define DEBUG_INPUT
 //#define DEBUG_LOCKED
-#define DEBUG_SENDLEN
+//#define DEBUG_SENDLEN
 
 MultiPlayServer::MultiPlayServer() {
 	WSAData data;
@@ -131,6 +131,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 		client.player_->Update();
 	}
 
+
 	
 	// コリジョンの更新
 	if (coll_mngr_) {
@@ -139,8 +140,6 @@ void MultiPlayServer::PlayerUpdate(void) {
 
 	// ゲームモードの更新
 	if (gameMode) gameMode->Update(clients_);
-
-	std::cout << gameMode->GetMode() << " : " << gameMode->GetGame() << std::endl;
 
 	// ロック解除
 #ifdef DEBUG_LOCKED
@@ -172,9 +171,10 @@ void MultiPlayServer::RecvUpdate(void) {
 	iterator->currentInput = req.input.curInput;
 	iterator->previousInput = req.input.preInput;
 
-#ifdef DEBUG_CONNECT
+#ifdef DEBUG_INPUT
 	Input::SetState(1, iterator->currentInput);
-	std::cout << Input::GetStickLeft(1).x << ", " << Input::GetStickLeft(1).y << std::endl;
+	Input::SetPreviousState(1, iterator->previousInput);
+	std::cout << Input::GetStickLeft(1).x << ", " << Input::GetPreviousStickLeft(1).y << std::endl;
 #endif
 
 	// ロック解除
@@ -212,7 +212,7 @@ void MultiPlayServer::SendUpdate(void) {
 
 			// クライアント情報の登録
 			for (auto &client : clients_) {
-				res.clients.push_back({ client.header.id , client.player_->GetPos(), 0, 0 });
+				res.clients.push_back({ client.header.id, client.moveAttribute, client.actionAttribute, client.player_->GetPos(), 0, 0 });
 			}
 
 			// オブジェクト情報の登録
@@ -331,7 +331,6 @@ void MultiPlayServer::OpenTerminal(void) {
 						std::cout << "Req << ID:*" << " Login" << std::endl;
 						int id = Register(clientAddr, *pHeader, 0);
 						// 送信
-						//SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
 						std::cout << id << " : 登録しました" << std::endl;
 						break;
 					};
@@ -494,10 +493,6 @@ void MultiPlayClient::SendUpdate(void) {
 
 		if (currentTime - startTime > onceFrameTime) {
 			startTime = currentTime;
-
-			// 入力更新
-			Input::Update();
-
 			// リクエストの作成
 			REQUEST_PLAYER req;
 			req.input = { id, Input::GetState(0), Input::GetPreviousState(0) };
@@ -506,6 +501,9 @@ void MultiPlayClient::SendUpdate(void) {
 			// 送信
 			SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, serverAddr);
 			sendBuff = nullptr;
+
+			// 入力更新
+			Input::Update();
 		}
 	}
 }
