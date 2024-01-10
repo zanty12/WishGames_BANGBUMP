@@ -4,12 +4,12 @@
 
 SkillOrbMovable::SkillOrbMovable(int cellX, int cellY, SKILLORB_SIZE_DESC sizeDesc)
     : MovableObj(
-        Vector2(cellX * GameObject::SIZE_ + GameObject::SIZE_ / 2,
-                cellY * GameObject::SIZE_ + GameObject::SIZE_ / 2),
+        Vector2(cellX *GameObject::SIZE_ + GameObject::SIZE_ / 2,
+            cellY *GameObject::SIZE_ + GameObject::SIZE_ / 2),
         0.0f,
         LoadTexture(Asset::GetAsset(skill_orb)),
         Vector2::Zero
-    ), SkillOrb(sizeDesc)
+    ), SkillOrb(sizeDesc, this)
 {
     SetMovable(true);
     // タイプの指定
@@ -21,7 +21,7 @@ SkillOrbMovable::SkillOrbMovable(int cellX, int cellY, SKILLORB_SIZE_DESC sizeDe
 }
 
 SkillOrbMovable::SkillOrbMovable(Vector2 pos, SKILLORB_SIZE_DESC sizeDesc)
-    : MovableObj(pos, 0.0f, LoadTexture(Asset::GetAsset(skill_orb)), Vector2::Zero), SkillOrb(sizeDesc)
+    : MovableObj(pos, 0.0f, LoadTexture(Asset::GetAsset(skill_orb)), Vector2::Zero), SkillOrb(sizeDesc, this)
 {
     SetMovable(true);
     // タイプの指定
@@ -37,10 +37,10 @@ void SkillOrbMovable::Update()
 }
 
 SkillOrbStatic::SkillOrbStatic(int cellX, int cellY, SKILLORB_SIZE_DESC desc) : GameObject(
-    Vector2(cellX * GameObject::SIZE_ + GameObject::SIZE_ / 2,
-            cellY * GameObject::SIZE_ + GameObject::SIZE_ / 2),
+    Vector2(cellX *GameObject::SIZE_ + GameObject::SIZE_ / 2,
+        cellY *GameObject::SIZE_ + GameObject::SIZE_ / 2),
     0.0f,
-    LoadTexture(Asset::GetAsset(skill_orb))), SkillOrb(desc)
+    LoadTexture(Asset::GetAsset(skill_orb))), SkillOrb(desc, this)
 {
     // タイプの指定
     SetType(OBJ_ITEM);
@@ -51,7 +51,7 @@ SkillOrbStatic::SkillOrbStatic(int cellX, int cellY, SKILLORB_SIZE_DESC desc) : 
 }
 
 SkillOrbStatic::SkillOrbStatic(Vector2 pos, SKILLORB_SIZE_DESC sizeDesc) : GameObject(
-    pos, 0.0, LoadTexture(Asset::GetAsset(skill_orb))), SkillOrb(sizeDesc)
+    pos, 0.0, LoadTexture(Asset::GetAsset(skill_orb))), SkillOrb(sizeDesc, this)
 {
     // タイプの指定
     SetType(OBJ_ITEM);

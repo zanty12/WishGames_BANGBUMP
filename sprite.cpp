@@ -90,6 +90,47 @@ void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color c
 	);
 }
 
+void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, Vector2 uv, Vector2 uvWidth) {
+	using namespace DX;
+	using namespace DX::DX11;
+	if (texNo <= -1) return;
+
+	// トポロジの設定
+	Device3D::SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	// テクスチャの設定
+	auto texture = GetTexture(texNo);
+	Device3D::SetResource(*GetTexture(texNo));
+
+	// アフィン変換
+	MATRIX translation, rotation, scaler, transform;
+	translation.SetTranslation(pos);
+	rotation.SetRotation(Vector3(0.0f, 0.0f, rot));
+	scaler.SetScaling(scale);
+	transform = scaler * rotation;
+	transform = translation * transform;
+	g_WorldMatrix = transform;
+
+	// UV変換
+	g_Square.GetVertexPointer()[0].uv = uv + Vector2(0.0f, uvWidth.y);
+	g_Square.GetVertexPointer()[1].uv = uv + Vector2(uvWidth.x, uvWidth.y);
+	g_Square.GetVertexPointer()[2].uv = uv;
+	g_Square.GetVertexPointer()[3].uv = uv + Vector2(uvWidth.x, 0.0f);
+	g_Square.Update();
+
+	// シェーダーの設定
+	ShaderManager::SetTextureMode();
+
+	// 定数バッファの設定
+	Device3D::UpdateConstantBuffer(&g_WorldMatrix, g_WorldBuffer);
+	Device3D::UpdateConstantBuffer(&color, g_ColorBuffer);
+
+	// 描画
+	Device3D::Draw(
+		g_Square.GetVertexBuffer(), g_Square.GetVertexCount(), g_Square.GetVertexStructByteSize(),
+		g_Square.GetIndexBuffer(), g_Square.GetIndexCount(), g_Square.GetIndexStructByteSize()
+	);
+}
+
 void DrawSpriteCenter(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 	pos.x += Graphical::GetWidth() * 0.5f;
 	pos.y *= -1.0f;

@@ -67,6 +67,15 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color);
 /// <param name="color">色</param>
 void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color);
 /// <summary>
+/// テクスチャを描画する（左上が原点）
+/// </summary>
+/// <param name="texNo">テクスチャ番号</param>
+/// <param name="pos">座標</param>
+/// <param name="rot">角度</param>
+/// <param name="scale">拡縮</param>
+/// <param name="color">色</param>
+void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, Vector2 uv, Vector2 uvWidth);
+/// <summary>
 /// テクスチャを描画する（中心が原点）
 /// </summary>
 /// <param name="texNo">テクスチャ番号</param>
