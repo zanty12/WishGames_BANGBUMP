@@ -15,4 +15,8 @@ public:
 	void Unlock() {
 		sentinelID++;
 	}
+
+	int ID(void) {
+		return currentID;
+	}
 };

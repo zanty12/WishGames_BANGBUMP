@@ -11,7 +11,7 @@
 #pragma comment(lib, "lib/lib.lib")
 
 //#define DEBUG_INPUT
-//#define DEBUG_LOCKED
+#define DEBUG_LOCKED
 //#define DEBUG_SENDLEN
 
 MultiPlayServer::MultiPlayServer() {
@@ -164,18 +164,18 @@ void MultiPlayServer::RecvUpdate(void) {
 	// プレイヤーの検索
 	auto iterator = find(req.input.id);
 
-	// 検索不一致
-	if (iterator == clients_.end()) return;
-
-	// 入力情報を設定
-	iterator->currentInput = req.input.curInput;
-	iterator->previousInput = req.input.preInput;
+	// 検索したなら
+	if (iterator != clients_.end()) {
+		// 入力情報を設定
+		iterator->currentInput = req.input.curInput;
+		iterator->previousInput = req.input.preInput;
 
 #ifdef DEBUG_INPUT
-	Input::SetState(1, iterator->currentInput);
-	Input::SetPreviousState(1, iterator->previousInput);
-	std::cout << Input::GetStickLeft(1).x << ", " << Input::GetPreviousStickLeft(1).y << std::endl;
+		Input::SetState(1, iterator->currentInput);
+		Input::SetPreviousState(1, iterator->previousInput);
+		std::cout << Input::GetStickLeft(1).x << ", " << Input::GetPreviousStickLeft(1).y << std::endl;
 #endif
+	}
 
 	// ロック解除
 #ifdef DEBUG_LOCKED

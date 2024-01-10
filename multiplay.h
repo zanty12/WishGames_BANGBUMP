@@ -7,7 +7,7 @@
 #include "multi_connect_renderer.h"
 #include "storage_lock.h"
 
-#define SERVER_ADDRESS "192.168.0.7"
+#define SERVER_ADDRESS "10.192.95.0"
 #define MAX_MEMBER (4)
 #define PORT (8080)
 #define MAX_BUFF (4096)
