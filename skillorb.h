@@ -1,16 +1,21 @@
 #pragma once
 #include "attribute_type.h"
 #include "movableobj.h"
+#include "gameobject.h"
+#include "mapenum.h"
 #include "texture.h"
+#include <type_traits>
 
-enum SKILLORB_SIZE_TYPE {
+enum SKILLORB_SIZE_TYPE
+{
     SKILLORB_SIZE_TYPE_SMALL,
     SKILLORB_SIZE_TYPE_MID,
     SKILLORB_SIZE_TYPE_BIG,
 };
 
 
-class SKILLORB_SIZE_DESC {
+class SKILLORB_SIZE_DESC
+{
 public:
     int value;
     float radius;
@@ -26,34 +31,38 @@ public:
     */
     SKILLORB_SIZE_DESC(int value, float radius, SKILLORB_SIZE_TYPE sizeType)
         : value(value), radius(radius), sizeType(sizeType)
-    {}
+    {
+    }
 
-    static SKILLORB_SIZE_DESC Big(void) {
+    static SKILLORB_SIZE_DESC Big(void)
+    {
         return SKILLORB_SIZE_DESC(
-            5,                      // ポイント
-            100.0f,                 // 半径
-            SKILLORB_SIZE_TYPE_BIG  // サイズの種類
+            5, // ポイント
+            100.0f, // 半径
+            SKILLORB_SIZE_TYPE_BIG // サイズの種類
         );
     }
 
-    static SKILLORB_SIZE_DESC Mid(void) {
+    static SKILLORB_SIZE_DESC Mid(void)
+    {
         return SKILLORB_SIZE_DESC(
-            2,                      // ポイント
-            60.0f,                  // 半径
-            SKILLORB_SIZE_TYPE_MID  // サイズの種類
+            2, // ポイント
+            60.0f, // 半径
+            SKILLORB_SIZE_TYPE_MID // サイズの種類
         );
     }
 
-    static SKILLORB_SIZE_DESC Small(void) {
+    static SKILLORB_SIZE_DESC Small(void)
+    {
         return SKILLORB_SIZE_DESC(
-            1,                      // ポイント
-            25.0f,                  // 半径
-            SKILLORB_SIZE_TYPE_SMALL// サイズの種類
+            1, // ポイント
+            25.0f, // 半径
+            SKILLORB_SIZE_TYPE_SMALL // サイズの種類
         );
     }
 };
 
-class SKILLORB_ATTRIBUTE_DESC {
+/*class SKILLORB_ATTRIBUTE_DESC {
 public:
     ATTRIBUTE_TYPE attributeType;
     Color color;
@@ -64,7 +73,7 @@ public:
     /*
     * attributeType : スキルポイントの属性
     * color : スキルポイントの色
-    */
+    #1#
     SKILLORB_ATTRIBUTE_DESC(ATTRIBUTE_TYPE attributeType, Color color)
         : attributeType(attributeType), color(color)
     {}
@@ -96,15 +105,47 @@ public:
             Color(1.0f, 1.0f, 0.0f) // 色
         );
     }
+};*/
+
+class SkillOrb
+{
+protected:
+    int value_ = 1;
+    float radius_ = 25.0f;
+    SKILLORB_SIZE_TYPE size_ = SKILLORB_SIZE_TYPE_SMALL;
+    bool is_movable_ = false;
+
+public:
+    SkillOrb(SKILLORB_SIZE_DESC desc)
+    {
+        value_ = desc.value;
+        radius_ = desc.radius;
+        size_ = desc.sizeType;
+    }
+
+    virtual ~SkillOrb() = default;
+
+    // サイズを特定する
+    static SKILLORB_SIZE_TYPE ParseSize(MAP_READ type)
+    {
+        int iBase = MAP_READ_ORB_SMALL;
+        int iType = (type - iBase) % 3;
+
+        return static_cast<SKILLORB_SIZE_TYPE>(iType);
+    }
+
+    SKILLORB_SIZE_TYPE GetSize(void) const { return size_; }
+    void SetSize(SKILLORB_SIZE_TYPE size) { size_ = size; }
+    float GetRadius(void) const { return radius_; }
+    void SetRadius(float radius) { radius_ = radius; }
+    int GetValue() const { return value_; }
+    void SetValue(int value) { value_ = value; }
+    bool IsMovable(void) const { return is_movable_; }
+    void SetMovable(bool is_movable) { is_movable_ = is_movable; }
 };
 
-class SkillOrb : public MovableObj {
-private:
-    int value_ = 0;
-    float radius_ = 10.0f;
-    ATTRIBUTE_TYPE attribute_ = ATTRIBUTE_TYPE_FIRE;
-    SKILLORB_SIZE_TYPE size_ = SKILLORB_SIZE_TYPE_SMALL;
-
+class SkillOrbMovable : public MovableObj, public SkillOrb
+{
 public:
     /*
     * cellX : CellのX座標
@@ -112,32 +153,34 @@ public:
     * attributeDesc : スキルポイントの属性情報
     * sizeDesc : スキルポイントのサイズ情報
     */
-    SkillOrb(int cellX, int cellY, SKILLORB_ATTRIBUTE_DESC attributeDesc, SKILLORB_SIZE_DESC sizeDesc);
-
+    //SkillOrb(int cellX, int cellY, SKILLORB_ATTRIBUTE_DESC attributeDesc, SKILLORB_SIZE_DESC sizeDesc);
+    SkillOrbMovable(int cellX, int cellY, SKILLORB_SIZE_DESC sizeDesc);
     /*
     * pos : 座標
     * value : スキルポイントの値
     * attributeDesc : スキルポイントの属性情報
     * sizeDesc : スキルポイントのサイズ情報
     */
-    SkillOrb(Vector2 pos, SKILLORB_ATTRIBUTE_DESC attributeDesc, SKILLORB_SIZE_DESC sizeDesc);
+    //SkillOrb(Vector2 pos, SKILLORB_ATTRIBUTE_DESC attributeDesc, SKILLORB_SIZE_DESC sizeDesc);
+    SkillOrbMovable(Vector2 pos, SKILLORB_SIZE_DESC sizeDesc);
 
     // 属性を特定する
-    static ATTRIBUTE_TYPE ParseAttribute(MAP_READ type);
-    // サイズを特定する
-    static SKILLORB_SIZE_TYPE ParseSize(MAP_READ type);
+    //static ATTRIBUTE_TYPE ParseAttribute(MAP_READ type);
 
+    /*ATTRIBUTE_TYPE GetAttribute(void) const { return attribute_; }
+    void SetAttribute(ATTRIBUTE_TYPE attribute) { attribute_ = attribute; }*/
 
+    ~SkillOrbMovable() override = default;
 
+    void Update(void) override;
+};
 
-    float GetRadius(void) const { return radius_; }
-    void SetRadius(float radius) { radius_ = radius; GetAnimator()->SetScale(Vector2(radius_, radius_)); }
+class SkillOrbStatic : public GameObject, public SkillOrb
+{
+public:
+    SkillOrbStatic(int cellX, int cellY, SKILLORB_SIZE_DESC desc);
+    SkillOrbStatic(Vector2 pos, SKILLORB_SIZE_DESC sizeDesc);
+    void Update(void) override;
+    ~SkillOrbStatic() override = default;
 
-    ATTRIBUTE_TYPE GetAttribute(void) const { return attribute_; }
-    void SetAttribute(ATTRIBUTE_TYPE attribute) { attribute_ = attribute; }
-
-    SKILLORB_SIZE_TYPE GetSize(void) const { return size_; }
-    void SetSize(SKILLORB_SIZE_TYPE size) { size_ = size; }
-
-    void Update(void) override {};
 };

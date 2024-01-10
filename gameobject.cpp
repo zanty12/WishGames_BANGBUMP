@@ -13,6 +13,7 @@ GameObject::GameObject(Vector2 pos, float rot, int tex_number)
     collider_ = new ColliderRect(this,false);
 }
 
+//this is here only for movable objects
 GameObject::GameObject(Vector2 pos, float rot, int tex_number,bool movable)
 : pos_(pos), rot_(rot), tex_(tex_number)
 {

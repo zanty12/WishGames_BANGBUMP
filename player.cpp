@@ -125,17 +125,17 @@ void Player::DropSkillOrb(void)
 	{
 		if (drop_point_ >= SKILLORB_SIZE_DESC::Big().value)	//大きいスキルオーブ
 		{
-			map_mangr_->GetGame()->GetSkillOrbMngr()->Pop(GetPos(), ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_BIG);
+			map_mangr_->GetGame()->GetSkillOrbMngr()->Pop(GetPos(), SKILLORB_SIZE_TYPE_BIG,true);
 			drop_point_ -= SKILLORB_SIZE_DESC::Big().value;
 		}
 		else if (drop_point_ >= SKILLORB_SIZE_DESC::Mid().value)	//中くらいのスキルオーブ
 		{
-			map_mangr_->GetGame()->GetSkillOrbMngr()->Pop(GetPos(), ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_MID);
+			map_mangr_->GetGame()->GetSkillOrbMngr()->Pop(GetPos(), SKILLORB_SIZE_TYPE_MID,true);
 			drop_point_ -= SKILLORB_SIZE_DESC::Mid().value;
 		}
 		else if (drop_point_ >= SKILLORB_SIZE_DESC::Small().value)	//小さいスキルオーブ
 		{
-			map_mangr_->GetGame()->GetSkillOrbMngr()->Pop(GetPos(), ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_SMALL);
+			map_mangr_->GetGame()->GetSkillOrbMngr()->Pop(GetPos(), SKILLORB_SIZE_TYPE_SMALL,true);
 			drop_point_ -= SKILLORB_SIZE_DESC::Small().value;
 		}
 
@@ -244,7 +244,10 @@ void Player::CollisionSkillPoint(GameObject* obj)
 		return;
 	}
 
-	SkillOrb* skill_point = dynamic_cast<SkillOrb*>(obj);
+
+	SkillOrbMovable* skill_point = dynamic_cast<SkillOrbMovable*>(obj);
+	if(skill_point == nullptr)
+		SkillOrbStatic* skill_point = dynamic_cast<SkillOrbStatic*>(obj);
 
 	if (skill_point == nullptr)
 	{

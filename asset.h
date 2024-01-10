@@ -15,6 +15,7 @@ enum textures
     player,
     //enemy
     //block
+    skill_orb,
     //background
     bg_stage1_front,
     bg_stage1_back,

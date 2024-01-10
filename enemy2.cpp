@@ -10,10 +10,6 @@
 
 bool CheckEnemy2Length(Vector2 a, Vector2 b, float len);
 
-Bullet* Enemy2::CreatBullet(void)
-{
-    return new Bullet(startPosition, bullet_vel_);
-}
 
 void Enemy2::Update()
 {
@@ -22,8 +18,11 @@ void Enemy2::Update()
     {
         GameObject::Discard();
         Die();
+        DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_MID);
     }
 
+    float dt = Time::GetDeltaTime(); //初期化時のエラーを回避する
+    atk_time_ += Time::GetDeltaTime();
 
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
@@ -36,9 +35,10 @@ void Enemy2::Update()
     std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayers();
 
     float Spos_now = 0.0f;
-    float Spos_old = 0.0f;
+    float Spos_old = 10000.0f;
 
     Player* close_player = nullptr;
+    Bullet* bullet = nullptr;
 
     for (auto player : players)
     {
@@ -56,128 +56,23 @@ void Enemy2::Update()
 
     if (close_player != nullptr)
     {
-        Vector2 distance = close_player->GetPos() - startPosition;
-        distance.Normalize();
-
-    }
-
-    
-
-
-
-
-    /*//壁判定
-    CellActions();
-
-    //プレイヤーとの当たり判定
-    if (Collision(player))
-    {
-        player->HpDown(3);//★仮★
-        //Die();
-    }*/
-
-    //他の敵との当たり判定
- /*   for (auto& enemy : GetEnemyMngr()->GetEnemies())
-    {
-        if (enemy == this || enemy == nullptr)
-            continue;
-        if (Collision(enemy))
+        if (atk_time_ > 2.0f)
         {
-            enemy->SetVel(Vector2(enemy->GetVel().x * -1, 0.0f));
+            atk_time_ = 0;
+            Vector2 bullet_pos;
+            bullet = new Bullet(GetPos());
+            Vector2 distance = close_player->GetPos() - startPosition;
+            bullet_pos = distance.Normalize();
+            bullet->SetVel(distance.Normalize() * (96.0f * 2) * dt);
+            bullet->SetPos(GetPos() + (bullet_pos * SIZE_ * 2.5f));
+            GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(bullet);
         }
-    }*/
-
-
-
+    }
 
 
 }
 
-SkillOrb* Enemy2::DropSkillOrb()
-{
-    if (GetDiscard() == false)
-        return nullptr;
 
-    switch (rand() % 4)
-    {
-    case 0:
-        drop = SKILLORB_ATTRIBUTE_DESC::Fire();
-        break;
-    case 1:
-        drop = SKILLORB_ATTRIBUTE_DESC::Dark();
-        break;
-    case 2:
-        drop = SKILLORB_ATTRIBUTE_DESC::Wind();
-        break;
-    case 3:
-        drop = SKILLORB_ATTRIBUTE_DESC::Thunder();
-        break;
-    default:
-        break;
-    }
-
-    return new SkillOrb(GetPos(), drop, SKILLORB_SIZE_DESC::Mid());
-}
-
-//void Enemy2::Spawn(int x, int y, int type)
-//{
-//    //TODO: ここで弾を生成する
-//    if (type == OBJ_ENEMY_BULLET)
-//    {
-//        Bullet* bullet = new Bullet(x, y, this);
-//    }
-//}
-
-/*
-void Enemy2::CellActions()
-{
-    Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
-    Cell* cells[4] = { nullptr, nullptr, nullptr, nullptr };
-    int idx = std::floor((GetPos().x / SIZE_));
-    int idy = std::floor((GetPos().y / SIZE_));
-    cells[0] = map->GetCell(idx, idy + 1);
-    cells[1] = map->GetCell(idx, idy - 1);
-    cells[2] = map->GetCell(idx - 1, idy);
-    cells[3] = map->GetCell(idx + 1, idy);
-    for (int i = 0; i < 4; i++)
-    {
-        if (cells[i] == nullptr)
-            continue;
-        if (Collision(cells[i]))
-        {
-            switch (i)
-            {
-            case 0:
-                if (GetVel().y > 0)
-                {
-                    SetVel(Vector2(GetVel().x, GetVel().y * -1));
-                }
-                break;
-            case 1:
-                if (GetVel().y < 0)
-                {
-                    SetVel(Vector2(GetVel().x, GetVel().y * -1));
-                }
-                break;
-            case 2:
-                if (GetVel().x < 0)
-                {
-                    SetVel(Vector2(GetVel().x * -1, GetVel().y));
-                }
-                break;
-            case 3:
-                if (GetVel().x > 0)
-                {
-                    SetVel(Vector2(GetVel().x * -1, GetVel().y));
-                }
-                break;
-            default:
-                break;
-            }
-            break;
-        }
-    }
-}*/
 
 bool CheckEnemy2Length(Vector2 a, Vector2 b, float len)
 {

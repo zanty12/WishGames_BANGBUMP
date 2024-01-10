@@ -30,7 +30,7 @@ void Game::Update()
     std::thread player(&Player::Update, GetPlayer());
     //GetPlayer()->Update();
     //std::thread projectile(&ProjectileMngr::Update, projectile_mngr_);
-    //projectile_mngr_->Update();
+    projectile_mngr_->Update();
     //std::thread orb(&SkillOrbMngr::Update, orb_mngr_);
     //orb_mngr_->Update();
     //projectile.join();

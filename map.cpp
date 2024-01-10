@@ -68,77 +68,23 @@ void Map::PutCell(int x, int y, int MAP_READ) const
             break;
         }
 
-    case MAP_READ_ORB_SMALL_FIRE:
+    case MAP_READ_ORB_SMALL:
         {
-            GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_SMALL);
+            GameBase::GetSkillOrbMngr()->Pop(x, y, SKILLORB_SIZE_TYPE_SMALL);
             break;
         }
 
-    case MAP_READ_ORB_MID_FIRE:
+    case MAP_READ_ORB_MID:
         {
-            GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_MID);
+            GameBase::GetSkillOrbMngr()->Pop(x, y, SKILLORB_SIZE_TYPE_MID);
             break;
         }
 
-    case MAP_READ_ORB_BIG_FIRE:
+    case MAP_READ_ORB_BIG:
         {
-            GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_FIRE, SKILLORB_SIZE_TYPE_BIG);
+            GameBase::GetSkillOrbMngr()->Pop(x, y, SKILLORB_SIZE_TYPE_BIG);
             break;
         }
-
-    case MAP_READ_ORB_SMALL_DARK:
-    {
-        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_SMALL);
-        break;
-    }
-
-    case MAP_READ_ORB_MID_DARK:
-    {
-        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_MID);
-        break;
-    }
-
-    case MAP_READ_ORB_BIG_DARK:
-    {
-        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_DARK, SKILLORB_SIZE_TYPE_BIG);
-        break;
-    }
-
-    case MAP_READ_ORB_SMALL_THUNDER:
-    {
-        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_SMALL);
-        break;
-    }
-
-    case MAP_READ_ORB_MID_THUNDER:
-    {
-        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_MID);
-        break;
-    }
-
-    case MAP_READ_ORB_BIG_THUNDER:
-    {
-        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_THUNDER, SKILLORB_SIZE_TYPE_BIG);
-        break;
-    }
-
-    case MAP_READ_ORB_SMALL_WIND:
-    {
-        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_SMALL);
-        break;
-    }
-
-    case MAP_READ_ORB_MID_WIND:
-    {
-        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_MID);
-        break;
-    }
-
-    case MAP_READ_ORB_BIG_WIND:
-    {
-        GameBase::GetSkillOrbMngr()->Pop(x, y, ATTRIBUTE_TYPE_WIND, SKILLORB_SIZE_TYPE_BIG);
-        break;
-    }
 
     case MAP_READ_SPIKE_UP:
         {
@@ -174,7 +120,6 @@ void Map::PutCell(int x, int y, int MAP_READ) const
             map_[y * width_ + x] = spike;
             break;
         }
-
     default:
         break;
     }
