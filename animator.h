@@ -8,11 +8,21 @@
 
 struct ANIM_DATA
 {
+    int matrix_num_x, matrix_num_y;
+
     int loop_start_x, loop_start_y;
     int loop_end_x, loop_end_y;
 
     ANIM_DATA() {}
-    ANIM_DATA(int start_x, int start_y, int end_x, int end_y)
+    //----------------------------------------
+    // int x_num        よこ方向の画像の数
+    // int y_num        たて方向の画像の数
+    // int start_x      ループアニメのスタート画像[よこ]（右端 = 0）
+    // int start_y      ループアニメのスタート画像[たて]（上端 = 0）
+    // int end_x        ループアニメの終端画像[よこ]
+    // int end_y        ループアニメの終端画像[たて]
+    //----------------------------------------
+    ANIM_DATA(int x_num, int y_num, int start_x, int start_y, int end_x, int end_y)
     {
         loop_start_x = start_x;
         loop_start_y = start_y;
@@ -24,8 +34,11 @@ struct ANIM_DATA
 //ここに全てのアニメーションの名前を書く
 enum LOOP_ANIM
 {
-    FIRE,
-    WIND,
+    NONE = -1,
+
+    ENEMY_1,
+    ENEMY_2,
+    ENEMY_3,
 
 };
 
