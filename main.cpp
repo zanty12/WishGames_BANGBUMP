@@ -28,17 +28,18 @@ int main()
     }
     else {
         MSG msg;
-        MultiPlayClient client;
-        client.Register();
+        //MultiPlayClient client;
+        //client.Register();
 
-        while (!client.isFinish)
+        //while (!client.isFinish)
+        while (true)
         {
             // メッセージ
             if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
             {
                 if (msg.message == WM_QUIT)
                 {
-                    client.isFinish = true;
+                    //client.isFinish = true;
                     break;
                 }
                 else
@@ -47,8 +48,15 @@ int main()
                     DispatchMessage(&msg);
                 }
             }
+            Graphical::Clear(Color(1.0f, 1.0f, 1.0f, 1.0f) * 0.5f);
+            Vector2 pos = Vector2(100, 100);
+            Vector2 scl = Vector2(100, 100);
+            float rot = 0.0f;
+
+            DrawSpriteLeftTop(LoadTexture("data/texture/UI/number.png"), pos, rot, scl, Color::White, Vector2(1, 1), Vector2(0.333f, 0.5f));
+            Graphical::Present();
         }
-        client.Unregister();
+        //client.Unregister();
         std::cout << "Hello World!\n"; //基本
     }
     Time::Release();

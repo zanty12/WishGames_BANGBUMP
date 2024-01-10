@@ -221,7 +221,7 @@ void MultiPlayServer::SendUpdate(void) {
 				int id = std::atoi(skillorb->GetID().c_str());
 				Vector2 position = skillorb->GetPos();
 				float rotation = skillorb->GetRot();
-				Vector2 scale = skillorb->GetScale();
+				Vector2 scale = skillorb->GetScl();
 				res.objects.push_back({
 					id,										// ID
 					OBJECT_DATA_CLIENT_SIDE::SKILL_POINT,	// tag

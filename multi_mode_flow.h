@@ -5,6 +5,7 @@
 #include "multi_area_capture_mode.h"
 #include "multi_obstacle_race_mode.h"
 #include "multi_enemy_rush_mode.h"
+#include "follow.h"
 
 class MultiPlayFlowServerSide {
 private:
@@ -78,8 +79,7 @@ private:
 	MultiPlayClientSide *gameMode_ = nullptr;
 	GameBase *game_ = nullptr;
 	MULTI_MODE currentMode_ = MULTI_MODE::NONE;
-
-
+	int numTexNo = LoadTexture("data/texture/UI/number.png");
 
 private:
 	MultiPlayClientSide *CreateMode(MULTI_MODE mode) {
