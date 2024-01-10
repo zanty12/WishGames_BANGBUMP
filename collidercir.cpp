@@ -2,7 +2,7 @@
 #include "animator.h"
 #include "gamebase.h"
 
-ColliderCir::ColliderCir(GameObject* parent, float radius): Collider(CIRCLE, parent)
+ColliderCir::ColliderCir(GameObject* parent, float radius,bool movable): Collider(CIRCLE, parent, movable)
 {
     cir_.a = parent->GetPos();
     radius_ = radius;

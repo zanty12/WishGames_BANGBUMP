@@ -27,7 +27,7 @@ private:
 
 public:
     Collider() = delete;
-    Collider(COLLIDER_TYPE type, GameObject* parent);
+    Collider(COLLIDER_TYPE type, GameObject* parent,bool movable);
     virtual ~Collider() = default;
     virtual void Update() = 0;
     virtual bool Collide(Collider* other) = 0;

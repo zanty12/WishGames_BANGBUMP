@@ -129,6 +129,7 @@ public:
         if (loop_ && loaded_ && end_pts_ != 0 && frame_buffer_.size() == 0)
         {
             loaded_ = false;
+            //int64_t start = vr_state_.av_format_ctx->streams[vr_state_.video_stream_index-1]->start_time;
             video_reader_seek_frame(&vr_state_, first_frame_pts_);
             time_ = 0.0;
         }

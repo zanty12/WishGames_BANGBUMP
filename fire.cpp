@@ -1,40 +1,68 @@
 #include "fire.h"
+
+#include <libavutil/mathematics.h>
+
 #include "xinput.h"
 #include "sprite.h"
 #include"lib/collider2d.h"
 
-Vector2 Fire::Move() {
+Vector2 Fire::Move()
+{
     Vector2 stick = Input::GetStickLeft(0);
     stick.y *= -1;
+    if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() < speed * Time::GetDeltaTime())
+    {
+        Vector2 dir = stick.Normalize();
+        Vector2 vel = player_->GetVel() + dir * speed * Time::GetDeltaTime() * Time::GetDeltaTime();
+        Vector2 player_dir = player_->GetVel().Normalize();
 
-    if (responseMinStickDistance < stick.Distance()) {
-        Vector2 direction = -stick * speed;
-        return direction;
+        float angle = acos(Vector2::Dot(dir, player_dir));
+        if (acos(Vector2::Dot(dir, player_dir)) > M_PI_2)
+            vel += dir * speed * Time::GetDeltaTime() * Time::GetDeltaTime();
+        player_->SetGravityState(GRAVITY_NONE);
+        return vel;
     }
-    else {
-        Vector2 direction = player_->GetVel() *= friction;
-        return direction;
+    else if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() > speed * Time::GetDeltaTime())
+    {
+        Vector2 dir = stick.Normalize();
+        Vector2 vel = dir * speed * Time::GetDeltaTime();
+        player_->SetGravityState(GRAVITY_NONE);
+        return vel;
+    }
+    else
+    {
+        player_->SetGravityState(GRAVITY_FULL);
+        if(player_->GetVel().Distance() > Player::GRAVITY_SCALE_ * Time::GetDeltaTime())
+            return player_->GetVel() * friction;
+        else
+            return player_->GetVel();
     }
 };
 
-void Fire::Action() {
+void Fire::Action()
+{
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
     float distance = stick.Distance();
     isDraw = false;
 
-    if (responseMinStickDistance < stick.Distance()) {
+    if (responseMinStickDistance < stick.Distance())
+    {
         attackDirection = stick * speed;
         auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
-        auto attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + attackDirection * attackInjectionLength, attackWidthLength);
+        auto attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + attackDirection * attackInjectionLength,
+                                      attackWidthLength);
 
         isDraw = true;
-        
-        for (auto enemy : enemies) {
-            if (enemy) {
+
+        for (auto enemy : enemies)
+        {
+            if (enemy)
+            {
                 Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
 
-                if (Collider2D::Touch(attackCollider, enemyCollider)) {
+                if (Collider2D::Touch(attackCollider, enemyCollider))
+                {
                     enemy->Die();
                 }
             }
@@ -42,9 +70,13 @@ void Fire::Action() {
     }
 }
 
-void Fire::Draw(Vector2 offset) {
-    if (isDraw) {
-        auto attackCollider = PHYSICS::Vertex4(player_->GetPos(), player_->GetPos() + attackDirection * attackInjectionLength, attackWidthLength);
+void Fire::Draw(Vector2 offset)
+{
+    if (isDraw)
+    {
+        auto attackCollider = PHYSICS::Vertex4(player_->GetPos(),
+                                               player_->GetPos() + attackDirection * attackInjectionLength,
+                                               attackWidthLength);
         DrawCollider(attackCollider, Color::Green, offset);
     }
 }
@@ -52,12 +84,12 @@ void Fire::Draw(Vector2 offset) {
 void Fire::DebugMenu()
 {
     ImGui::Begin("Fire");
-    ImGui::SliderFloat2("speed", &speed, 0.0f, 20.0f);
+    ImGui::SliderFloat2("speed", &speed, 0.0f, 9 * GameObject::SIZE_);
     ImGui::SliderFloat("attackInjectionLength", &attackInjectionLength, 0.0f, 50.0f);
     ImGui::SliderFloat("attackWidthLength", &attackWidthLength, 0.0f, 10.0f);
     ImGui::End();
 }
 
-void Fire::Gravity() {
-
+void Fire::Gravity()
+{
 }

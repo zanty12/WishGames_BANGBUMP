@@ -1,9 +1,10 @@
 #pragma once
 #include "movableobj.h"
 #include "mapmngr.h"
+#include "skillorb.h"
 
 class EnemyMngr;
-class SkillOrb;
+
 
 
 enum ENEMY_TYPE
@@ -34,7 +35,9 @@ public:
     bool IsDead() const { return dead; }
     void Die(){ this->dead = true; }
 
-    virtual SkillOrb* DropSkillOrb() = 0;
+    //virtual SkillOrb* DropSkillOrb() = 0;
+
+    void DropSkillOrb(Vector2 pos, SKILLORB_SIZE_TYPE sizeType);
 
     ENEMY_TYPE GetEnemyType() const { return enemy_type_; }
 
