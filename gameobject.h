@@ -28,7 +28,6 @@ enum OBJECT_TYPE
     OBJ_SPIKE, //トゲ
     OBJ_PLAYER, //プレイヤー
     OBJ_ENEMY, //敵
-    OBJ_BULLET, //敵２のバレット
     OBJ_ATTACK, //攻撃
     OBJ_ITEM, //アイテム(スキル玉しかないけど)
 };

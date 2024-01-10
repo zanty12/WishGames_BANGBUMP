@@ -144,7 +144,7 @@ void ColliderRect::CollisionSolid(Collider* other)
                 {
                     MovableObj* parent = dynamic_cast<MovableObj*>(GetParent());
                     Vector2 vel = -parent->GetVel();
-                    vel += Vector2(-move_amount.x * GetBounciness(), move_amount.y * GetBounciness());
+                    //vel += Vector2(-move_amount.x * GetBounciness(), move_amount.y * GetBounciness());
                     parent->SetVel(vel);
                 }
                 SetPos(GetPos() + move_amount);

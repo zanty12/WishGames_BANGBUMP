@@ -24,11 +24,11 @@ void Boss::Update()
     if (GetHp() <= 0)
     {
         GameObject::Discard();
-        Die();
+        //Die();
     }
     if (GetDiscard())
     {
-        Die();
+        //Die();
     }
 
     time_ += Time::GetDeltaTime();
@@ -39,7 +39,7 @@ void Boss::Update()
         OBJECT_TYPE type = collision->GetParent()->GetType();
     }
 
-    if (time_ > 5.0f)
+    if (time_ > 3.0f)
     {
         time_ = 0;
         if (atk_now == false)
@@ -118,7 +118,7 @@ void Boss::Atk()
 void Boss::Fire()
 {
     //3•ª‚Ì‚P•b‚É‚Pƒqƒbƒg@‚T‚Oƒ_ƒ[ƒW
-    Boss_Fire* fire = new Boss_Fire(GetPos());
+    Boss_Fire* fire = new Boss_Fire(startPosition);
     atk_time_ += Time::GetDeltaTime();
     GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(fire);
     if (atk_time_ > (1.0f / 3))
@@ -143,7 +143,7 @@ void Boss::Thunder()
 void Boss::Wind()
 {
     //‚S•ª‚Ì‚P•b‚É‚Pƒqƒbƒg@‚R‚Oƒ_ƒ[ƒW
-    Boss_Wind* wind = new Boss_Wind(GetPos());
+    Boss_Wind* wind = new Boss_Wind(startPosition);
     atk_time_ += Time::GetDeltaTime();
     GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(wind);
     if (atk_time_ > (1.0f / 4))

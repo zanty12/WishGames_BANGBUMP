@@ -15,6 +15,7 @@ Boss_Fire::Boss_Fire(Vector2 pos)
 	speed_ = 0.004f;
 	boss_pos_ = pos;
 	time_ = 0;
+	SetType(OBJ_ATTACK);
 }
 void Boss_Fire::Update()
 {
@@ -76,22 +77,20 @@ void Boss_Thunder::Update()
 
 //--------------ïó------------------------------------//
 Boss_Wind::Boss_Wind(Vector2 pos)
-	: MovableObj(pos, 0.0f, LoadTexture("data/texture/wall.png"), Vector2::Zero)
+	: MovableObj(pos - Vector2(SIZE_ * 4, SIZE_ * 4), 0.0f, LoadTexture("data/texture/wall.png"), Vector2::Zero)
 {
-	SetScale(Vector2(SIZE_, SIZE_/*SIZE_ * 2, SIZE_ * 2*/));
-	speed_ = 96.0f * 4;
+	SetScale(Vector2(SIZE_ * 4, SIZE_ * 4));
+	speed_ = 96.0f * 8;
 	boss_pos_ = pos;
 	time_ = 0;
+	SetType(OBJ_ATTACK);
+	GetCollider()->SetBounciness(1.1f);
 }
 void Boss_Wind::Update()
 {
 	time_ += Time::GetDeltaTime();
 	float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //èâä˙âªéûÇÃÉGÉâÅ[ÇâÒîÇ∑ÇÈ
 
-	/*Vector2 pos_;
-	pos_.x = boss_pos_.x;
-	pos_.y = boss_pos_.y  -(SIZE_ * 7);
-	SetPos(pos_);*/
 
 	if (time_ > 4.0f)
 		Discard();
@@ -99,32 +98,12 @@ void Boss_Wind::Update()
 	SetVel(Vector2(-speed_ * dt, -speed_ * dt));
 
 
-	//CollosionAction();
+	
 	
 
 	this->AddVel(GetVel());
 }
-void Boss_Wind::CollosionAction(void)
-{
-	std::list<Collider*> collisions = GetCollider()->GetCollision();
 
-	/*for (auto collision : collisions)
-	{
-		OBJECT_TYPE type = collision->GetParent()->GetType();
-		switch (type)
-		{
-		case OBJ_SOLID:
-			switch ()
-			{
-			default:
-				break;
-			}
-			break;
-		default:
-			break;
-		}
-	}*/
-}
 
 //--------------êÖ------------------------------------//
 Boss_Water::Boss_Water(Vector2 pos)
