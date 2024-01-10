@@ -1,4 +1,4 @@
-#include "Boss.h"
+#include "boss.h"
 #include "bossatk.h"
 #include "Cell.h"
 #include "MapMngr.h"
