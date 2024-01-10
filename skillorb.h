@@ -117,7 +117,7 @@ protected:
     GameObject *gameObject_ = nullptr;
 
 public:
-    SkillOrb(SKILLORB_SIZE_DESC desc, GameObject* gameObject) : gameObject_(gameObject)
+    SkillOrb(SKILLORB_SIZE_DESC desc, GameObject *gameObject) : gameObject_(gameObject)
     {
         value_ = desc.value;
         radius_ = desc.radius;

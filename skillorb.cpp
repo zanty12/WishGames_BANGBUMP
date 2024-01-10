@@ -4,8 +4,8 @@
 
 SkillOrbMovable::SkillOrbMovable(int cellX, int cellY, SKILLORB_SIZE_DESC sizeDesc)
     : MovableObj(
-        Vector2(cellX * GameObject::SIZE_ + GameObject::SIZE_ / 2,
-                cellY * GameObject::SIZE_ + GameObject::SIZE_ / 2),
+        Vector2(cellX *GameObject::SIZE_ + GameObject::SIZE_ / 2,
+            cellY *GameObject::SIZE_ + GameObject::SIZE_ / 2),
         0.0f,
         LoadTexture(Asset::GetAsset(skill_orb)),
         Vector2::Zero
@@ -37,8 +37,8 @@ void SkillOrbMovable::Update()
 }
 
 SkillOrbStatic::SkillOrbStatic(int cellX, int cellY, SKILLORB_SIZE_DESC desc) : GameObject(
-    Vector2(cellX * GameObject::SIZE_ + GameObject::SIZE_ / 2,
-            cellY * GameObject::SIZE_ + GameObject::SIZE_ / 2),
+    Vector2(cellX *GameObject::SIZE_ + GameObject::SIZE_ / 2,
+        cellY *GameObject::SIZE_ + GameObject::SIZE_ / 2),
     0.0f,
     LoadTexture(Asset::GetAsset(skill_orb))), SkillOrb(desc, this)
 {
