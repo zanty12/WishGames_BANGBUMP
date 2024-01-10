@@ -2,7 +2,7 @@
 
 #include "gamebase.h"
 
-ColliderRect::ColliderRect(GameObject* parent,bool movable) : Collider(RECTANGLE, parent,movable)
+ColliderRect::ColliderRect(GameObject* parent, bool movable) : Collider(RECTANGLE, parent, movable)
 {
     rect_ = Vertex4(
         Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),
@@ -128,7 +128,7 @@ void ColliderRect::CollisionSolid(Collider* other)
             {
                 Vector2 coll_dir = collision_normal.Normalize();
                 //come from the side
-                if(abs(coll_dir.x) > abs(coll_dir.y))
+                if (abs(coll_dir.x) > abs(coll_dir.y))
                 {
                     overlap_y = 0;
                 }
@@ -140,12 +140,18 @@ void ColliderRect::CollisionSolid(Collider* other)
                 Vector2 overlap = Vector2(overlap_x, overlap_y);
                 // Adjust the position of the rectangle based on the overlap vector
                 Vector2 move_amount = Vector2(coll_dir.x * overlap.x, coll_dir.y * overlap.y);
-                if(GetBounciness() > 1.0f)
+                if (GetBounciness() > 0.0f)
                 {
                     MovableObj* parent = dynamic_cast<MovableObj*>(GetParent());
-                    Vector2 vel = -parent->GetVel();
-                    vel += Vector2(-move_amount.x * GetBounciness(), move_amount.y * GetBounciness());
-                    parent->SetVel(vel);
+                    if (parent != nullptr)
+                    {
+                        Vector2 vel= parent->GetVel();
+                        //if the object is moving towards the collision, bounce it
+                        if (Vector2::Dot(vel, coll_dir) < 0)
+                            vel = -vel;
+                        //vel += Vector2(-move_amount.x * GetBounciness(), move_amount.y * GetBounciness());
+                        parent->SetVel(vel);
+                    }
                 }
                 SetPos(GetPos() + move_amount);
             }
