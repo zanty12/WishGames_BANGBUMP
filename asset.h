@@ -15,6 +15,7 @@ enum textures
     player,
     //enemy
     //block
+    skill_orb,
     //background
     bg_stage1_front,
     bg_stage1_back,
@@ -30,11 +31,18 @@ enum sounds
     //se
 };
 
+enum maps
+{
+    test,
+    single_stage_1,
+};
+
 class Asset
 {
 public:
     static const std::map<textures,std::string> textures_;
     static const std::map<sounds,std::string> sounds_;
+    static const std::map<maps,std::string> maps_;
 
     template<typename T>
     static std::string GetAsset(T asset);

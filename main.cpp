@@ -19,6 +19,7 @@ int main()
     MSG msg;
     SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
     Time::Initialize();
+    srand(time(NULL));
     while (true)
     {
         // メッセージ

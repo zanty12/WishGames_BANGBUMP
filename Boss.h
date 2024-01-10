@@ -17,7 +17,6 @@ private:
 	float atk_time_;		// 攻撃時間
 	bool atk_now;			// 攻撃チェック
 
-	SKILLORB_ATTRIBUTE_DESC drop;
 
 public:
 
