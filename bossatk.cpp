@@ -79,7 +79,7 @@ Boss_Wind::Boss_Wind(Vector2 pos)
 	: MovableObj(pos, 0.0f, LoadTexture("data/texture/wall.png"), Vector2::Zero)
 {
 	SetScale(Vector2(SIZE_, SIZE_/*SIZE_ * 2, SIZE_ * 2*/));
-	speed_ = 96.0f;
+	speed_ = 96.0f * 4;
 	boss_pos_ = pos;
 	time_ = 0;
 }
@@ -88,10 +88,10 @@ void Boss_Wind::Update()
 	time_ += Time::GetDeltaTime();
 	float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //‰Šú‰»Žž‚ÌƒGƒ‰[‚ð‰ñ”ð‚·‚é
 
-	Vector2 pos_;
+	/*Vector2 pos_;
 	pos_.x = boss_pos_.x;
 	pos_.y = boss_pos_.y  -(SIZE_ * 7);
-	SetPos(pos_);
+	SetPos(pos_);*/
 
 	if (time_ > 4.0f)
 		Discard();
