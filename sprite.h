@@ -76,6 +76,11 @@ void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color c
 /// <param name="color">色</param>
 void DrawSpriteCenter(int texNo, Vector2 pos, float rot, Vector2 scale, Color color);
 void DrawSprite(int texNo, Vector2 *vertices, Vector2 *uvs, Color color);
+/// <summary>
+/// UIを描画する（円形のUI）
+/// </summary>
+void DrawUICircle(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, float ratio);
+void DrawUISquare(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, float ratio);
 void ReleaseSprite(void);
 
 void DrawLine(Vector2 startPosition, Vector2 endPosition, Color color, float width = 10);

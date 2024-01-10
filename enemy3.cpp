@@ -17,28 +17,15 @@ void Enemy3::Update()
     {
         GameObject::Discard();
         Die();
+        DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_BIG);
     }
 
-    std::list<Collider*> collisions = GetCollider()->GetCollision();
-    for (auto collision : collisions)
-    {
-        OBJECT_TYPE type = collision->GetParent()->GetType();
-        ////実際の処理
-        //if (type == OBJ_PLAYER)
-        //{
-        //    Player* player = dynamic_cast<Player*> (collision->GetParent());
-        //    player->HpDown(15);//★仮★
-        //}
-    }
-
-
+    CollisionAction();
 
     GetAnimator()->SetIsAnim(true);
 
     float dt = Time::GetDeltaTime(); //初期化時のエラーを回避する
 
-    //重力
-    //SetVel(Vector2(GetVel().x, GetVel().y - y_spd_ * dt));
 
     //プレイヤー追従
     std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayers();
@@ -90,86 +77,65 @@ void Enemy3::Update()
             SetVel(v.Normalize() * spd_ * dt);
         }
     }
-      
-    //if (CheckEnemy3Length(GetPos(), startPosition, RANGE))//仮
-    //{
-    //    if (cheakRange == true)
-    //    {
-    //        Vector2 v = startPosition - GetPos();
-    //        SetVel(v.Normalize() * spd_ * dt);
-    //    }
-    //}
-    //else
-    //{
-    //    if (cheakRange == false)
-    //    {
-
-    //        Vector2 v = player->GetPos() - GetPos();
-    //        SetVel(v.Normalize() * spd_ * dt);
-    //    }
-    //}
-
-    //他の敵との当たり判定
-   /* for (auto& enemy : GetEnemyMngr()->GetEnemies())
-    {
-        if (enemy == this || enemy == nullptr)
-            continue;
-        if (Collision(enemy))
-        {
-            enemy->SetVel(Vector2(enemy->GetVel().x, enemy->GetVel().y ));
-        }
-    }*/
 
     this->AddVel(GetVel());
 }
 
-SkillOrb* Enemy3::DropSkillOrb()
+
+
+
+void Enemy3::CollisionAction(void)
 {
-    if (GetDiscard() == false)
-        return nullptr;
+    std::list<Collider*> collisions = GetCollider()->GetCollision();
 
-    switch (rand()%4)
+    for (auto collision : collisions)
     {
-    case 0:
-        drop = SKILLORB_ATTRIBUTE_DESC::Fire();
-        break;
-    case 1:
-        drop = SKILLORB_ATTRIBUTE_DESC::Dark();
-        break;
-    case 2:
-        drop = SKILLORB_ATTRIBUTE_DESC::Wind();
-        break;
-    case 3:
-        drop = SKILLORB_ATTRIBUTE_DESC::Thunder();
-        break;
-    default:
-        break;
-    }
-
-    return new SkillOrb(GetPos(), drop, SKILLORB_SIZE_DESC::Big());
-}
-
-
-/*
-void Enemy3::CellActions()
-{
-    Map* map = GetEnemyMngr()->GetMapMngr()->GetMap();
-    Cell* cells[4] = { nullptr, nullptr, nullptr, nullptr };
-    int idx = std::floor(GetPos().x / SIZE_);
-    int idy = std::floor(GetPos().y / SIZE_);
-    cells[0] = map->GetCell(idx, idy + 1);
-    cells[1] = map->GetCell(idx, idy - 1);
-    cells[2] = map->GetCell(idx - 1, idy);
-    cells[3] = map->GetCell(idx + 1, idy);
-    for (int i = 0; i < 4; i++)
-    {
-        if (cells[i] == nullptr)
-            continue;
-        //if (Collision(cells[i]))
-        //    MapCellInteract(cells[i]);
+        OBJECT_TYPE type = collision->GetParent()->GetType();
+        switch (type)
+        {
+        case OBJ_SOLID:
+            if (GetVel().x != 0.0f)
+                SetVel(Vector2(0.0f, GetVel().y));
+            if (GetVel().y != 0.0f)
+                SetVel(Vector2(GetVel().x, 0.0f));
+            break;
+        case OBJ_SPIKE:
+            CollisionSpike();
+            break;
+        default:
+            break;
+        }
     }
 }
-*/
+
+//================================================================================
+// トゲに当たった時のアクション
+//================================================================================
+void Enemy3::CollisionSpike(void)
+{
+
+    dir_ = GetVel().Normalize();
+    if (abs(GetVel().x) < 0.1f && abs(GetVel().y < 0.1f))
+    {
+        if (GetVel().x != 0.0f)
+            SetVel(Vector2(0.0f, GetVel().y));
+        if (GetVel().y != 0.0f)
+            SetVel(Vector2(GetVel().x, 0.0f));
+
+        //knockback_end_がバグるのでそのまま
+        knockback_start_ = GetPos();
+        knockback_end_ = GetPos();
+        return;
+    }
+    dir_ *= -1;	//反転させる
+
+    HpDown(6);
+
+    knockback_distance_ = SIZE_;
+
+    knockback_start_ = GetPos();
+    knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+}
 
 bool CheckEnemy3Length(Vector2 a, Vector2 b, float len)
 {

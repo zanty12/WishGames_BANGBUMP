@@ -6,11 +6,14 @@
 class Enemy3 : public Enemy
 {
 private:
+    Vector2 dir_;		//向き
     const float spd_ = 96.0f * 2;
     Vector2 startPosition;
+    float knockback_distance_;	//ノックバックする距離
+    Vector2 knockback_start_;	//ノックバックの初めのポジション
+    Vector2 knockback_end_;		//ノックバックの終わりのポジション
     bool cheakRange_Enemy_;
     bool cheakRange_Player_;
-    SKILLORB_ATTRIBUTE_DESC drop;
 
 public:
     Enemy3() = delete;
@@ -26,11 +29,13 @@ public:
 
     void Update() override;
 
-    SkillOrb* DropSkillOrb() override;
 
     void RangeEnemy(float a, float b, float c, float d);
     void RangePlayer(float a, float b, float c, float d);
 
-/*private:
-    void CellActions();*/
+private:
+
+    void CollisionAction(void);
+
+    void CollisionSpike(void);
 };

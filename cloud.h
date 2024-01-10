@@ -5,7 +5,10 @@ class Cloud :
     public Cell
 {
 public:
-    Cloud(int x, int y) : Cell(x, y, LoadTexture("data/texture/cloud.png")) {}
+    Cloud(int x, int y) : Cell(x, y, LoadTexture("data/texture/cloud.png"))
+    {
+        this->SetType(OBJ_PENETRABLE);
+    }
     virtual ~Cloud() override = default;
     MAP_READ GetCellType() const override { return MAP_READ_CLOUD; }
 };
