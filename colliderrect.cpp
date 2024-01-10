@@ -2,7 +2,7 @@
 
 #include "gamebase.h"
 
-ColliderRect::ColliderRect(GameObject* parent) : Collider(RECTANGLE, parent)
+ColliderRect::ColliderRect(GameObject* parent,bool movable) : Collider(RECTANGLE, parent,movable)
 {
     rect_ = Vertex4(
         Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),
@@ -127,6 +127,16 @@ void ColliderRect::CollisionSolid(Collider* other)
             if (overlap_x < 0 || overlap_y < 0)
             {
                 Vector2 coll_dir = collision_normal.Normalize();
+                //come from the side
+                if(abs(coll_dir.x) > abs(coll_dir.y))
+                {
+                    overlap_y = 0;
+                }
+                //come from the top or bottom
+                else
+                {
+                    overlap_x = 0;
+                }
                 Vector2 overlap = Vector2(overlap_x, overlap_y);
                 // Adjust the position of the rectangle based on the overlap vector
                 Vector2 move_amount = Vector2(coll_dir.x * overlap.x, coll_dir.y * overlap.y);
@@ -165,7 +175,6 @@ void ColliderRect::CollisionPen(Collider* other)
                 // Project circle center onto rectangle side
                 float t = Vector2::Dot((circle_center - rect_side_start), side_dir);
                 Vector2 projection = rect_side_start + side_dir * t;
-
                 // Clamp projection to rectangle side
                 float side_length = (rect_side_end - rect_side_start).Distance();
                 if (t < 0) projection = rect_side_start;
@@ -200,9 +209,13 @@ void ColliderRect::CollisionPen(Collider* other)
             if (overlap_x < 0 || overlap_y < 0)
             {
                 Vector2 coll_dir = collision_normal.Normalize();
+
                 Vector2 overlap = Vector2(overlap_x, overlap_y);
+                //from bottom or top
                 if (abs(coll_dir.y) > abs(coll_dir.x))
                 {
+                    overlap.x = 0;
+                    //bottom
                     if (coll_dir.y > 0.0f)
                     {
                         //go through bottom
@@ -210,14 +223,18 @@ void ColliderRect::CollisionPen(Collider* other)
                             coll_dir.x * overlap.x,
                             GetParent()->GetScale().y / 2 + other->GetParent()->GetScale().y / 2));
                     }
+                    //top
                     else
                     {
+                        overlap.y = 0;
                         Vector2 move_amount = Vector2(coll_dir.x * overlap.x, coll_dir.y * overlap.y);
                         SetPos(GetPos() + move_amount);
                     }
                 }
+                //from side
                 else
                 {
+                    overlap.y = 0;
                     Vector2 move_amount = Vector2(coll_dir.x * overlap.x, coll_dir.y * overlap.y);
                     SetPos(GetPos() + move_amount);
                 }

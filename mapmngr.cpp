@@ -19,7 +19,7 @@
  * @param file_name マップデータを読み込むファイルの名前。
  */
 
-MapMngr::MapMngr(const char* file_name,GameBase* game)
+MapMngr::MapMngr(const char* file_name, GameBase* game)
 {
     enemy_mngr_ = new EnemyMngr(this);
     game_ = game;
@@ -65,11 +65,10 @@ bool MapMngr::Read(const char* file_name)
                 x++;
                 continue;
             };
-            if (item2 == "S" || item == "s")
+            if (item2 == "S" || item2 == "s")
                 spawn_ = Vector2(x * GameObject::SIZE_ + GameObject::SIZE_ / 2,
                                  y * GameObject::SIZE_ + GameObject::SIZE_ / 2);
-            else if (stoi(item2) < MAP_READ_KOOPA
-                )
+            else if (stoi(item2) < MAP_READ_KOOPA)
                 map_->PutCell(x, y, stoi(item2));
             else
             {
@@ -122,7 +121,8 @@ void MapMngr::ArrangeBlkTex() const
                 if ((map_->GetCell(x - 1, y) == nullptr || map_->GetCell(x - 1, y)->GetCellType() == MAP_READ_WALL) &&
                     map_->GetCell(x + 1, y)->GetCellType() == MAP_READ_FLOOR) //左は空気か壁で右は床
                     cell->SetTexNo(LoadTexture("data/TEXTURE/floor_start.png"));
-                else if ((map_->GetCell(x + 1, y) == nullptr || map_->GetCell(x + 1, y)->GetCellType() == MAP_READ_WALL) &&
+                else if ((map_->GetCell(x + 1, y) == nullptr || map_->GetCell(x + 1, y)->GetCellType() == MAP_READ_WALL)
+                    &&
                     map_->GetCell(x - 1, y)->GetCellType() == MAP_READ_FLOOR)
                     cell->SetTexNo(LoadTexture("data/TEXTURE/floor_end.png"));
             }

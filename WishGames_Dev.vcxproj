@@ -137,6 +137,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="animator.cpp" />
+    <ClCompile Include="asset.cpp" />
+    <ClCompile Include="boss.cpp" />
+    <ClCompile Include="bossatk.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collider.cpp" />
@@ -192,7 +195,10 @@
   <ItemGroup>
     <ClInclude Include="animator.h" />
     <ClInclude Include="area_capture.h" />
+    <ClInclude Include="asset.h" />
     <ClInclude Include="attribute_type.h" />
+    <ClInclude Include="boss.h" />
+    <ClInclude Include="bossatk.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collider.h" />
@@ -253,7 +259,6 @@
     <ClInclude Include="scenemngr.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
-    <ClInclude Include="skillorbattribute.h" />
     <ClInclude Include="skillorbmngr.h" />
     <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
@@ -265,16 +270,6 @@
     <ClInclude Include="video.h" />
     <ClInclude Include="xinput.h" />
     <ClInclude Include="wall.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="color-shader.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="texture-shader.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dark.h" />

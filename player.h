@@ -25,6 +25,13 @@ enum PLAYER_STATE
 	TOUCH_GROUND,	//地面にいる
 };
 
+enum GRAVITY_STATE
+{
+	GRAVITY_FULL,
+	GRAVITY_HALF,
+	GRAVITY_NONE,
+};
+
 class MapMngr;
 class Camera;
 class SkillOrb;
@@ -34,7 +41,7 @@ class Player : public MovableObj
 private:
 
 	static const int INITIAL_HP_;			//HPの初期値
-	static const float GRAVITY_SCALE_;		//重力（仮）
+
 	static const float INVINCIBILITY_MAX_TIME_;	//無敵時間
 
 	Vector2 dir_;		//向き
@@ -58,6 +65,7 @@ private:
 
 	float invincibility_time_;	//無敵の経過時間
 	float flash_time_;			//点滅間隔
+	float knockback_time_;		//ノックバックする時間
 	float knockback_distance_;	//ノックバックする距離
 	Vector2 knockback_start_;	//ノックバックの初めのポジション
 	Vector2 knockback_end_;		//ノックバックの終わりのポジション
@@ -65,13 +73,16 @@ private:
 	int not_stick_working_;
 
 	PLAYER_STATE player_state_;
+	GRAVITY_STATE gravity_state_ = GRAVITY_FULL;
 
 public:
 	Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr)
 		:MovableObj(pos, rot, 0, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
 		dir_(Vector2(0.0f, 0.0f)), map_mangr_(map_mangr), clash_spike_(0), knock_back_dir_(0),
-		change_scene_(false), drop_point_(0),invincibility_time_(INVINCIBILITY_MAX_TIME_),knockback_distance_(0.0f)
+		change_scene_(false), drop_point_(0),invincibility_time_(INVINCIBILITY_MAX_TIME_),
+		knockback_distance_(0.0f),knockback_time_(0.0f)
 	{
+		SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
 		int tex = LoadTexture("data/texture/player.png");
 		SetTexNo(tex);
 		GetAnimator()->SetTexNo(tex);
@@ -87,6 +98,7 @@ public:
 	void SetAttackAttribute(Attribute* attack_attribute) {delete attack_attribute_; attack_attribute_ = attack_attribute; }	//アタックアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
 	Attribute* GetAttribute(void) const { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
 	Attribute* GetAttackAttribute(void) const { return attack_attribute_; }	//アタックアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
+	void SetMapMngr(MapMngr* map_mangr) { map_mangr_ = map_mangr; }	//MapMngrをセット
 	MapMngr* GetMapMngr(void) const { return map_mangr_; }	//MapMngrのポインタをゲット
 	bool GetChangeSceneFlag(void) const { return change_scene_; }	//シーンチェンジのフラグ true=別のシーンへ
 	PLAYER_STATE GetPlayerState(void) const { return player_state_; }	//プレイヤーのステータスをゲット
@@ -97,12 +109,16 @@ public:
 	//HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
 	void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
-	SkillOrb* DropSkillOrb(void);
+	void DropSkillOrb(void);
 
 	void Update(void) override;
 	void Draw(Camera* camera);
 
 	void DebugMenu();
+
+	void SetGravityState(GRAVITY_STATE gravity_state) { gravity_state_ = gravity_state; }
+	GRAVITY_STATE GetGravityState(void) const { return gravity_state_; }
+	static constexpr float GRAVITY_SCALE_ = 3 * SIZE_;		//重力
 
 private:
 	//向きのアップデート。速度をもとに更新（全く動いていない場合は止まった瞬間の向きのままにする）

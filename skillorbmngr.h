@@ -15,14 +15,14 @@ public:
     * attributeType : 属性
     * sizeType : 
     */
-    void Pop(int cellX, int cellY, ATTRIBUTE_TYPE attributeType, SKILLORB_SIZE_TYPE sizeType);
+    void Pop(int cellX, int cellY, SKILLORB_SIZE_TYPE sizeType,bool isMovable = false);
     /*
     * スキルポイントをポップする
     * pos : 座標
     * attributeType : 属性
     * sizeType : サイズ
     */
-    void Pop(Vector2 pos, ATTRIBUTE_TYPE attributeType, SKILLORB_SIZE_TYPE sizeType);
+    void Pop(Vector2 pos, SKILLORB_SIZE_TYPE sizeType,bool isMovable = false);
 
     std::list<SkillOrb *> &GetSkillOrbs(void) { return skillOrbs_; }
 };

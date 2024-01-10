@@ -9,10 +9,8 @@
 class Bullet : public MovableObj
 {
 private:
-
-	const float spd_ = 96.0f * 2;
-	int atk_ = 10;
-
+	Vector2 startPosition;
+	int atk_;
 
 public:
 
@@ -22,14 +20,16 @@ public:
 	int GetAtk(void) const { return atk_; }
 	void SetAtk(int atk) { atk_ = atk; }
 
-	Bullet(Vector2 pos, int texNo, Vector2 vel) : MovableObj(pos, 0.0f, texNo, vel)
-	{
-	
-	}
+	Bullet(Vector2 pos);
 
-	Bullet(Vector2 pos, Vector2 vel);
 
 	void Update() override;
 
+
+	void Die() { Discard(); }
+
+private:
+
+	void CollisionAction(void);
 
 };

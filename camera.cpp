@@ -1,8 +1,11 @@
 #include "camera.h"
 
+#include "asset.h"
+
 Camera::Camera(Player* player) : pos_(player->GetPos()), player_(player)
 {
-    SetTexNo(LoadTexture("data/texture/bg.png"));
+    SetTexBack(LoadTexture(Asset::GetAsset(bg_stage1_back)));
+    SetTexFront(LoadTexture(Asset::GetAsset(bg_stage1_front)));
     SetScale(screen_size_);
     map_size_.x = player->GetMapMngr()->GetMap()->GetWidth() * GameObject::SIZE_;
     map_size_.y = player->GetMapMngr()->GetMap()->GetHeight() * GameObject::SIZE_;
@@ -49,6 +52,12 @@ void Camera::Update()
 
         SetPos(Vector2(GetPos().x, GetPos().y + vel));
     }
+    //move texture according to pos
+    //get the percentage of the camera position in the map
+    float y_percent = GetPos().y / map_size_.y;
+    //move texture up and down according to the percentage
+    bg_back_y_ = 1.0f - (540.0f * y_percent) / 1620.0f; //back texture is 1920 * 1620 scaled up
+    bg_front_y_ = 1.0f - (4320.0f * y_percent) / 5400.0f; //front texture is 1920 * 5400 scaled up
 }
 
 bool Camera::InCamera(GameObject* obj) const

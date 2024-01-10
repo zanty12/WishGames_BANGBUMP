@@ -1,5 +1,6 @@
 #pragma once
 #include <algorithm>
+#include <ctime>
 #include <list>
 #include <string>
 
@@ -10,13 +11,14 @@ private:
 public:
     static int Hash(int seed)
     {
-        return seed % 59;
+        //the prime number could be better
+        return seed / 10;
     }
 
     /**
-         * \brief return a unique id in format of aabbbb
+         * \brief return a unique id in format of aabbbbb
          * aa is a hash of seed
-         * bbbb is a random number generated from seed
+         * bbbbb is a random number generated from seed
          * \param seed seed based on the position of the object
          * \return id
          */
@@ -29,17 +31,21 @@ public:
             id += "0";
         }
         id += std::to_string(id_hash);
-        srand(seed);
-        int id_rand = rand() % 10000;
+        //srand(time(NULL));
+        int id_rand = rand() % 100000;
         if(id_rand < 10)
         {
-            id += "000";
+            id += "0000";
         }
         else if(id_rand < 100)
         {
-            id += "00";
+            id += "000";
         }
         else if(id_rand < 1000)
+        {
+            id += "00";
+        }
+        else if(id_rand < 10000)
         {
             id += "0";
         }
@@ -58,13 +64,17 @@ public:
             id = std::to_string(id_hash);
             if(id_rand < 10)
             {
-                id += "000";
+                id += "0000";
             }
             else if(id_rand < 100)
             {
-                id += "00";
+                id += "000";
             }
             else if(id_rand < 1000)
+            {
+                id += "00";
+            }
+            else if(id_rand < 10000)
             {
                 id += "0";
             }

@@ -22,22 +22,26 @@ Vector2 Wind::Move(void) {
 	float rotSpeed = Vector2::Cross(stick, previousStick);
 
 	// 移動中
-	if (StickTrigger(stick, previousStick)) {
-		power_ += rotSpeed * rotSpeed * rotInputFriction;
+	if (StickTrigger(stick, previousStick))
+	{
+		power_ += rotSpeed * rotSpeed * rotInputFriction / Time::GetDeltaTime();
 		if (maxPower_ < power_) power_ = maxPower_;
 
-		vel = Vector2::Up * power_;
+		vel = Vector2::Up * power_ * Time::GetDeltaTime();
+		player_->SetGravityState(GRAVITY_NONE);
 	}
-
 	// 落下中の処理
-	else if (0 < Vector2::Dot(Vector2::Down, vel)) {
+	else if (0 < Vector2::Dot(Vector2::Down, vel) || prev_y_ > vel.y) {
 		power_ *= friction_;
 
-		vel.x = stick.x * 2.0f;
+		vel.x = stick.x * 6 * GameObject::SIZE_ * Time::GetDeltaTime();
+		player_->SetGravityState(GRAVITY_HALF);
 	}
-
-
-
+	else if(stick.Distance() < rotInputJudgeMin)
+	{
+		player_->SetGravityState(GRAVITY_HALF);
+	}
+	prev_y_ = vel.y;
 	return vel;
 }
 
