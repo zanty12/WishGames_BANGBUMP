@@ -32,4 +32,5 @@ typedef enum {
     MAP_READ_KOOPA, // エネミー_1
     MAP_READ_HAMMERBRO, // エネミー_2
     MAP_READ_PHANTOM, // エネミー_3
+    MAP_READ_ODIN, // ボス
 }MAP_READ;

@@ -174,7 +174,6 @@ void Map::PutCell(int x, int y, int MAP_READ) const
             map_[y * width_ + x] = spike;
             break;
         }
-
     default:
         break;
     }

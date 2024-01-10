@@ -138,6 +138,8 @@
   <ItemGroup>
     <ClCompile Include="animator.cpp" />
     <ClCompile Include="asset.cpp" />
+    <ClCompile Include="boss.cpp" />
+    <ClCompile Include="bossatk.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collider.cpp" />
@@ -192,6 +194,8 @@
     <ClInclude Include="area_capture.h" />
     <ClInclude Include="asset.h" />
     <ClInclude Include="attribute_type.h" />
+    <ClInclude Include="boss.h" />
+    <ClInclude Include="bossatk.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collider.h" />
