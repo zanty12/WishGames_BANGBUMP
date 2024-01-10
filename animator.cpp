@@ -6,16 +6,15 @@
 
 #include "time.h"
 
-
+//★それぞれのアニメーションごとに設定していく★
 void Animator::InitDictionary(void)
 {
-    DICTIONARY_[FIRE] = ANIM_DATA(0, 0, 1, 1);//★仮。それぞれのアニメーションごとに設定していく★
-    DICTIONARY_[WIND] = ANIM_DATA(2, 1, 3, 5);
+    DICTIONARY_[ENEMY_1] = ANIM_DATA(5, 4, 0, 0, 2, 3);
 
 }
 
 Animator::Animator(GameObject* game_object)
-    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), loop_anim_(NONE), loop_anim_next_(NONE),
     now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false)//初期化
 {
     InitDictionary();
@@ -25,8 +24,8 @@ Animator::Animator(GameObject* game_object)
 }
 
 Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time)
-    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), img_change_time_(img_change_time),
-    fps_(fps), isAnim_(isAnim),
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), loop_anim_(NONE), loop_anim_next_(NONE),
+    img_change_time_(img_change_time), fps_(fps), isAnim_(isAnim),
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(false),
     now_matrix_number_(0), u_(0.0f), v_(0.0f)//初期化
 {
@@ -77,6 +76,11 @@ void Animator::Update(void)
     if (!isAnim_)
     {
         return; //アニメーションしないならば抜ける
+    }
+    if (loop_anim_ != NONE)
+    {
+        x_matrix_num_ = DICTIONARY_[loop_anim_].matrix_num_x;
+        y_matrix_num_ = DICTIONARY_[loop_anim_].matrix_num_y;
     }
 
     now_time_ += Time::GetDeltaTime();
