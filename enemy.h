@@ -39,6 +39,8 @@ public:
 
     void DropSkillOrb(Vector2 pos, SKILLORB_SIZE_TYPE sizeType);
 
+    void DropSkillOrb(void);
+
     ENEMY_TYPE GetEnemyType() const { return enemy_type_; }
 
     int GetAtk(void) const { return atk_; }
