@@ -185,10 +185,10 @@ void Player::CollisionAction(void)
 		switch (type)
 		{
 		case OBJ_SOLID:
-			if (GetVel().x != 0.0f)
+			/*if (GetVel().x != 0.0f)
 				SetVel(Vector2(0.0f, GetVel().y));
 			if (GetVel().y != 0.0f)
-				SetVel(Vector2(GetVel().x, 0.0f));
+				SetVel(Vector2(GetVel().x, 0.0f));*/
 			if (invincibility_time_ < 1.0f / 4)
 				invincibility_time_ = 1.0f / 4;
 			break;

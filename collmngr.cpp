@@ -92,7 +92,7 @@ void CollMngr::Update()
                 }
             }
         }
-        else if (collider->GetIsMovable() && collider->GetLoD() && Time::GetDeltaTime(prev_time_) >= 1000.0f / 25.0f)
+        else if (collider->GetLoD() && Time::GetDeltaTime(prev_time_) >= 1000.0f / 25.0f)
         {
             for (const auto other : dynamic_colliders_)
             {
