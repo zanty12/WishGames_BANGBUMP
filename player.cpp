@@ -33,13 +33,11 @@ static const int LvUpPoint[LV_NUM] =
 };
 
 const int Player::INITIAL_HP_ = 500;
-const float Player::GRAVITY_SCALE_ = -6.0f;
 const float Player::INVINCIBILITY_MAX_TIME_ = 1 + (1.0f / 4);
 
 
 void Player::Update(void)
 {
-
 	//HPが0になったらリザルトに移る
 	if (hp_ <= 0)
 	{
@@ -57,26 +55,38 @@ void Player::Update(void)
 	}
 
 	//----------------------------------------★アトリビュートができるまでのしのぎ
-	Vector2 stick = Input::GetStickLeft(0);
+	/*Vector2 stick = Input::GetStickLeft(0);
 	stick.y *= -1;
 	Vector2 player_vel = stick * 5.0f;
-	SetVel(player_vel);
+	SetVel(player_vel);*/
 	//----------------------------------------★アトリビュートができるまでのしのぎ
 
 	bool affected_gravity = false;	//重力を受けたかどうか
 
+	Vector2 next_vel = GetVel();
 	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
-		(void)move_attribute_->Move();
+		next_vel = move_attribute_->Move();
 		move_attribute_->Gravity();
-
 	}
 	else if (clash_spike_ == 0)
-	{//何も属性がなければ落ちる
+	{/*//何も属性がなければ落ちる
 		if (GetVel().y >= GRAVITY_SCALE_)
-			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));
+			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));*/
 	}
-
+	//重力
+	if(GetGravityState() == GRAVITY_FULL)
+	{
+		SetVel(Vector2(next_vel.x, next_vel.y - GRAVITY_SCALE_ * Time::GetDeltaTime() * Time::GetDeltaTime()));
+	}
+	else if (GetGravityState() == GRAVITY_HALF)
+	{
+		SetVel(Vector2(next_vel.x, next_vel.y - GRAVITY_SCALE_ / 2 * Time::GetDeltaTime() * Time::GetDeltaTime()));
+	}
+	else if (GetGravityState() == GRAVITY_NONE)
+	{
+		SetVel(Vector2(next_vel.x, next_vel.y));
+	}
 
 	if (attack_attribute_ != nullptr)
 	{

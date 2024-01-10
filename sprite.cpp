@@ -11,6 +11,7 @@ DX::DX11::CORE::ConstantBuffer g_WorldBuffer;
 DX::DX11::CORE::ConstantBuffer g_ViewBuffer;
 DX::DX11::CORE::ConstantBuffer g_ProjectionBuffer;
 DX::DX11::CORE::ConstantBuffer g_ColorBuffer;
+DX::DX11::CORE::ConstantBuffer g_RatioBuffer;
 DX::DX11::GRAPHICAL::Primitive<Vertex> g_Square;
 DX::DX11::GRAPHICAL::Primitive<Vertex> g_Line;
 DX::MATRIX g_WorldMatrix;
@@ -39,10 +40,12 @@ void InitSprite(void) {
 	g_ViewBuffer.Create(sizeof(DX::MATRIX), Device3D::Get());
 	g_ProjectionBuffer.Create(sizeof(DX::MATRIX), Device3D::Get());
 	g_ColorBuffer.Create(sizeof(Color), Device3D::Get());
+	g_RatioBuffer.Create(sizeof(float) * 4, Device3D::Get());
 	Device3D::SetConstantBuffer(0, 1, g_WorldBuffer);
 	Device3D::SetConstantBuffer(1, 1, g_ViewBuffer);
 	Device3D::SetConstantBuffer(2, 1, g_ProjectionBuffer);
 	Device3D::SetConstantBuffer(3, 1, g_ColorBuffer);
+	Device3D::SetConstantBuffer(4, 1, g_RatioBuffer);
 
 	ViewUpdate(Vector2::Zero);
 	ProjectionUpdate(Graphical::GetWidth(), Graphical::GetHeight());
@@ -56,7 +59,7 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 	using namespace DX;
 	using namespace DX::DX11;
-	if (texNo == -1) return;
+	if (texNo <= -1) return;
 
 	// トポロジの設定
 	Device3D::SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
@@ -230,6 +233,51 @@ void DrawCollider(PHYSICS::VertexN vertex, Color color, Vector2 offset, float wi
 
 
 
+
+void DrawUICircle(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, float ratio) {
+	using namespace DX;
+	using namespace DX::DX11;
+	if (texNo <= -1) return;
+
+	// トポロジの設定
+	Device3D::SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	// テクスチャの設定
+	auto texture = GetTexture(texNo);
+	Device3D::SetResource(*GetTexture(texNo));
+
+	// アフィン変換
+	MATRIX translation, rotation, scaler, transform;
+	translation.SetTranslation(pos);
+	rotation.SetRotation(Vector3(0.0f, 0.0f, rot));
+	scaler.SetScaling(scale);
+	transform = scaler * rotation;
+	transform = translation * transform;
+	g_WorldMatrix = transform;
+
+	// シェーダーの設定
+	ShaderManager::SetCircleMode();
+
+	// 定数バッファの設定
+	struct RATIO {
+		float r;
+		float dummy[3];
+		RATIO(float ratio) : r(ratio) { }
+	};
+	RATIO ratio_ = ratio;
+
+	Device3D::UpdateConstantBuffer(&g_WorldMatrix, g_WorldBuffer);
+	Device3D::UpdateConstantBuffer(&color, g_ColorBuffer);
+	Device3D::UpdateConstantBuffer(&ratio_, g_RatioBuffer);
+
+	// 描画
+	Device3D::Draw(
+		g_Square.GetVertexBuffer(), g_Square.GetVertexCount(), g_Square.GetVertexStructByteSize(),
+		g_Square.GetIndexBuffer(), g_Square.GetIndexCount(), g_Square.GetIndexStructByteSize()
+	);
+}
+
+void DrawUISquare(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, float ratio) {
+}
 
 void ReleaseSprite(void) {
 	g_Square.Release();
