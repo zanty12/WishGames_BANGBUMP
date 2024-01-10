@@ -4,6 +4,7 @@
 #include "MapMngr.h"
 #include "lib/collider2d.h"
 #include "time.h"
+#include <random>
 
 Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
     : Enemy(x, y, LoadTexture("data/texture/boss.png"), enemy_mngr)
@@ -19,10 +20,14 @@ Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
 
 void Boss::Update()
 {
-    //HPÇ™0Ç…Ç»Ç¡ÇΩÇÁè¡Ç∑
+    //HPÇ™0<< Ç…Ç»Ç¡ÇΩÇÁè¡Ç∑
     if (GetHp() <= 0)
     {
         GameObject::Discard();
+        Die();
+    }
+    if (GetDiscard())
+    {
         Die();
     }
 
@@ -34,7 +39,7 @@ void Boss::Update()
         OBJECT_TYPE type = collision->GetParent()->GetType();
     }
 
-    if (time_ > 0.5f)
+    if (time_ > 5.0f)
     {
         time_ = 0;
         if (atk_now == false)
@@ -67,8 +72,7 @@ SkillOrb* Boss::DropSkillOrb()
 
 void Boss::Atk()
 {
-    int boosrand = rand() % 100;
-
+    /*int boosrand = rand() % 100;
     if (boosrand < 10)
     {
 
@@ -84,7 +88,31 @@ void Boss::Atk()
     else if (boosrand > 60 && boosrand < 100)
     {
 
+    }*/
+
+    std::random_device rd;
+    std::uniform_int_distribution<> dist(0, 100);
+    int boosrand = dist(rd);
+
+    if (boosrand < 10)
+    {
+
     }
+    else if (boosrand > 10 && boosrand < 30)
+    {
+        Fire();
+    }
+    else if (boosrand > 30 && boosrand < 60)
+    {
+        Wind();
+    }
+    else if (boosrand > 60 && boosrand < 100)
+    {
+
+    }
+
+
+
 }
 
 void Boss::Fire()
@@ -115,7 +143,9 @@ void Boss::Thunder()
 void Boss::Wind()
 {
     //ÇSï™ÇÃÇPïbÇ…ÇPÉqÉbÉgÅ@ÇRÇOÉ_ÉÅÅ[ÉW
+    Boss_Wind* wind = new Boss_Wind(GetPos());
     atk_time_ += Time::GetDeltaTime();
+    GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(wind);
     if (atk_time_ > (1.0f / 4))
     {
         atk_time_ = 0;

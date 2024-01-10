@@ -9,9 +9,9 @@
 class Boss_Fire : public MovableObj
 {
 private:
-	float time_;
 	bool cheak_;
 	float range_;
+	float time_;
 	float speed_;
 	Vector2 boss_pos_;
 
@@ -37,7 +37,10 @@ public:
 class Boss_Wind : public MovableObj
 {
 private:
-
+	float time_;
+	float speed_;
+	Vector2 boss_pos_;
+	MAP_READ type;
 
 public:
 	Boss_Wind() = delete;
@@ -45,6 +48,7 @@ public:
 
 	Boss_Wind(Vector2 pos);
 	void Update() override;
+	void CollosionAction(void);
 };
 class Boss_Water : public MovableObj
 {

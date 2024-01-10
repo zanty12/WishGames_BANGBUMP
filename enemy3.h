@@ -14,7 +14,6 @@ private:
     Vector2 knockback_end_;		//ノックバックの終わりのポジション
     bool cheakRange_Enemy_;
     bool cheakRange_Player_;
-    SKILLORB_ATTRIBUTE_DESC drop;
 
 public:
     Enemy3() = delete;
