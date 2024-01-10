@@ -128,7 +128,7 @@ public:
     // ƒTƒCƒY‚ð“Á’è‚·‚é
     static SKILLORB_SIZE_TYPE ParseSize(MAP_READ type)
     {
-        int iBase = MAP_READ_ORB_SMALL_;
+        int iBase = MAP_READ_ORB_SMALL;
         int iType = (type - iBase) % 3;
 
         return static_cast<SKILLORB_SIZE_TYPE>(iType);
