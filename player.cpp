@@ -283,14 +283,52 @@ void Player::CollisionSkillPoint(GameObject* obj)
 //================================================================================
 void Player::CollisionAttack(GameObject* obj)
 {
-	Attribute* attack = dynamic_cast<Attribute*>(obj);
+	//★アタッククラスができ次第★
+	GameObject* attack = obj;
+	//何かしらのアタッククラス* attack = dynamic_cast<何かしらのアタッククラス*>(obj)
+	//if (何かしらのアタッククラス == nullptr)
+	//{
+	//	return;
+	//}
 
-	if (attack == nullptr || attack == attack_attribute_)//そんなことはないかもしれないけど念のため
+	hit_attack_attr = ATTRIBUTE_TYPE_FIRE; /*attack->GetAttribute()*/
+
+	//アタックオブジェクトのRotから自分が動くべき方向を割り出す
+	dir_.x = cosf(attack->GetRot());
+	dir_.y = sinf(attack->GetRot());
+
+	switch (hit_attack_attr)
 	{
-		return;
+	case ATTRIBUTE_TYPE_FIRE:
+	{//1/3秒で2マス
+		knockback_distance_ = SIZE_ * 2;
+		knockback_time_ = 1.0f / 3;
+		break;
+	}
+	case ATTRIBUTE_TYPE_THUNDER:
+	{//3/4秒で3マス
+		knockback_distance_ = SIZE_ * 3;
+		knockback_time_ = 3.0f / 4;
+		break;
+	}
+	case ATTRIBUTE_TYPE_WIND:
+	{//1/4秒で1マス
+		knockback_distance_ = SIZE_ * 1;
+		knockback_time_ = 1.0f / 4;
+		break;
+	}
+	case ATTRIBUTE_TYPE_DARK:
+	{//1秒で1マス
+		knockback_distance_ = SIZE_ * 1;
+		knockback_time_ = 1.0f / 1;
+		break;
+	}
+	default:
+		break;
 	}
 
-	hit_attack_attr = attack->GetAttribute();
+	knockback_start_ = GetPos();
+	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
 
 	SkillPointDown(0);	//実際に受けたダメージ分減らす
 	drop_point_ += 0;	//実際に受けたダメージを蓄積する
@@ -330,6 +368,7 @@ void Player::CollisionSpike(void)
 	}
 	dir_ *= -1;	//反転させる
 
+	knockback_time_ = 1.0f / 4;
 	knockback_distance_ = SIZE_;
 
 	knockback_start_ = GetPos();
@@ -367,12 +406,15 @@ void Player::CollisionEnemy(GameObject* obj)
 	switch (enemy->GetEnemyType())
 	{
 	case TYPE__KOOPA:
+		knockback_time_ = 1.0f / 4;
 		knockback_distance_ = SIZE_;
 		break;
 	case TYPE__HAMMERBRO:
+		knockback_time_ = 1.0f / 4;
 		knockback_distance_ = SIZE_;
 		break;
 	case TYPE__PHANTOM:
+		knockback_time_ = 1.0f / 4;
 		knockback_distance_ = SIZE_ * 3;
 		break;
 	default:
@@ -410,7 +452,7 @@ void Player::Invincibility(void)
 			SetColor(Color(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
-	if (invincibility_time_ > 1.0f / 4)
+	if (invincibility_time_ > knockback_time_)
 	{
 		return;
 	}
@@ -419,7 +461,7 @@ void Player::Invincibility(void)
 	// ノックバック
 	//----------------------------------------
 	//線形補間
-	Vector2 lerp = knockback_start_ + (knockback_end_ - knockback_start_) * (invincibility_time_ / (1.0f / 4));
+	Vector2 lerp = knockback_start_ + (knockback_end_ - knockback_start_) * (invincibility_time_ / knockback_time_);
 	SetPos(lerp);
 }
 

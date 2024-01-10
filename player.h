@@ -65,6 +65,7 @@ private:
 
 	float invincibility_time_;	//無敵の経過時間
 	float flash_time_;			//点滅間隔
+	float knockback_time_;		//ノックバックする時間
 	float knockback_distance_;	//ノックバックする距離
 	Vector2 knockback_start_;	//ノックバックの初めのポジション
 	Vector2 knockback_end_;		//ノックバックの終わりのポジション
@@ -78,7 +79,8 @@ public:
 	Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr)
 		:MovableObj(pos, rot, 0, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
 		dir_(Vector2(0.0f, 0.0f)), map_mangr_(map_mangr), clash_spike_(0), knock_back_dir_(0),
-		change_scene_(false), drop_point_(0),invincibility_time_(INVINCIBILITY_MAX_TIME_),knockback_distance_(0.0f)
+		change_scene_(false), drop_point_(0),invincibility_time_(INVINCIBILITY_MAX_TIME_),
+		knockback_distance_(0.0f),knockback_time_(0.0f)
 	{
 		int tex = LoadTexture("data/texture/player.png");
 		SetTexNo(tex);
@@ -95,6 +97,7 @@ public:
 	void SetAttackAttribute(Attribute* attack_attribute) {delete attack_attribute_; attack_attribute_ = attack_attribute; }	//アタックアトリビュートポインタのセット（何も操作していないときはnullptrをセット）
 	Attribute* GetAttribute(void) const { return move_attribute_; }			//ムーブアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
 	Attribute* GetAttackAttribute(void) const { return attack_attribute_; }	//アタックアトリビュートポインタをゲット（属性が何もなければnullptrを返す）
+	void SetMapMngr(MapMngr* map_mangr) { map_mangr_ = map_mangr; }	//MapMngrをセット
 	MapMngr* GetMapMngr(void) const { return map_mangr_; }	//MapMngrのポインタをゲット
 	bool GetChangeSceneFlag(void) const { return change_scene_; }	//シーンチェンジのフラグ true=別のシーンへ
 	PLAYER_STATE GetPlayerState(void) const { return player_state_; }	//プレイヤーのステータスをゲット
