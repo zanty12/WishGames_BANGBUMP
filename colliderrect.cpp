@@ -148,7 +148,12 @@ void ColliderRect::CollisionSolid(Collider* other)
                         Vector2 vel= parent->GetVel() * GetBounciness();
                         //if the object is moving towards the collision, bounce it
                         if (Vector2::Dot(vel, coll_dir) > 0)
-                            vel = -vel;
+                        {
+                            if(overlap_x != 0.0f)
+                                vel.x = -vel.x;
+                            if(overlap_y != 0.0f)
+                                vel.y = -vel.y;
+                        }
                         //vel += Vector2(-move_amount.x * GetBounciness(), move_amount.y * GetBounciness());
                         parent->SetVel(vel);
                     }
