@@ -114,9 +114,10 @@ protected:
     float radius_ = 25.0f;
     SKILLORB_SIZE_TYPE size_ = SKILLORB_SIZE_TYPE_SMALL;
     bool is_movable_ = false;
+    GameObject *gameObject_ = nullptr;
 
 public:
-    SkillOrb(SKILLORB_SIZE_DESC desc)
+    SkillOrb(SKILLORB_SIZE_DESC desc, GameObject *gameObject) : gameObject_(gameObject)
     {
         value_ = desc.value;
         radius_ = desc.radius;
@@ -142,6 +143,11 @@ public:
     void SetValue(int value) { value_ = value; }
     bool IsMovable(void) const { return is_movable_; }
     void SetMovable(bool is_movable) { is_movable_ = is_movable; }
+    Vector2 GetPos(void) { return gameObject_ ? gameObject_->GetPos() : Vector2(); }
+    float GetRot(void) { return gameObject_ ? gameObject_->GetRot() : 0.0f; }
+    Vector2 GetScl(void) { return gameObject_ ? gameObject_->GetScale() : Vector2(); }
+    std::string GetID(void) { return gameObject_ ? gameObject_->GetID() : ""; }
+    bool GetDiscard(void) { return gameObject_ ? gameObject_->GetDiscard() : false; }
 };
 
 class SkillOrbMovable : public MovableObj, public SkillOrb

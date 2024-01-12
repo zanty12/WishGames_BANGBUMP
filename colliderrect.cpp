@@ -54,7 +54,7 @@ void ColliderRect::CollisionInteract()
             break;
         case OBJ_PENETRABLE:
             {
-                if (GetBounciness() > 1.0f)
+                if (GetBounciness() > 0.0f)
                     CollisionSolid(other);
                 else
                     CollisionPen(other);
@@ -145,9 +145,9 @@ void ColliderRect::CollisionSolid(Collider* other)
                     MovableObj* parent = dynamic_cast<MovableObj*>(GetParent());
                     if (parent != nullptr)
                     {
-                        Vector2 vel= parent->GetVel();
+                        Vector2 vel= parent->GetVel() * GetBounciness();
                         //if the object is moving towards the collision, bounce it
-                        if (Vector2::Dot(vel, coll_dir) < 0)
+                        if (Vector2::Dot(vel, coll_dir) > 0)
                             vel = -vel;
                         //vel += Vector2(-move_amount.x * GetBounciness(), move_amount.y * GetBounciness());
                         parent->SetVel(vel);
