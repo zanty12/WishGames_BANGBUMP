@@ -49,57 +49,57 @@
 ------------------------------------------------------------------------------*/
 void InitSprite(void);
 /// <summary>
-/// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æç”»ã™ã‚‹
+/// ƒeƒNƒXƒ`ƒƒ‚ð•`‰æ‚·‚é
 /// </summary>
-/// <param name="texNo">ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·</param>
-/// <param name="pos">åº§æ¨™</param>
-/// <param name="rot">è§’åº¦</param>
-/// <param name="scale">æ‹¡ç¸®</param>
-/// <param name="color">è‰²</param>
+/// <param name="texNo">ƒeƒNƒXƒ`ƒƒ”Ô†</param>
+/// <param name="pos">À•W</param>
+/// <param name="rot">Šp“x</param>
+/// <param name="scale">Šgk</param>
+/// <param name="color">F</param>
 void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color);
 /// <summary>
-/// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æç”»ã™ã‚‹
+/// ƒeƒNƒXƒ`ƒƒ‚ð•`‰æ‚·‚é
 /// </summary>
-/// <param name="texNo">ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·</param>
-/// <param name="pos">åº§æ¨™</param>
-/// <param name="rot">è§’åº¦</param>
-/// <param name="scale">æ‹¡ç¸®</param>
-/// <param name="color">è‰²</param>
-/// <param name="uv">UVå€¤</param>
-/// <param name="uvWidth">UVã‚µã‚¤ã‚º</param>
+/// <param name="texNo">ƒeƒNƒXƒ`ƒƒ”Ô†</param>
+/// <param name="pos">À•W</param>
+/// <param name="rot">Šp“x</param>
+/// <param name="scale">Šgk</param>
+/// <param name="color">F</param>
+/// <param name="uv">UV’l</param>
+/// <param name="uvWidth">UVƒTƒCƒY</param>
 void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, Vector2 uv, Vector2 uvWidth);
 /// <summary>
-/// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æç”»ã™ã‚‹ï¼ˆå·¦ä¸ŠãŒåŽŸç‚¹ï¼‰
+/// ƒeƒNƒXƒ`ƒƒ‚ð•`‰æ‚·‚éi¶ã‚ªŒ´“_j
 /// </summary>
-/// <param name="texNo">ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·</param>
-/// <param name="pos">åº§æ¨™</param>
-/// <param name="rot">è§’åº¦</param>
-/// <param name="scale">æ‹¡ç¸®</param>
-/// <param name="color">è‰²</param>
+/// <param name="texNo">ƒeƒNƒXƒ`ƒƒ”Ô†</param>
+/// <param name="pos">À•W</param>
+/// <param name="rot">Šp“x</param>
+/// <param name="scale">Šgk</param>
+/// <param name="color">F</param>
 void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color);
 /// <summary>
-/// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æç”»ã™ã‚‹ï¼ˆå·¦ä¸ŠãŒåŽŸç‚¹ï¼‰
+/// ƒeƒNƒXƒ`ƒƒ‚ð•`‰æ‚·‚éi¶ã‚ªŒ´“_j
 /// </summary>
-/// <param name="texNo">ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·</param>
-/// <param name="pos">åº§æ¨™</param>
-/// <param name="rot">è§’åº¦</param>
-/// <param name="scale">æ‹¡ç¸®</param>
-/// <param name="color">è‰²</param>
-/// <param name="uv">UVå€¤</param>
-/// <param name="uvWidth">UVã‚µã‚¤ã‚º</param>
+/// <param name="texNo">ƒeƒNƒXƒ`ƒƒ”Ô†</param>
+/// <param name="pos">À•W</param>
+/// <param name="rot">Šp“x</param>
+/// <param name="scale">Šgk</param>
+/// <param name="color">F</param>
+/// <param name="uv">UV’l</param>
+/// <param name="uvWidth">UVƒTƒCƒY</param>
 void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, Vector2 uv, Vector2 uvWidth);
 /// <summary>
-/// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æç”»ã™ã‚‹ï¼ˆä¸­å¿ƒãŒåŽŸç‚¹ï¼‰
+/// ƒeƒNƒXƒ`ƒƒ‚ð•`‰æ‚·‚éi’†S‚ªŒ´“_j
 /// </summary>
-/// <param name="texNo">ãƒ†ã‚¯ã‚¹ãƒãƒ£ç•ªå·</param>
-/// <param name="pos">åº§æ¨™</param>
-/// <param name="rot">è§’åº¦</param>
-/// <param name="scale">æ‹¡ç¸®</param>
-/// <param name="color">è‰²</param>
+/// <param name="texNo">ƒeƒNƒXƒ`ƒƒ”Ô†</param>
+/// <param name="pos">À•W</param>
+/// <param name="rot">Šp“x</param>
+/// <param name="scale">Šgk</param>
+/// <param name="color">F</param>
 void DrawSpriteCenter(int texNo, Vector2 pos, float rot, Vector2 scale, Color color);
 void DrawSprite(int texNo, Vector2 *vertices, Vector2 *uvs, Color color);
 /// <summary>
-/// UIã‚’æç”»ã™ã‚‹ï¼ˆå††å½¢ã®UIï¼‰
+/// UI‚ð•`‰æ‚·‚éi‰~Œ`‚ÌUIj
 /// </summary>
 void DrawUICircle(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, float ratio);
 void DrawUISquare(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, float ratio);
