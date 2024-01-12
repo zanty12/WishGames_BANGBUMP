@@ -25,6 +25,7 @@ int main()
         return 0;
     }*/
     SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
+
     srand(time(NULL));
     while (true)
     {
@@ -88,6 +89,7 @@ int main()
     Graphical::Release();
     DebugUI::Release();
     //Time::Release();
+
     Text::DiscardResources();
 
     std::cout << "Hello World!\n"; //基本

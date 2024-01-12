@@ -59,7 +59,7 @@ void Game::Draw()
 
     //UI
     /*int itimeer = static_cast<int>(timer_);
-    std::wstring time = L"c‚èŠÔ: ";
+    std::wstring time = L"æ®‹ã‚Šæ™‚é–“: ";
     time += std::to_wstring(itimeer);
     Text::WriteText(time.c_str(),Graphical::GetWidth()/ 2, 0, 100, 50);*/
 }
@@ -73,22 +73,22 @@ void Game::DebugMenu()
     auto player_ = GetPlayer();
 
     ImGui::Begin("Game");
-    ImGui::Text(u8"ƒvƒŒƒCƒ„[À•W");
+    ImGui::Text(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åº§æ¨™");
     ImGui::Text("x:%f, y: %f", player_->GetPos().x, player_->GetPos().y);
-    ImGui::Text(u8"ƒvƒŒƒCƒ„[ƒXƒs[ƒh");
+    ImGui::Text(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¹ãƒ”ãƒ¼ãƒ‰");
     ImGui::Text("x:%f, y: %f", player_->GetVel().x, player_->GetVel().y);
-    ImGui::Text(u8"ƒvƒŒƒCƒ„[ó‘Ô");
+    ImGui::Text(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼çŠ¶æ…‹");
     ImGui::Text("%d", player_->GetPlayerState());
-    ImGui::Text(u8"ƒJƒƒ‰À•W");
+    ImGui::Text(u8"ã‚«ãƒ¡ãƒ©åº§æ¨™");
     ImGui::Text("x:%f, y: %f", camera_->GetPos().x, camera_->GetPos().y);
-    static std::string preview = u8"–³‘®«";
-    static std::string preview_atk = u8"–³‘®«";
+    static std::string preview = u8"ç„¡å±æ€§";
+    static std::string preview_atk = u8"ç„¡å±æ€§";
     if(player_->GetAttribute() == nullptr)
-        preview = u8"–³‘®«";
+        preview = u8"ç„¡å±æ€§";
     if(player_->GetAttackAttribute() == nullptr)
-        preview_atk = u8"–³‘®«";
+        preview_atk = u8"ç„¡å±æ€§";
 
-    if (ImGui::BeginCombo(u8"ƒvƒŒƒCƒ„[ˆÚ“®‘®«", preview.c_str()))
+    if (ImGui::BeginCombo(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç§»å‹•å±æ€§", preview.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
         {
@@ -112,7 +112,7 @@ void Game::DebugMenu()
         }
         ImGui::EndCombo();
     }
-    if (ImGui::BeginCombo(u8"ƒvƒŒƒCƒ„[UŒ‚‘®«", preview_atk.c_str()))
+    if (ImGui::BeginCombo(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ”»æ’ƒå±æ€§", preview_atk.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
         {

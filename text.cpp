@@ -34,10 +34,12 @@ HRESULT Text::CreateResources()
 
     FLOAT dpi = static_cast<FLOAT>(GetDpiForWindow(hWnd));
 
+
     D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT,
                                                                        D2D1::PixelFormat(
                                                                            DXGI_FORMAT_UNKNOWN,
                                                                            D2D1_ALPHA_MODE_PREMULTIPLIED), dpi, dpi);
+
 
     hr = pD2DFactory_->CreateDxgiSurfaceRenderTarget(pBackBuffer_, &props, &pRT_);
     if (FAILED(hr))
@@ -112,6 +114,7 @@ HRESULT Text::ChangeFont(const std::wstring font)
     //create new TextFormat
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
                                                    DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+
     return hr;
 }
 
@@ -123,6 +126,7 @@ HRESULT Text::ChangeFontSize(int size)
     //create new TextFormat
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
                                                    DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+
     return hr;
 }
 
@@ -144,6 +148,7 @@ HRESULT Text::SetFontWeight(DWRITE_FONT_WEIGHT weight)
     //create new TextFormat
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
                                                    DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+
     return hr;
 }
 
@@ -157,3 +162,4 @@ HRESULT Text::SetFontStyle(DWRITE_FONT_STYLE style)
                                                    DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
 }
+
