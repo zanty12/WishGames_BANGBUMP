@@ -61,6 +61,9 @@ void Game::Update()
         mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_2).c_str(), this);
         timer_ = 120.0f;
         GetPlayer()->SetPos(mapmngr_->GetPlayerSpawn());
+        GetPlayer()->SetMapMngr(mapmngr_);
+        delete camera_;
+        camera_ = new Camera(GetPlayer());
     }
 }
 
