@@ -12,8 +12,10 @@
 Game::Game(SceneMngr* scene_mngr)
     : GameBase(scene_mngr)
 {
-
     mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_1).c_str(), this);
+    text_format_ = Text::MakeTextFormat(L"ãƒ¯ãƒ¼ãƒ—ãƒ­æ˜Žæœ", 50, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL);
+    brush_ = Text::MakeBrush(Color(1.0f, 1.0f, 1.0f, 1.0f));
+    timer_tex_ = LoadTexture(Asset::GetAsset(timer));
     //int playertex = LoadTexture("data/texture/player.png");
 
     /*Player *player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, Vector2(0.0f, 0.0f), mapmngr_);
@@ -30,8 +32,8 @@ void Game::Update()
     std::thread enemy(&EnemyMngr::Update, mapmngr_->GetEnemyMngr());
     std::thread player(&Player::Update, GetPlayer());
     //GetPlayer()->Update();
-    //std::thread projectile(&ProjectileMngr::Update, projectile_mngr_);
-    projectile_mngr_->Update();
+    std::thread projectile(&ProjectileMngr::Update, projectile_mngr_);
+    //projectile_mngr_->Update();
     //std::thread orb(&SkillOrbMngr::Update, orb_mngr_);
     //orb_mngr_->Update();
     //projectile.join();
@@ -43,6 +45,7 @@ void Game::Update()
     map.join();
     enemy.join();
     player.join();
+    projectile.join();
     camera.join();
     renderer.join();
     if (GetPlayer()->GetChangeSceneFlag())
@@ -50,21 +53,35 @@ void Game::Update()
         scene_mngr_->ChangeScene(SCENE_RESULT);
     }
     timer_ -= Time::GetDeltaTime();
+    if(timer_ <= 0.0f)
+    {
+        delete mapmngr_;
+        coll_mngr_->CheckDiscard();
+        renderer_->CheckDiscard();
+        mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_2).c_str(), this);
+        timer_ = 120.0f;
+        GetPlayer()->SetPos(mapmngr_->GetPlayerSpawn());
+        GetPlayer()->SetMapMngr(mapmngr_);
+        delete camera_;
+        camera_ = new Camera(GetPlayer());
+    }
 }
 
 void Game::Draw()
 {
     camera_->Draw();
-    renderer_->Draw(camera_ ->GetCameraOffset());
+    renderer_->Draw(camera_->GetCameraOffset());
 
     //UI
+    DrawSpriteLeftTop(timer_tex_, Vector2(Graphical::GetWidth() / 2, 50), 0.0f, Vector2(250, 100),
+                      Color(1.0f, 1.0f, 1.0f, 1.0f));
     int itimeer = static_cast<int>(timer_);
-    std::wstring time = L"Žc‚èŽžŠÔ: ";
-    time += std::to_wstring(itimeer);
-    Text::WriteText(time.c_str(),Graphical::GetWidth()/ 2, 100, 100, 50);
+    std::wstring time = std::to_wstring(itimeer);
+    Text::WriteText(time.c_str(), text_format_, brush_, Graphical::GetWidth() / 2 - 45, 25, 180, 50);
 }
 
-Player *Game::GetPlayer() {
+Player* Game::GetPlayer()
+{
     return *GetPlayers().begin();
 }
 
@@ -73,22 +90,21 @@ void Game::DebugMenu()
     auto player_ = GetPlayer();
 
     ImGui::Begin("Game");
-    ImGui::Text(u8"ƒvƒŒƒCƒ„[À•W");
+    ImGui::Text(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åº§æ¨™");
     ImGui::Text("x:%f, y: %f", player_->GetPos().x, player_->GetPos().y);
-    ImGui::Text(u8"ƒvƒŒƒCƒ„[ƒXƒs[ƒh");
+    ImGui::Text(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¹ãƒ”ãƒ¼ãƒ‰");
     ImGui::Text("x:%f, y: %f", player_->GetVel().x, player_->GetVel().y);
-    ImGui::Text(u8"ƒvƒŒƒCƒ„[ó‘Ô");
+    ImGui::Text(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼çŠ¶æ…‹");
     ImGui::Text("%d", player_->GetPlayerState());
-    ImGui::Text(u8"ƒJƒƒ‰À•W");
+    ImGui::Text(u8"ã‚«ãƒ¡ãƒ©åº§æ¨™");
     ImGui::Text("x:%f, y: %f", camera_->GetPos().x, camera_->GetPos().y);
-    static std::string preview = u8"–³‘®«";
-    static std::string preview_atk = u8"–³‘®«";
-    if(player_->GetAttribute() == nullptr)
-        preview = u8"–³‘®«";
-    if(player_->GetAttackAttribute() == nullptr)
-        preview_atk = u8"–³‘®«";
-
-    if (ImGui::BeginCombo(u8"ƒvƒŒƒCƒ„[ˆÚ“®‘®«", preview.c_str()))
+    static std::string preview = u8"ç„¡å±žæ€§";
+    static std::string preview_atk = u8"ç„¡å±žæ€§";
+    if (player_->GetAttribute() == nullptr)
+        preview = u8"ç„¡å±žæ€§";
+    if (player_->GetAttackAttribute() == nullptr)
+        preview_atk = u8"ç„¡å±žæ€§";
+    if (ImGui::BeginCombo(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç§»å‹•å±žæ€§", preview.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
         {
@@ -112,7 +128,7 @@ void Game::DebugMenu()
         }
         ImGui::EndCombo();
     }
-    if (ImGui::BeginCombo(u8"ƒvƒŒƒCƒ„[UŒ‚‘®«", preview_atk.c_str()))
+    if (ImGui::BeginCombo(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ”»æ’ƒå±žæ€§", preview_atk.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
         {
@@ -138,7 +154,7 @@ void Game::DebugMenu()
     }
     ImGui::End();
     ImGui::Begin("map test");
-    if(ImGui::Button("map1"))
+    if (ImGui::Button("map1"))
     {
         delete mapmngr_;
         coll_mngr_->CheckDiscard();
@@ -148,4 +164,3 @@ void Game::DebugMenu()
     ImGui::End();
     player_->DebugMenu();
 }
-
