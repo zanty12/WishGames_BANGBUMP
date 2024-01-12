@@ -58,10 +58,10 @@ void Game::Draw()
     renderer_->Draw(camera_ ->GetCameraOffset());
 
     //UI
-    /*int itimeer = static_cast<int>(timer_);
+    int itimeer = static_cast<int>(timer_);
     std::wstring time = L"Žc‚èŽžŠÔ: ";
     time += std::to_wstring(itimeer);
-    Text::WriteText(time.c_str(),Graphical::GetWidth()/ 2, 0, 100, 50);*/
+    Text::WriteText(time.c_str(),Graphical::GetWidth()/ 2, 100, 100, 50);
 }
 
 Player *Game::GetPlayer() {

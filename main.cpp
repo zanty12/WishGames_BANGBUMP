@@ -19,11 +19,11 @@ int main()
     DebugUI::Initialize();
     MSG msg;
     Time::Initialize();
-    /*HRESULT result = Text::CreateResources();
+    HRESULT result = Text::CreateResources();
     if (FAILED(result))
     {
         return 0;
-    }*/
+    }
     SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
     srand(time(NULL));
     while (true)
@@ -42,7 +42,8 @@ int main()
             }
         }
         else{
-            Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+            //WTF?
+            //Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
 
             Input::Update();
 
@@ -77,8 +78,9 @@ int main()
                     scene_mngr->DebugMenu();
                 }
             }
+            Text::TextStart();
             scene_mngr->Draw();
-
+            Text::TextEnd();
             DebugUI::EndDraw();
 
             Graphical::Present();
@@ -87,7 +89,7 @@ int main()
 
     Graphical::Release();
     DebugUI::Release();
-    //Time::Release();
+    Time::Release();
     Text::DiscardResources();
 
     std::cout << "Hello World!\n"; //基本
