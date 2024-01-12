@@ -8,6 +8,7 @@
 
 struct ANIM_DATA
 {
+    int texNo;
     int matrix_num_x, matrix_num_y;
 
     int loop_start_x, loop_start_y;
@@ -15,6 +16,7 @@ struct ANIM_DATA
 
     ANIM_DATA() {}
     //----------------------------------------
+    // int tex_number   テクスチャナンバー
     // int x_num        よこ方向の画像の数
     // int y_num        たて方向の画像の数
     // int start_x      ループアニメのスタート画像[よこ]（右端 = 0）
@@ -22,12 +24,30 @@ struct ANIM_DATA
     // int end_x        ループアニメの終端画像[よこ]
     // int end_y        ループアニメの終端画像[たて]
     //----------------------------------------
-    ANIM_DATA(int x_num, int y_num, int start_x, int start_y, int end_x, int end_y)
+    ANIM_DATA(int tex_number, int x_num, int y_num, int start_x, int start_y, int end_x, int end_y)
     {
+        texNo = tex_number;
+        matrix_num_x = x_num;
+        matrix_num_y = y_num;
         loop_start_x = start_x;
         loop_start_y = start_y;
         loop_end_x = end_x;
         loop_end_y = end_y;
+    }
+    //----------------------------------------
+// int tex_number   テクスチャナンバー
+// int x_num        よこ方向の画像の数
+// int y_num        たて方向の画像の数
+//----------------------------------------
+    ANIM_DATA(int tex_number, int x_num, int y_num)
+    {
+        texNo = tex_number;
+        matrix_num_x = x_num;
+        matrix_num_y = y_num;
+        loop_start_x = 0;
+        loop_start_y = 0;
+        loop_end_x = x_num - 1;
+        loop_end_y = y_num - 1;
     }
 };
 
@@ -36,6 +56,7 @@ enum LOOP_ANIM
 {
     NONE = -1,
 
+    PLAYER,
     ENEMY_1,
     ENEMY_2,
     ENEMY_3,
@@ -113,8 +134,16 @@ public:
     {
         const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
         const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
-        DrawSprite(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
-            Vector2(scale_.x * scale_x, scale_.y * scale_y), color_);
+        if (isAnim_)
+        {
+            DrawSpriteLeftTop(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
+                Vector2(scale_.x * scale_x, scale_.y * scale_y), color_, Vector2(GetU(), GetV()), Vector2(UWidth(), VHeight()));
+        }
+        else
+        {
+            DrawSprite(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
+                Vector2(scale_.x * scale_x, scale_.y * scale_y), color_);
+        }
     }
 
     void SetPos(Vector2 pos) { pos_ = pos; }
@@ -129,7 +158,6 @@ public:
     float GetRot(void) const { return rot_; }
     bool GetIsAnim(void) const { return isAnim_; }
     void SetIsAnim(bool isAnim) {
-        if (x_matrix_num_ != 0 && y_matrix_num_ != 0)//セットされていないものはアニメーションすることが許されない
             isAnim_ = isAnim;
     }
     bool GetIsMovable(void) const { return isMovable_; }

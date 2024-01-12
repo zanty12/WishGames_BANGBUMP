@@ -5,11 +5,12 @@
 #include "gameobject.h"
 
 #include "time.h"
+#include "asset.h"
 
 //★それぞれのアニメーションごとに設定していく★
 void Animator::InitDictionary(void)
 {
-    DICTIONARY_[ENEMY_1] = ANIM_DATA(5, 4, 0, 0, 2, 3);
+    DICTIONARY_[PLAYER] = ANIM_DATA(LoadTexture(Asset::GetAsset(player)), 5, 6);
 
 }
 
@@ -77,17 +78,18 @@ void Animator::Update(void)
     {
         return; //アニメーションしないならば抜ける
     }
-    if (loop_anim_ != NONE)
-    {
-        x_matrix_num_ = DICTIONARY_[loop_anim_].matrix_num_x;
-        y_matrix_num_ = DICTIONARY_[loop_anim_].matrix_num_y;
-    }
 
     now_time_ += Time::GetDeltaTime();
 
     if (loop_anim_ != loop_anim_next_)
     {
         Reset();
+    }
+    //アニメーションができない状態なら抜ける
+    if (loop_anim_ == NONE && x_matrix_num_ == 0 && y_matrix_num_ == 0)
+    {
+        isAnim_ = false;
+        return;
     }
 
     if (now_time_ >= img_change_time_)
@@ -125,5 +127,17 @@ void Animator::LoopAnimation(void)
 void Animator::Reset(void)
 {
     loop_anim_ = loop_anim_next_;
+
+    if (loop_anim_next_ == NONE)
+    {
+        now_matrix_number_ = 0;
+        return;
+    }
+
+    isAnim_ = true;
+    texNo_ = DICTIONARY_[loop_anim_].texNo;
+    x_matrix_num_ = DICTIONARY_[loop_anim_].matrix_num_x;
+    y_matrix_num_ = DICTIONARY_[loop_anim_].matrix_num_y;
+
     now_matrix_number_ = x_matrix_num_ * DICTIONARY_[loop_anim_].loop_start_y + DICTIONARY_[loop_anim_].loop_start_x - 1;//この後インクリメントするので1引いておく
 }
