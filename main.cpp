@@ -25,6 +25,7 @@ int main()
         return 0;
     }
     SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
+
     srand(time(NULL));
     while (true)
     {
@@ -44,6 +45,7 @@ int main()
         else{
             //WTF?
             //Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+
 
             Input::Update();
 
@@ -81,6 +83,7 @@ int main()
             Text::TextStart();
             scene_mngr->Draw();
             Text::TextEnd();
+
             DebugUI::EndDraw();
 
             Graphical::Present();
@@ -90,6 +93,7 @@ int main()
     Graphical::Release();
     DebugUI::Release();
     Time::Release();
+
     Text::DiscardResources();
 
     std::cout << "Hello World!\n"; //基本

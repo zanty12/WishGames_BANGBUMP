@@ -39,6 +39,7 @@ HRESULT Text::CreateResources()
                                                                            DXGI_FORMAT_UNKNOWN,
                                                                            D2D1_ALPHA_MODE_PREMULTIPLIED), dpi, dpi);
 
+
     hr = pD2DFactory_->CreateDxgiSurfaceRenderTarget(pBackBuffer_, &props, &pRT_);
     if (FAILED(hr))
         return hr;
