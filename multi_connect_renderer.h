@@ -18,7 +18,7 @@ private:
 
 
 private:
-	void DrawObject(OBJECT_DATA_CLIENT_SIDE &object) {
+	void DrawObject(Vector2 playerPosition, OBJECT_DATA_CLIENT_SIDE &object) {
 		int id = object.id;
 
 		// オブジェクトIDを調べる
@@ -45,14 +45,14 @@ private:
 			anim->SetRot(object.rotation);
 			anim->SetScale(object.scale);
 
-			anim->Draw();
+			anim->Draw(Vector2(0.0f, playerPosition.y));
 		}
 	}
 
 public:
 	void Draw(RESPONSE_PLAYER &res) {
 		for (auto &object : res.objects) {
-			DrawObject(object);
+			DrawObject(res.clients.begin()->position, object);
 		}
 	}
 };

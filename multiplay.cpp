@@ -482,7 +482,8 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	renderer_->CheckDiscard();
 	coll_mngr_->CheckDiscard();
 	multiRenderer_->Draw(res_);
-	renderer_->Draw(-res.clients.begin()->position);
+	renderer_->Draw(Vector2(0.0f, res.clients.begin()->position.y));
+	
 }
 
 void MultiPlayClient::SendUpdate(void) {
