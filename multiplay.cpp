@@ -401,6 +401,9 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// 受信用領域を確保する
 	recvTmpBuff = new char[MAX_BUFF];
+
+	players_.push_back(new Player(Vector2(), 0.0, Vector2(), mapmngr_));
+	camera_ = new Camera(GetPlayer());
 }
 
 int MultiPlayClient::Register() {
@@ -470,6 +473,9 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	if (res_.mode == MULTI_MODE::NONE) {
 		return;
 	}
+
+	GetPlayer().
+	camera_->Update();
 
 	for (auto &client : res_.clients) {
 		anim.SetPos(client.position);
