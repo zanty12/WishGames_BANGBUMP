@@ -54,6 +54,7 @@ HRESULT Text::CreateResources()
     if (FAILED(hr))
         return hr;
 
+    //TODO: Load all fonts in asset
     pDWriteFactory_->CreateFontSetBuilder(&pFontSetBuilder_);
     pDWriteFactory_->CreateFontFileReference(Asset::GetFont(notosans_jp).c_str(), NULL, &pFontFile_);
     pFontSetBuilder_->AddFontFile(pFontFile_);
@@ -72,7 +73,8 @@ HRESULT Text::CreateResources()
     //第6引数：フォントサイズ（20, 30等）
     //第7引数：ロケール名（L""）
     //第8引数：テキストフォーマット（&pTextFormat_）
-    hr = pDWriteFactory_->CreateTextFormat(L"Noto Sans JP", pFontCollection_, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
+    hr = pDWriteFactory_->CreateTextFormat(L"Noto Sans JP", pFontCollection_, DWRITE_FONT_WEIGHT_NORMAL,
+                                           DWRITE_FONT_STYLE_NORMAL,
                                            DWRITE_FONT_STRETCH_NORMAL, 20, L"", &pTextFormat_);
     if (FAILED(hr))
         return hr;
@@ -119,13 +121,18 @@ void Text::WriteText(const WCHAR* text, float X, float Y, float Width, float Hei
     pRT_->DrawText(text, wcslen(text), pTextFormat_, D2D1::RectF(X, Y, X + Width, Y + Height), pSolidBrush_);
 }
 
+void Text::WriteText(const WCHAR* text, IDWriteTextFormat* text_format,ID2D1SolidColorBrush* brush, float X, float Y, float Width, float Height)
+{
+    pRT_->DrawText(text, wcslen(text), text_format, D2D1::RectF(X, Y, X + Width, Y + Height), brush);
+}
+
 HRESULT Text::ChangeFont(const std::wstring font)
 {
     font_ = font;
     //release TextFormat
     if (pTextFormat_) pTextFormat_->Release();
     //create new TextFormat
-    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
+    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), pFontCollection_, font_weight_, font_style_,
                                                    DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
 }
@@ -136,7 +143,7 @@ HRESULT Text::ChangeFontSize(int size)
     //release TextFormat
     if (pTextFormat_) pTextFormat_->Release();
     //create new TextFormat
-    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
+    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), pFontCollection_, font_weight_, font_style_,
                                                    DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
 }
@@ -157,7 +164,7 @@ HRESULT Text::SetFontWeight(DWRITE_FONT_WEIGHT weight)
     //release TextFormat
     if (pTextFormat_) pTextFormat_->Release();
     //create new TextFormat
-    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
+    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), pFontCollection_, font_weight_, font_style_,
                                                    DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
 }
@@ -168,7 +175,48 @@ HRESULT Text::SetFontStyle(DWRITE_FONT_STYLE style)
     //release TextFormat
     if (pTextFormat_) pTextFormat_->Release();
     //create new TextFormat
-    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
+    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), pFontCollection_, font_weight_, font_style_,
                                                    DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
+}
+
+HRESULT Text::SetTextFormat(std::wstring font, int size, Color color, DWRITE_FONT_WEIGHT weight,
+                            DWRITE_FONT_STYLE style)
+{
+    font_ = font;
+    font_size_ = size;
+    font_color_ = color;
+    font_weight_ = weight;
+    font_style_ = style;
+    //release TextFormat
+    if (pTextFormat_) pTextFormat_->Release();
+    //create new TextFormat
+    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), pFontCollection_, font_weight_, font_style_,
+                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+    //release brush
+    if (pSolidBrush_) pSolidBrush_->Release();
+    //create new brush
+    hr = pRT_->CreateSolidColorBrush(D2D1::ColorF(color.r, color.g, color.b, color.a), &pSolidBrush_);
+
+    return hr;
+}
+
+IDWriteTextFormat* Text::MakeTextFormat(std::wstring font, float size, DWRITE_FONT_WEIGHT font_weight_,
+                                        DWRITE_FONT_STYLE font_style_)
+{
+    IDWriteTextFormat* text_format;
+    HRESULT hr = pDWriteFactory_->CreateTextFormat(font.c_str(), pFontCollection_, font_weight_, font_style_,
+                                                   DWRITE_FONT_STRETCH_NORMAL, size, L"", &text_format);
+    if (FAILED(hr))
+        return nullptr;
+    return text_format;
+}
+
+ID2D1SolidColorBrush* Text::MakeBrush(Color color)
+{
+    ID2D1SolidColorBrush* brush;
+    HRESULT hr = pRT_->CreateSolidColorBrush(D2D1::ColorF(color.r, color.g, color.b, color.a), &brush);
+    if (FAILED(hr))
+        return nullptr;
+    return brush;
 }

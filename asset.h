@@ -55,7 +55,6 @@ public:
     template<typename T>
     static std::string GetAsset(T asset);
     static std::wstring GetFont(const fonts asset);
-
 };
 
 

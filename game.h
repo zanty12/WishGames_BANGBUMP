@@ -30,6 +30,7 @@ private:
 	//static SkillOrbMngr *orb_mngr_;
 	float timer_ = 120.0f;
 
+
 public:
 	Game() = delete;
 	Game(SceneMngr* scene_mngr);

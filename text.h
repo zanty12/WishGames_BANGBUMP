@@ -38,12 +38,28 @@ public:
 
     //左上原点
     static void WriteText(const WCHAR* text, float X, float Y, float Width, float Height);
+    static void WriteText(const WCHAR* text, IDWriteTextFormat* text_format, ID2D1SolidColorBrush* brush, float X,
+                          float Y, float Width,
+                          float Height);
 
     //スタイル変更
-    static HRESULT ChangeFont(const std::wstring font);
+    static HRESULT ChangeFont(std::wstring font); //フォント名(ロードしたものしか使えない)
     static HRESULT ChangeFontSize(int size);
     static HRESULT SetFontColor(Color color);
     static HRESULT SetFontWeight(DWRITE_FONT_WEIGHT weight);
     static HRESULT SetFontStyle(DWRITE_FONT_STYLE style);
+    static HRESULT SetTextFormat(std::wstring font, int size, Color color, DWRITE_FONT_WEIGHT weight,
+                                 DWRITE_FONT_STYLE style);
 
+    //write factory getter for creating separate text format
+    static IDWriteTextFormat* MakeTextFormat(std::wstring font = font_, float size = font_size_,
+                                             DWRITE_FONT_WEIGHT font_weight = font_weight_,
+                                             DWRITE_FONT_STYLE font_style = font_style_);
+    static ID2D1SolidColorBrush* MakeBrush(Color color);
+    //getter for format
+    static std::wstring GetFont() { return font_; }
+    static float GetFontSize() { return font_size_; }
+    static Color GetFontColor() { return font_color_; }
+    static DWRITE_FONT_WEIGHT GetFontWeight() { return font_weight_; }
+    static DWRITE_FONT_STYLE GetFontStyle() { return font_style_; }
 };
