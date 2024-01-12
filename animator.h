@@ -94,6 +94,8 @@ private:
     float u_ = 0.0f, v_ = 0.0f;
     Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
 
+    int invert_ = 1;              //反転
+
 public:
     Animator() = delete;
 
@@ -168,10 +170,12 @@ public:
 
     void SetLoopImg(LOOP_ANIM loop_anim) { loop_anim_next_ = loop_anim; }    //ループするイメージの設定
 
-    float UWidth(void) const { return 1.0f / x_matrix_num_; }    //UV(U)の幅を取得
+    float UWidth(void) const { return (1.0f / x_matrix_num_) * invert_; }    //UV(U)の幅を取得
     float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)の高さを取得
     float GetU(void) const { return u_; }   //UV(U)の値を取得
     float GetV(void) const { return v_; }   //UV(V)の値を取得
+
+    void Invert(void) { invert_ *= -1; }    //反転
 
     void SetParent(GameObject* parent) { parent_ = parent; }
     GameObject* GetParent(void) const { return parent_; }
