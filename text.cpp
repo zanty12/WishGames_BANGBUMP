@@ -126,50 +126,42 @@ void Text::WriteText(const WCHAR* text, IDWriteTextFormat* text_format,ID2D1Soli
     pRT_->DrawText(text, wcslen(text), text_format, D2D1::RectF(X, Y, X + Width, Y + Height), brush);
 }
 
-HRESULT Text::ChangeFont(const std::wstring font)
+/*HRESULT Text::ChangeFont(IDWriteTextFormat* text_format,const std::wstring font)
 {
     font_ = font;
     //release TextFormat
-    if (pTextFormat_) pTextFormat_->Release();
+    if (text_format) text_format->Release();
     //create new TextFormat
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), pFontCollection_, font_weight_, font_style_,
-                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &text_format);
     return hr;
 }
 
-HRESULT Text::ChangeFontSize(int size)
+HRESULT Text::ChangeFontSize(IDWriteTextFormat* text_format,int size)
 {
     font_size_ = size;
     //release TextFormat
-    if (pTextFormat_) pTextFormat_->Release();
+    if (text_format) text_format->Release();
     //create new TextFormat
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), pFontCollection_, font_weight_, font_style_,
-                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &text_format);
     return hr;
 }
 
-HRESULT Text::SetFontColor(Color color)
-{
-    font_color_ = color;
-    //release brush
-    if (pSolidBrush_) pSolidBrush_->Release();
-    //create new brush
-    HRESULT hr = pRT_->CreateSolidColorBrush(D2D1::ColorF(color.r, color.g, color.b, color.a), &pSolidBrush_);
-    return hr;
-}
 
-HRESULT Text::SetFontWeight(DWRITE_FONT_WEIGHT weight)
+
+HRESULT Text::SetFontWeight(IDWriteTextFormat* text_format,DWRITE_FONT_WEIGHT weight)
 {
     font_weight_ = weight;
     //release TextFormat
-    if (pTextFormat_) pTextFormat_->Release();
+    if (text_format) text_format->Release();
     //create new TextFormat
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), pFontCollection_, font_weight_, font_style_,
-                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &text_format);
     return hr;
 }
 
-HRESULT Text::SetFontStyle(DWRITE_FONT_STYLE style)
+HRESULT Text::SetFontStyle(IDWriteTextFormat* text_format,DWRITE_FONT_STYLE style)
 {
     font_style_ = style;
     //release TextFormat
@@ -178,26 +170,28 @@ HRESULT Text::SetFontStyle(DWRITE_FONT_STYLE style)
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), pFontCollection_, font_weight_, font_style_,
                                                    DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
-}
+}*/
 
-HRESULT Text::SetTextFormat(std::wstring font, int size, Color color, DWRITE_FONT_WEIGHT weight,
+
+HRESULT Text::SetTextFormat(IDWriteTextFormat* text_format,std::wstring font, int size, DWRITE_FONT_WEIGHT weight,
                             DWRITE_FONT_STYLE style)
 {
-    font_ = font;
-    font_size_ = size;
-    font_color_ = color;
-    font_weight_ = weight;
-    font_style_ = style;
     //release TextFormat
-    if (pTextFormat_) pTextFormat_->Release();
+    if (text_format) text_format->Release();
     //create new TextFormat
-    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), pFontCollection_, font_weight_, font_style_,
-                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
-    //release brush
-    if (pSolidBrush_) pSolidBrush_->Release();
-    //create new brush
-    hr = pRT_->CreateSolidColorBrush(D2D1::ColorF(color.r, color.g, color.b, color.a), &pSolidBrush_);
+    HRESULT hr = pDWriteFactory_->CreateTextFormat(font.c_str(), pFontCollection_, weight, style,
+                                                   DWRITE_FONT_STRETCH_NORMAL, size, L"", &text_format);
 
+    return hr;
+}
+
+HRESULT Text::SetFontColor(ID2D1SolidColorBrush* brush,Color color)
+{
+    font_color_ = color;
+    //release brush
+    if (brush) brush->Release();
+    //create new brush
+    HRESULT hr = pRT_->CreateSolidColorBrush(D2D1::ColorF(color.r, color.g, color.b, color.a), &brush);
     return hr;
 }
 

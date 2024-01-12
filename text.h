@@ -43,13 +43,14 @@ public:
                           float Height);
 
     //スタイル変更
-    static HRESULT ChangeFont(std::wstring font); //フォント名(ロードしたものしか使えない)
-    static HRESULT ChangeFontSize(int size);
-    static HRESULT SetFontColor(Color color);
-    static HRESULT SetFontWeight(DWRITE_FONT_WEIGHT weight);
-    static HRESULT SetFontStyle(DWRITE_FONT_STYLE style);
-    static HRESULT SetTextFormat(std::wstring font, int size, Color color, DWRITE_FONT_WEIGHT weight,
+    /*static HRESULT ChangeFont(IDWriteTextFormat* text_format = pTextFormat_,std::wstring font); //フォント名(ロードしたものしか使えない)
+    static HRESULT ChangeFontSize(IDWriteTextFormat* text_format = pTextFormat_,int size);
+
+    static HRESULT SetFontWeight(IDWriteTextFormat* text_format = pTextFormat_,DWRITE_FONT_WEIGHT weight);
+    static HRESULT SetFontStyle(IDWriteTextFormat* text_format = pTextFormat_,DWRITE_FONT_STYLE style);*/
+    static HRESULT SetTextFormat(IDWriteTextFormat* text_format = pTextFormat_,std::wstring font, int size, DWRITE_FONT_WEIGHT weight,
                                  DWRITE_FONT_STYLE style);
+    static HRESULT SetFontColor(ID2D1SolidColorBrush* brush = pSolidBrush_,Color color);
 
     //write factory getter for creating separate text format
     static IDWriteTextFormat* MakeTextFormat(std::wstring font = font_, float size = font_size_,
