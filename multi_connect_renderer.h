@@ -2,17 +2,18 @@
 #include <map>
 #include "multi_header.h"
 #include "multi_client_gameobject.h"
+#include "asset.h"
 
 class MultiRenderer {
 private:
 	ClientGameObject object;
 	std::map<int, Animator *> objects;
 	struct {
-		int playerTexNo = LoadTexture("data/texture/player.png");
+		int playerTexNo = LoadTexture(Asset::textures_.at(textures::player));
 		int enemy1TexNo = LoadTexture("data/texture/enemy1.png");
 		int enemy2TexNo = LoadTexture("data/texture/enemy2.png");
 		int enemy3TexNo = LoadTexture("data/texture/enemy3.png");
-		int skillorbTexNo = LoadTexture("data/texture/skillorb.png");
+		int skillorbTexNo = LoadTexture(Asset::textures_.at(textures::skill_orb));
 	};
 
 

@@ -401,9 +401,6 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// 受信用領域を確保する
 	recvTmpBuff = new char[MAX_BUFF];
-
-	players_.push_back(new Player(Vector2(), 0.0, Vector2(), mapmngr_));
-	camera_ = new Camera(GetPlayer());
 }
 
 int MultiPlayClient::Register() {
@@ -470,15 +467,11 @@ void MultiPlayClient::Unregister() {
 
 void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	// モードがNONEなら終了
-	if (res_.mode == MULTI_MODE::NONE) {
+	if (res_.mode == MULTI_MODE::NONE || res.clients.size() == 0) {
 		return;
 	}
 
 
-	auto &player = *res_.clients.begin();
-	GetPlayer()->SetPos(player.position);
-
-	camera_->Update();
 
 	for (auto &client : res_.clients) {
 		anim.SetPos(client.position);
@@ -489,7 +482,7 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	renderer_->CheckDiscard();
 	coll_mngr_->CheckDiscard();
 	multiRenderer_->Draw(res_);
-	renderer_->Draw();
+	renderer_->Draw(-res.clients.begin()->position);
 }
 
 void MultiPlayClient::SendUpdate(void) {
