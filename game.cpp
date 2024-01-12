@@ -48,13 +48,25 @@ void Game::Update()
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
     }
-
+    timer_ -= Time::GetDeltaTime();
 }
 
 void Game::Draw()
 {
     camera_->Draw();
     renderer_->Draw(camera_ ->GetCameraOffset());
+
+    //UI
+    ImGuiWindowFlags window_flags = 0;
+    window_flags |= ImGuiWindowFlags_NoBackground;
+    window_flags |= ImGuiWindowFlags_NoTitleBar;
+    bool open = true;
+    ImGui::SetWindowFontScale()
+    ImGui::SetNextWindowPos(ImVec2(Graphical::GetWidth() / 2, 0));
+    // Draw the texture with ImGui
+    ImGui::Begin("time", &open, window_flags);
+    ImGui::Text("time: %.2f", timer_);
+    ImGui::End();
 }
 
 Player *Game::GetPlayer() {
