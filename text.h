@@ -17,6 +17,7 @@ private:
     static ID2D1RenderTarget* pRT_;
     static ID2D1SolidColorBrush* pSolidBrush_;
     static IDXGISurface* pBackBuffer_;
+
     //text formats
     static std::wstring font_;
     static float font_size_;
