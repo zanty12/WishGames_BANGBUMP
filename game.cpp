@@ -70,7 +70,7 @@ void Game::Update()
 void Game::Draw()
 {
     camera_->Draw();
-    renderer_->Draw(camera_->GetCameraOffset(),camera_);
+    renderer_->Draw(camera_);
 
     //UI
     DrawSpriteLeftTop(timer_tex_, Vector2(Graphical::GetWidth() / 2, 50), 0.0f, Vector2(250, 100),
