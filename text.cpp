@@ -1,8 +1,10 @@
 ﻿#include "text.h"
 
-ID2D1RenderTarget* g_RT = NULL;
-ID2D1SolidColorBrush* g_Brush = NULL;
-IDWriteTextFormat* g_TextFormat = NULL;
+std::wstring font_ = L"メイリオ";
+float font_size_ = 20;
+DWRITE_FONT_WEIGHT font_weight_ = DWRITE_FONT_WEIGHT_NORMAL;
+DWRITE_FONT_STYLE font_style_ = DWRITE_FONT_STYLE_NORMAL;
+Color font_color_ = Color(0.0f, 0.0f, 0.0f, 1.0f);
 
 HRESULT Text::CreateResources()
 {
@@ -19,14 +21,15 @@ HRESULT Text::CreateResources()
     if (FAILED(hr))
         return hr;
 
-    FLOAT dpiX;
-    FLOAT dpiY;
-    pD2DFactory_->GetDesktopDpi(&dpiX, &dpiY);
+    WIN::Window hwnd = Graphical::GetHwnd();
+    HWND hWnd = hwnd.GetHwnd();
+
+    FLOAT dpi = static_cast<FLOAT>(GetDpiForWindow(hWnd));
 
     D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT,
                                                                        D2D1::PixelFormat(
                                                                            DXGI_FORMAT_UNKNOWN,
-                                                                           D2D1_ALPHA_MODE_PREMULTIPLIED), dpiX, dpiY);
+                                                                           D2D1_ALPHA_MODE_PREMULTIPLIED), dpi, dpi);
 
     hr = pD2DFactory_->CreateDxgiSurfaceRenderTarget(pBackBuffer_, &props, &pRT_);
     if (FAILED(hr))

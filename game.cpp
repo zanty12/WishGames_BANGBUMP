@@ -7,6 +7,7 @@
 #include <thread>
 
 #include "asset.h"
+#include "text.h"
 
 Game::Game(SceneMngr* scene_mngr)
     : GameBase(scene_mngr)
@@ -57,16 +58,10 @@ void Game::Draw()
     renderer_->Draw(camera_ ->GetCameraOffset());
 
     //UI
-    ImGuiWindowFlags window_flags = 0;
-    window_flags |= ImGuiWindowFlags_NoBackground;
-    window_flags |= ImGuiWindowFlags_NoTitleBar;
-    bool open = true;
-    ImGui::SetWindowFontScale()
-    ImGui::SetNextWindowPos(ImVec2(Graphical::GetWidth() / 2, 0));
-    // Draw the texture with ImGui
-    ImGui::Begin("time", &open, window_flags);
-    ImGui::Text("time: %.2f", timer_);
-    ImGui::End();
+    int itimeer = static_cast<int>(timer_);
+    std::wstring time = L"Žc‚èŽžŠÔ: ";
+    time += std::to_wstring(itimeer);
+    Text::WriteText(time.c_str(),Graphical::GetWidth()/ 2, 0, 100, 50);
 }
 
 Player *Game::GetPlayer() {
