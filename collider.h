@@ -18,7 +18,7 @@ private:
     Vector2 pos_;
     bool is_movable_= false;
     GameObject* parent_;
-    float bounciness_ = 1.0f; //’e—Í
+    float bounciness_ = 0.0f; //’e—Í, 0.0f‚Ìê‡‚È‚µAˆÈã‚Ìê‡”½Ë‚Ì‘¬“x‚Í‚»‚Ì’l‚ÉæZ‚·‚é
     bool is_discard_ = false; //”jŠü‚·‚é‚©‚Ç‚¤‚©
     bool LoD_ = false; //LoD—p
 
