@@ -34,5 +34,6 @@ public:
     static HRESULT ChangeFontSize(int size);
     static HRESULT SetFontColor(Color color);
     static HRESULT SetFontWeight(DWRITE_FONT_WEIGHT weight);
+    static HRESULT SetFontStyle(DWRITE_FONT_STYLE style);
 
 };

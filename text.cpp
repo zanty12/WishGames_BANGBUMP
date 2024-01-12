@@ -99,7 +99,7 @@ HRESULT Text::ChangeFont(const std::wstring font)
     //release TextFormat
     if (pTextFormat_) pTextFormat_->Release();
     //create new TextFormat
-    HRESULT hr = pDWriteFactory_->CreateTextFormat(L"メイリオ", nullptr, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
+    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
                                            DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
 }
@@ -110,8 +110,8 @@ HRESULT Text::ChangeFontSize(int size)
     //release TextFormat
     if (pTextFormat_) pTextFormat_->Release();
     //create new TextFormat
-    HRESULT hr = pDWriteFactory_->CreateTextFormat(L"メイリオ", nullptr, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
-                                           DWRITE_FONT_STRETCH_NORMAL, size, L"", &pTextFormat_);
+    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
+                                           DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
 }
 
@@ -131,7 +131,18 @@ HRESULT Text::SetFontWeight(DWRITE_FONT_WEIGHT weight)
     //release TextFormat
     if (pTextFormat_) pTextFormat_->Release();
     //create new TextFormat
-    HRESULT hr = pDWriteFactory_->CreateTextFormat(L"メイリオ", nullptr, weight, DWRITE_FONT_STYLE_NORMAL,
+    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
+                                           DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+    return hr;
+}
+
+HRESULT Text::SetFontStyle(DWRITE_FONT_STYLE style)
+{
+    font_style_ = style;
+    //release TextFormat
+    if (pTextFormat_) pTextFormat_->Release();
+    //create new TextFormat
+    HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
                                            DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
 }
