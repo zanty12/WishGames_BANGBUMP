@@ -7,6 +7,7 @@
 #include <thread>
 
 #include "asset.h"
+#include "text.h"
 
 Game::Game(SceneMngr* scene_mngr)
     : GameBase(scene_mngr)
@@ -49,13 +50,19 @@ void Game::Update()
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
     }
-
+    timer_ -= Time::GetDeltaTime();
 }
 
 void Game::Draw()
 {
     camera_->Draw();
     renderer_->Draw(camera_ ->GetCameraOffset());
+
+    //UI
+    int itimeer = static_cast<int>(timer_);
+    std::wstring time = L"Žc‚èŽžŠÔ: ";
+    time += std::to_wstring(itimeer);
+    Text::WriteText(time.c_str(),Graphical::GetWidth()/ 2, 100, 100, 50);
 }
 
 Player *Game::GetPlayer() {
