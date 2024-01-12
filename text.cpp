@@ -121,7 +121,8 @@ void Text::WriteText(const WCHAR* text, float X, float Y, float Width, float Hei
     pRT_->DrawText(text, wcslen(text), pTextFormat_, D2D1::RectF(X, Y, X + Width, Y + Height), pSolidBrush_);
 }
 
-void Text::WriteText(const WCHAR* text, IDWriteTextFormat* text_format,ID2D1SolidColorBrush* brush, float X, float Y, float Width, float Height)
+void Text::WriteText(const WCHAR* text, IDWriteTextFormat* text_format, ID2D1SolidColorBrush* brush, float X, float Y,
+                     float Width, float Height)
 {
     pRT_->DrawText(text, wcslen(text), text_format, D2D1::RectF(X, Y, X + Width, Y + Height), brush);
 }
@@ -173,7 +174,7 @@ HRESULT Text::SetFontStyle(IDWriteTextFormat* text_format,DWRITE_FONT_STYLE styl
 }*/
 
 
-HRESULT Text::SetTextFormat(IDWriteTextFormat* text_format,std::wstring font, int size, DWRITE_FONT_WEIGHT weight,
+HRESULT Text::SetTextFormat(IDWriteTextFormat* text_format, std::wstring font, int size, DWRITE_FONT_WEIGHT weight,
                             DWRITE_FONT_STYLE style)
 {
     //release TextFormat
@@ -185,7 +186,7 @@ HRESULT Text::SetTextFormat(IDWriteTextFormat* text_format,std::wstring font, in
     return hr;
 }
 
-HRESULT Text::SetFontColor(ID2D1SolidColorBrush* brush,Color color)
+HRESULT Text::SetFontColor(ID2D1SolidColorBrush* brush, Color color)
 {
     font_color_ = color;
     //release brush

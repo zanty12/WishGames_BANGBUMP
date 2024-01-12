@@ -51,7 +51,7 @@ public:
     static HRESULT SetTextFormat(IDWriteTextFormat* text_format = pTextFormat_, std::wstring font = font_,
                                  int size = font_size_, DWRITE_FONT_WEIGHT font_weight = font_weight_,
                                  DWRITE_FONT_STYLE style = font_style_);
-    static HRESULT SetFontColor(ID2D1SolidColorBrush* brush = pSolidBrush_, Color color);
+    static HRESULT SetFontColor(ID2D1SolidColorBrush* brush = pSolidBrush_, Color color = font_color_);
 
     //write factory getter for creating separate text format
     static IDWriteTextFormat* MakeTextFormat(std::wstring font = font_, float size = font_size_,
