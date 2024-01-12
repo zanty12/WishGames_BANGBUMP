@@ -14,7 +14,7 @@ class Fire : public Attribute
     bool isDraw = false;
 
     //í≤êÆÇÃÇΩÇﬂÇ…constî≤Ç´
-    float speed = 7 * GameObject::SIZE_;
+    float speed = 20 * GameObject::SIZE_;
     float attackInjectionLength = 20.0f;
     float attackWidthLength = 5.0f;
 
