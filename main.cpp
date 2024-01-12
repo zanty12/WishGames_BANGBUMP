@@ -18,9 +18,13 @@ int main()
     Graphical::Initialize(1600, 900);
     DebugUI::Initialize();
     MSG msg;
-    SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
     Time::Initialize();
-    Text::CreateResources();
+    /*HRESULT result = Text::CreateResources();
+    if (FAILED(result))
+    {
+        return 0;
+    }*/
+    SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
     srand(time(NULL));
     while (true)
     {
@@ -83,7 +87,7 @@ int main()
 
     Graphical::Release();
     DebugUI::Release();
-    Time::Release();
+    //Time::Release();
     Text::DiscardResources();
 
     std::cout << "Hello World!\n"; //基本

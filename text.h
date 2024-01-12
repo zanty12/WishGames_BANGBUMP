@@ -1,4 +1,6 @@
 ﻿#pragma once
+#pragma comment(lib,"d2d1.lib")
+#pragma comment(lib,"dwrite.lib")
 #include "graphical.h"
 #include <dwrite.h>
 #include <d2d1.h>
