@@ -35,6 +35,7 @@ enum maps
 {
     test,
     single_stage_1,
+    single_stage_2,
 };
 
 class Asset

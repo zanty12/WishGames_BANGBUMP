@@ -7,6 +7,7 @@
 #include "xinput.h"
 #include "mapmngr.h"
 #include "scenemngr.h"
+#include "text.h"
 #include "time.h"
 #include "video.h"
 
@@ -17,8 +18,13 @@ int main()
     Graphical::Initialize(1600, 900);
     DebugUI::Initialize();
     MSG msg;
-    SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
     Time::Initialize();
+    HRESULT result = Text::CreateResources();
+    if (FAILED(result))
+    {
+        return 0;
+    }
+    SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
     srand(time(NULL));
     while (true)
     {
@@ -36,11 +42,19 @@ int main()
             }
         }
         else{
-            Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+            //WTF?
+            //Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+
+            Input::Update();
+
+            Time::Update();
+
+            scene_mngr->Update();
+            DebugUI::BeginDraw();
             //デバッグモード
             { if (GetKeyState(VK_F1) & 0x8000)
                 debug_mode = !debug_mode;
-                DebugUI::BeginDraw();
+
                 if (debug_mode)
                 {
                     //bool show_demo_window = true;
@@ -64,12 +78,9 @@ int main()
                     scene_mngr->DebugMenu();
                 }
             }
-            Input::Update();
-
-            Time::Update();
-
-            scene_mngr->Update();
+            Text::TextStart();
             scene_mngr->Draw();
+            Text::TextEnd();
             DebugUI::EndDraw();
 
             Graphical::Present();
@@ -79,6 +90,7 @@ int main()
     Graphical::Release();
     DebugUI::Release();
     Time::Release();
+    Text::DiscardResources();
 
     std::cout << "Hello World!\n"; //基本
 }
