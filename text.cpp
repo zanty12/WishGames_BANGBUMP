@@ -1,8 +1,18 @@
 ﻿#include "text.h"
 
-ID2D1RenderTarget* g_RT = NULL;
-ID2D1SolidColorBrush* g_Brush = NULL;
-IDWriteTextFormat* g_TextFormat = NULL;
+IDWriteFactory* Text::pDWriteFactory_;
+IDWriteTextFormat* Text::pTextFormat_;
+//D2D
+ID2D1Factory* Text::pD2DFactory_;
+ID2D1RenderTarget* Text::pRT_;
+ID2D1SolidColorBrush* Text::pSolidBrush_;
+IDXGISurface* Text::pBackBuffer_;
+
+std::wstring Text::font_ = L"メイリオ";
+float Text::font_size_ = 20;
+DWRITE_FONT_WEIGHT Text::font_weight_ = DWRITE_FONT_WEIGHT_NORMAL;
+DWRITE_FONT_STYLE Text::font_style_ = DWRITE_FONT_STYLE_NORMAL;
+Color Text::font_color_ = Color(0.0f, 0.0f, 0.0f, 1.0f);
 
 HRESULT Text::CreateResources()
 {
@@ -19,14 +29,16 @@ HRESULT Text::CreateResources()
     if (FAILED(hr))
         return hr;
 
-    FLOAT dpiX;
-    FLOAT dpiY;
-    pD2DFactory_->GetDesktopDpi(&dpiX, &dpiY);
+    WIN::Window hwnd = Graphical::GetHwnd();
+    HWND hWnd = hwnd.GetHwnd();
+
+    FLOAT dpi = static_cast<FLOAT>(GetDpiForWindow(hWnd));
 
     D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT,
                                                                        D2D1::PixelFormat(
                                                                            DXGI_FORMAT_UNKNOWN,
-                                                                           D2D1_ALPHA_MODE_PREMULTIPLIED), dpiX, dpiY);
+                                                                           D2D1_ALPHA_MODE_PREMULTIPLIED), dpi, dpi);
+
 
     hr = pD2DFactory_->CreateDxgiSurfaceRenderTarget(pBackBuffer_, &props, &pRT_);
     if (FAILED(hr))
@@ -100,7 +112,7 @@ HRESULT Text::ChangeFont(const std::wstring font)
     if (pTextFormat_) pTextFormat_->Release();
     //create new TextFormat
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
-                                           DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
 }
 
@@ -111,7 +123,7 @@ HRESULT Text::ChangeFontSize(int size)
     if (pTextFormat_) pTextFormat_->Release();
     //create new TextFormat
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
-                                           DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
 }
 
@@ -132,7 +144,7 @@ HRESULT Text::SetFontWeight(DWRITE_FONT_WEIGHT weight)
     if (pTextFormat_) pTextFormat_->Release();
     //create new TextFormat
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
-                                           DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
 }
 
@@ -143,6 +155,6 @@ HRESULT Text::SetFontStyle(DWRITE_FONT_STYLE style)
     if (pTextFormat_) pTextFormat_->Release();
     //create new TextFormat
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font_.c_str(), nullptr, font_weight_, font_style_,
-                                           DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
+                                                   DWRITE_FONT_STRETCH_NORMAL, font_size_, L"", &pTextFormat_);
     return hr;
 }
