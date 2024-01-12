@@ -58,7 +58,7 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 
 void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, Vector2 uv, Vector2 uvWidth) {
 	pos.y = -pos.y + Graphical::GetHeight();
-	DrawSpriteLeftTop(texNo, pos, rot, scale, color, uv, uvWi	);
+	DrawSpriteLeftTop(texNo, pos, rot, scale, color, uv, uvWidth);
 }
 
 void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {

@@ -474,7 +474,10 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 		return;
 	}
 
-	GetPlayer().
+
+	auto &player = *res_.clients.begin();
+	GetPlayer()->SetPos(player.position);
+
 	camera_->Update();
 
 	for (auto &client : res_.clients) {
