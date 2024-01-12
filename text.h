@@ -49,7 +49,7 @@ public:
     static HRESULT SetFontWeight(IDWriteTextFormat* text_format = pTextFormat_,DWRITE_FONT_WEIGHT weight);
     static HRESULT SetFontStyle(IDWriteTextFormat* text_format = pTextFormat_,DWRITE_FONT_STYLE style);*/
     static HRESULT SetTextFormat(IDWriteTextFormat* text_format = pTextFormat_, std::wstring font = font_,
-                                 int size = font_size_, DWRITE_FONT_WEIGHT font_weight = font_weight_,
+                                 float size = font_size_, DWRITE_FONT_WEIGHT font_weight = font_weight_,
                                  DWRITE_FONT_STYLE style = font_style_);
     static HRESULT SetFontColor(ID2D1SolidColorBrush* brush = pSolidBrush_, Color color = font_color_);
 

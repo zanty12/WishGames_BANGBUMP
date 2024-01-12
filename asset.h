@@ -23,6 +23,8 @@ enum textures
     bg_stage2_back,
     bg_stage3_front,
     bg_stage3_back,
+    //UI
+    timer,
 };
 
 enum sounds

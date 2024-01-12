@@ -75,7 +75,7 @@ HRESULT Text::CreateResources()
     //第8引数：テキストフォーマット（&pTextFormat_）
     hr = pDWriteFactory_->CreateTextFormat(L"Noto Sans JP", pFontCollection_, DWRITE_FONT_WEIGHT_NORMAL,
                                            DWRITE_FONT_STYLE_NORMAL,
-                                           DWRITE_FONT_STRETCH_NORMAL, 20, L"", &pTextFormat_);
+                                           DWRITE_FONT_STRETCH_NORMAL, 20, L"ja-jp", &pTextFormat_);
     if (FAILED(hr))
         return hr;
 
@@ -174,14 +174,14 @@ HRESULT Text::SetFontStyle(IDWriteTextFormat* text_format,DWRITE_FONT_STYLE styl
 }*/
 
 
-HRESULT Text::SetTextFormat(IDWriteTextFormat* text_format, std::wstring font, int size, DWRITE_FONT_WEIGHT weight,
+HRESULT Text::SetTextFormat(IDWriteTextFormat* text_format, std::wstring font, float size, DWRITE_FONT_WEIGHT weight,
                             DWRITE_FONT_STYLE style)
 {
     //release TextFormat
     if (text_format) text_format->Release();
     //create new TextFormat
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font.c_str(), pFontCollection_, weight, style,
-                                                   DWRITE_FONT_STRETCH_NORMAL, size, L"", &text_format);
+                                                   DWRITE_FONT_STRETCH_NORMAL, size, L"ja-jp", &text_format);
 
     return hr;
 }
@@ -201,7 +201,7 @@ IDWriteTextFormat* Text::MakeTextFormat(std::wstring font, float size, DWRITE_FO
 {
     IDWriteTextFormat* text_format;
     HRESULT hr = pDWriteFactory_->CreateTextFormat(font.c_str(), pFontCollection_, font_weight_, font_style_,
-                                                   DWRITE_FONT_STRETCH_NORMAL, size, L"", &text_format);
+                                                   DWRITE_FONT_STRETCH_NORMAL, size, L"ja-jp", &text_format);
     if (FAILED(hr))
         return nullptr;
     return text_format;
