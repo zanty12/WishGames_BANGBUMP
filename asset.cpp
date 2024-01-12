@@ -20,6 +20,11 @@ const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{
     {single_stage_1, "data/map/single_stage_1.csv"},
 };
 
+const std::map<fonts,std::wstring> Asset::fonts_ = {
+    {fonts::notosans_jp,L"data/texture/NotoSansJP-Bold.ttf"},
+    {fonts::wapuro_mincho,L"data/texture/wapuro-mincho.otf"},
+};
+
 template <typename T>
 std::string Asset::GetAsset(T asset)
 {
@@ -48,4 +53,11 @@ std::string Asset::GetAsset<maps>(const maps asset)
     if (maps_.find(asset) != maps_.end())
         return maps_.at(asset);
     else return "";
+}
+
+std::wstring Asset::GetFont(const fonts asset)
+{
+    if (fonts_.find(asset) != fonts_.end())
+        return fonts_.at(asset);
+    else return L"";
 }

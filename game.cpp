@@ -61,7 +61,8 @@ void Game::Draw()
     int itimeer = static_cast<int>(timer_);
     std::wstring time = L"Žc‚èŽžŠÔ: ";
     time += std::to_wstring(itimeer);
-    Text::WriteText(time.c_str(),Graphical::GetWidth()/ 2, 100, 100, 50);
+    Text::ChangeFontSize(50);
+    Text::WriteText(time.c_str(),Graphical::GetWidth()/ 2, 0, 450, 50);
 }
 
 Player *Game::GetPlayer() {

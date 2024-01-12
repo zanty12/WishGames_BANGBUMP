@@ -1,14 +1,20 @@
 ﻿#include "text.h"
 
-IDWriteFactory* Text::pDWriteFactory_;
+#include "asset.h"
+
+IDWriteFactory5* Text::pDWriteFactory_;
 IDWriteTextFormat* Text::pTextFormat_;
+IDWriteFontSetBuilder1* Text::pFontSetBuilder_;
+IDWriteFontCollection1* Text::pFontCollection_;
+IDWriteFontSet* Text::pFontSet_;
+IDWriteFontFile* Text::pFontFile_;
 //D2D
 ID2D1Factory* Text::pD2DFactory_;
 ID2D1RenderTarget* Text::pRT_;
 ID2D1SolidColorBrush* Text::pSolidBrush_;
 IDXGISurface* Text::pBackBuffer_;
 
-std::wstring Text::font_ = L"メイリオ";
+std::wstring Text::font_ = L"Noto Sans JP";
 float Text::font_size_ = 20;
 DWRITE_FONT_WEIGHT Text::font_weight_ = DWRITE_FONT_WEIGHT_NORMAL;
 DWRITE_FONT_STYLE Text::font_style_ = DWRITE_FONT_STYLE_NORMAL;
@@ -43,10 +49,19 @@ HRESULT Text::CreateResources()
     if (FAILED(hr))
         return hr;
 
-    hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory),
+    hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory5),
                              reinterpret_cast<IUnknown**>(&pDWriteFactory_));
     if (FAILED(hr))
         return hr;
+
+    pDWriteFactory_->CreateFontSetBuilder(&pFontSetBuilder_);
+    pDWriteFactory_->CreateFontFileReference(Asset::GetFont(notosans_jp).c_str(), NULL, &pFontFile_);
+    pFontSetBuilder_->AddFontFile(pFontFile_);
+    pDWriteFactory_->CreateFontFileReference(Asset::GetFont(wapuro_mincho).c_str(), NULL, &pFontFile_);
+    pFontSetBuilder_->AddFontFile(pFontFile_);
+    pFontSetBuilder_->CreateFontSet(&pFontSet_);
+    pDWriteFactory_->CreateFontCollectionFromFontSet(pFontSet_, &pFontCollection_);
+
 
     //関数CreateTextFormat()
     //第1引数：フォント名（L"メイリオ", L"Arial", L"Meiryo UI"等）
@@ -57,7 +72,7 @@ HRESULT Text::CreateResources()
     //第6引数：フォントサイズ（20, 30等）
     //第7引数：ロケール名（L""）
     //第8引数：テキストフォーマット（&pTextFormat_）
-    hr = pDWriteFactory_->CreateTextFormat(L"メイリオ", nullptr, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
+    hr = pDWriteFactory_->CreateTextFormat(L"Noto Sans JP", pFontCollection_, DWRITE_FONT_WEIGHT_NORMAL, DWRITE_FONT_STYLE_NORMAL,
                                            DWRITE_FONT_STRETCH_NORMAL, 20, L"", &pTextFormat_);
     if (FAILED(hr))
         return hr;

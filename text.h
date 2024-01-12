@@ -4,14 +4,19 @@
 #include "graphical.h"
 #include <dwrite.h>
 #include <d2d1.h>
+#include "dwrite_3.h"
 #include <d2d1helper.h>
 
 class Text
 {
 private:
     //directwrite
-    static IDWriteFactory* pDWriteFactory_;
+    static IDWriteFactory5* pDWriteFactory_;
     static IDWriteTextFormat* pTextFormat_;
+    static IDWriteFontSetBuilder1* pFontSetBuilder_;
+    static IDWriteFontCollection1* pFontCollection_;
+    static IDWriteFontSet* pFontSet_;
+    static IDWriteFontFile* pFontFile_;
     //D2D
     static ID2D1Factory* pD2DFactory_;
     static ID2D1RenderTarget* pRT_;
