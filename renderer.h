@@ -2,7 +2,9 @@
 #include <list>
 
 #include "animator.h"
+
 class Animator;
+class Camera;
 
 class Renderer
 {
@@ -14,7 +16,7 @@ public:
     ~Renderer() = default;
     void Update();
     void Draw();
-    void Draw(Vector2 offset);
+    void Draw(Vector2 offset,Camera* camera);
 
     bool Add(Animator* animator)
     {
