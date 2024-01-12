@@ -4,6 +4,9 @@
 #include "lib/collider2d.h"
 #include "time.h"
 
+#define RANGE (SIZE_ * 4)                            //
+
+
 //--------------‰Î------------------------------------//
 Boss_Fire::Boss_Fire(Vector2 pos)
 	: MovableObj(pos - Vector2(SIZE_ * 2, SIZE_ * 2), 0.0f, LoadTexture("data/texture/wall.png"), Vector2::Zero)
@@ -95,6 +98,19 @@ void Boss_Wind::Update()
 	if (time_ > 4.0f)
 		Discard();
 
+
+	std::list<Collider*> collisions = GetCollider()->GetCollision();
+	for (auto collision : collisions)
+	{
+		OBJECT_TYPE type = collision->GetParent()->GetType();
+
+		if (type == OBJ_SOLID)
+		{
+
+		}
+
+	}
+
 	SetVel(Vector2(-speed_ * dt, -speed_ * dt));
 
 
@@ -103,6 +119,28 @@ void Boss_Wind::Update()
 
 	this->AddVel(GetVel());
 }
+
+void Boss_Wind::Range(float a, float b, float c, float d)
+{
+	//// ‰~‚Ìî•ñ
+	//float x = a;
+	//float y = b;
+	//float radius_0 = RANGE;
+
+	//float h = c - x;
+	//float i = d - y;
+	//float g = sqrt(h * h + i * i);
+
+	//if (g < radius_0)
+	//{
+	//	cheakRange_Player_ = true;
+	//}
+	//else if (g > radius_0)
+	//{
+	//	cheakRange_Player_ = false;
+	//}
+}
+
 
 
 //--------------…------------------------------------//

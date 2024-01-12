@@ -18,9 +18,11 @@ enum ENEMY_TYPE
 class Enemy : public MovableObj
 {
 private:
+    static const float BLLINKING_MAX_TIME_;	//点滅時間
     EnemyMngr* enemy_mngr_;
     ENEMY_TYPE enemy_type_;
     float flash_time_;			//点滅間隔
+    float blinking_time_;	//点滅の経過時間
     int atk_;
     int hp_;
 public:
@@ -45,6 +47,6 @@ public:
     //HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
     void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
-    void blinking();
+    void blinking(GameObject* obj);
 
 };

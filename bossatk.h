@@ -48,7 +48,7 @@ public:
 
 	Boss_Wind(Vector2 pos);
 	void Update() override;
-	void CollosionAction(void);
+	void Range(float a, float b, float c, float d);
 };
 class Boss_Water : public MovableObj
 {

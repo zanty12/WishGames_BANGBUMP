@@ -25,6 +25,7 @@ void Enemy1::Update()
         startPosition = GetPos();
         SetVel(Vector2(GetVel().x * -1, GetVel().y));
         dir_ *= -1;
+		SetScale(Vector2(GetScale().x * -1, GetScale().y));
     }
 
     this->AddVel(GetVel());
@@ -39,6 +40,16 @@ void Enemy1::CollisionAction(void)
 		OBJECT_TYPE type = collision->GetParent()->GetType();
 		switch (type)
 		{
+		case OBJ_PLAYER:
+		{
+			GameObject* attack = collision->GetParent();
+			if (attack != nullptr)
+			{
+				blinking(attack);
+			}
+
+			break;
+		}
 		case OBJ_SPIKE:
 			CollisionSpike();
 			break;
