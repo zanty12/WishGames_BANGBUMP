@@ -15,8 +15,9 @@ void Renderer::Update()
 
 void Renderer::Draw() { for (auto animator : animators_)animator->Draw(); }
 
-void Renderer::Draw(Vector2 offset,Camera* camera)
+void Renderer::Draw(Camera* camera)
 {
+    Vector2 offset = camera->GetCameraOffset();
     for (std::list<Animator*>::iterator it = animators_.begin(); it != animators_.end(); ++it)
     {
         if (*it != nullptr && camera->InCamera((*it)->GetPos()))

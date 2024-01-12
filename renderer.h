@@ -16,7 +16,7 @@ public:
     ~Renderer() = default;
     void Update();
     void Draw();
-    void Draw(Vector2 offset,Camera* camera);
+    void Draw(Camera* camera);
 
     bool Add(Animator* animator)
     {
