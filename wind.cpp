@@ -78,7 +78,7 @@ void Wind::Action(void)
 
                 if (Collider2D::Touch(attackCollider, enemyCollider))
                 {
-                    enemy->Die();
+                    enemy->Discard();
                 }
             }
         }

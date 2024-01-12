@@ -63,7 +63,7 @@ void Fire::Action()
 
                 if (Collider2D::Touch(attackCollider, enemyCollider))
                 {
-                    enemy->Die();
+                    enemy->Discard();
                 }
             }
         }

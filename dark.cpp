@@ -75,7 +75,7 @@ void Dark::Action()
 				Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
 
 				if (Collider2D::Touch(attackCollider, enemyCollider)) {
-					enemy->Die();
+					enemy->Discard();
 				}
 			}
 		}

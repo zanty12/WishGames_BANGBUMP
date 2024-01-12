@@ -12,7 +12,7 @@ void Enemy1::Update()
     if (GetHp() <= 0)
     {
         GameObject::Discard();
-        Die();
+		Discard();
 		DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_SMALL);
     }
 
@@ -76,56 +76,6 @@ void Enemy1::CollisionSpike(void)
 	knockback_start_ = GetPos();
 	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
 }
-
-////================================================================================
-//// エネミーに当たった時のアクション
-////================================================================================
-//void Player::CollisionEnemy(GameObject* obj)
-//{
-//	Enemy* enemy = dynamic_cast<Enemy*>(obj);
-//
-//	if (enemy == nullptr)
-//	{
-//		return;
-//	}
-//	if (invincibility_time_ < INVINCIBILITY_MAX_TIME_)
-//	{
-//		return;
-//	}
-//
-//	invincibility_time_ = 0.0f;
-//
-//	dir_ = GetVel().Normalize();
-//	if (abs(GetVel().x) < 0.1f && abs(GetVel().y < 0.1f))
-//	{
-//		dir_ = -enemy->GetVel().Normalize();
-//	}
-//	dir_ *= -1;	//反転させる
-//
-//	SkillPointDown(enemy->GetAtk());
-//
-//
-//	switch (enemy->GetEnemyType())
-//	{
-//	case TYPE__KOOPA:
-//		knockback_distance_ = SIZE_;
-//		break;
-//	case TYPE__HAMMERBRO:
-//		knockback_distance_ = SIZE_;
-//		break;
-//	case TYPE__PHANTOM:
-//		knockback_distance_ = SIZE_ * 3;
-//		break;
-//	default:
-//		break;
-//	}
-//
-//	knockback_start_ = GetPos();
-//	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
-//
-//}
-
-
 
 
 bool CheckLength(Vector2 a, Vector2 b, float len)

@@ -96,7 +96,7 @@ void Thunder::Action() {
 				float rad = atan2f(arrow.velocity.y, arrow.velocity.x);
 				auto attackCollider = PHYSICS::Vertex4(arrow.position, rad, arrowSize);
 				if (Collider2D::Touch(attackCollider, enemyCollider)) {
-					enemy->Die();
+					enemy->Discard();
 					arrows_[i].isVisible = false;
 					break;
 				}

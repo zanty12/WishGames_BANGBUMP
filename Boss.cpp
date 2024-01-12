@@ -20,15 +20,11 @@ Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
 
 void Boss::Update()
 {
-    //HP‚ª0<< ‚É‚È‚Á‚½‚çÁ‚·
+    //HP‚ª0‚É‚È‚Á‚½‚çÁ‚·
     if (GetHp() <= 0)
     {
         GameObject::Discard();
-        //Die();
-    }
-    if (GetDiscard())
-    {
-        //Die();
+        Discard();
     }
 
     time_ += Time::GetDeltaTime();

@@ -16,7 +16,7 @@ void Enemy3::Update()
     if (GetHp() <= 0)
     {
         GameObject::Discard();
-        Die();
+        Discard();
         DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_BIG);
     }
 

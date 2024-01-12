@@ -84,7 +84,7 @@ Boss_Wind::Boss_Wind(Vector2 pos)
 	boss_pos_ = pos;
 	time_ = 0;
 	SetType(OBJ_ATTACK);
-	GetCollider()->SetBounciness(1.1f);
+	GetCollider()->SetBounciness(2.0f);
 }
 void Boss_Wind::Update()
 {
