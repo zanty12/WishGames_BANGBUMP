@@ -92,7 +92,7 @@ void Boss::Atk()
 
     if (boosrand < 10)
     {
-
+        Thunder();
     }
     else if (boosrand > 10 && boosrand < 30)
     {
@@ -104,7 +104,7 @@ void Boss::Atk()
     }
     else if (boosrand > 60 && boosrand < 100)
     {
-
+        Water();
     }
 
 
@@ -131,6 +131,12 @@ void Boss::Fire()
 void Boss::Thunder()
 {
     //‚Pƒqƒbƒg@‚Q‚O‚Oƒ_ƒ[ƒW
+    Boss_Thunder* thunder = new Boss_Thunder(startPosition);
+    atk_time_ += Time::GetDeltaTime();
+    GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder);
+    float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //‰Šú‰»Žž‚ÌƒGƒ‰[‚ð‰ñ”ð‚·‚é
+    float speed_ = 96.0f * 6;
+    thunder->SetVel(Vector2(-speed_ * dt, -speed_ * dt));
     
     SetAtk(200);
 
@@ -152,7 +158,13 @@ void Boss::Wind()
 void Boss::Water()
 {
     //‚Q•ª‚Ì‚P•b‚É‚Pƒqƒbƒg@‚R‚Oƒ_ƒ[ƒW
+    Boss_Water* water = new Boss_Water(startPosition);
+    Boss_Water* water1 = new Boss_Water(startPosition - (Vector2(SIZE_ * 6, 0.0f)));
+    Boss_Water* water2 = new Boss_Water(startPosition + (Vector2(SIZE_ * 6, 0.0f)));
     atk_time_ += Time::GetDeltaTime();
+    GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(water);
+    GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(water1);
+    GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(water2);
     if (atk_time_ > (1.0f / 2))
     {
         atk_time_ = 0;

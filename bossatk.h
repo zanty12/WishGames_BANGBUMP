@@ -6,6 +6,7 @@
 #include "time.h"
 
 
+
 class Boss_Fire : public MovableObj
 {
 private:
@@ -25,7 +26,8 @@ public:
 class Boss_Thunder : public MovableObj
 {
 private:
-
+	float time_;
+	Vector2 boss_pos_;
 
 public:
 	Boss_Thunder() = delete;
@@ -33,6 +35,8 @@ public:
 
 	Boss_Thunder(Vector2 pos);
 	void Update() override;
+
+
 };
 class Boss_Wind : public MovableObj
 {
@@ -48,12 +52,13 @@ public:
 
 	Boss_Wind(Vector2 pos);
 	void Update() override;
-	void Range(float a, float b, float c, float d);
+
 };
 class Boss_Water : public MovableObj
 {
 private:
-
+	float time_;
+	Vector2 boss_pos_;
 
 public:
 	Boss_Water() = delete;

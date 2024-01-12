@@ -4,7 +4,6 @@
 #include "animator.h"
 #include "time.h"
 
-
 class Boss : public Enemy
 {
 private:
