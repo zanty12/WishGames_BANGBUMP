@@ -135,7 +135,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 	
 	// コリジョンの更新
 	if (coll_mngr_) {
-		//coll_mngr_->Update();
+		coll_mngr_->Update();
 	}
 
 	// ゲームモードの更新

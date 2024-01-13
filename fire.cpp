@@ -33,7 +33,7 @@ Vector2 Fire::Move()
     {
         player_->SetGravityState(GRAVITY_FULL);
         if(player_->GetVel().Distance() > Player::GRAVITY_SCALE_ * Time::GetDeltaTime())
-            return player_->GetVel() * friction;
+            return player_->GetVel()* friction;
         else
             return player_->GetVel();
     }
