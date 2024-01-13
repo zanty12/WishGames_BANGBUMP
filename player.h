@@ -16,14 +16,7 @@
 #include "attribute.h"
 #include "collidercir.h"
 #include "mapmngr.h"
-
-
-enum PLAYER_STATE
-{
-	MOVE_UP,		//上に移動
-	FALL,			//落ちる
-	TOUCH_GROUND,	//地面にいる
-};
+#include "playerstate.h"
 
 enum GRAVITY_STATE
 {
