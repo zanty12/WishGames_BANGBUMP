@@ -62,37 +62,7 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, V
 }
 
 void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
-	using namespace DX;
-	using namespace DX::DX11;
-	if (texNo <= -1) return;
-
-	// トポロジの設定
-	Device3D::SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	// テクスチャの設定
-	auto texture = GetTexture(texNo);
-	Device3D::SetResource(*GetTexture(texNo));
-
-	// アフィン変換
-	MATRIX translation, rotation, scaler, transform;
-	translation.SetTranslation(pos);
-	rotation.SetRotation(Vector3(0.0f, 0.0f, rot));
-	scaler.SetScaling(scale);
-	transform = scaler * rotation;
-	transform = translation * transform;
-	g_WorldMatrix = transform;
-
-	// シェーダーの設定
-	ShaderManager::SetTextureMode();
-
-	// 定数バッファの設定
-	Device3D::UpdateConstantBuffer(&g_WorldMatrix, g_WorldBuffer);
-	Device3D::UpdateConstantBuffer(&color, g_ColorBuffer);
-
-	// 描画
-	Device3D::Draw(
-		g_Square.GetVertexBuffer(), g_Square.GetVertexCount(), g_Square.GetVertexStructByteSize(),
-		g_Square.GetIndexBuffer(), g_Square.GetIndexCount(), g_Square.GetIndexStructByteSize()
-	);
+	DrawSpriteLeftTop(texNo, pos, rot, scale, color, Vector2(0, 0), Vector2(1, 1));
 }
 
 void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, Vector2 uv, Vector2 uvWidth) {

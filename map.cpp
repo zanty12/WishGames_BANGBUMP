@@ -15,7 +15,7 @@
 #include "mapenum.h"
 #include "spike.h"
 #include "area_capture.h"
-#include "camera.h"
+#include "gamebase.h"
 
 /**
  * @brief 指定した位置にセルを配置します。

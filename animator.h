@@ -8,24 +8,58 @@
 
 struct ANIM_DATA
 {
+    int texNo;
+    int matrix_num_x, matrix_num_y;
+
     int loop_start_x, loop_start_y;
     int loop_end_x, loop_end_y;
 
     ANIM_DATA() {}
-    ANIM_DATA(int start_x, int start_y, int end_x, int end_y)
+    //----------------------------------------
+    // int tex_number   テクスチャナンバー
+    // int x_num        よこ方向の画像の数
+    // int y_num        たて方向の画像の数
+    // int start_x      ループアニメのスタート画像[よこ]（右端 = 0）
+    // int start_y      ループアニメのスタート画像[たて]（上端 = 0）
+    // int end_x        ループアニメの終端画像[よこ]
+    // int end_y        ループアニメの終端画像[たて]
+    //----------------------------------------
+    ANIM_DATA(int tex_number, int x_num, int y_num, int start_x, int start_y, int end_x, int end_y)
     {
+        texNo = tex_number;
+        matrix_num_x = x_num;
+        matrix_num_y = y_num;
         loop_start_x = start_x;
         loop_start_y = start_y;
         loop_end_x = end_x;
         loop_end_y = end_y;
+    }
+    //----------------------------------------
+// int tex_number   テクスチャナンバー
+// int x_num        よこ方向の画像の数
+// int y_num        たて方向の画像の数
+//----------------------------------------
+    ANIM_DATA(int tex_number, int x_num, int y_num)
+    {
+        texNo = tex_number;
+        matrix_num_x = x_num;
+        matrix_num_y = y_num;
+        loop_start_x = 0;
+        loop_start_y = 0;
+        loop_end_x = x_num - 1;
+        loop_end_y = y_num - 1;
     }
 };
 
 //ここに全てのアニメーションの名前を書く
 enum LOOP_ANIM
 {
-    FIRE,
-    WIND,
+    NONE = -1,
+
+    PLAYER,
+    ENEMY_1,
+    ENEMY_2,
+    ENEMY_3,
 
 };
 
@@ -59,6 +93,8 @@ private:
     int now_matrix_number_ = 0;   //現在の行列の位置
     float u_ = 0.0f, v_ = 0.0f;
     Color color_ = Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+    int invert_ = 1;              //反転
 
 public:
     Animator() = delete;
@@ -100,8 +136,16 @@ public:
     {
         const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
         const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
-        DrawSprite(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
-            Vector2(scale_.x * scale_x, scale_.y * scale_y), color_);
+        if (isAnim_)
+        {
+            DrawSpriteLeftTop(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
+                Vector2(scale_.x * scale_x, scale_.y * scale_y), color_, Vector2(GetU(), GetV()), Vector2(UWidth(), VHeight()));
+        }
+        else
+        {
+            DrawSprite(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
+                Vector2(scale_.x * scale_x, scale_.y * scale_y), color_);
+        }
     }
 
     void SetPos(Vector2 pos) { pos_ = pos; }
@@ -116,7 +160,6 @@ public:
     float GetRot(void) const { return rot_; }
     bool GetIsAnim(void) const { return isAnim_; }
     void SetIsAnim(bool isAnim) {
-        if (x_matrix_num_ != 0 && y_matrix_num_ != 0)//セットされていないものはアニメーションすることが許されない
             isAnim_ = isAnim;
     }
     bool GetIsMovable(void) const { return isMovable_; }
@@ -127,10 +170,12 @@ public:
 
     void SetLoopImg(LOOP_ANIM loop_anim) { loop_anim_next_ = loop_anim; }    //ループするイメージの設定
 
-    float UWidth(void) const { return 1.0f / x_matrix_num_; }    //UV(U)の幅を取得
+    float UWidth(void) const { return (1.0f / x_matrix_num_) * invert_; }    //UV(U)の幅を取得
     float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)の高さを取得
     float GetU(void) const { return u_; }   //UV(U)の値を取得
     float GetV(void) const { return v_; }   //UV(V)の値を取得
+
+    void Invert(void) { invert_ *= -1; }    //反転
 
     void SetParent(GameObject* parent) { parent_ = parent; }
     GameObject* GetParent(void) const { return parent_; }

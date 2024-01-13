@@ -28,6 +28,9 @@ private:
 	//static CollMngr* coll_mngr_;
 	//static ProjectileMngr* projectile_mngr_;
 	//static SkillOrbMngr *orb_mngr_;
+	float timer_ = 120.0f;
+	int timer_tex_ = -1;
+
 
 public:
 	Game() = delete;

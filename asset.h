@@ -23,6 +23,8 @@ enum textures
     bg_stage2_back,
     bg_stage3_front,
     bg_stage3_back,
+    //UI
+    timer,
 };
 
 enum sounds
@@ -35,6 +37,13 @@ enum maps
 {
     test,
     single_stage_1,
+    single_stage_2,
+};
+
+enum fonts
+{
+    notosans_jp,
+    wapuro_mincho,
 };
 
 class Asset
@@ -43,10 +52,11 @@ public:
     static const std::map<textures,std::string> textures_;
     static const std::map<sounds,std::string> sounds_;
     static const std::map<maps,std::string> maps_;
+    static const std::map<fonts,std::wstring> fonts_;
 
     template<typename T>
     static std::string GetAsset(T asset);
-
+    static std::wstring GetFont(const fonts asset);
 };
 
 
