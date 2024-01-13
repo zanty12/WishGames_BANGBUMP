@@ -90,6 +90,3 @@ void Fire::DebugMenu()
     ImGui::End();
 }
 
-void Fire::Gravity()
-{
-}

@@ -25,7 +25,5 @@ public:
 
 	virtual void DebugMenu() = 0;
 
-	virtual void Gravity() = 0;
-
 	ATTRIBUTE_TYPE GetAttribute() { return attributeType_; }
 };

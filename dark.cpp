@@ -118,6 +118,3 @@ void Dark::DebugMenu()
 	ImGui::End();
 }
 
-void Dark::Gravity() {
-
-}

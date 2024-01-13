@@ -33,7 +33,6 @@ public:
     void Action(void) override;
     void Draw(Vector2) override;
     void DebugMenu(void) override;
-    void Gravity() override;
 };
 
 class WindAttack: public MovableObj
