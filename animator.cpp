@@ -5,18 +5,18 @@
 #include "gameobject.h"
 
 #include "time.h"
+#include "asset.h"
 
-
+//★それぞれのアニメーションごとに設定していく★
 void Animator::InitDictionary(void)
 {
-    DICTIONARY_[FIRE] = ANIM_DATA(0, 0, 1, 1);//★仮。それぞれのアニメーションごとに設定していく★
-    DICTIONARY_[WIND] = ANIM_DATA(2, 1, 3, 5);
+    DICTIONARY_[PLAYER] = ANIM_DATA(LoadTexture(Asset::GetAsset(player)), 5, 6);
 
 }
 
 Animator::Animator(GameObject* game_object)
-    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()),
-    now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false)//初期化
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), loop_anim_(NONE), loop_anim_next_(NONE),
+    now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false),invert_(1)//初期化
 {
     InitDictionary();
 
@@ -25,10 +25,10 @@ Animator::Animator(GameObject* game_object)
 }
 
 Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time)
-    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), img_change_time_(img_change_time),
-    fps_(fps), isAnim_(isAnim),
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), loop_anim_(NONE), loop_anim_next_(NONE),
+    img_change_time_(img_change_time), fps_(fps), isAnim_(isAnim),
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(false),
-    now_matrix_number_(0), u_(0.0f), v_(0.0f)//初期化
+    now_matrix_number_(0), u_(0.0f), v_(0.0f), invert_(1)//初期化
 {
     InitDictionary();
 
@@ -41,7 +41,7 @@ Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_n
     fps_(fps), isAnim_(isAnim), img_change_time_(img_change_time),
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(is_loop),
     loop_anim_(loop_anim),
-    now_matrix_number_(0), u_(0.0f), v_(0.0f)//初期化
+    now_matrix_number_(0), u_(0.0f), v_(0.0f), invert_(1)//初期化
 {
     InitDictionary();
 
@@ -85,6 +85,12 @@ void Animator::Update(void)
     {
         Reset();
     }
+    //アニメーションができない状態なら抜ける
+    if (loop_anim_ == NONE && x_matrix_num_ == 0 && y_matrix_num_ == 0)
+    {
+        isAnim_ = false;
+        return;
+    }
 
     if (now_time_ >= img_change_time_)
     {
@@ -121,5 +127,17 @@ void Animator::LoopAnimation(void)
 void Animator::Reset(void)
 {
     loop_anim_ = loop_anim_next_;
+
+    if (loop_anim_next_ == NONE)
+    {
+        now_matrix_number_ = 0;
+        return;
+    }
+
+    isAnim_ = true;
+    texNo_ = DICTIONARY_[loop_anim_].texNo;
+    x_matrix_num_ = DICTIONARY_[loop_anim_].matrix_num_x;
+    y_matrix_num_ = DICTIONARY_[loop_anim_].matrix_num_y;
+
     now_matrix_number_ = x_matrix_num_ * DICTIONARY_[loop_anim_].loop_start_y + DICTIONARY_[loop_anim_].loop_start_x - 1;//この後インクリメントするので1引いておく
 }
