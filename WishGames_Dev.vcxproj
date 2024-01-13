@@ -288,6 +288,7 @@
     <Content Include="data\texture\title.png" />
     <Content Include="data\texture\title.webp" />
     <Content Include="data\texture\wall.png" />
+    <Content Include="data\texture\wapuro-mincho.otf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

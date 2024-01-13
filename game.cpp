@@ -12,8 +12,10 @@
 Game::Game(SceneMngr* scene_mngr)
     : GameBase(scene_mngr)
 {
-
     mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_1).c_str(), this);
+    text_format_ = Text::MakeTextFormat(L"ワープロ明朝", 50, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL);
+    brush_ = Text::MakeBrush(Color(1.0f, 1.0f, 1.0f, 1.0f));
+    timer_tex_ = LoadTexture(Asset::GetAsset(timer));
     //int playertex = LoadTexture("data/texture/player.png");
 
     /*Player *player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, Vector2(0.0f, 0.0f), mapmngr_);
@@ -30,8 +32,8 @@ void Game::Update()
     std::thread enemy(&EnemyMngr::Update, mapmngr_->GetEnemyMngr());
     std::thread player(&Player::Update, GetPlayer());
     //GetPlayer()->Update();
-    //std::thread projectile(&ProjectileMngr::Update, projectile_mngr_);
-    projectile_mngr_->Update();
+    std::thread projectile(&ProjectileMngr::Update, projectile_mngr_);
+    //projectile_mngr_->Update();
     //std::thread orb(&SkillOrbMngr::Update, orb_mngr_);
     //orb_mngr_->Update();
     //projectile.join();
@@ -43,6 +45,7 @@ void Game::Update()
     map.join();
     enemy.join();
     player.join();
+    projectile.join();
     camera.join();
     renderer.join();
     if (GetPlayer()->GetChangeSceneFlag())
@@ -50,21 +53,35 @@ void Game::Update()
         scene_mngr_->ChangeScene(SCENE_RESULT);
     }
     timer_ -= Time::GetDeltaTime();
+    if(timer_ <= 0.0f)
+    {
+        delete mapmngr_;
+        coll_mngr_->CheckDiscard();
+        renderer_->CheckDiscard();
+        mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_2).c_str(), this);
+        timer_ = 120.0f;
+        GetPlayer()->SetPos(mapmngr_->GetPlayerSpawn());
+        GetPlayer()->SetMapMngr(mapmngr_);
+        delete camera_;
+        camera_ = new Camera(GetPlayer());
+    }
 }
 
 void Game::Draw()
 {
     camera_->Draw();
-    renderer_->Draw(camera_ ->GetCameraOffset());
+    renderer_->Draw(camera_);
 
     //UI
+    DrawSpriteLeftTop(timer_tex_, Vector2(Graphical::GetWidth() / 2, 50), 0.0f, Vector2(250, 100),
+                      Color(1.0f, 1.0f, 1.0f, 1.0f));
     int itimeer = static_cast<int>(timer_);
-    std::wstring time = L"残り時間: ";
-    time += std::to_wstring(itimeer);
-    Text::WriteText(time.c_str(),Graphical::GetWidth()/ 2, 100, 100, 50);
+    std::wstring time = std::to_wstring(itimeer);
+    Text::WriteText(time.c_str(), text_format_, brush_, Graphical::GetWidth() / 2 - 45, 25, 180, 50);
 }
 
-Player *Game::GetPlayer() {
+Player* Game::GetPlayer()
+{
     return *GetPlayers().begin();
 }
 
@@ -83,9 +100,9 @@ void Game::DebugMenu()
     ImGui::Text("x:%f, y: %f", camera_->GetPos().x, camera_->GetPos().y);
     static std::string preview = u8"無属性";
     static std::string preview_atk = u8"無属性";
-    if(player_->GetAttribute() == nullptr)
+    if (player_->GetAttribute() == nullptr)
         preview = u8"無属性";
-    if(player_->GetAttackAttribute() == nullptr)
+    if (player_->GetAttackAttribute() == nullptr)
         preview_atk = u8"無属性";
 
     if (ImGui::BeginCombo(u8"プレイヤー移動属性", preview.c_str()))
@@ -138,7 +155,7 @@ void Game::DebugMenu()
     }
     ImGui::End();
     ImGui::Begin("map test");
-    if(ImGui::Button("map1"))
+    if (ImGui::Button("map1"))
     {
         delete mapmngr_;
         coll_mngr_->CheckDiscard();
@@ -148,4 +165,3 @@ void Game::DebugMenu()
     ImGui::End();
     player_->DebugMenu();
 }
-

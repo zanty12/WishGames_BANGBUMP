@@ -56,7 +56,7 @@ public:
         DrawSprite(bg_front_tex_, draw_vertices, draw_uv_front, Color(1.0f, 1.0f, 1.0f, 1.0f));
     }
 
-    bool InCamera(GameObject* obj) const;
+    bool InCamera(Vector2 pos) const;
 
     Vector2 GetCameraOffset() const
     {

@@ -60,12 +60,12 @@ void Camera::Update()
     bg_front_y_ = 1.0f - (4320.0f * y_percent) / 5400.0f; //front texture is 1920 * 5400 scaled up
 }
 
-bool Camera::InCamera(GameObject* obj) const
+bool Camera::InCamera(Vector2 pos) const
 {
-    if (GetPos().x > obj->GetPos().x - screen_size_.x / 2 - render_buffer_ && GetPos().x < obj->GetPos().x +
+    if (GetPos().x > pos.x - screen_size_.x / 2 - render_buffer_ && GetPos().x < pos.x +
         screen_size_.x / 2 + render_buffer_)
     {
-        if (GetPos().y > obj->GetPos().y - screen_size_.y / 2 - render_buffer_ && GetPos().y < obj->GetPos().y +
+        if (GetPos().y > pos.y - screen_size_.y / 2 - render_buffer_ && GetPos().y < pos.y +
             screen_size_.y / 2 + render_buffer_)
         {
             return true;
