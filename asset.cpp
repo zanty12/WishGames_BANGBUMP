@@ -3,7 +3,29 @@
 #include "skillorb.h"
 
 const std::map<textures, std::string> Asset::textures_ = {
-    {textures::player, "data/texture/player.png"},
+    {textures::player,"data/texture/player.png"},
+    //player
+    {textures::player1_12_idle,"data/texture/Player/player1_12_idle.png"},
+    {textures::player1_13_idle,"data/texture/Player/player1_13_idle.png"},
+    {textures::player1_14_idle,"data/texture/Player/player1_14_idle.png"},
+    {textures::player1_21_idle,"data/texture/Player/player1_21_idle.png"},
+    {textures::player1_23_idle,"data/texture/Player/player1_23_idle.png"},
+    {textures::player1_24_idle,"data/texture/Player/player1_24_idle.png"},
+    {textures::player1_31_idle,"data/texture/Player/player1_31_idle.png"},
+    {textures::player1_32_idle,"data/texture/Player/player1_32_idle.png"},
+    {textures::player1_34_idle,"data/texture/Player/player1_34_idle.png"},
+    {textures::player1_41_idle,"data/texture/Player/player1_41_idle.png"},
+    {textures::player1_42_idle,"data/texture/Player/player1_42_idle.png"},
+    {textures::player1_43_idle,"data/texture/Player/player1_43_idle.png"},
+
+    //enemy
+    {textures::enemy1_anim,"data/texture/Enemy/enemy1_anim.png"},
+    {textures::enemy2_anim,"data/texture/Enemy/enemy2_anim.png"},
+    {textures::enemy3_anim,"data/texture/Enemy/enemy3_anim.png"},
+
+    //boss
+    {textures::boss_idle,"data/texture/boss_idle.png"},
+
     {textures::skill_orb, "data/texture/blocks/skillorb.png"},
     {textures::bg_stage1_front, "data/texture/bg/BG_stage1_front.png"},
     {textures::bg_stage1_back, "data/texture/bg/BG_stage1_back.png"},

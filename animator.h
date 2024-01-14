@@ -16,15 +16,15 @@ struct ANIM_DATA
 
     ANIM_DATA() {}
     //----------------------------------------
-    // int tex_number   テクスチャナンバー
     // int x_num        よこ方向の画像の数
     // int y_num        たて方向の画像の数
     // int start_x      ループアニメのスタート画像[よこ]（右端 = 0）
     // int start_y      ループアニメのスタート画像[たて]（上端 = 0）
     // int end_x        ループアニメの終端画像[よこ]
     // int end_y        ループアニメの終端画像[たて]
+    // int tex_number   テクスチャナンバー
     //----------------------------------------
-    ANIM_DATA(int tex_number, int x_num, int y_num, int start_x, int start_y, int end_x, int end_y)
+    ANIM_DATA(int x_num, int y_num, int start_x, int start_y, int end_x, int end_y, int tex_number = -1)
     {
         texNo = tex_number;
         matrix_num_x = x_num;
@@ -35,11 +35,11 @@ struct ANIM_DATA
         loop_end_y = end_y;
     }
     //----------------------------------------
-// int tex_number   テクスチャナンバー
-// int x_num        よこ方向の画像の数
-// int y_num        たて方向の画像の数
-//----------------------------------------
-    ANIM_DATA(int tex_number, int x_num, int y_num)
+    // int x_num        よこ方向の画像の数
+    // int y_num        たて方向の画像の数
+    // int tex_number   テクスチャナンバー
+    //----------------------------------------
+    ANIM_DATA(int x_num, int y_num, int tex_number = -1)
     {
         texNo = tex_number;
         matrix_num_x = x_num;
@@ -56,11 +56,20 @@ enum LOOP_ANIM
 {
     NONE = -1,
 
-    PLAYER,
+    //player
+    PLAYER_IDOL,    //待機
+    PLAYER_MOVE,    //移動
+    PLAYER_ATTACK,  //攻撃
+
+    PLAYER_CHARGE_TM,   //thunder移動チャージ
+    PLAYER_CHARGE_TA,   //thunder攻撃チャージ
+
+    //enemy
     ENEMY_1,
     ENEMY_2,
     ENEMY_3,
 
+    BOSS_IDLE,
 };
 
 class GameObject;
@@ -87,7 +96,7 @@ private:
     int loop_start_x_, loop_start_y_;   //ループする初めの場所
     int loop_end_x_, loop_end_y_;       //ループする終わりの場所
     bool is_loop_ = false;              //ループ判定（treu=ループ）
-    float img_change_time_ = 0.0f;          //画像を切り替える時間の間隔
+    float img_change_time_ = 0.0333f;   //画像を切り替える時間の間隔（デフォルト30毎秒）
     float now_time_ = 0.0f;
 
     int now_matrix_number_ = 0;   //現在の行列の位置
@@ -160,7 +169,7 @@ public:
     float GetRot(void) const { return rot_; }
     bool GetIsAnim(void) const { return isAnim_; }
     void SetIsAnim(bool isAnim) {
-            isAnim_ = isAnim;
+        isAnim_ = isAnim;
     }
     bool GetIsMovable(void) const { return isMovable_; }
     void SetIsMovable(bool isMovable) { isMovable_ = isMovable; }
@@ -195,4 +204,5 @@ private:
     void InitDictionary(void);
     void LoopAnimation(void);
     void Reset(void);
+    void PlayerAnim(void);
 };

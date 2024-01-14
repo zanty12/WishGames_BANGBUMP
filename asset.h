@@ -13,7 +13,27 @@ enum textures
 {
     //player
     player,
+    player1_12_idle,
+    player1_13_idle,
+    player1_14_idle,
+    player1_21_idle,
+    player1_23_idle,
+    player1_24_idle,
+    player1_31_idle,
+    player1_32_idle,
+    player1_34_idle,
+    player1_41_idle,
+    player1_42_idle,
+    player1_43_idle,
+
     //enemy
+    enemy1_anim,
+    enemy2_anim,
+    enemy3_anim,
+
+    //boss
+    boss_idle,
+
     //block
     skill_orb,
     //background
