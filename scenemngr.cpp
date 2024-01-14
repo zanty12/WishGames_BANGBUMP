@@ -9,11 +9,11 @@
 #include "thunder.h"
 #include "wind.h"
 
-std::map<std::string,int> attribute_dict = {
-    {"FIRE",0},
-    {"WIND",1},
-    {"THUNDER",2},
-    {"DARK",3},
+std::map<std::string, int> attribute_dict = {
+    {"FIRE", 0},
+    {"WIND", 1},
+    {"THUNDER", 2},
+    {"DARK", 3},
 };
 
 SceneMngr::SceneMngr(SCENE scene)
@@ -177,5 +177,7 @@ void SceneMngr::ParseGame(const std::string& message)
         }
     }
     game->AddPlayer(player);
-    game->AddCamera(new Camera(player));
+    game->AddCamera(new Camera(player->GetPos(),
+                               Vector2(game->GetMapMngr()->GetMap()->GetWidth(),
+                                       game->GetMapMngr()->GetMap()->GetHeight())));
 }

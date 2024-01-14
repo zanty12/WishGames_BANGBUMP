@@ -38,8 +38,9 @@ void Game::Update()
     //orb_mngr_->Update();
     //projectile.join();
     //orb.join();
-    std::thread camera(&Camera::Update, camera_);
-    //camera_->Update();
+    std::thread camera(&Camera::Update, camera_, GetPlayer()->GetPos(), GetPlayer()->GetVel(),
+                       GetPlayer()->GetPlayerState());
+    //camera_->Update(GetPlayer()->GetPos(),GetPlayer()->GetVel(),GetPlayer()->GetPlayerState());
     std::thread renderer(&Renderer::Update, renderer_);
     //renderer_->Update();
     map.join();
@@ -53,7 +54,7 @@ void Game::Update()
         scene_mngr_->ChangeScene(SCENE_RESULT);
     }
     timer_ -= Time::GetDeltaTime();
-    if(timer_ <= 0.0f)
+    if (timer_ <= 0.0f)
     {
         delete mapmngr_;
         coll_mngr_->CheckDiscard();
@@ -63,7 +64,8 @@ void Game::Update()
         GetPlayer()->SetPos(mapmngr_->GetPlayerSpawn());
         GetPlayer()->SetMapMngr(mapmngr_);
         delete camera_;
-        camera_ = new Camera(GetPlayer());
+        camera_ = new Camera(GetPlayer()->GetPos(),
+                             Vector2(mapmngr_->GetMap()->GetWidth(), mapmngr_->GetMap()->GetHeight()));
     }
 }
 

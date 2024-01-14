@@ -1,14 +1,14 @@
 #pragma once
-#include "player.h"
+#include "playerstate.h"
+#include "graphical.h"
+#include "sprite.h"
 
 class Player;
-
 class Camera
 {
 private:
     Vector2 pos_;
     Vector2 scale_;
-    Player* player_;
     Vector2 map_size_;
     Vector2 target_pos_;
     const Vector2 screen_size_ = Vector2(1920, 1080);
@@ -22,13 +22,10 @@ private:
     int bg_front_tex_;
     float bg_front_y_ = 1.0f;
 
-
-
-
 public:
     Camera() = delete;
-    Camera(Player* player);
-    void Update();
+    Camera(Vector2 start_pos,Vector2 map_size);
+    void Update(Vector2 pos,Vector2 vel,PLAYER_STATE state);
 
     void Draw()
     {
