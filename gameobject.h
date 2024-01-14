@@ -22,19 +22,29 @@
 
 enum OBJECT_TYPE
 {
-    OBJ_SOLID, //貫通不能
-    OBJ_PENETRABLE, //下貫通
-    OBJ_VOID, //貫通可能
-    OBJ_SPIKE, //トゲ
-    OBJ_PLAYER, //プレイヤー
-    OBJ_ENEMY, //敵
-    OBJ_BULLET, //敵２のバレット
-    OBJ_ATTACK, //攻撃
-    OBJ_ITEM, //アイテム(スキル玉しかないけど)
+    OBJ_SOLID,
+    //貫通不能
+    OBJ_PENETRABLE,
+    //下貫通
+    OBJ_VOID,
+    //貫通可能
+    OBJ_SPIKE,
+    //トゲ
+    OBJ_PLAYER,
+    //プレイヤー
+    OBJ_ENEMY,
+    //敵
+    OBJ_BULLET,
+    //敵２のバレット
+    OBJ_ATTACK,
+    //攻撃
+    OBJ_ITEM,
+    //アイテム(スキル玉しかないけど)
 };
 
 class Animator;
 class Collider;
+
 class GameObject
 {
 private:
@@ -51,14 +61,16 @@ private:
 
 public:
     static constexpr float SIZE_ = 64.0f; //１マスの標準サイズ
-	GameObject() = default;
+    GameObject() = default;
     GameObject(Vector2 pos, float rot, int tex_number);
     //this is here only for movable objects
-    GameObject(Vector2 pos, float rot, int tex_number,bool movable);
-    virtual ~GameObject(){
+    GameObject(Vector2 pos, float rot, int tex_number, bool movable);
+
+    virtual ~GameObject()
+    {
         if (animator_)animator_->Discard();
         if (collider_)collider_->Discard();
-}
+    }
 
     void SetPos(Vector2 pos) { pos_ = pos; } //ポジションセット
     Vector2 GetPos(void) const { return pos_; } //ポジションゲット
@@ -84,5 +96,4 @@ public:
     virtual void Update(void) = 0;
 
     static Vector2 GetWorldCoord(Vector2 pos);
-
 };

@@ -20,7 +20,7 @@ bool ColliderRect::Collide(Collider* other)
     case CIRCLE:
         return Collider2D::Touch(rect_, dynamic_cast<ColliderCir*>(other)->GetCircle());
     case RECTANGLE:
-        //return Collider2D::Touch(rect_, dynamic_cast<ColliderRect*>(other)->GetRect());
+        return Collider2D::Touch(rect_, dynamic_cast<ColliderRect*>(other)->GetRect());
         /*{
             //bounding box
             Vertex4 other_rect = dynamic_cast<ColliderRect*>(other)->GetRect();

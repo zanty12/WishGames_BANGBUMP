@@ -13,6 +13,9 @@ enum textures
 {
     //player
     player,
+    //attibute_move
+    //attibute_attack
+    fire_attack,
     //enemy
     //block
     skill_orb,
