@@ -1,5 +1,6 @@
 #include "colliderrect.h"
 
+#include "bossatk.h"
 #include "gamebase.h"
 
 ColliderRect::ColliderRect(GameObject* parent, bool movable) : Collider(RECTANGLE, parent, movable)
