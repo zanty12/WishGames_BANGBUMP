@@ -5,6 +5,7 @@
 #include "multi_area_capture_mode.h"
 #include "multi_obstacle_race_mode.h"
 #include "multi_enemy_rush_mode.h"
+#include "number.h"
 #include "follow.h"
 
 class MultiPlayFlowServerSide {
@@ -123,6 +124,13 @@ public:
 		// モードの実行
 		else if (gameMode_) {
 			gameMode_->Draw(res);
+			// 時間制限の描画
+			Number(Vector2(100, 100), Vector2(100, 100), res.maxTime - res.time);
+
+			// スコアの描画
+			for (auto &client : res.clients) {
+				Number(Vector2(Graphical::GetHeight(), 0.0f), Vector2(100, 100), client.score);
+			}
 		}
 	}
 

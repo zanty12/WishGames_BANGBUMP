@@ -401,6 +401,9 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// 受信用領域を確保する
 	recvTmpBuff = new char[MAX_BUFF];
+
+	// カメラ作成
+	camera_ = new Camera(Vector2::Zero, Vector2(10, 10));
 }
 
 int MultiPlayClient::Register() {
@@ -433,6 +436,7 @@ int MultiPlayClient::Register() {
 
 	std::cout << "Res << ID:" << header.id << " Login" << std::endl;
 	std::cout << header.id << "番目に登録しました。" << std::endl;
+
 	return header.id;
 }
 
@@ -467,11 +471,11 @@ void MultiPlayClient::Unregister() {
 
 void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	// モードがNONEなら終了
-	if (res_.mode == MULTI_MODE::NONE || res.clients.size() == 0) {
+	if (res_.mode == MULTI_MODE::NONE || res_.clients.size() == 0) {
 		return;
 	}
 
-
+	camera_->Update(res_.clients.begin()->position, Vector2::Zero, PLAYER_STATE::FALL);
 
 	for (auto &client : res_.clients) {
 		anim.SetPos(client.position);
@@ -482,7 +486,7 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	renderer_->CheckDiscard();
 	coll_mngr_->CheckDiscard();
 	multiRenderer_->Draw(res_);
-	renderer_->Draw(Vector2(0.0f, res.clients.begin()->position.y));
+	renderer_->Draw(camera_);
 	
 }
 

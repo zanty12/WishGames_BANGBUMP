@@ -45,7 +45,7 @@ private:
 			anim->SetRot(object.rotation);
 			anim->SetScale(object.scale);
 
-			anim->Draw(Vector2(0.0f, playerPosition.y));
+			//anim->Draw();
 		}
 	}
 
