@@ -81,7 +81,7 @@ void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color c
 	translation.SetTranslation(pos);
 	rotation.SetRotation(Vector3(0.0f, 0.0f, rot));
 	scaler.SetScaling(scale);
-	transform = scaler * rotation;
+	transform = rotation * scaler;
 	transform = translation * transform;
 	g_WorldMatrix = transform;
 

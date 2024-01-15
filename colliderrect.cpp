@@ -1,5 +1,6 @@
 #include "colliderrect.h"
 
+#include "bossatk.h"
 #include "gamebase.h"
 
 ColliderRect::ColliderRect(GameObject* parent, bool movable) : Collider(RECTANGLE, parent, movable)
@@ -21,12 +22,12 @@ bool ColliderRect::Collide(Collider* other)
         return Collider2D::Touch(rect_, dynamic_cast<ColliderCir*>(other)->GetCircle());
     case RECTANGLE:
         return Collider2D::Touch(rect_, dynamic_cast<ColliderRect*>(other)->GetRect());
-        /*{
-            //bounding box
-            Vertex4 other_rect = dynamic_cast<ColliderRect*>(other)->GetRect();
-            return (rect_.a.x < other_rect.b.x && rect_.b.x > other_rect.a.x &&
-                rect_.a.y > other_rect.c.y && rect_.c.y < other_rect.a.y);
-        }*/
+    /*{
+        //bounding box
+        Vertex4 other_rect = dynamic_cast<ColliderRect*>(other)->GetRect();
+        return (rect_.a.x < other_rect.b.x && rect_.b.x > other_rect.a.x &&
+            rect_.a.y > other_rect.c.y && rect_.c.y < other_rect.a.y);
+    }*/
     default:
         return false;
     }
@@ -65,6 +66,11 @@ void ColliderRect::CollisionInteract()
         case OBJ_VOID:
             break;
         case OBJ_ITEM:
+            break;
+        case OBJ_ATTACK:
+            //”½ŽË‚·‚é‚à‚Ì‚É‚¾‚¯Õ“Ëˆ—
+            if (dynamic_cast<Boss_Wind*>(other->GetParent()) != nullptr)
+                CollisionSolid(other);
             break;
         default:
             CollisionSolid(other);
@@ -147,13 +153,13 @@ void ColliderRect::CollisionSolid(Collider* other)
                     MovableObj* parent = dynamic_cast<MovableObj*>(GetParent());
                     if (parent != nullptr)
                     {
-                        Vector2 vel= parent->GetVel() * GetBounciness();
+                        Vector2 vel = parent->GetVel() * GetBounciness();
                         //if the object is moving towards the collision, bounce it
                         if (Vector2::Dot(vel, coll_dir) > 0)
                         {
-                            if(overlap_x != 0.0f)
+                            if (overlap_x != 0.0f)
                                 vel.x = -vel.x;
-                            if(overlap_y != 0.0f)
+                            if (overlap_y != 0.0f)
                                 vel.y = -vel.y;
                         }
                         //vel += Vector2(-move_amount.x * GetBounciness(), move_amount.y * GetBounciness());
