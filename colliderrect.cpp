@@ -66,6 +66,8 @@ void ColliderRect::CollisionInteract()
             break;
         case OBJ_ITEM:
             break;
+        case OBJ_ATTACK:
+            break;
         default:
             CollisionSolid(other);
         }
