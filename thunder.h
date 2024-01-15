@@ -44,7 +44,6 @@ public:
     bool StickTrigger(Vector2 stick, Vector2 previousStick);
     Vector2 Move() override;
     void Action() override;
-    void Draw(Vector2 offset) override;
     void DebugMenu() override;
 };
 

@@ -152,7 +152,6 @@ void Player::Draw(Camera* camera)
 {
 
 	//GameObject::Draw(camera->GetCameraOffset());
-	if (attack_attribute_) attack_attribute_->Draw(camera->GetCameraOffset());
 }
 
 void Player::DebugMenu()

@@ -64,10 +64,6 @@ void Fire::Action()
     }
 }
 
-void Fire::Draw(Vector2 offset)
-{
-}
-
 void Fire::DebugMenu()
 {
     ImGui::Begin("Fire");

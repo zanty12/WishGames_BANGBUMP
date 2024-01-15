@@ -16,6 +16,7 @@ enum textures
     //attibute_move
     //attibute_attack
     fire_attack,
+    wind_attack,
     //enemy
     //block
     skill_orb,

@@ -32,6 +32,5 @@ public:
 	~Dark() override = default;
 	Vector2 Move() override;
 	void Action() override;
-	void Draw(Vector2 offset) override;
 	void DebugMenu() override;
 };
