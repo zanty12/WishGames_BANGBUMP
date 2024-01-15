@@ -6,8 +6,10 @@
 #include "multi_mode_flow.h"
 #include "multi_connect_renderer.h"
 #include "storage_lock.h"
+#include <fstream>
 
-#define SERVER_ADDRESS "192.168.0.7"
+extern std::string SERVER_ADDRESS;
+//#define SERVER_ADDRESS "192.168.0.7"
 #define MAX_MEMBER (4)
 #define PORT (8080)
 #define MAX_BUFF (4096)

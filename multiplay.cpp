@@ -1,4 +1,5 @@
-﻿#include "multiplay.h"
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include "multiplay.h"
 #include "xinput.h"
 #include "thunder.h"
 #include "fire.h"
@@ -13,6 +14,7 @@
 //#define DEBUG_INPUT
 #define DEBUG_LOCKED
 //#define DEBUG_SENDLEN
+std::string SERVER_ADDRESS;
 
 MultiPlayServer::MultiPlayServer() {
 	WSAData data;
@@ -404,6 +406,12 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// カメラ作成
 	camera_ = new Camera(Vector2::Zero, Vector2(31, 100));
+
+	wchar_t addr_w[128] = {};
+	char addr[256] = {};
+	GetPrivateProfileString(L"System", L"Addr", L"0.0.0.0", addr_w, 128, L"data/multiplay.ini");
+	wcstombs(addr, addr_w, 128);
+	SERVER_ADDRESS = addr;
 }
 
 int MultiPlayClient::Register() {
@@ -413,7 +421,7 @@ int MultiPlayClient::Register() {
 	sockfd_ = Socket(AddressFamily::IPV4, Type::UDP, 0);
 
 	// アドレス作成
-	serverAddr = Address(AddressFamily::IPV4, SERVER_ADDRESS, PORT);
+	serverAddr = Address(AddressFamily::IPV4, SERVER_ADDRESS.c_str(), PORT);
 
 	// コマンド設定
 	header.command = HEADER::COMMAND::REQUEST_LOGIN;
@@ -481,6 +489,7 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 		camera_->Update(client.position, Vector2::Zero, PLAYER_STATE::FALL);
 		//anim.Draw();
 	}
+	camera_->Draw();
 
 	if (gameMode) gameMode->Draw(res_);
 	renderer_->CheckDiscard();
