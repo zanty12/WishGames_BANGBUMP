@@ -100,6 +100,3 @@ void Wind::DebugMenu()
     ImGui::End();
 }
 
-void Wind::Gravity()
-{
-}

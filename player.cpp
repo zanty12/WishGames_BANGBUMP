@@ -67,7 +67,6 @@ void Player::Update(void)
 	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
 		next_vel = move_attribute_->Move();
-		move_attribute_->Gravity();
 	}
 	else if (clash_spike_ == 0)
 	{/*//‰½‚à‘®«‚ª‚È‚¯‚ê‚Î—‚¿‚é

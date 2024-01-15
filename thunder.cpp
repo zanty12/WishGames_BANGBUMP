@@ -129,7 +129,3 @@ void Thunder::DebugMenu()
 	ImGui::SliderFloat("attackPower", &attackPower, 0.0f, 10.0f);
 	ImGui::End();
 }
-
-void Thunder::Gravity() {
-
-}

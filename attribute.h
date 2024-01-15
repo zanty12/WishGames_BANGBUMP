@@ -25,7 +25,7 @@ public:
 
 	virtual void DebugMenu() = 0;
 
-	virtual void Gravity() = 0;
+	Player* GetPlayer() { return player_; }
 
 	ATTRIBUTE_TYPE GetAttribute() { return attributeType_; }
 };
