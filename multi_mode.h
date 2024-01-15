@@ -5,7 +5,7 @@
 class MultiPlayFlowServerSide;
 class MultiPlayServerSide {
 protected:
-	float maxTime_ = 7.0f;
+	float maxTime_ = 100.0f;
 	float time_ = 0.0f;
 	MapMngr *map_ = nullptr;
 

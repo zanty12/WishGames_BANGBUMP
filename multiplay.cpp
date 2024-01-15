@@ -33,7 +33,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	float rot = 0.0f;
 	Vector2 vel = Vector2::Zero;
 	Player *player = new Player(pos, rot, vel, mapmngr_);
-	player->SetAttribute(new Fire(player));
+	player->SetAttribute(new Thunder(player));
 	player->SetAttackAttribute(new Fire(player));
 
 	// ヘッダーの更新
@@ -212,7 +212,7 @@ void MultiPlayServer::SendUpdate(void) {
 
 			// クライアント情報の登録
 			for (auto &client : clients_) {
-				res.clients.push_back({ client.header.id, client.moveAttribute, client.actionAttribute, client.player_->GetPos(), 0, 0 });
+				res.clients.push_back({ client.header.id, client.moveAttribute, client.actionAttribute, client.player_->GetPos(), 0, client.player_->GetSkillPoint(), 0});
 			}
 
 			// オブジェクト情報の登録
@@ -403,7 +403,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	recvTmpBuff = new char[MAX_BUFF];
 
 	// カメラ作成
-	camera_ = new Camera(Vector2::Zero, Vector2(10, 10));
+	camera_ = new Camera(Vector2::Zero, Vector2(31, 100));
 }
 
 int MultiPlayClient::Register() {
@@ -475,11 +475,11 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 		return;
 	}
 
-	camera_->Update(res_.clients.begin()->position, Vector2::Zero, PLAYER_STATE::FALL);
 
 	for (auto &client : res_.clients) {
 		anim.SetPos(client.position);
-		anim.Draw();
+		camera_->Update(client.position, Vector2::Zero, PLAYER_STATE::FALL);
+		//anim.Draw();
 	}
 
 	if (gameMode) gameMode->Draw(res_);

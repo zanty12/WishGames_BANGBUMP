@@ -129,7 +129,7 @@ public:
 
 			// ƒXƒRƒA‚Ì•`‰æ
 			for (auto &client : res.clients) {
-				Number(Vector2(Graphical::GetHeight(), 0.0f), Vector2(100, 100), client.score);
+				Number(Vector2(200, 200), Vector2(100, 100), client.skillPoint + 1);
 			}
 		}
 	}
