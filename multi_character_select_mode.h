@@ -1,13 +1,13 @@
 #pragma once
 #include <map>
 #include "multi_mode.h"
+#include "prep.h"
 #include "lib/math.h"
 #include "follow.h"
 
 class MultiPlayCharacterSelectModeServerSide : public MultiPlayServerSide {
 private:
 	std::list<CLIENT_DATA_SERVER_SIDE> * pCharacters_ = nullptr;
-
 
 
 private:
@@ -54,8 +54,8 @@ public:
 	}
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {
-		pCharacters_ = &clients;
-		PlayerUpdate(clients);
+		//pCharacters_ = &clients;
+		//PlayerUpdate(clients);
 	}
 
 	void CreateResponse(Storage &out) override {
@@ -98,6 +98,7 @@ private:
 	RESPONSE_CHARACTER_SELECT res;
 	std::map<int, AnimData> characters;
 	int charsTexNo = LoadTexture("data/texture/player1_11_22_33_44.png");
+	Prep prep = nullptr;
 
 
 
@@ -171,36 +172,38 @@ public:
 	MultiPlayCharacterSelectModeClientSide() : MultiPlayClientSide(nullptr) { }
 
 	void Draw(RESPONSE_PLAYER& players) override {
-		// キャラクターが存在しないなら処理しない
-		if (players.clients.size() == 0) return;
+		prep.Update();
+		prep.Draw();
+		//// キャラクターが存在しないなら処理しない
+		//if (players.clients.size() == 0) return;
 
-		int idx = 0;								// インデックス
-		int playerNum = players.clients.size();		// プレイヤー数
-		int protrude = 100;							// 傾き
-		int gap = 50;								// 枠の幅
-		for (auto &c : players.clients) {
-			auto iterator = characters.find(c.id);
-			// 登録
-			if (iterator == characters.end())
-				characters[c.id] = AnimData(c.attackAttributeType, c.moveAttributeType);
-			// 更新
-			else iterator->second.set(c.attackAttributeType, c.moveAttributeType);
+		//int idx = 0;								// インデックス
+		//int playerNum = players.clients.size();		// プレイヤー数
+		//int protrude = 100;							// 傾き
+		//int gap = 50;								// 枠の幅
+		//for (auto &c : players.clients) {
+		//	auto iterator = characters.find(c.id);
+		//	// 登録
+		//	if (iterator == characters.end())
+		//		characters[c.id] = AnimData(c.attackAttributeType, c.moveAttributeType);
+		//	// 更新
+		//	else iterator->second.set(c.attackAttributeType, c.moveAttributeType);
 
-			// パラメータの更新
-			auto &anim = characters[c.id];
-			auto &uAttack = anim.uAttackAnim;
-			auto &uMove = anim.uMoveAnim;
-			uAttack = c.attackAttributeType;
-			uMove = c.moveAttributeType;
-			uAttack.update();
-			uMove.update();
+		//	// パラメータの更新
+		//	auto &anim = characters[c.id];
+		//	auto &uAttack = anim.uAttackAnim;
+		//	auto &uMove = anim.uMoveAnim;
+		//	uAttack = c.attackAttributeType;
+		//	uMove = c.moveAttributeType;
+		//	uAttack.update();
+		//	uMove.update();
 
-			CharacterDraw(idx, playerNum, protrude, gap, uAttack, 0.0f, 0.5f);
-			CharacterDraw(idx, playerNum, protrude, gap, uMove, 0.5f, 1.0f);
+		//	CharacterDraw(idx, playerNum, protrude, gap, uAttack, 0.0f, 0.5f);
+		//	CharacterDraw(idx, playerNum, protrude, gap, uMove, 0.5f, 1.0f);
 
-			// インデックスを増やす
-			idx++;
-		}
+		//	// インデックスを増やす
+		//	idx++;
+		//}
 	}
 
 	void ParseResponse(Storage &in) override {

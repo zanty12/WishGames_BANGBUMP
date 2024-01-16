@@ -407,6 +407,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	// カメラ作成
 	camera_ = new Camera(Vector2::Zero, Vector2(31, 100));
 
+	// IPV4アドレスの登録
 	wchar_t addr_w[128] = {};
 	char addr[256] = {};
 	GetPrivateProfileString(L"System", L"Addr", L"0.0.0.0", addr_w, 128, L"data/multiplay.ini");
@@ -482,6 +483,8 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	if (res_.mode == MULTI_MODE::NONE || res_.clients.size() == 0) {
 		return;
 	}
+
+
 
 
 	for (auto &client : res_.clients) {
