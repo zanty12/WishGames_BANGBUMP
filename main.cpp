@@ -19,25 +19,25 @@ int main()
     int mode = 0;
     std::cin >> mode;
 
-    Graphical::Initialize(1600, 900);
-    DebugUI::Initialize();
     MSG msg;
+    Graphical::Initialize(1600, 900);
+    Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+    DebugUI::Initialize();
     Time::Initialize();
-    HRESULT result = Text::CreateResources();
-    if (FAILED(result))
-    {
-        return 0;
-    }
+    Text::CreateResources();
     srand(time(NULL));
+    Graphical::Clear(Color::White);
 
     if (mode == 0) {
         MultiPlayServer server;
+        Graphical::Clear(Color::White);
+
         server.OpenTerminal();
     }
     else {
         MultiPlayClient client;
         client.Register();
-        while (true) {
+        while (!client.isFinish) {
             // メッセージ
             if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
             {
@@ -56,10 +56,10 @@ int main()
         client.Unregister();
     }
 
-    Graphical::Release();
-    DebugUI::Release();
     Time::Release();
     Text::DiscardResources();
+    DebugUI::Release();
+    Graphical::Release();
 
     std::cout << "Hello World!\n"; //基本
 }
