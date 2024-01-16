@@ -26,11 +26,9 @@ int main()
     Time::Initialize();
     Text::CreateResources();
     srand(time(NULL));
-    Graphical::Clear(Color::White);
 
     if (mode == 0) {
         MultiPlayServer server;
-        Graphical::Clear(Color::White);
 
         server.OpenTerminal();
     }
