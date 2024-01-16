@@ -102,12 +102,6 @@ void Dark::Action()
 		//}
 	}
 }
-void Dark::Draw(Vector2 offset) {
-	if (isDraw) {
-		auto attackCollider = PHYSICS::Vertex4(player_->GetPos(), player_->GetPos() + attackDirection, attackWidthLength);
-		DrawCollider(attackCollider, Color::Green, offset);
-	}
-}
 
 void Dark::DebugMenu()
 {

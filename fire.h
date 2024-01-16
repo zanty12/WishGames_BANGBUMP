@@ -25,7 +25,6 @@ public:
     ~Fire() override = default;
     Vector2 Move() override;
     void Action() override;
-    void Draw(Vector2 offset) override;
     void DebugMenu() override;
 };
 
@@ -33,7 +32,6 @@ class FireAttack : public MovableObj
 {
     Fire* parent_;
     Vector2 size_ = Vector2(3 * GameObject::SIZE_, GameObject::SIZE_);
-
 public:
     FireAttack() = delete;
     FireAttack(Fire* parent);
