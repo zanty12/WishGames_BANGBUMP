@@ -173,8 +173,10 @@ public:
 
 	void Draw(RESPONSE_PLAYER& players) override {
 		DebugUI::BeginDraw();
+		Text::TextStart();
 		prep.Update();
 		prep.Draw();
+		Text::TextEnd();
 		DebugUI::EndDraw();
 		//// キャラクターが存在しないなら処理しない
 		//if (players.clients.size() == 0) return;
