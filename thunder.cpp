@@ -108,18 +108,6 @@ void Thunder::Action() {
 	}
 }
 
-void Thunder::Draw(Vector2 offset) {
-
-	for (int i = 0; i < 3; i++) {
-		auto arrow = arrows_[i];
-		float rad = atan2f(arrow.velocity.y, arrow.velocity.x);
-		if (arrow.isVisible) {
-			auto attackCollider = PHYSICS::Vertex4(arrow.position, rad, arrowSize);
-			DrawCollider(attackCollider, Color::Green, offset);
-		}
-	}
-}
-
 void Thunder::DebugMenu()
 {
 	ImGui::Begin("Thunder");
@@ -128,8 +116,4 @@ void Thunder::DebugMenu()
 	ImGui::SliderFloat("movePower", &movePower, 0.0f, 5.0f);
 	ImGui::SliderFloat("attackPower", &attackPower, 0.0f, 10.0f);
 	ImGui::End();
-}
-
-void Thunder::Gravity() {
-
 }

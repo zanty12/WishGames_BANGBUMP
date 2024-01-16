@@ -1,16 +1,21 @@
 #include "wind.h"
+
+#include "asset.h"
 #include "xinput.h"
 #include "lib/collider2d.h"
 
-bool Wind::StickTrigger(Vector2 stick, Vector2 previousStick) {
-	float stickDistance = stick.Distance();
-	float preStickDistance = previousStick.Distance();
+bool Wind::StickTrigger(Vector2 stick, Vector2 previousStick)
+{
+    //TODO: rewrite triggering to give a more stable output
+    float stickDistance = stick.Distance();
+    float preStickDistance = previousStick.Distance();
 
-	if (rotInputJudgeMin < MATH::Abs(Vector2::Cross(stick, previousStick)) &&
-		0.8f < stickDistance * preStickDistance) {
-		return true;
-	}
-	return false;
+    if (rotInputJudgeMin < MATH::Abs(Vector2::Cross(stick, previousStick)) &&
+        0.8f < stickDistance * preStickDistance)
+    {
+        return true;
+    }
+    return false;
 }
 
 Vector2 Wind::Move(void)
@@ -40,7 +45,7 @@ Vector2 Wind::Move(void)
         vel.x = stick.x * 6 * GameObject::SIZE_ * Time::GetDeltaTime();
         player_->SetGravityState(GRAVITY_HALF);
         //上移動の慣性残っている場合
-        if(vel.y > 0)
+        if (vel.y > 0)
             vel.y -= vel.y * 2 * Time::GetDeltaTime();
     }
     else if (stick.Distance() < rotInputJudgeMin)
@@ -57,7 +62,7 @@ void Wind::Action(void)
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
     Vector2 previousStick = Input::GetPreviousStickRight(0);
-    isDraw = false;
+
 
     // 回転のスピードを取得
     float rotSpeed = Vector2::Cross(stick, previousStick);
@@ -65,29 +70,15 @@ void Wind::Action(void)
     // 攻撃中
     if (StickTrigger(stick, previousStick))
     {
-        attackCollider = Vertex1(player_->GetPos(), attackRadius);
-
-        isDraw = true;
-        auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
-
-        for (auto enemy : enemies)
-        {
-            if (enemy)
-            {
-                Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
-
-                if (Collider2D::Touch(attackCollider, enemyCollider))
-                {
-                    enemy->Die();
-                }
-            }
-        }
+        if (attack_ == nullptr)
+            attack_ = new WindAttack(this);
+        attack_->SetPos(GetPlayer()->GetPos());
     }
-}
-
-void Wind::Draw(Vector2 offset)
-{
-    if (isDraw) DrawCollider(attackCollider, Color::Green, offset);
+    else if (attack_ != nullptr)
+    {
+        delete attack_;
+        attack_ = nullptr;
+    }
 }
 
 void Wind::DebugMenu()
@@ -96,10 +87,12 @@ void Wind::DebugMenu()
     ImGui::Text("power: %.2f", power_);
     ImGui::SliderFloat("MaxPower", &maxPower_, 0.0f, 1000.0f);
     ImGui::SliderFloat("Friction", &friction_, 0.0f, 1.0f);
-    ImGui::SliderFloat("AttackRadius", &attackRadius, 0.0f, 100.0f);
     ImGui::End();
 }
 
-void Wind::Gravity()
+WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPlayer()->GetPos(), 0.0f,
+                                           LoadTexture(Asset::GetAsset(wind_attack)), Vector2::Zero)
 {
+    SetScale(size_);
+    SetType(OBJ_ATTACK);
 }
