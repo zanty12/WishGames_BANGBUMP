@@ -21,6 +21,7 @@ int main()
     Graphical::Initialize(1600, 900);
     DebugUI::Initialize();
     Time::Initialize();
+    Text::CreateResources();
 
     if (mode == 0) {
         MultiPlayServer server;
@@ -53,5 +54,6 @@ int main()
     }
     Time::Release();
     DebugUI::Release();
+    Text::DiscardResources();
     Graphical::Release();
 }

@@ -572,7 +572,7 @@ void MultiPlayClient::Update() {
 			isFinish = true;
 			break;
 		}
-		Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
+		//Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
 		RecvUpdate(1, res);
 		PlayerUpdate(res);
 		Graphical::Present();
