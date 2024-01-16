@@ -5,6 +5,7 @@
 	Server
 ************************************************************/
 MultiPlayServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
+	startTime = timeGetTime();
 	switch (mode)
 	{
 	case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeServerSide(game_);
@@ -40,7 +41,8 @@ void MultiPlayFlowServerSide::Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients
 		gameMode_ = CreateMode(mode_);
 	}
 	else {
-		gameMode_->time_ += Time::GetDeltaTime();
+		float deltaTime = (timeGetTime() - startTime) * 0.001f;
+		gameMode_->time_ = (timeGetTime() - startTime) * 0.001f;
 
 		gameMode_->Update(clients);
 	}

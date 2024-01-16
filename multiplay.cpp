@@ -497,10 +497,6 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 
 
 	camera_->Update(res_.clients.begin()->position, Vector2::Zero, PLAYER_STATE::FALL);
-	for (auto &client : res_.clients) {
-		//anim.SetPos(client.position);
-		//anim.Draw();
-	}
 	camera_->Draw();
 
 	if (gameMode) gameMode->Draw(res_);

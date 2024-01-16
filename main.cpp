@@ -29,7 +29,6 @@ int main()
 
     if (mode == 0) {
         MultiPlayServer server;
-
         server.OpenTerminal();
     }
     else {
