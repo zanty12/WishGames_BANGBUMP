@@ -172,8 +172,10 @@ public:
 	MultiPlayCharacterSelectModeClientSide() : MultiPlayClientSide(nullptr) { }
 
 	void Draw(RESPONSE_PLAYER& players) override {
+		DebugUI::BeginDraw();
 		prep.Update();
 		prep.Draw();
+		DebugUI::EndDraw();
 		//// キャラクターが存在しないなら処理しない
 		//if (players.clients.size() == 0) return;
 
