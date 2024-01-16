@@ -41,12 +41,12 @@ private:
     ATTRIBUTE_ACTION attack_ = FIRE_ATTACK;
     ATTRIBUTE_ACTION move_next_ = FIRE_MOVE;
     ATTRIBUTE_ACTION attack_next_ = FIRE_ATTACK;
-    Video* video_;
+    Video *video_;
 
     bool clockwise_ = true;
     bool moving_ = false;
 
-    SceneMngr* scene_mngr_;
+    SceneMngr *scene_mngr_;
 
     bool is_move_ = true;
 
@@ -66,7 +66,7 @@ private:
 
 public:
     Prep() = delete;
-    Prep(SceneMngr* scene_mngr);
+    Prep(SceneMngr *scene_mngr);
 
     ~Prep() override
     {
@@ -76,6 +76,8 @@ public:
     void Update() override;
     void Draw() override;
     void DebugMenu() override;
+    ATTRIBUTE_ACTION GetMove(void) { return move_; }
+    ATTRIBUTE_ACTION GetAttack(void) { return attack_; }
 
 private:
     void SetNewVideo(ATTRIBUTE_ACTION video_file);

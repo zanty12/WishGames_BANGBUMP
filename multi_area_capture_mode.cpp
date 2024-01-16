@@ -1,5 +1,8 @@
 #include "multi_area_capture_mode.h"
 
+/***********************************************************
+	Server
+************************************************************/
 void MultiPlayAreaCaptureModeServerSide::ActiveArea(void) {
 	if (areas.size() == 0) return;		// アクティブにするエリアがないなら終了
 
@@ -129,6 +132,9 @@ void MultiPlayAreaCaptureModeServerSide::CreateResponse(Storage &out) {
 
 
 
+/***********************************************************
+	Client
+************************************************************/
 void MultiPlayAreaCaptureModeClientSide::Draw(RESPONSE_PLAYER &players) {
 	if (anim == nullptr) return;
 

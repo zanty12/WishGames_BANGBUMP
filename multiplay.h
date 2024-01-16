@@ -19,7 +19,7 @@ using namespace Network;
 /*******************************************************
   Server
 ********************************************************/
-class MultiPlayServer : GameBase {
+class MultiPlayServer : public GameBase {
 private:
 	int maxID = 0;										// IDの最大値				
 	Socket sockfd_;										// ソケット
@@ -105,6 +105,8 @@ private:
 public:
 	bool isFinish = false;								// 終了状態
 	int texNo = 0;
+	ATTRIBUTE_TYPE move_ = ATTRIBUTE_TYPE_FIRE;
+	ATTRIBUTE_TYPE action_ = ATTRIBUTE_TYPE_FIRE;
 
 	MultiPlayClient();
 

@@ -4,7 +4,9 @@
 #include "sprite.h"
 #include "time.h"
 
-
+/***********************************************************
+	Server
+************************************************************/
 class MultiPlayAreaCaptureModeServerSide : public MultiPlayServerSide {
 public:
 	struct Area : public RESPONSE_AREA_CAPTURE::DESC {
@@ -47,6 +49,9 @@ public:
 
 
 
+/***********************************************************
+	Client
+************************************************************/
 class MultiPlayAreaCaptureModeClientSide : public MultiPlayClientSide {
 private:
 	RESPONSE_AREA_CAPTURE res;

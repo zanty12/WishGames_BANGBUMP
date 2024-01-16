@@ -44,6 +44,7 @@ struct CLIENT_DATA_CLIENT_SIDE {
 	ATTRIBUTE_TYPE moveAttributeType;	// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType;	// 攻撃属性タイプ
 	Vector2 position;					// 座標
+	Color color;
 	int score = 0;						// スコア
 	int skillPoint = 0;					// スキルポイント
 	int previousSkillPoint = 0;			// 1ゲーム前のスキルポイント
@@ -177,6 +178,9 @@ struct REQUEST_PLAYER {
 		int id;
 		XINPUT_GAMEPAD curInput;
 		XINPUT_GAMEPAD preInput;
+		ATTRIBUTE_TYPE move = ATTRIBUTE_TYPE_FIRE;
+		ATTRIBUTE_TYPE action = ATTRIBUTE_TYPE_FIRE;
+
 	};
 	DESC input;
 

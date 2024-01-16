@@ -35,8 +35,8 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	float rot = 0.0f;
 	Vector2 vel = Vector2::Zero;
 	Player *player = new Player(pos, rot, vel, mapmngr_);
-	player->SetAttribute(new Thunder(player));
-	player->SetAttackAttribute(new Fire(player));
+	player->SetAttribute(nullptr);
+	player->SetAttackAttribute(nullptr);
 
 	// ヘッダーの更新
 	header.command = HEADER::RESPONSE_LOGIN;
@@ -172,6 +172,10 @@ void MultiPlayServer::RecvUpdate(void) {
 		iterator->currentInput = req.input.curInput;
 		iterator->previousInput = req.input.preInput;
 
+		// 属性を設定
+		iterator->moveAttribute = req.input.move;
+		iterator->actionAttribute = req.input.action;
+
 #ifdef DEBUG_INPUT
 		Input::SetState(1, iterator->currentInput);
 		Input::SetPreviousState(1, iterator->previousInput);
@@ -214,7 +218,11 @@ void MultiPlayServer::SendUpdate(void) {
 
 			// クライアント情報の登録
 			for (auto &client : clients_) {
-				res.clients.push_back({ client.header.id, client.moveAttribute, client.actionAttribute, client.player_->GetPos(), 0, client.player_->GetSkillPoint(), 0});
+				res.clients.push_back({ 
+					client.header.id, client.moveAttribute, client.actionAttribute, 
+					client.player_->GetPos(), client.player_->GetColor(),
+					0, client.player_->GetSkillPoint(), 0}
+				);
 			}
 
 			// オブジェクト情報の登録
@@ -499,7 +507,6 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	coll_mngr_->CheckDiscard();
 	multiRenderer_->Draw(res_);
 	renderer_->Draw(camera_);
-	
 }
 
 void MultiPlayClient::SendUpdate(void) {
@@ -514,7 +521,7 @@ void MultiPlayClient::SendUpdate(void) {
 			startTime = currentTime;
 			// リクエストの作成
 			REQUEST_PLAYER req;
-			req.input = { id, Input::GetState(0), Input::GetPreviousState(0) };
+			req.input = { id, Input::GetState(0), Input::GetPreviousState(0), move_, action_ };
 			req.CreateRequest(sendBuff, id);
 
 			// 送信

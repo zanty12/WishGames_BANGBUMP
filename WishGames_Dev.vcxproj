@@ -172,6 +172,8 @@
     <ClCompile Include="movableobj.cpp" />
     <ClCompile Include="multiplay.cpp" />
     <ClCompile Include="multi_area_capture_mode.cpp" />
+    <ClCompile Include="multi_character_select_mode.cpp" />
+    <ClCompile Include="multi_mode_flow.cpp" />
     <ClCompile Include="number.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
