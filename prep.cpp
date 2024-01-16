@@ -369,7 +369,7 @@ void Prep::DebugMenu()
         default:
             message += "FIRE ";
         }
-        scene_mngr_->ChangeScene(SCENE_GAME, message);
+        if (scene_mngr_) scene_mngr_->ChangeScene(SCENE_GAME, message);
     }
     ImGui::End();
 }

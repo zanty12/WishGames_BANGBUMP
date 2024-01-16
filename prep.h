@@ -76,6 +76,8 @@ public:
     void Update() override;
     void Draw() override;
     void DebugMenu() override;
+    ATTRIBUTE_ACTION GetMove(void) { return move_; }
+    ATTRIBUTE_ACTION GetAttack(void) { return attack_; }
 
 private:
     void SetNewVideo(ATTRIBUTE_ACTION video_file);
