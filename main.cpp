@@ -1,17 +1,18 @@
-﻿#include "collider.h"
-#include "graphical.h"
+﻿#include "graphical.h"
 #include "sprite.h"
 #include <iostream>
-#include "DebugUI.h"
-#include "xinput.h"
-#include "mapmngr.h"
-#include "scenemngr.h"
-#include "time.h"
-#include "multiplay.h"
-
-bool debug_mode = true;
 #include <thread>
 
+#include "DebugUI.h"
+#include "xinput.h"
+#include "multiplay.h"
+#include "mapmngr.h"
+#include "scenemngr.h"
+#include "text.h"
+#include "time.h"
+#include "video.h"
+
+bool debug_mode = true;
 
 int main()
 {
@@ -20,20 +21,23 @@ int main()
 
     Graphical::Initialize(1600, 900);
     DebugUI::Initialize();
+    MSG msg;
     Time::Initialize();
-    Text::CreateResources();
+    HRESULT result = Text::CreateResources();
+    if (FAILED(result))
+    {
+        return 0;
+    }
+    srand(time(NULL));
 
     if (mode == 0) {
         MultiPlayServer server;
-        server.OpenTerminal(); 
+        server.OpenTerminal();
     }
     else {
-        MSG msg;
         MultiPlayClient client;
         client.Register();
-
-        while (!client.isFinish)
-        {
+        while (true) {
             // メッセージ
             if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
             {
@@ -50,10 +54,12 @@ int main()
             }
         }
         client.Unregister();
-        std::cout << "Hello World!\n"; //基本
     }
-    Time::Release();
-    DebugUI::Release();
-    Text::DiscardResources();
+
     Graphical::Release();
+    DebugUI::Release();
+    Time::Release();
+    Text::DiscardResources();
+
+    std::cout << "Hello World!\n"; //基本
 }

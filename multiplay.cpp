@@ -487,9 +487,9 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 
 
 
+	camera_->Update(res_.clients.begin()->position, Vector2::Zero, PLAYER_STATE::FALL);
 	for (auto &client : res_.clients) {
 		anim.SetPos(client.position);
-		camera_->Update(client.position, Vector2::Zero, PLAYER_STATE::FALL);
 		//anim.Draw();
 	}
 	camera_->Draw();
@@ -573,6 +573,7 @@ void MultiPlayClient::Update() {
 			break;
 		}
 		//Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
+		Time::Update();
 		RecvUpdate(1, res);
 		PlayerUpdate(res);
 		Graphical::Present();
