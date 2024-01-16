@@ -54,6 +54,7 @@ private:
 	MultiPlayClient *game_ = nullptr;
 	MULTI_MODE currentMode_ = MULTI_MODE::NONE;
 	int numTexNo = LoadTexture("data/texture/UI/number.png");
+	int icon = LoadTexture("data/texture/UI/player_ui.png");
 
 private:
 	MultiPlayClientSide *CreateMode(MULTI_MODE mode);

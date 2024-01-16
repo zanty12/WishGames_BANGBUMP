@@ -31,7 +31,10 @@ private:
 
 			// テクスチャ番号を指定
 			switch (object.tag) {
-			case OBJECT_DATA_CLIENT_SIDE::ENEMY: texNo = enemy1TexNo; break;
+			case OBJECT_DATA_CLIENT_SIDE::PLAYER: texNo = playerTexNo; break;
+			case OBJECT_DATA_CLIENT_SIDE::ENEMY1: texNo = enemy1TexNo; break;
+			case OBJECT_DATA_CLIENT_SIDE::ENEMY2: texNo = enemy2TexNo; break;
+			case OBJECT_DATA_CLIENT_SIDE::ENEMY3: texNo = enemy3TexNo; break;
 			case OBJECT_DATA_CLIENT_SIDE::SKILL_POINT: texNo = skillorbTexNo; break;
 			}
 			anim->SetTexNo(texNo);
@@ -51,6 +54,17 @@ private:
 
 public:
 	void Draw(RESPONSE_PLAYER &res) {
+		for (auto &client : res.clients) {
+			OBJECT_DATA_CLIENT_SIDE data = {
+				-client.id,							// ID（クライアントは-の値にする）
+				OBJECT_DATA_CLIENT_SIDE::PLAYER,	// tag
+				OBJECT_DATA_CLIENT_SIDE::IDEL,		// アニメーション
+				client.position,					// 座標
+				0.0f,								// 回転
+				Vector2::One * 50					// 拡縮
+			};
+			DrawObject(res.clients.begin()->position, data);
+		}
 		for (auto &object : res.objects) {
 			DrawObject(res.clients.begin()->position, object);
 		}

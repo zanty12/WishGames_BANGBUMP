@@ -1,4 +1,8 @@
 #include "multiplay.h"
+#include "fire.h"
+#include "wind.h"
+#include "thunder.h"
+#include "dark.h"
 #include "multi_character_select_mode.h"
 
 /***********************************************************
@@ -40,10 +44,41 @@ void MultiPlayCharacterSelectModeServerSide::PlayerUpdate(std::list<CLIENT_DATA_
 	}
 }
 
+Attribute *MultiPlayCharacterSelectModeServerSide::CreateAttribute(ATTRIBUTE_TYPE type, Player* player) {
+	switch (type) {
+	case ATTRIBUTE_TYPE_FIRE: return new Fire(player);
+	case ATTRIBUTE_TYPE_WIND: return new Wind(player);
+	case ATTRIBUTE_TYPE_THUNDER: return new Thunder(player);
+	case ATTRIBUTE_TYPE_DARK: return new Dark(player);
+	}
+}
+
+
+void MultiPlayCharacterSelectModeServerSide::Release(std::list<CLIENT_DATA_SERVER_SIDE> &clients) {
+	for (auto &client : clients) {
+		// プレイヤーの検索
+		auto iterator = game_->find(client.header.id);
+
+		// IDが存在しないなら処理しない
+		if (iterator == game_->GetClients().end()) continue;
+
+		// 移動属性更新
+		{
+			Attribute *moveAttribute = CreateAttribute(iterator->moveAttribute, iterator->player_);
+			iterator->player_->SetAttribute(moveAttribute);
+		}
+		// 攻撃属性更新
+		{
+			Attribute *actionAttribute = CreateAttribute(iterator->actionAttribute, iterator->player_);
+			iterator->player_->SetAttribute(actionAttribute);
+		}
+	}
+}
 
 void MultiPlayCharacterSelectModeServerSide::Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) {
 	//pCharacters_ = &clients;
 	//PlayerUpdate(clients);
+
 }
 
 void MultiPlayCharacterSelectModeServerSide::CreateResponse(Storage &out) {

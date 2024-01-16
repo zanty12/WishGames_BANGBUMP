@@ -21,8 +21,8 @@ public:
 	}
 
 	virtual void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) = 0;
-
 	virtual void CreateResponse(Storage& out) = 0;
+	virtual void Release(std::list<CLIENT_DATA_SERVER_SIDE> &clients) { };
 
 	MapMngr *GetMap(void) const { return map_; }
 	virtual MULTI_MODE GetMode(void) const = 0;
@@ -46,8 +46,10 @@ public:
 		if (map_) delete map_;
 		map_ = nullptr;
 	}
+
 	virtual void Draw(RESPONSE_PLAYER &players) = 0;
 	virtual void ParseResponse(Storage& in) = 0;
+	virtual void Release(RESPONSE_PLAYER &players) { };
 
 
 	MapMngr *GetMap(void) const { return map_; }

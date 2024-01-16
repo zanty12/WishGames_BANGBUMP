@@ -72,7 +72,10 @@ struct OBJECT_DATA_CLIENT_SIDE {
 	};
 
 	enum TAG {
-		ENEMY,
+		PLAYER,
+		ENEMY1,
+		ENEMY2,
+		ENEMY3,
 		SKILL_POINT,
 	};
 

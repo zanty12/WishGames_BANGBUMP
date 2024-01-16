@@ -7,7 +7,7 @@
 MultiPlayServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 	switch (mode)
 	{
-	case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeServerSide();
+	case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeServerSide(game_);
 	case AREA_CAPTURE: return new MultiPlayAreaCaptureModeServerSide(game_);
 	case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeServerSide();
 	case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeServerSide(game_);
@@ -28,12 +28,8 @@ void MultiPlayFlowServerSide::Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients
 		// 現在のモードの取得
 		MULTI_MODE mode_ = GetMode();
 
-		// キャラクター選択モードなら
-		if (mode_ == MULTI_MODE::CHARACTER_SELECT) {
-
-		}
-
 		// 現在のモードの削除
+		gameMode_->Release(clients);
 		delete gameMode_;
 		gameMode_ = nullptr;
 
@@ -102,8 +98,23 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res) {
 		Number(Vector2(100, 100), Vector2(100, 100), res.maxTime - res.time);
 
 		// スコアの描画
+		int i = 0;
 		for (auto &client : res.clients) {
+			int moveAttribute = client.moveAttributeType;
+			int attackAttribute = client.attackAttributeType;
+			//画像の関係上Attackをずらす
+			if (moveAttribute < attackAttribute) attackAttribute--;
+			float u = moveAttribute / 4.0f;
+			float v = attackAttribute / 12.0f;
+			Vector2 uv = Vector2(u, v + i * 0.25f);
+
+			DrawSprite(icon,
+				Vector2(100 + i * 100, 100), 0.0f, Vector2(100, 100),
+				Color::White,
+				uv, Vector2(0.25f, 1.0f / 12.0f)
+				);
 			Number(Vector2(200, 200), Vector2(100, 100), client.skillPoint + 1);
+			i++;
 		}
 	}
 }

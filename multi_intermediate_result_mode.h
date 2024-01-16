@@ -2,10 +2,14 @@
 #include "multi_mode.h"
 #include "lib/math.h"
 
+/***********************************************************
+	Server
+************************************************************/
 class MultiPlayIntermediateResultModeServerSide : public MultiPlayServerSide {
 public:
 	MultiPlayIntermediateResultModeServerSide()
 		: MultiPlayServerSide(nullptr) {
+		maxTime_ = 10;
 	}
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {	}
@@ -32,6 +36,9 @@ public:
 
 
 
+/***********************************************************
+	Client
+************************************************************/
 class MultiPlayIntermediateResultModeClientSide : public MultiPlayClientSide {
 private:
 	void sort(std::list<CLIENT_DATA_CLIENT_SIDE>& ranking, std::list<CLIENT_DATA_CLIENT_SIDE> &preRanking) {
@@ -68,7 +75,7 @@ public:
 	MultiPlayIntermediateResultModeClientSide() : MultiPlayClientSide(nullptr) {};
 
 	void Draw(RESPONSE_PLAYER &players) override {
-		const float RANKING_SORT_ANIMATION_TIME = 60.0f;			// ランキングのアニメーション時間
+		const float RANKING_SORT_ANIMATION_TIME = 5.0f;				// ランキングのアニメーション時間
 		float time = players.time;									// 現在の時間
 
 

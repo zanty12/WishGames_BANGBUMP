@@ -13,7 +13,7 @@ class MultiPlayClient;
 class MultiPlayCharacterSelectModeServerSide : public MultiPlayServerSide {
 private:
 	std::list<CLIENT_DATA_SERVER_SIDE> * pCharacters_ = nullptr;
-
+	MultiPlayServer *game_ = nullptr;
 
 private:
 	/// <summary>
@@ -23,11 +23,18 @@ private:
 
 	void PlayerUpdate(std::list<CLIENT_DATA_SERVER_SIDE> &clients);
 
+	/// <summary>
+	/// ëÆê´çÏê¨
+	/// </summary>
+	Attribute *CreateAttribute(ATTRIBUTE_TYPE type, Player* player);
+
 public:
-	MultiPlayCharacterSelectModeServerSide()
-		: MultiPlayServerSide(nullptr) {
-		maxTime_ = 1000;
+	MultiPlayCharacterSelectModeServerSide(MultiPlayServer *game)
+		: MultiPlayServerSide(nullptr) , game_(game) {
+		maxTime_ = 10;
 	}
+
+	void Release(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override;
 
 	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override;
 

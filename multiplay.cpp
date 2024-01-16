@@ -35,8 +35,8 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	float rot = 0.0f;
 	Vector2 vel = Vector2::Zero;
 	Player *player = new Player(pos, rot, vel, mapmngr_);
-	player->SetAttribute(nullptr);
-	player->SetAttackAttribute(nullptr);
+	player->SetAttribute(new Fire(player));
+	player->SetAttackAttribute(new Fire(player));
 
 	// ヘッダーの更新
 	header.command = HEADER::RESPONSE_LOGIN;
@@ -123,21 +123,22 @@ void MultiPlayServer::PlayerUpdate(void) {
 	std::cout << "UPD LOCK";
 #endif
 
-	// プレイヤーの更新
-	for (auto client : clients_) {
-		// 入力の更新
-		Input::SetState(0, client.currentInput);
-		Input::SetPreviousState(0, client.previousInput);
-		
+	// ゲームプレイモードなら（キャラ選択 or リザルト系ではない）
+	if (gameMode && gameMode->GetMode() % 2 == 1) {
 		// プレイヤーの更新
-		client.player_->Update();
-	}
+		for (auto client : clients_) {
+			// 入力の更新
+			Input::SetState(0, client.currentInput);
+			Input::SetPreviousState(0, client.previousInput);
 
+			// プレイヤーの更新
+			client.player_->Update();
+		}
 
-	
-	// コリジョンの更新
-	if (coll_mngr_) {
-		coll_mngr_->Update();
+		// コリジョンの更新
+		if (coll_mngr_) {
+			coll_mngr_->Update();
+		}
 	}
 
 	// ゲームモードの更新
@@ -398,7 +399,7 @@ void MultiPlayServer::OpenTerminal(void) {
 
 
 
-MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png")), anim(Animator(&playerObject, 2, true, 1, 1, 1)) {
+MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"))/*, anim(Animator(&playerObject, 2, true, 1, 1, 1))*/ {
 	WSAData data;
 	Startup(v2_2, data);
 
@@ -497,7 +498,7 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 
 	camera_->Update(res_.clients.begin()->position, Vector2::Zero, PLAYER_STATE::FALL);
 	for (auto &client : res_.clients) {
-		anim.SetPos(client.position);
+		//anim.SetPos(client.position);
 		//anim.Draw();
 	}
 	camera_->Draw();

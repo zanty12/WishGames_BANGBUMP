@@ -75,6 +75,8 @@ public:
 public:
 
 	void OpenTerminal(void);
+
+	std::list<CLIENT_DATA_SERVER_SIDE> &GetClients(void) { return clients_; }
 };
 
 
@@ -97,7 +99,7 @@ private:
 
 	ClientGameObject playerObject;
 	MultiRenderer *multiRenderer_ = nullptr;			// •`‰æ
-	Animator anim;
+	//Animator anim;
 	std::thread sendUpdateFunc;							// ‘—MŠÖ”
 	std::thread recvUpdateFunc;							// óMŠÖ”
 
