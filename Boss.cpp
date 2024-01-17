@@ -29,13 +29,7 @@ void Boss::Update()
 
     time_ += Time::GetDeltaTime();
 
-    std::list<Collider*> collisions = GetCollider()->GetCollision();
-    for (auto collision : collisions)
-    {
-        OBJECT_TYPE type = collision->GetParent()->GetType();
-    }
-
-    if (time_ > 3.0f)
+    if (time_ > 1.0f)
     {
         time_ = 0;
         if (atk_now == false)
@@ -50,7 +44,9 @@ void Boss::Update()
 
     if (atk_now == true)
     {
-        Atk();
+        Thunder();
+        //Wind();
+        //Atk();
         atk_now = false;
     }
 
@@ -131,14 +127,34 @@ void Boss::Fire()
 void Boss::Thunder()
 {
     //‚Pƒqƒbƒg@‚Q‚O‚Oƒ_ƒ[ƒW
-    Boss_Thunder* thunder = new Boss_Thunder(startPosition);
-    atk_time_ += Time::GetDeltaTime();
-    GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder);
-    float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //‰Šú‰»Žž‚ÌƒGƒ‰[‚ð‰ñ”ð‚·‚é
-    float speed_ = 96.0f * 6;
-    thunder->SetVel(Vector2(-speed_ * dt, -speed_ * dt));
+    atk_time_ ++;
+
+    if (atk_time_ > 0 && atk_time_ < 2)
+    {
+        Boss_Thunder* thunder = new Boss_Thunder(startPosition);
+        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder);
+        SetAtk(200);
+    }
+    else if (atk_time_ > 2 && atk_time_ < 4)
+    {
+        Boss_Thunder* thunder1 = new Boss_Thunder(startPosition);
+        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder1);
+        thunder1->SetVel(Vector2(0.0f, thunder1->GetVel().y));
+        SetAtk(200);
+    }
+    else if (atk_time_ > 4 && atk_time_ < 6)
+    {
+        Boss_Thunder* thunder2 = new Boss_Thunder(startPosition);
+        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder2);
+        thunder2->SetVel(Vector2(thunder2->GetVel().x * -1, thunder2->GetVel().y));
+        SetAtk(200);
+    }
+
+    if (atk_time_ > 6)
+    {
+        atk_time_ = 0;
+    }
     
-    SetAtk(200);
 
 }
 
@@ -148,11 +164,19 @@ void Boss::Wind()
     Boss_Wind* wind = new Boss_Wind(startPosition);
     atk_time_ += Time::GetDeltaTime();
     GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(wind);
-    if (atk_time_ > (1.0f / 4))
+    
+    if (GetCellTypeWall())
     {
-        atk_time_ = 0;
-        SetAtk(30);
+        wind->SetVel(Vector2(wind->GetPos().x * -1, wind->GetPos().y));
     }
+    
+
+    
+        if (atk_time_ > (1.0f / 4))
+        {
+            atk_time_ = 0;
+            SetAtk(30);
+        }
 }
 
 void Boss::Water()
@@ -172,5 +196,4 @@ void Boss::Water()
     }
     
 }
-
 

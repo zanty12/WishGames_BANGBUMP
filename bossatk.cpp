@@ -4,6 +4,8 @@
 #include "lib/collider2d.h"
 #include "time.h"
 
+
+
 #define RANGE (SIZE_ * 4)                            //
 
 
@@ -15,7 +17,7 @@ Boss_Fire::Boss_Fire(Vector2 pos)
 	SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
 	cheak_ = false;
 	range_ = 3.14f / 6 + 3.14f / 2;
-	speed_ = 0.004f;
+	speed_ = 0.008f;
 	boss_pos_ = pos;
 	time_ = 0;
 	SetType(OBJ_ATTACK);
@@ -72,33 +74,43 @@ Boss_Thunder::Boss_Thunder(Vector2 pos)
 	SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
 	boss_pos_ = pos;
 	time_ = 0;
+	speed_ = 96.0f * 6;
 	SetType(OBJ_ATTACK);
-
+	float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //初期化時のエラーを回避する
+	SetVel(Vector2(-speed_ * dt, -speed_ * dt));
 }
 void Boss_Thunder::Update()
 {
 	time_ += Time::GetDeltaTime();
 
-	if (time_ > 4.0f)
-		Discard();
-
-
+	if (time_ > 1.0f)
+		Discard();	
 
 	this->AddVel(GetVel());
 }
 
 //--------------風------------------------------------//
-Boss_Wind::Boss_Wind(Vector2 pos)
+Boss_Wind::Boss_Wind(Vector2 pos, float spx, float spy, float epx, float epy)
 	: MovableObj(pos - Vector2(0.0f, SIZE_ * 4), 0.0f, LoadTexture("data/texture/wall.png"), Vector2::Zero)
 {
-	SetScale(Vector2(SIZE_ * 4, SIZE_ * 4));
+	SetScale(Vector2(SIZE_ * 3, SIZE_ * 3));
 	speed_ = 96.0f * 8;
 	boss_pos_ = pos;
 	time_ = 0;
+	vel_ = -GetVel();
 	SetType(OBJ_ATTACK);
-	GetCollider()->SetBounciness(0.3f);
+	//GetCollider()->SetBounciness(0.3f);
 	float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //初期化時のエラーを回避する
 	SetVel(Vector2(-speed_ * dt, -speed_ * dt));
+	Sp.x = spx;
+	Sp.y = spy;
+	Ep.x = epx;
+	Ep.y = epy;
+	Vector2 v = Ep - Sp;
+	N.x = -v.y;
+	N.y = v.x;
+	N.Normalize();
+
 }
 void Boss_Wind::Update()
 {
@@ -106,6 +118,9 @@ void Boss_Wind::Update()
 
 	if (time_ > 4.0f)
 		Discard();
+
+
+
 
 
 
