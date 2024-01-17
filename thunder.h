@@ -31,7 +31,8 @@ class Thunder : public Attribute
     Vector2 move_dir_;
     bool moving_ = false;
     //attack
-    const float attack_charge_max_ = 400.0f;
+    const float attack_charge_max_ = 4.0f;
+    const float atttack_trigger_min_ = 0.1f;
     float attack_charge_ = 0.0f;
     float attack_cd_ = 0.0f;
     const float attack_vel_ = 10*GameObject::SIZE_;
@@ -55,9 +56,11 @@ class ThunderAttack : public MovableObj
     Thunder* parent_;
     Vector2 size_ = Vector2(2 * GameObject::SIZE_, 2 * GameObject::SIZE_);
     Vector2 start_pos_;
+    float range_;
 public:
     ThunderAttack() = delete;
-    ThunderAttack(Thunder* parent,Vector2 dir,float vel);
+    ThunderAttack(Thunder* parent,Vector2 dir,float vel,float range);
     ~ThunderAttack() override = default;
+    void SetRange(float range) {range_ = range;}
     void Update() override;
 };
