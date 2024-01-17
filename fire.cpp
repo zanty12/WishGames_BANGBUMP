@@ -49,18 +49,21 @@ void Fire::Action()
     {
         //get angle from stick
         float angle = atan2(stick.y, stick.x);
-        if(attack_ == nullptr)
+        if (attack_ == nullptr)
             attack_ = new FireAttack(this);
         //get pos of attack from angle
-        Vector2 pos = Vector2(cos(angle),-sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x /2);
+        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2);
         pos = player_->GetPos() + pos;
         attack_->SetPos(pos);
         attack_->SetRot(angle);
     }
     else
     {
-        delete attack_;
-        attack_ = nullptr;
+        if (attack_ != nullptr)
+        {
+            delete attack_;
+            attack_ = nullptr;
+        }
     }
 }
 
