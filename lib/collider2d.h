@@ -308,14 +308,12 @@ namespace PHYSICS {
 
 				float distance = segment.Distance();
 				float horizontal = Vector2::Dot(direction, normalize);
-				if (i == 0) {
-					i = i;
-				}
 				if (0.0f <= horizontal && horizontal <= distance) {
 					float vertical = -Vector2::Dot(direction, normal);
 					if (0.0f <= vertical && vertical <= a.radius) {
 						return true;
 					}
+					else if (0.0f < vertical) isTouch = false;
 				}
 				else if (horizontal < 0.0f) {
 					if (direction.Distance() <= a.radius) return true;
