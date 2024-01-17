@@ -124,6 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>;$(SolutionDir)\lib\ffmpeg\include\</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -181,6 +182,7 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="skillorb.cpp" />
     <ClCompile Include="skillorbmngr.cpp" />
+    <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="text.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -246,6 +248,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
     <ClInclude Include="skillorbmngr.h" />
+    <ClInclude Include="sound.h" />
     <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="text.h" />

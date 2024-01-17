@@ -16,7 +16,14 @@ const std::map<textures, std::string> Asset::textures_ = {
     {textures::timer, "data/texture/UI/timer.png"},
 };
 
-const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::string>{};
+const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::string>{
+    {sounds::SE_1,"data/sound/enemy_damage_1.wav"},
+    {sounds::SE_2,"data/sound/enemy_damage_2.wav"},
+    {sounds::SE_3,"data/sound/enemy_atk.wav"},
+    {sounds::SE_4,"data/sound/enemy_destroy.wav"},
+    {sounds::SE_5,"data/sound/point_falling_1.wav"},
+    {sounds::SE_6,"data/sound/point_falling_2.wav"},
+};
 
 const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{
     {maps::test, "data/map/1.csv"},

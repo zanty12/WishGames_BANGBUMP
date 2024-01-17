@@ -35,6 +35,13 @@ enum sounds
 {
     //bgm
     //se
+    SE_1,
+    SE_2,
+    SE_3,
+    SE_4,
+    SE_5,
+    SE_6,
+
 };
 
 enum maps

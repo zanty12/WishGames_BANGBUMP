@@ -10,6 +10,7 @@
 #include "text.h"
 #include "time.h"
 #include "video.h"
+#include "sound.h"
 
 bool debug_mode = true;
 
@@ -19,6 +20,9 @@ int main()
     DebugUI::Initialize();
     MSG msg;
     Time::Initialize();
+    WIN::Window window = Graphical::GetHwnd();
+    const HWND hWnd = window.GetHwnd();
+    InitSound(hWnd);
     HRESULT result = Text::CreateResources();
     if (FAILED(result))
     {
@@ -91,6 +95,7 @@ int main()
     DebugUI::Release();
     Time::Release();
     Text::DiscardResources();
+    UninitSound();
 
     std::cout << "Hello World!\n"; //基本
 }
