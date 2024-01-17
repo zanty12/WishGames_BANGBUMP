@@ -234,11 +234,10 @@ void MultiPlayServer::SendUpdate(void) {
 				Vector2 position = skillorb->GetPos();
 				float rotation = skillorb->GetRot();
 				Vector2 scale = skillorb->GetScl();
-				skillorb.get
 				res.objects.push_back({
 					id,										// ID
 					OBJECT_DATA_CLIENT_SIDE::SKILL_POINT,	// tag
-					skillorb.,			// animation
+					0,										// animation
 					position,								// pos
 					rotation,								// rot
 					scale									// scl
