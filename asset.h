@@ -11,13 +11,56 @@
 
 enum textures
 {
+    texture_none = -1,  //テクスチャ無し
+
     //player
     player,
+    player1_12_idle,
+    player1_13_idle,
+    player1_14_idle,
+    player1_21_idle,
+    player1_23_idle,
+    player1_24_idle,
+    player1_31_idle,
+    player1_32_idle,
+    player1_34_idle,
+    player1_41_idle,
+    player1_42_idle,
+    player1_43_idle,
+
     //attibute_move
+    fire_move,
+    dark_move,
+    thunder_move,
+    wind_move,
+    dark_move_charge,
+    thunder_move_charge,
+
     //attibute_attack
     fire_attack,
+    dark_attack,
+    thunder_attack,
     wind_attack,
+
     //enemy
+    enemy1_anim,
+    enemy2_anim,
+    enemy3_anim,
+    enemy2_attack,
+
+    //boss
+    boss_idle,
+
+    //effect
+    effect_dead,
+    effect_enemydead,
+    effect_spawn,
+    effect_hit,
+    effect_hit_fire,
+    effect_hit_dark,
+    effect_hit_thunder,
+    effect_hit_wind,
+
     //block
     skill_orb,
     //background

@@ -9,47 +9,32 @@
 
 struct ANIM_DATA
 {
-    int texNo;
-    int matrix_num_x, matrix_num_y;
+    textures texture_enum;
 
     int loop_start_x, loop_start_y;
     int loop_end_x, loop_end_y;
 
-    ANIM_DATA() {}
+    ANIM_DATA() {}; //消すとエラー
     //----------------------------------------
-    // int tex_number   テクスチャナンバー
-    // int x_num        よこ方向の画像の数
-    // int y_num        たて方向の画像の数
     // int start_x      ループアニメのスタート画像[よこ]（右端 = 0）
     // int start_y      ループアニメのスタート画像[たて]（上端 = 0）
     // int end_x        ループアニメの終端画像[よこ]
     // int end_y        ループアニメの終端画像[たて]
+    // textures texture_enum   テクスチャenum
     //----------------------------------------
-    ANIM_DATA(int tex_number, int x_num, int y_num, int start_x, int start_y, int end_x, int end_y)
+    ANIM_DATA(int start_x, int start_y, int end_x, int end_y, textures texture = texture_none)
     {
-        texNo = tex_number;
-        matrix_num_x = x_num;
-        matrix_num_y = y_num;
+        texture_enum = texture;
+
         loop_start_x = start_x;
         loop_start_y = start_y;
         loop_end_x = end_x;
         loop_end_y = end_y;
     }
     //----------------------------------------
-// int tex_number   テクスチャナンバー
-// int x_num        よこ方向の画像の数
-// int y_num        たて方向の画像の数
-//----------------------------------------
-    ANIM_DATA(int tex_number, int x_num, int y_num)
-    {
-        texNo = tex_number;
-        matrix_num_x = x_num;
-        matrix_num_y = y_num;
-        loop_start_x = 0;
-        loop_start_y = 0;
-        loop_end_x = x_num - 1;
-        loop_end_y = y_num - 1;
-    }
+    // textures texture_enum   テクスチャenum
+    //----------------------------------------
+    ANIM_DATA(textures texture);
 };
 
 //ここに全てのアニメーションの名前を書く
@@ -57,10 +42,44 @@ enum LOOP_ANIM
 {
     MULTI_NONE = -1,
 
-    PLAYER,
-    ENEMY_1,
-    ENEMY_2,
-    ENEMY_3,
+    //player
+    PLAYER_IDOL_ANIM,    //待機
+    PLAYER_MOVE_ANIM,    //移動
+    PLAYER_ATTACK_ANIM,  //攻撃
+
+    //attibute_move
+    FIRE_MOVE_ANIM,
+    DARK_MOVE_ANIM,
+    THUNDER_MOVE_ANIM,
+    WIND_MOVE_ANIM,
+    DARK_MOVE_CHARGE_ANIM,
+    THUNDER_MOVE_CHARGE_ANIM,
+
+    //attibute_attack
+    FIRE_ATTACK_ANIM,
+    DARK_ATTACK_ANIM,
+    THUNDER_ATTACK_ANIM,
+    WIND_ATTACK_ANIM,
+
+
+    //enemy
+    ENEMY_1_ANIM,
+    ENEMY_2_ANIM,
+    ENEMY_3_ANIM,
+
+    //boss
+    BOSS_IDLE_ANIM,
+
+    //effect
+    EFFECT_DEAD_ANIM,
+    EFFECT_ENEMYDEAD_ANIM,
+    EFFECT_SPAWN_ANIM,
+    EFFECT_HIT_ANIM,
+    EFFECT_HIT_FIRE_ANIM,
+    EFFECT_HIT_DARK_ANIM,
+    EFFECT_HIT_THUNDER_ANIM,
+    EFFECT_HIT_WIND_ANIM,
+
 
 };
 
@@ -100,7 +119,7 @@ private:
     textures texture_enum_;       //そのオブジェクトが持つテクスチャのenum textures
 
 public:
-    Animator() = delete;
+    Animator();
 
     Animator(GameObject* game_object);
     //--------------------------------------------------------------------------------
@@ -200,4 +219,5 @@ private:
     void InitDictionary(void);
     void LoopAnimation(void);
     void Reset(void);
+    void PlayerAnim(void);
 };
