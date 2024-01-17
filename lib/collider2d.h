@@ -313,15 +313,15 @@ namespace PHYSICS {
 				}
 				if (0.0f <= horizontal && horizontal <= distance) {
 					float vertical = -Vector2::Dot(direction, normal);
-					if (vertical > a.radius) {
-						isTouch = false;
+					if (0.0f <= vertical && vertical <= a.radius) {
+						return true;
 					}
 				}
 				else if (horizontal < 0.0f) {
-					if (direction.Distance() > a.radius) isTouch = false;
+					if (direction.Distance() <= a.radius) return true;
 				}
 				else {
-					if (Vector2::Distance(a.a, endPosition) > a.radius) isTouch = false;
+					if (Vector2::Distance(a.a, endPosition) <= a.radius) return true;
 				}
 			}
 
