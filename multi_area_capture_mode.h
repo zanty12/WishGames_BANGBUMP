@@ -63,7 +63,7 @@ private:
 public:
 	MultiPlayAreaCaptureModeClientSide(GameBase *game) : 
 		areaTexNo(LoadTexture("data/texture/area_capture.png")), 
-		anim(new Animator(&playerObject, 1, true, 1, 1, 1)),
+		anim(new Animator(&playerObject)),
 		MultiPlayClientSide(new MapMngr("data/map/MultiPlay_Map1.csv", game)) {
 
 	}

@@ -143,9 +143,8 @@ void MultiPlayAreaCaptureModeClientSide::Draw(RESPONSE_PLAYER &players) {
 		anim->SetTexNo(areaTexNo);
 		anim->SetPos(area.position);
 		anim->SetScale(Vector2(area.radius, area.radius));
-		anim->Draw(Vector2(0.0f, players.clients.begin()->position.y));
+		return;
 	}
-	anim->SetTexNo(-1);
 }
 
 void MultiPlayAreaCaptureModeClientSide::ParseResponse(Storage &in) {

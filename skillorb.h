@@ -148,6 +148,7 @@ public:
     Vector2 GetScl(void) { return gameObject_ ? gameObject_->GetScale() : Vector2(); }
     std::string GetID(void) { return gameObject_ ? gameObject_->GetID() : ""; }
     bool GetDiscard(void) { return gameObject_ ? gameObject_->GetDiscard() : false; }
+    GameObject *GetGameObject(void) { return gameObject_ ? gameObject_ : nullptr; }
 };
 
 class SkillOrbMovable : public MovableObj, public SkillOrb

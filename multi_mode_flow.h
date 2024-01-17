@@ -18,6 +18,7 @@ class MultiPlayFlowServerSide {
 private:
 	MultiPlayServerSide *gameMode_ = nullptr;
 	MultiPlayServer *game_ = nullptr;
+	DWORD startTime = 0ul;
 
 
 
