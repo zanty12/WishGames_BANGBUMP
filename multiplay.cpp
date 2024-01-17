@@ -220,7 +220,8 @@ void MultiPlayServer::SendUpdate(void) {
 			// クライアント情報の登録
 			for (auto &client : clients_) {
 				res.clients.push_back({ 
-					client.header.id, client.moveAttribute, client.actionAttribute, 
+					client.header.id, 
+					client.moveAttribute, client.actionAttribute, 
 					client.player_->GetPos(), client.player_->GetColor(),
 					0, client.player_->GetSkillPoint(), 0}
 				);
@@ -233,10 +234,11 @@ void MultiPlayServer::SendUpdate(void) {
 				Vector2 position = skillorb->GetPos();
 				float rotation = skillorb->GetRot();
 				Vector2 scale = skillorb->GetScl();
+				skillorb.get
 				res.objects.push_back({
 					id,										// ID
 					OBJECT_DATA_CLIENT_SIDE::SKILL_POINT,	// tag
-					OBJECT_DATA_CLIENT_SIDE::NONE,			// animation
+					skillorb.,			// animation
 					position,								// pos
 					rotation,								// rot
 					scale									// scl
