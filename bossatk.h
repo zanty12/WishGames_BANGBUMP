@@ -45,7 +45,10 @@ private:
 	float time_;
 	float speed_;
 	Vector2 boss_pos_;
-
+	Vector2 Sp, Ep;
+	Vector2 N;		//法線ベクトル
+	Vector2 v = Ep - Sp;
+	Vector2 vel_;
 
 public:
 	Boss_Wind() = delete;
@@ -53,6 +56,9 @@ public:
 
 	Boss_Wind(Vector2 pos);
 	void Update() override;
+
+	void Reflection(float spx, float spy, float epx, float epy, float velx, float vely);
+
 
 };
 class Boss_Water : public MovableObj

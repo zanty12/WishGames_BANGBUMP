@@ -11,7 +11,7 @@
 
 //--------------‰Î------------------------------------//
 Boss_Fire::Boss_Fire(Vector2 pos)
-	: MovableObj(pos - Vector2(SIZE_ * 2, SIZE_ * 2), 0.0f, LoadTexture("data/texture/wall.png"), Vector2::Zero)
+	: MovableObj(pos - Vector2(SIZE_ * 2, SIZE_ * 2), 0.0f, LoadTexture("data/texture/fire_.png"), Vector2::Zero)
 {
 	SetRot(3.14f / 2);
 	SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
@@ -91,37 +91,84 @@ void Boss_Thunder::Update()
 
 //--------------•—------------------------------------//
 Boss_Wind::Boss_Wind(Vector2 pos)
-	: MovableObj(pos - Vector2(0.0f, SIZE_ * 4), 0.0f, LoadTexture("data/texture/wall.png"), Vector2::Zero)
+	: MovableObj(pos - Vector2(0.0f, SIZE_ * 4), 0.0f, LoadTexture("data/texture/wind.png"), Vector2::Zero)
 {
 	SetScale(Vector2(SIZE_ * 3, SIZE_ * 3));
-	speed_ = 96.0f * 8;
+	speed_ = 96.0f * 6;
 	boss_pos_ = pos;
 	time_ = 0;
 	SetType(OBJ_ATTACK);
 	//GetCollider()->SetBounciness(0.3f);
 	float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //‰Šú‰»Žž‚ÌƒGƒ‰[‚ð‰ñ”ð‚·‚é
 	SetVel(Vector2(-speed_ * dt, -speed_ * dt));
-
+	
 }
 void Boss_Wind::Update()
 {
 	time_ += Time::GetDeltaTime();
+	std::list<Collider*> collisions = GetCollider()->GetCollision();
 
-	if (time_ > 4.0f)
+	for (auto collision : collisions)
+	{
+		OBJECT_TYPE type = collision->GetParent()->GetType();
+		Vector2 direction = collision->GetParent()->GetPos() - GetPos();
+
+		switch (type)
+		{
+		case OBJ_SOLID:
+			if (direction.x)
+			{
+				Reflection((collision->GetPos().x + 48.0f), (collision->GetPos().y + 48.0f), (collision->GetPos().x + 48.0f), (collision->GetPos().y - 48.0f), GetVel().x, GetVel().y);
+			}
+			else if (GetPos().x > collision->GetPos().x)
+			{
+				Reflection((collision->GetPos().x - 48.0f), (collision->GetPos().y + 48.0f), (collision->GetPos().x - 48.0f), (collision->GetPos().y - 48.0f), GetVel().x, GetVel().y);
+			}
+			else if (GetPos().y < collision->GetPos().y)
+			{
+				Reflection((collision->GetPos().x - 48.0f), (collision->GetPos().y - 48.0f), (collision->GetPos().x + 48.0f), (collision->GetPos().y - 48.0f), GetVel().x, GetVel().y);
+			}
+			else if (GetPos().y > collision->GetPos().y)
+			{
+				Reflection((collision->GetPos().x - 48.0f), (collision->GetPos().y + 48.0f), (collision->GetPos().x + 48.0f), (collision->GetPos().y + 48.0f), GetVel().x, GetVel().y);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (time_ > 3.0f)
 		Discard();
-
-
-
-
 
 
 	this->AddVel(GetVel());
 }
 
+void Boss_Wind::Reflection(float spx, float spy, float epx, float epy, float velx, float vely)
+{
+	Sp.x = spx;
+	Sp.y = spy;
+	Ep.x = epx;
+	Ep.y = epy;
+	N.x = -v.y;
+	N.y = v.x;
+	N = N.Normalize();
+	vel_.x = velx;
+	vel_.y = vely;
+	float T = (-vel_.x * N.x) + (-vel_.y * N.y) * 2;
+	Vector2 reflection_vel_;
+	reflection_vel_ = T * N;
+	
+	Vector2 reflection_ = vel_ + reflection_vel_;
+
+
+}
+
 
 //--------------…------------------------------------//
 Boss_Water::Boss_Water(Vector2 pos)
-	: MovableObj(pos - Vector2(0.0f, SIZE_ * 10), 0.0f, LoadTexture("data/texture/wall.png"), Vector2::Zero)
+	: MovableObj(pos - Vector2(0.0f, SIZE_ * 10), 0.0f, LoadTexture("data/texture/water.png"), Vector2::Zero)
 {
 	SetScale(Vector2(SIZE_ * 3, SIZE_ * 10));
 	boss_pos_ = pos;
@@ -134,7 +181,7 @@ void Boss_Water::Update()
 {
 	time_ += Time::GetDeltaTime();
 
-	if (time_ > 3.0f)
+	if (time_ > 2.5f)
 		Discard();
 }
 

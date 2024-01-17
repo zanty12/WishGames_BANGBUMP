@@ -29,7 +29,7 @@ void Boss::Update()
 
     time_ += Time::GetDeltaTime();
 
-    if (time_ > 1.0f)
+    if (time_ > 5.0f)
     {
         time_ = 0;
         if (atk_now == false)
@@ -44,8 +44,7 @@ void Boss::Update()
 
     if (atk_now == true)
     {
-        Thunder();
-        //Wind();
+        Wind();
         //Atk();
         atk_now = false;
     }
@@ -64,24 +63,6 @@ SkillOrb* Boss::DropSkillOrb()
 
 void Boss::Atk()
 {
-    /*int boosrand = rand() % 100;
-    if (boosrand < 10)
-    {
-
-    }
-    else if (boosrand > 10 && boosrand < 30)
-    {
-        Fire();
-    }
-    else if (boosrand > 30 && boosrand < 60)
-    {
-
-    }
-    else if (boosrand > 60 && boosrand < 100)
-    {
-
-    }*/
-
     std::random_device rd;
     std::uniform_int_distribution<> dist(0, 100);
     int boosrand = dist(rd);
@@ -164,13 +145,6 @@ void Boss::Wind()
     Boss_Wind* wind = new Boss_Wind(startPosition);
     atk_time_ += Time::GetDeltaTime();
     GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(wind);
-    
-    if (GetCellTypeWall())
-    {
-        wind->SetVel(Vector2(wind->GetPos().x * -1, wind->GetPos().y));
-    }
-    
-
     
         if (atk_time_ > (1.0f / 4))
         {
