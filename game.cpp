@@ -14,14 +14,12 @@ Game::Game(SceneMngr* scene_mngr)
 {
 
    //mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_1).c_str(), this);
-   mapmngr_ = new MapMngr("data/map/2.csv", this);
-   //int playertex = LoadTexture("data/texture/player.png");
     mapmngr_ = new MapMngr("data/map/2.csv", this);
-    Player* player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, Vector2(0.0f, 0.0f), mapmngr_);
+   //int playertex = LoadTexture("data/texture/player.png");
     //mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_1).c_str(), this);
-    text_format_ = Text::MakeTextFormat(L"ワープロ明朝", 50, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL);
+    /*text_format_ = Text::MakeTextFormat(L"ワープロ明朝", 50, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL);
     brush_ = Text::MakeBrush(Color(1.0f, 1.0f, 1.0f, 1.0f));
-    timer_tex_ = LoadTexture(Asset::GetAsset(timer));
+    timer_tex_ = LoadTexture(Asset::GetAsset(timer));*/
     //int playertex = LoadTexture("data/texture/player.png");
 
     /*Player *player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, Vector2(0.0f, 0.0f), mapmngr_);
