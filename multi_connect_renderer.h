@@ -47,6 +47,7 @@ private:
 			anim->SetPos(object.position);
 			anim->SetRot(object.rotation);
 			anim->SetScale(object.scale);
+			anim->SetTexenum(object.texture_enum);
 
 			//anim->Draw();
 		}

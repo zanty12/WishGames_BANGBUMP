@@ -224,6 +224,7 @@
     <ClInclude Include="graphical.h" />
     <ClInclude Include="enemy1.h" />
     <ClInclude Include="id.h" />
+    <ClInclude Include="image_data.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />
     <ClInclude Include="lib\imgui\imgui_impl_dx11.h" />

@@ -48,6 +48,7 @@ struct CLIENT_DATA_CLIENT_SIDE {
 	int score = 0;						// スコア
 	int skillPoint = 0;					// スキルポイント
 	int previousSkillPoint = 0;			// 1ゲーム前のスキルポイント
+	textures texture_enum;				//enum textures
 };
 // クライアントデータ（サーバー側）
 struct CLIENT_DATA_SERVER_SIDE {
@@ -92,6 +93,7 @@ struct OBJECT_DATA_CLIENT_SIDE {
 	Vector2 position;
 	float rotation = 0.0f;
 	Vector2 scale = Vector2(75, 75);
+	textures texture_enum;
 };
 
 

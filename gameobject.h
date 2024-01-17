@@ -59,6 +59,8 @@ private:
     bool is_discard_ = false; //破棄するかどうか
     std::string id_;
 
+    textures texture_enum_; //そのオブジェクトが持つテクスチャのenum textures
+
 public:
     static constexpr float SIZE_ = 64.0f; //１マスの標準サイズ
     GameObject() = default;
@@ -91,7 +93,8 @@ public:
     void Discard(); //破棄する
     bool GetDiscard() const { return is_discard_; } //破棄するかどうか
     std::string GetID() const { return id_; } //IDゲット
-
+    void SetTexenum(textures texture_enum) { texture_enum_ = texture_enum; } //enum texturesセット
+    textures GetTexenum() { return texture_enum_; } //enum texturesゲット
 
     virtual void Update(void) = 0;
 

@@ -5,6 +5,7 @@
 #include "lib/vector.h"
 #include "graphical.h"
 #include "sprite.h"
+#include "asset.h"
 
 struct ANIM_DATA
 {
@@ -96,6 +97,8 @@ private:
 
     int invert_ = 1;              //反転
 
+    textures texture_enum_;       //そのオブジェクトが持つテクスチャのenum textures
+
 public:
     Animator() = delete;
 
@@ -164,6 +167,8 @@ public:
     }
     bool GetIsMovable(void) const { return isMovable_; }
     void SetIsMovable(bool isMovable) { isMovable_ = isMovable; }
+    void SetTexenum(textures texture_enum) { texture_enum_ = texture_enum; } //enum texturesセット
+    textures GetTexenum() { return texture_enum_; } //enum texturesゲット
 
     void SetIsLoop(bool is_loop) { is_loop_ = is_loop; }    //ループの設定（treu=ループ）
     void SetImgChangeTime(float img_change_time) { img_change_time_ = img_change_time; }    //次の画像に切り替える間隔 [1.0f=１秒]
