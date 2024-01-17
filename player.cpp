@@ -87,14 +87,15 @@ void Player::Update(void)
 		SetVel(Vector2(next_vel.x, next_vel.y));
 	}
 
-	if (attack_attribute_ != nullptr)
-	{
-		attack_attribute_->Action();
-	}
+
 
 	UpdateDir();
 
 	AddVel(GetVel());
+	if (attack_attribute_ != nullptr)
+	{
+		attack_attribute_->Action();
+	}
 
 	CollisionAction();
 
