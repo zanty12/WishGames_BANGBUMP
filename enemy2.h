@@ -24,6 +24,11 @@ public:
         SetAtk(10);
         SetHp(30);
         atk_time_ = 0;
+
+        // アニメーター設定
+        SetTexenum(enemy2_anim);
+        GetAnimator()->SetTexenum(GetTexenum());
+        GetAnimator()->SetLoopAnim(ENEMY_2_ANIM);
     }
 
 

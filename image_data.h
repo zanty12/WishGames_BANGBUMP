@@ -6,9 +6,12 @@
 
 struct IMAGE_DATA
 {
-	int texNo;
-	int xMatrixNum;
-	int yMatrixNum;
+	//未登録は-1を返すようにする
+	int texNo = -1;	//テクスチャナンバー
+
+	//0で割るとエラーなのでそれの防止
+	int xMatrixNum = 1;	//横の画像の数
+	int yMatrixNum = 1;	//縦の画像の数
 
 	IMAGE_DATA() {}	//消すとエラー
 
@@ -38,6 +41,8 @@ public:
 			return;
 		}
 
+		img_data_[texture_none] = IMAGE_DATA(-1, 1, 1);	//返す値を-1にして描画しないようにする
+
 		//★完成した素材をセットしていく★
 		//player
 		img_data_[player] = IMAGE_DATA(LoadTexture(Asset::GetAsset(player)), 1, 1);
@@ -60,6 +65,7 @@ public:
 		img_data_[enemy1_anim] = IMAGE_DATA(LoadTexture(Asset::GetAsset(enemy1_anim)), 5, 4);
 		img_data_[enemy2_anim] = IMAGE_DATA(LoadTexture(Asset::GetAsset(enemy2_anim)), 5, 6);
 		img_data_[enemy3_anim] = IMAGE_DATA(LoadTexture(Asset::GetAsset(enemy3_anim)), 5, 6);
+		img_data_[enemy2_attack] = IMAGE_DATA(LoadTexture(Asset::GetAsset(enemy2_attack)), 5, 6);
 
 		//boss
 		img_data_[boss_idle] = IMAGE_DATA(LoadTexture(Asset::GetAsset(boss_idle)), 5, 9);

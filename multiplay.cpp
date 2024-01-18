@@ -503,6 +503,7 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	if (gameMode) gameMode->Draw(res_);
 	renderer_->CheckDiscard();
 	coll_mngr_->CheckDiscard();
+	renderer_->Update();		// アニメーターのUV値アップデート
 	multiRenderer_->Draw(res_);
 	renderer_->Draw(camera_);
 }

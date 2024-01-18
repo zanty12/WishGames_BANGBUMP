@@ -24,6 +24,12 @@ ANIM_DATA::ANIM_DATA(textures texture)
 //★それぞれのアニメーションごとに設定していく★
 void Animator::InitDictionary(void)
 {
+    //map登録用
+    if (ImageDataDictionary::setup_ == false)
+    {
+        ImageDataDictionary imgData;
+    }
+
     //DICTIONARY_[PLAYER] = ANIM_DATA(LoadTexture(Asset::GetAsset(player)), 5, 6);
 
     //player
@@ -50,6 +56,7 @@ void Animator::InitDictionary(void)
     DICTIONARY_[ENEMY_1_ANIM] = ANIM_DATA(0, 0, 2, 3, enemy1_anim);
     DICTIONARY_[ENEMY_2_ANIM] = ANIM_DATA(enemy2_anim);
     DICTIONARY_[ENEMY_3_ANIM] = ANIM_DATA(enemy3_anim);
+    DICTIONARY_[ENEMY_2_ATTACK] = ANIM_DATA(enemy2_attack);
 
     //boss
     DICTIONARY_[BOSS_IDLE_ANIM] = ANIM_DATA(0, 0, 3, 8, boss_idle);
@@ -65,8 +72,7 @@ void Animator::InitDictionary(void)
     DICTIONARY_[EFFECT_HIT_WIND_ANIM] = ANIM_DATA(effect_hit_wind);
 
 
-    //map登録用
-    ImageDataDictionary imgData;
+
 }
 
 Animator::Animator()
@@ -139,6 +145,11 @@ void Animator::Update(void)
         color_ = parent_->GetColor();
     }
 
+    if (loop_anim_ != loop_anim_next_)
+    {
+        Reset();
+    }
+
     if (!isAnim_)
     {
         return; //アニメーションしないならば抜ける
@@ -146,12 +157,9 @@ void Animator::Update(void)
 
     now_time_ += Time::GetDeltaTime();
 
-    if (loop_anim_ != loop_anim_next_)
-    {
-        Reset();
-    }
+
     //アニメーションができない状態なら抜ける
-    if (loop_anim_ == MULTI_NONE && x_matrix_num_ == 0 && y_matrix_num_ == 0)
+    if (loop_anim_ == MULTI_NONE && x_matrix_num_ <= 1 && y_matrix_num_ <= 1)
     {
         isAnim_ = false;
         return;
@@ -200,6 +208,7 @@ void Animator::Reset(void)
     }
 
     isAnim_ = true;
+    is_loop_ = true;
 
     //DICTIONARY_にテクスチャデータが登録されていればそれを使う
     if (DICTIONARY_[loop_anim_].texture_enum != texture_none)
@@ -218,25 +227,32 @@ void Animator::Reset(void)
         y_matrix_num_ = ImageDataDictionary::img_data_[texture_enum_].yMatrixNum;
     }
 
+    //シングルプレイの時の画像マトリックス設定
+    if (parent_ && parent_->GetType() == OBJ_PLAYER)
+    {
+        Player* player = dynamic_cast<Player*>(parent_);
+        if (player != nullptr)
+        {
+            PlayerAnim(player->GetAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute());
+        }
+    }
+
     now_matrix_number_ = x_matrix_num_ * DICTIONARY_[loop_anim_].loop_start_y + DICTIONARY_[loop_anim_].loop_start_x - 1;//この後インクリメントするので1引いておく
 }
 
-void Animator::PlayerAnim(void)
+void Animator::PlayerAnim(ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack)
 {
-    Player* player = dynamic_cast<Player*>(parent_);
-    if (player == nullptr)
-    {
-        return;
-    }
+
+
 
     //移動アトリビュートがTHUNDERの時
-    if (player->GetAttribute()->GetAttribute() == ATTRIBUTE_TYPE_THUNDER)
+    if (move == ATTRIBUTE_TYPE_THUNDER)
     {
         x_matrix_num_ = 5;
         y_matrix_num_ = 20;
     }
     //攻撃アトリビュートがTHUNDERの時
-    else if (player->GetAttackAttribute()->GetAttribute() == ATTRIBUTE_TYPE_THUNDER)
+    else if (attack == ATTRIBUTE_TYPE_THUNDER)
     {
         x_matrix_num_ = 5;
         y_matrix_num_ = 16;

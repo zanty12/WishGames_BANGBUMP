@@ -6,6 +6,7 @@
 #include "graphical.h"
 #include "sprite.h"
 #include "asset.h"
+#include "attribute_type.h"
 
 struct ANIM_DATA
 {
@@ -69,6 +70,7 @@ enum LOOP_ANIM
     ENEMY_1_ANIM,
     ENEMY_2_ANIM,
     ENEMY_3_ANIM,
+    ENEMY_2_ATTACK,
 
     //boss
     BOSS_IDLE_ANIM,
@@ -195,7 +197,8 @@ public:
     void SetIsLoop(bool is_loop) { is_loop_ = is_loop; }    //ループの設定（treu=ループ）
     void SetImgChangeTime(float img_change_time) { img_change_time_ = img_change_time; }    //次の画像に切り替える間隔 [1.0f=１秒]
 
-    void SetLoopImg(LOOP_ANIM loop_anim) { loop_anim_next_ = loop_anim; }    //ループするイメージの設定
+    void SetLoopAnim(LOOP_ANIM loop_anim) { loop_anim_next_ = loop_anim; }    //ループするアニメーションの設定
+    LOOP_ANIM GetLoopAnim(void) const { return loop_anim_; }                  //今ループしているアニメーション
 
     float UWidth(void) const { return (1.0f / x_matrix_num_) * invert_; }    //UV(U)の幅を取得
     float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)の高さを取得
@@ -218,9 +221,11 @@ public:
 
     void RendererRegister(void);    //レンダラーに登録
 
+    void PlayerAnim(ATTRIBUTE_TYPE move,ATTRIBUTE_TYPE attack);
+
 private:
     void InitDictionary(void);
     void LoopAnimation(void);
     void Reset(void);
-    void PlayerAnim(void);
+
 };

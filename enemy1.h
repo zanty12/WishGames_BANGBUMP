@@ -28,6 +28,11 @@ public:
         SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
         SetAtk(5);
         SetHp(20);
+
+        // アニメーター設定
+        SetTexenum(enemy1_anim);
+        GetAnimator()->SetTexenum(GetTexenum());
+        GetAnimator()->SetLoopAnim(ENEMY_1_ANIM);
     }
 
     void Update() override;
