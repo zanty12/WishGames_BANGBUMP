@@ -110,6 +110,8 @@ void MultiPlayServer::PlayerUpdate(void) {
 	std::cout << "UPD LOCK";
 #endif
 
+	// スキルオーブの更新
+	map.GetSkillOrbs()->AllLoop();
 	for (auto &skillOrb : *map.GetSkillOrbs()) {
 		auto orb = skillOrb.Cast<ServerSkillOrb>();
 
@@ -126,7 +128,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 		}
 	}
 
-	// プレイヤーの移動
+	// プレイヤーの更新
 	for (auto &kvp : clients_) {
 		auto &client = kvp.second;
 		auto &player = client.player_;
@@ -468,10 +470,22 @@ void MultiPlayClient::Unregister() {
 }
 
 void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
+	// カメラ座標の計算
 	if (res.clients.size()) cameraPos = Vector2(0.0f, res.clients.begin()->position.y - Graphical::GetHeight() * 0.75f);
-	//map.Draw(cameraPos);
 
+	// ゲームモードの描画
 	gameMode->Draw(res, cameraPos);
+
+	for (auto &object : res.objects) {
+		if (object.tag == OBJECT_DATA_CLIENT_SIDE::SKILL_POINT) {
+			DrawSprite(
+				LoadTexture(Asset::textures_.at(textures::skill_orb)),
+				object.position - cameraPos, 0.0, Vector2::One * 100, Color::White
+			);
+		}
+	}
+
+	// プレイヤーの描画
 	for (auto &client : res.clients) {
 		DrawSprite(texNo, client.position - cameraPos, 0.0, Vector2::One * 100, Color::White);
 	}

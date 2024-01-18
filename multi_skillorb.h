@@ -6,6 +6,6 @@ class ServerSkillOrb : public ServerGameObject {
 public:
 
 
-	ServerSkillOrb() { };
-	ServerSkillOrb(Transform transform) : ServerGameObject(transform) { }
+	ServerSkillOrb() { radius = 50.0f; };
+	ServerSkillOrb(Transform transform) : ServerGameObject(transform) { radius = 50.0f; }
 };
