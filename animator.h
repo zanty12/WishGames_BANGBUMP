@@ -44,8 +44,11 @@ enum LOOP_ANIM
 
     //player
     PLAYER_IDOL_ANIM,    //待機
-    PLAYER_MOVE_ANIM,    //移動
     PLAYER_ATTACK_ANIM,  //攻撃
+    PLAYER_FD_MOVE_ANIM,    //fire,dark移動
+    PLAYER_TW_MOVE_ANIM,    //thunder,wind移動
+    PLAYER_TM_CHARGE_ANIM,  //thunder移動チャージ
+    PLAYER_TA_CHARGE_ANIM,  //thunderアタックチャージ
 
     //attibute_move
     FIRE_MOVE_ANIM,
@@ -107,7 +110,7 @@ private:
     int loop_start_x_, loop_start_y_;   //ループする初めの場所
     int loop_end_x_, loop_end_y_;       //ループする終わりの場所
     bool is_loop_ = false;              //ループ判定（treu=ループ）
-    float img_change_time_ = 0.0f;          //画像を切り替える時間の間隔
+    float img_change_time_ = 0.0333f;          //画像を切り替える時間の間隔
     float now_time_ = 0.0f;
 
     int now_matrix_number_ = 0;   //現在の行列の位置
@@ -160,7 +163,7 @@ public:
         const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
         if (isAnim_)
         {
-            DrawSpriteLeftTop(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
+            DrawSprite(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
                 Vector2(scale_.x * scale_x, scale_.y * scale_y), color_, Vector2(GetU(), GetV()), Vector2(UWidth(), VHeight()));
         }
         else

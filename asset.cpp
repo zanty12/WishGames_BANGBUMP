@@ -8,7 +8,7 @@ const std::map<textures, std::string> Asset::textures_ = {
 
     //attibute_move
     {textures::fire_move, "data/texture/Move/effect_fire_move.png"},
-    {textures::dark_move, "data/texture/Move/effect_dark_move.png"},
+    {textures::dark_move, "data/texture/Move/effect_water_move.png"},
     {textures::thunder_move, "data/texture/Move/effect_thunder_move.png"},
     {textures::wind_move, "data/texture/Move/effect_wind_move.png"},
     {textures::dark_move_charge, "data/texture/Move/effect_water_charge.png"},
@@ -33,11 +33,11 @@ const std::map<textures, std::string> Asset::textures_ = {
     {textures::effect_dead,"data/texture/Effect/effect_dead.png"},
     {textures::effect_enemydead,"data/texture/Effect/effect_enemydead.png"},
     {textures::effect_spawn,"data/texture/Effect/effect_spawn.png"},
-    {textures::effect_hit,"data/texture/HitEffect/Effect/effect_hit_all.png"},
-    {textures::effect_hit_fire,"data/texture/HitEffect/Effect/effect_hit_fire.png"},
-    {textures::effect_hit_dark,"data/texture/HitEffect/Effect/effect_hit_water.png"},
-    {textures::effect_hit_thunder,"data/texture/HitEffect/Effect/effect_hit_thunder.png"},
-    {textures::effect_hit_wind,"data/texture/HitEffect/Effect/effect_hit_wind.png"},
+    {textures::effect_hit,"data/texture/Effect/HitEffect/effect_hit_all.png"},
+    {textures::effect_hit_fire,"data/texture/Effect/HitEffect/effect_hit_fire.png"},
+    {textures::effect_hit_dark,"data/texture/Effect/HitEffect/effect_hit_water.png"},
+    {textures::effect_hit_thunder,"data/texture/Effect/HitEffect/effect_hit_thunder.png"},
+    {textures::effect_hit_wind,"data/texture/Effect/HitEffect/effect_hit_wind.png"},
 
     {textures::skill_orb, "data/texture/blocks/skillorb.png"},
     {textures::bg_stage1_front, "data/texture/bg/BG_stage1_front.png"},

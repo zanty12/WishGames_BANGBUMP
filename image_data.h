@@ -29,9 +29,15 @@ class ImageDataDictionary
 {
 public:
 	static std::map<textures, IMAGE_DATA> img_data_;
+	static bool setup_;
 
 	ImageDataDictionary()
 	{
+		if (setup_)
+		{
+			return;
+		}
+
 		//šŠ®¬‚µ‚½‘fŞ‚ğƒZƒbƒg‚µ‚Ä‚¢‚­š
 		//player
 		img_data_[player] = IMAGE_DATA(LoadTexture(Asset::GetAsset(player)), 1, 1);
@@ -68,5 +74,6 @@ public:
 		img_data_[effect_hit_thunder] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_hit_thunder)), 5, 2);
 		img_data_[effect_hit_wind] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_hit_wind)), 5, 2);
 
+		setup_ = true;
 	}
 };

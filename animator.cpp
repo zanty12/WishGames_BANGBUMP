@@ -9,6 +9,7 @@
 #include "image_data.h"
 
 std::map<textures, IMAGE_DATA> ImageDataDictionary::img_data_;
+bool ImageDataDictionary::setup_ = false;
 
 //textures enumのみの登録
 ANIM_DATA::ANIM_DATA(textures texture)
@@ -26,7 +27,10 @@ void Animator::InitDictionary(void)
     //DICTIONARY_[PLAYER] = ANIM_DATA(LoadTexture(Asset::GetAsset(player)), 5, 6);
 
     //player
-
+    DICTIONARY_[PLAYER_IDOL_ANIM] = ANIM_DATA(0, 0, 4, 5);
+    DICTIONARY_[PLAYER_ATTACK_ANIM] = ANIM_DATA(6, 0, 3, 7);
+    DICTIONARY_[PLAYER_FD_MOVE_ANIM] = ANIM_DATA(4, 7, 3, 13);
+    DICTIONARY_[PLAYER_TW_MOVE_ANIM] = ANIM_DATA(4, 7, 4, 7);
 
     //move
     DICTIONARY_[FIRE_MOVE_ANIM] = ANIM_DATA(fire_move);
@@ -61,6 +65,8 @@ void Animator::InitDictionary(void)
     DICTIONARY_[EFFECT_HIT_WIND_ANIM] = ANIM_DATA(effect_hit_wind);
 
 
+    //map登録用
+    ImageDataDictionary imgData;
 }
 
 Animator::Animator()
