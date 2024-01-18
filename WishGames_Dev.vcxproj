@@ -172,12 +172,14 @@
     <ClCompile Include="movableobj.cpp" />
     <ClCompile Include="multiplay.cpp" />
     <ClCompile Include="multi_area_capture_mode.cpp" />
+    <ClCompile Include="multi_attribute.cpp" />
     <ClCompile Include="multi_behavior.cpp" />
     <ClCompile Include="multi_character_select_mode.cpp" />
     <ClCompile Include="multi_map.cpp" />
     <ClCompile Include="multi_mode_flow.cpp" />
     <ClCompile Include="multi_object.cpp" />
     <ClCompile Include="multi_player.cpp" />
+    <ClCompile Include="multi_skillorb.cpp" />
     <ClCompile Include="number.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
@@ -242,7 +244,9 @@
     <ClInclude Include="map.h" />
     <ClInclude Include="mapmngr.h" />
     <ClInclude Include="multiplay.h" />
+    <ClInclude Include="multi_animenum.h" />
     <ClInclude Include="multi_area_capture_mode.h" />
+    <ClInclude Include="multi_attribute.h" />
     <ClInclude Include="multi_behavior.h" />
     <ClInclude Include="multi_character_select_mode.h" />
     <ClInclude Include="multi_client_gameobject.h" />

@@ -7,11 +7,17 @@
 #include <thread>
 #pragma comment(lib, "lib/lib.lib")
 
+//#define DEBUG_LINK
 //#define DEBUG_INPUT
 //#define DEBUG_LOCKED
 //#define DEBUG_SENDLEN
 std::string SERVER_ADDRESS;
+std::map<int, CLIENT_DATA_SERVER_SIDE> MultiPlayServer::clients_;
 
+
+/*******************************************************
+  Server
+********************************************************/
 MultiPlayServer::MultiPlayServer() {
 	WSAData data;
 	Startup(v2_2, data);
@@ -32,6 +38,8 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	float rot = 0.0f;
 	Vector2 vel = Vector2::Zero;
 	ServerPlayer *player = new ServerPlayer();
+	player->SetMoveAttribute(new MultiFire(player));
+	player->SetAttackAttribute(new MultiFire(player));
 	player->transform.position = *map.startPosition.begin();
 
 	// ヘッダーの更新
@@ -112,21 +120,6 @@ void MultiPlayServer::PlayerUpdate(void) {
 
 	// スキルオーブの更新
 	map.GetSkillOrbs()->AllLoop();
-	for (auto &skillOrb : *map.GetSkillOrbs()) {
-		auto orb = skillOrb.Cast<ServerSkillOrb>();
-
-		for (auto &kvp : clients_) {
-			auto &player = kvp.second.player_;
-			Vector2 direction = orb->transform.position - player->transform.position;
-			float distance = direction.Distance();
-
-			if (distance <= orb->radius + player->radius) {
-				auto &client = kvp.second;
-				client.skillPoint++;
-				orb->Destroy();
-			}
-		}
-	}
 
 	// プレイヤーの更新
 	for (auto &kvp : clients_) {
@@ -137,11 +130,12 @@ void MultiPlayServer::PlayerUpdate(void) {
 		Input::SetPreviousState(0, client.previousInput);
 		player->Update();
 		map.Collision(player->transform.position, player->radius);
-		static int i = 0;
-		if (i++ <= 1) std::cout << player->transform.position.x << ", " << player->transform.position.y << std::endl;
 
 #ifdef DEBUG_INPUT
 		std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
+#endif
+#ifdef DEBUG_LINK
+		std::cout << player->transform.position.x << ", " << player->transform.position.y << std::endl;
 #endif
 	}
 
@@ -228,7 +222,7 @@ void MultiPlayServer::SendUpdate(void) {
 				res.clients.push_back({ 
 					player.header.id, 
 					player.moveAttribute, player.actionAttribute,
-					player.player_->transform.position, Color::White,
+					player.player_->transform.position,
 					0, player.skillPoint, 0}
 				);
 			}
@@ -394,6 +388,9 @@ void MultiPlayServer::OpenTerminal(void) {
 
 
 
+/*******************************************************
+  Client
+********************************************************/
 MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"))/*, anim(Animator(&playerObject, 2, true, 1, 1, 1))*/ {
 	WSAData data;
 	Startup(v2_2, data);
@@ -489,6 +486,10 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	for (auto &client : res.clients) {
 		DrawSprite(texNo, client.position - cameraPos, 0.0, Vector2::One * 100, Color::White);
 	}
+
+#ifdef DEBUG_LINK
+	if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
+#endif
 }
 
 void MultiPlayClient::SendUpdate(void) {
@@ -530,6 +531,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 	if (tmp.Contains(sockfd_)) {
 		// 受信する
 		int	buffLen = Recv(sockfd_, recvTmpBuff, MAX_BUFF, 0);
+
 		// 終了
 		if (buffLen <= 0) return;
 		// データを取り込む
@@ -556,6 +558,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 void MultiPlayClient::Update() {
 	while (!isFinish) {
 		RESPONSE_PLAYER res;
+		std::cout << isFinish << std::endl;
 
 		if (GetAsyncKeyState(VK_ESCAPE)) {
 			isFinish = true;

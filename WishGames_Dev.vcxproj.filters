@@ -235,6 +235,12 @@
     <ClCompile Include="multi_object.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
+    <ClCompile Include="multi_skillorb.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_attribute.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphical.h">
@@ -487,6 +493,12 @@
       <Filter>Multiplay\head</Filter>
     </ClInclude>
     <ClInclude Include="multi_final_battle_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_attribute.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_animenum.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
   </ItemGroup>

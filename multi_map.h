@@ -16,6 +16,7 @@ private:
 
 	MultiBehavior *skillOrbs;
 	MultiBehavior *enemies;
+	MultiBehavior *attacks;
 	std::map<int, int> texNumbers;
 
 public:
@@ -41,6 +42,7 @@ public:
 	int &GetColliderMap(int x, int y) { return collMap[x + y * width]; }
 	MultiBehavior *GetSkillOrbs(void) { return skillOrbs; }
 	MultiBehavior *GetEnemies(void) { return enemies; }
+	MultiBehavior *GetAttacks(void) { return attacks; }
 
 private:
 };

@@ -2,6 +2,8 @@
 #include "xinput.h"
 
 void ServerPlayer::Update(void) {
-	velocity = Input::GetStickLeft(0) * 10;
+	if (moveAttribute) moveAttribute->Move();
+	if (attackAttribute) attackAttribute->Attack();
+
 	transform.position += velocity;
 }

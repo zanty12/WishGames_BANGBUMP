@@ -4,8 +4,10 @@
 
 class ServerSkillOrb : public ServerGameObject {
 public:
+	ServerSkillOrb() { };
+	ServerSkillOrb(Transform transform) : ServerGameObject(transform) { }
 
+	void Initialize(void) override;
 
-	ServerSkillOrb() { radius = 50.0f; };
-	ServerSkillOrb(Transform transform) : ServerGameObject(transform) { radius = 50.0f; }
+	void Loop(void) override;
 };

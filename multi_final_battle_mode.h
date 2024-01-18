@@ -4,6 +4,9 @@
 #include "time.h"
 #include "asset.h"
 
+/*******************************************************
+  Server
+********************************************************/
 class MultiPlayFinalBattleModeServerSide : public MultiPlayModeServerSide {
 public:
 	MultiPlayFinalBattleModeServerSide() : MultiPlayModeServerSide(new MultiMap("data/map/MultiPlay_Map1.csv")) { }
@@ -21,6 +24,10 @@ public:
 
 
 
+
+/*******************************************************
+  Client
+********************************************************/
 class MultiPlayFinalBattleModeClientSide : public MultiPlayModeClientSide {
 public:
 	MultiPlayFinalBattleModeClientSide() : MultiPlayModeClientSide(new MultiMap("data/map/MultiPlay_Map1.csv")) {

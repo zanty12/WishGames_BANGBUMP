@@ -19,6 +19,7 @@ enum MULTI_MODE {
 	FINAL_BATTLE,
 };
 
+
 // ヘッダー
 struct HEADER {
 	enum {
@@ -45,7 +46,6 @@ struct CLIENT_DATA_CLIENT_SIDE {
 	ATTRIBUTE_TYPE moveAttributeType;	// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType;	// 攻撃属性タイプ
 	Vector2 position;					// 座標
-	Color color;
 	int score = 0;						// スコア
 	int skillPoint = 0;					// スキルポイント
 	int previousSkillPoint = 0;			// 1ゲーム前のスキルポイント
@@ -79,12 +79,6 @@ struct OBJECT_DATA_CLIENT_SIDE {
 		ENEMY2,
 		ENEMY3,
 		SKILL_POINT,
-	};
-
-	enum ANIMATION {
-		IDEL,
-		MOVE,
-		ATTACK,
 	};
 
 

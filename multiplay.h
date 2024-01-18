@@ -24,15 +24,18 @@ using namespace Network;
 ********************************************************/
 class MultiPlayServer {
 private:
-	int maxID = 0;										// IDの最大値				
-	Socket sockfd_;										// ソケット
-	std::map<int, CLIENT_DATA_SERVER_SIDE> clients_;	// クライアントデータ
-	Storage sendBuff = Storage(1024);					// 送信バッファ
-	Storage recvBuff = Storage(1024);					// 受信バッファ
-	MultiPlayFlowServerSide *gameMode = nullptr;		// ゲームモード
-	StorageLock	lock_;									// リストロック
-	bool isFinish = false;								// 終了状態
-	MultiMap map;										// マップ
+	int maxID = 0;											// IDの最大値				
+	Socket sockfd_;											// ソケット
+	Storage sendBuff = Storage(1024);						// 送信バッファ
+	Storage recvBuff = Storage(1024);						// 受信バッファ
+	MultiPlayFlowServerSide *gameMode = nullptr;			// ゲームモード
+	StorageLock	lock_;										// リストロック
+	bool isFinish = false;									// 終了状態
+	MultiMap map;											// マップ
+
+public:
+	static std::map<int, CLIENT_DATA_SERVER_SIDE> clients_;	// クライアントデータ
+
 
 
 public:

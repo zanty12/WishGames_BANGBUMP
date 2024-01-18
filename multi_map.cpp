@@ -39,8 +39,10 @@ void MultiMap::Release(void) {
 	// オブジェクトデータ削除
 	if (enemies) delete enemies;
 	if (skillOrbs) delete skillOrbs;
+	if (attacks) delete attacks;
 	enemies = nullptr;
 	skillOrbs = nullptr;
+	attacks = nullptr;
 }
 
 
@@ -50,6 +52,7 @@ void MultiMap::Load(std::string path)
 
 	skillOrbs = new MultiBehavior("SkillOrbMngr");
 	enemies = new MultiBehavior("EnemiesMngr");
+	attacks = new MultiBehavior("AttackMngr");
 
 	std::ifstream file(path);
 	if (!file)

@@ -7,6 +7,7 @@
 ************************************************************/
 MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 	startTime = timeGetTime();
+	MultiPlayModeServerSide *rstMode = nullptr;
 	switch (mode)
 	{
 	//case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeServerSide(game_);
@@ -16,9 +17,15 @@ MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 	//case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResult2ModeServerSide();
 	//case ENEMY_RUSH: return new MultiPlayEnemyRushModeServerSide(game_);
 	//case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResult3ModeServerSide();
-	case FINAL_BATTLE: return new MultiPlayFinalBattleModeServerSide();
+	case FINAL_BATTLE: rstMode = new MultiPlayFinalBattleModeServerSide();
 	}
-	return nullptr;
+
+	// 現在いるマップの更新
+	if (rstMode) {
+		for (auto &client : MultiPlayServer::clients_) client.second.player_->map = rstMode->map_;
+	}
+
+	return rstMode;
 }
 
 void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
@@ -78,7 +85,6 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 }
 
 void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
-	std::cout << res.mode << std::endl;
 
 	// モードが切り替わったなら、次のモードへ移行
 	if (currentMode_ != res.mode) {
