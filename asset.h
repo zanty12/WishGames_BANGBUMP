@@ -17,6 +17,7 @@ enum textures
     //attibute_attack
     fire_attack,
     wind_attack,
+    water_attack,
     //enemy
     //block
     skill_orb,

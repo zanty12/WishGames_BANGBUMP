@@ -74,7 +74,7 @@ public:
 class WindAttack : public MovableObj
 {
     Wind* parent_;
-    Vector2 size_ = Vector2(2 * GameObject::SIZE_, 2 * GameObject::SIZE_);
+    Vector2 size_ = Vector2(4 * GameObject::SIZE_, 4* GameObject::SIZE_);
 public:
     WindAttack() = delete;
     WindAttack(Wind* parent);

@@ -13,7 +13,8 @@
 #include"xinput.h"
 #include"lib/collider2d.h"
 
-Thunder::~Thunder(){
+Thunder::~Thunder()
+{
     for (auto& a : attack_)
     {
         if (a != nullptr)
@@ -92,9 +93,9 @@ void Thunder::Action()
     if (attack_cd_ < 0.0f)
         attack_cd_ = 0.0f;
     //update attack
-    for (int i = 0;i < 5;i++)
+    for (int i = 0; i < 5; i++)
     {
-        if(attack_[i]!=nullptr)
+        if (attack_[i] != nullptr)
         {
             attack_[i]->Update();
             if (attack_[i]->GetDiscard())
@@ -114,21 +115,23 @@ void Thunder::Action()
     //charge up
     if (stick_distance >= responseMinStickDistance)
     {
-        attack_charge_ += 100 * Time::GetDeltaTime();
+        attack_charge_ += Time::GetDeltaTime();
         if (attack_charge_ >= attack_charge_max_)
         {
             attack_charge_ = attack_charge_max_;
         }
     }
     //release
-    if (attack_charge_ > 0 && stick_distance < responseMinStickDistance && attack_cd_ <= 0.0f)
+    if (attack_charge_ > atttack_trigger_min_ && stick_distance < responseMinStickDistance && attack_cd_ <= 0.0f)
     {
-        for (int i = 0;i < 5;i++)
+        for (int i = 0; i < 5; i++)
         {
             if (attack_[i] == nullptr)
             {
-                attack_[i]  = new ThunderAttack(this, -previousStick.Normalize(),
-                                           attack_charge_ / attack_charge_max_ * attack_vel_*Time::GetDeltaTime());
+                float range = 1 + (attack_charge_ - atttack_trigger_min_) / (attack_charge_max_- atttack_trigger_min_)*(15 + 1) * GameObject::SIZE_;
+                //15‚ÌŒã‚ÍƒŒƒxƒ‹•Ï“®’l
+                attack_[i] = new ThunderAttack(this, -previousStick.Normalize(),
+                                               range * Time::GetDeltaTime(),range);
                 attack_charge_ = 0.0f;
                 attack_cd_ = 1.0f;
                 break;
@@ -148,7 +151,7 @@ void Thunder::DebugMenu()
     ImGui::End();
 }
 
-ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel): parent_(parent),
+ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range): parent_(parent),range_(range),
                                                                        MovableObj(parent->GetPlayer()->GetPos(),
                                                                            atan2(-dir.y, dir.x),
                                                                            LoadTexture(Asset::GetAsset(fire_attack)),
@@ -157,12 +160,12 @@ ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel): parent_(p
     start_pos_ = parent_->GetPlayer()->GetPos();
     SetPos(parent_->GetPlayer()->GetPos());
     SetScale(size_);
-    SetType(OBJ_ATTACK);
+    SetType(OBJ_VOID);
 }
 
 void ThunderAttack::Update()
 {
-    if ((GetPos() - start_pos_).Distance() > 20 * GameObject::SIZE_)
+    if ((GetPos() - start_pos_).Distance() > range_)
         Discard();
     AddVel(GetVel());
 }

@@ -6,6 +6,7 @@ const std::map<textures, std::string> Asset::textures_ = {
     {textures::player, "data/texture/player.png"},
     {textures::fire_attack, "data/texture/attack/fire_attack.png"},
     {textures::wind_attack, "data/texture/attack/wind_attack.png"},
+    {textures::water_attack, "data/texture/attack/water_attack.png"},
     {textures::skill_orb, "data/texture/blocks/skillorb.png"},
     {textures::bg_stage1_front, "data/texture/bg/BG_stage1_front.png"},
     {textures::bg_stage1_back, "data/texture/bg/BG_stage1_back.png"},

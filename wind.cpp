@@ -97,5 +97,5 @@ WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPl
                                            LoadTexture(Asset::GetAsset(wind_attack)), Vector2::Zero)
 {
     SetScale(size_);
-    SetType(OBJ_ATTACK);
+    SetType(OBJ_VOID);
 }

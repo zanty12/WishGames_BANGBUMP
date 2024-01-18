@@ -63,6 +63,11 @@ void Player::Update(void)
 
 	bool affected_gravity = false;	//d—Í‚ðŽó‚¯‚½‚©‚Ç‚¤‚©
 
+	if (attack_attribute_ != nullptr)
+	{
+		attack_attribute_->Action();
+	}
+
 	Vector2 next_vel = GetVel();
 	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
@@ -87,10 +92,7 @@ void Player::Update(void)
 		SetVel(Vector2(next_vel.x, next_vel.y));
 	}
 
-	if (attack_attribute_ != nullptr)
-	{
-		attack_attribute_->Action();
-	}
+
 
 	UpdateDir();
 
