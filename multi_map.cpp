@@ -27,9 +27,6 @@ void MultiMap::Initialize() {
 	texNumbers[MAP_READ_KOOPA] = LoadTexture("data/texture/enemy1.png");
 	texNumbers[MAP_READ_HAMMERBRO] = LoadTexture("data/texture/enemy2.png");
 	texNumbers[MAP_READ_PHANTOM] = LoadTexture("data/texture/enemy3.png");
-
-	skillOrbs = new MultiBehavior("SkillOrbMngr");
-	enemies = new MultiBehavior("EnemiesMngr");
 }
 
 void MultiMap::Release(void) {
@@ -50,6 +47,9 @@ void MultiMap::Release(void) {
 void MultiMap::Load(std::string path)
 {
 	Release();
+
+	skillOrbs = new MultiBehavior("SkillOrbMngr");
+	enemies = new MultiBehavior("EnemiesMngr");
 
 	std::ifstream file(path);
 	if (!file)
@@ -110,8 +110,8 @@ void MultiMap::Load(std::string path)
 				// “o˜^
 				else {
 					GetColliderMap(x, y) = id;
+					GetMap(x, y) = id;
 				}
-				GetMap(x, y) = id;
 			}
 			x++;
 		}
@@ -131,9 +131,13 @@ void MultiMap::Draw(Vector2 offset) {
 	if (leftBottomIdx.y < 0) leftBottomIdx.y = 0;
 	if (rightTopIdx.y >= height) rightTopIdx.y = height;
 
-	// •`‰æ
-	for (int x = leftBottomIdx.x; x < rightTopIdx.x; x++) {
-		for (int y = leftBottomIdx.y; y < rightTopIdx.y; y++) {
+
+	// •`‰æi”wŒij
+	DrawSprite(backBGTexNo, screen * 0.5f, 0.0f, screen, Color::White);
+
+	// •`‰æiƒuƒƒbƒNj
+	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
+		for (int y = leftBottomIdx.y; y <= rightTopIdx.y; y++) {
 			// ”ÍˆÍŠO‚È‚çˆ—‚ð‚µ‚È‚¢
 			if (x < 0 || y < 0 || x >= width || y >= height) continue;
 

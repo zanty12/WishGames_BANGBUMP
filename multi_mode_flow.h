@@ -28,10 +28,10 @@ private:
 
 public:
 	MultiPlayFlowServerSide(MultiPlayServer* game) : game_(game) {
-		gameMode_ = CreateMode(CHARACTER_SELECT);
+		gameMode_ = CreateMode(FINAL_BATTLE);
 	}
 
-	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients);
+	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
 
 	void CreateResponse(Storage &out);
 
@@ -67,7 +67,7 @@ public:
 		if (gameMode_) delete gameMode_;
 	}
 
-	void Draw(RESPONSE_PLAYER &res);
+	void Draw(RESPONSE_PLAYER &res, Vector2 offset);
 
 	void ParseResponse(Storage &in);
 

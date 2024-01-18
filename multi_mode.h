@@ -15,9 +15,9 @@ protected:
 public:
 	MultiPlayModeServerSide(MultiMap *map) : map_(map) {  }
 	~MultiPlayModeServerSide() { if (map_) delete map_; }
-	virtual void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) { };
+	virtual void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
 	virtual void CreateResponse(Storage& out) { };
-	virtual void Release(std::list<CLIENT_DATA_SERVER_SIDE> &clients) { };
+	virtual void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
 
 	virtual MULTI_MODE GetMode(void) const = 0;
 	float GetTime(void) const { return time_; }
@@ -38,7 +38,7 @@ public:
 	MultiPlayModeClientSide(MultiMap* map) : map_(map) { };
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 
-	virtual void Draw(RESPONSE_PLAYER &players) { };
+	virtual void Draw(RESPONSE_PLAYER &players, Vector2 offset) { };
 	virtual void ParseResponse(Storage& in) { };
 	virtual void Release(RESPONSE_PLAYER &players) { };
 

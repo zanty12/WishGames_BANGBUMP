@@ -21,7 +21,7 @@ MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 	return nullptr;
 }
 
-void MultiPlayFlowServerSide::Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) {
+void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
 	// ゲームモードがないなら終了
 	if (gameMode_ == nullptr) return;
 
@@ -77,7 +77,7 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 	return nullptr;
 }
 
-void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res) {
+void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 	std::cout << res.mode << std::endl;
 
 	// モードが切り替わったなら、次のモードへ移行
@@ -96,7 +96,13 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res) {
 	}
 	// モードの実行
 	else if (gameMode_) {
-		gameMode_->Draw(res);
+
+		// マップの描画
+		gameMode_->map_->Draw(offset);
+
+		// ゲームモードの描画
+		gameMode_->Draw(res, offset);
+
 		// 時間制限の描画
 		Number(Vector2(100, 100), Vector2(100, 100), res.maxTime - res.time);
 

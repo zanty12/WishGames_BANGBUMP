@@ -92,8 +92,6 @@ struct OBJECT_DATA_CLIENT_SIDE {
 	int tag = NONE;
 	int anim = NONE;
 	Vector2 position;
-	float rotation = 0.0f;
-	Vector2 scale = Vector2(75, 75);
 };
 
 

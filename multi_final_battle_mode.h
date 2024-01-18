@@ -2,12 +2,13 @@
 #include "multi_mode.h"
 #include "lib/collider2d.h"
 #include "time.h"
+#include "asset.h"
 
 class MultiPlayFinalBattleModeServerSide : public MultiPlayModeServerSide {
 public:
 	MultiPlayFinalBattleModeServerSide() : MultiPlayModeServerSide(new MultiMap("data/map/MultiPlay_Map1.csv")) { }
 
-	void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) override {
+	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override {
 
 	}
 
@@ -22,10 +23,13 @@ public:
 
 class MultiPlayFinalBattleModeClientSide : public MultiPlayModeClientSide {
 public:
-	MultiPlayFinalBattleModeClientSide() : MultiPlayModeClientSide(new MultiMap("data/map/MultiPlay_Map1.csv")) { }
+	MultiPlayFinalBattleModeClientSide() : MultiPlayModeClientSide(new MultiMap("data/map/MultiPlay_Map1.csv")) {
+		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
+		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_front));
+	}
 
 
-	void Draw(RESPONSE_PLAYER &players) override {
+	void Draw(RESPONSE_PLAYER &players, Vector2 offset) override {
 
 	}
 

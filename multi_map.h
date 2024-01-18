@@ -20,8 +20,9 @@ private:
 
 public:
 	Vector2 position;
-	float cellSize = 50;
+	float cellSize = 53;
 	std::list<Vector2> startPosition;
+	int frontBGTexNo = -1, backBGTexNo = -1;
 
 
 
@@ -37,7 +38,6 @@ public:
 	void Draw(Vector2 offset);
 	int Collision(Vector2 &position, float radius);
 	int &GetMap(int x, int y) { return map[x + y * width]; }
-	int &GetColliderMap(int x, int y) { return collMap[x + y * width]; }
 	int &GetColliderMap(int x, int y) { return collMap[x + y * width]; }
 	MultiBehavior *GetSkillOrbs(void) { return skillOrbs; }
 	MultiBehavior *GetEnemies(void) { return enemies; }

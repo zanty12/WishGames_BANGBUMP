@@ -17,7 +17,7 @@ MultiPlayServer::MultiPlayServer() {
 	Startup(v2_2, data);
 	map.Load("data/map/MultiPlay_Map1.csv");
 
-	//gameMode = new MultiPlayFlowServerSide(this);
+	gameMode = new MultiPlayFlowServerSide(this);
 }
 
 int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
@@ -135,11 +135,15 @@ void MultiPlayServer::PlayerUpdate(void) {
 		Input::SetPreviousState(0, client.previousInput);
 		player->Update();
 		map.Collision(player->transform.position, player->radius);
+		static int i = 0;
+		if (i++ <= 1) std::cout << player->transform.position.x << ", " << player->transform.position.y << std::endl;
 
 #ifdef DEBUG_INPUT
 		std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
 #endif
 	}
+
+	gameMode->Update(clients_);
 	
 
 	// ロック解除
@@ -211,13 +215,10 @@ void MultiPlayServer::SendUpdate(void) {
 			// レスポンスの作成
 			RESPONSE_PLAYER res;
 
-			//// レスポンス情報の登録
-			static float time = 0.0f;
-			time += 1;
-			res.time = time;
-			//res.mode = gameMode->GetMode();
-			//res.maxTime = gameMode->GetMaxTime();
-			//res.time = gameMode->GetTime();
+			// レスポンス情報の登録
+			res.mode = gameMode->GetMode();
+			res.maxTime = gameMode->GetMaxTime();
+			res.time = gameMode->GetTime();
 
 			// クライアント情報の登録
 			for (auto &client : clients_) {
@@ -226,27 +227,23 @@ void MultiPlayServer::SendUpdate(void) {
 					player.header.id, 
 					player.moveAttribute, player.actionAttribute,
 					player.player_->transform.position, Color::White,
-					0, 0, 0}
+					0, player.skillPoint, 0}
 				);
 			}
 
-			//// オブジェクト情報の登録
-			//for (auto &skillorb : orb_mngr_->GetSkillOrbs()) {
-			//	if (skillorb->GetDiscard()) continue;
-			//	int id = std::atoi(skillorb->GetID().c_str());
-			//	Vector2 position = skillorb->GetPos();
-			//	float rotation = skillorb->GetRot();
-			//	Vector2 scale = skillorb->GetScl();
-			//	res.objects.push_back({
-			//		id,										// ID
-			//		OBJECT_DATA_CLIENT_SIDE::SKILL_POINT,	// tag
-			//		0,										// animation
-			//		position,								// pos
-			//		rotation,								// rot
-			//		scale									// scl
-			//		}
-			//	);
-			//}
+			// オブジェクト情報の登録
+			for (auto &instance : *map.GetSkillOrbs()) {
+				auto skillorb = instance.Cast<ServerSkillOrb>();
+				int id = skillorb->id;
+				Vector2 position = skillorb->transform.position;
+				res.objects.push_back({
+					id,										// ID
+					OBJECT_DATA_CLIENT_SIDE::SKILL_POINT,	// tag
+					0,										// animation
+					position								// pos
+					}
+				);
+			}
 
 			// クライアント全員に送信する
 			for (auto &kvp : clients_) {
@@ -259,7 +256,7 @@ void MultiPlayServer::SendUpdate(void) {
 				res.CreateResponse(sendBuff, client.header.id);
 
 				// ゲームモードのレスポンス内容の結合
-				//gameMode->CreateResponse(sendBuff);
+				gameMode->CreateResponse(sendBuff);
 
 #ifdef DEBUG_SENDLEN
 				std::cout << "SENDBUFF : " << sendBuff.Length() << std::endl;
@@ -399,7 +396,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	WSAData data;
 	Startup(v2_2, data);
 
-	//gameMode = new MultiPlayFlowClientSide(this);
+	gameMode = new MultiPlayFlowClientSide(this);
 
 	map.Initialize();
 	map.Load("data/map/MultiPlay_Map1.csv");
@@ -471,9 +468,12 @@ void MultiPlayClient::Unregister() {
 }
 
 void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
-	map.Draw(Vector2(0, 0));
+	if (res.clients.size()) cameraPos = Vector2(0.0f, res.clients.begin()->position.y - Graphical::GetHeight() * 0.75f);
+	//map.Draw(cameraPos);
+
+	gameMode->Draw(res, cameraPos);
 	for (auto &client : res.clients) {
-		DrawSprite(texNo, client.position, 0.0, Vector2::One * 100, Color::White);
+		DrawSprite(texNo, client.position - cameraPos, 0.0, Vector2::One * 100, Color::White);
 	}
 }
 
@@ -513,7 +513,6 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 
 
-	std::cout << res_.time << std::endl;
 	if (tmp.Contains(sockfd_)) {
 		// 受信する
 		int	buffLen = Recv(sockfd_, recvTmpBuff, MAX_BUFF, 0);
@@ -529,13 +528,11 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 		// モードがNONEではないなら
 		if (res.mode != MULTI_MODE::NONE) {
 			// 受信したモードと実行しているゲームモードが同じなら解析する
-			//if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
+			if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
 
 		}
 		// レスポンスの保存
 		res_ = res;
-
-		std::cout << res_.time << std::endl;
 
 		// 初期化
 		recvBuff = nullptr;
@@ -550,7 +547,7 @@ void MultiPlayClient::Update() {
 			isFinish = true;
 			break;
 		}
-		Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
+		//Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
 		Time::Update();
 		RecvUpdate(1, res);
 		PlayerUpdate(res);

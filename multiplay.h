@@ -7,8 +7,8 @@
 #include "multi_map.h"
 #include "multi_mode_flow.h"
 #include "multi_connect_renderer.h"
-#include "storage_lock.h"
 #include "multi_player.h"
+#include "storage_lock.h"
 #include <fstream>
 
 extern std::string SERVER_ADDRESS;
@@ -29,6 +29,7 @@ private:
 	std::map<int, CLIENT_DATA_SERVER_SIDE> clients_;	// クライアントデータ
 	Storage sendBuff = Storage(1024);					// 送信バッファ
 	Storage recvBuff = Storage(1024);					// 受信バッファ
+	MultiPlayFlowServerSide *gameMode = nullptr;		// ゲームモード
 	StorageLock	lock_;									// リストロック
 	bool isFinish = false;								// 終了状態
 	MultiMap map;										// マップ
@@ -86,10 +87,11 @@ private:
 	FD readfd_;											// ファイルディスクリプタ
 	Storage sendBuff = Storage(1024);					// 送信バッファ
 	Storage recvBuff = Storage(1024);					// 受信バッファ
-	//MultiPlayFlowClientSide *gameMode = nullptr;		// ゲームモード
+	MultiPlayFlowClientSide *gameMode = nullptr;		// ゲームモード
 	RESPONSE_PLAYER res_;								// レスポンス
 	char *recvTmpBuff = nullptr;						// 受信バッファ（仮格納用）
 	MultiMap map;										// マップ
+	Vector2 cameraPos;									// カメラ座標
 
 	std::thread sendUpdateFunc;							// 送信関数
 	std::thread recvUpdateFunc;							// 受信関数
