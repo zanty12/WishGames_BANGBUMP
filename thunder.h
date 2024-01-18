@@ -31,7 +31,7 @@ class Thunder : public Attribute
     Vector2 move_dir_;
     bool moving_ = false;
     //attack
-    const float attack_charge_max_ = 4.0f;
+    const float attack_charge_max_ = 1.5f;
     const float atttack_trigger_min_ = 0.1f;
     float attack_charge_ = 0.0f;
     float attack_cd_ = 0.0f;

@@ -131,7 +131,7 @@ void Thunder::Action()
                 float range = 1 + (attack_charge_ - atttack_trigger_min_) / (attack_charge_max_- atttack_trigger_min_)*(15 + 1) * GameObject::SIZE_;
                 //15‚ÌŒã‚ÍƒŒƒxƒ‹•Ï“®’l
                 attack_[i] = new ThunderAttack(this, -previousStick.Normalize(),
-                                               range * Time::GetDeltaTime(),range);
+                                               17 * GameObject::SIZE_ * Time::GetDeltaTime(),range);
                 attack_charge_ = 0.0f;
                 attack_cd_ = 1.0f;
                 break;

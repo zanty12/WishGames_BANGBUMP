@@ -195,7 +195,7 @@ void Prep::Update()
     //lerp each attribute to target position
     for (auto& move : move_list)
     {
-        if (move.rot < move.target_rot - 0.01f || move.rot > move.target_rot + 0.01f)
+        if (move.rot < move.target_rot - 0.02f || move.rot > move.target_rot + 0.02f)
         {
             moving_ = true;
             if (clockwise_)
@@ -223,7 +223,7 @@ void Prep::Update()
     }
     for (auto& attack : attack_list)
     {
-        if (attack.rot < attack.target_rot - 0.01f || attack.rot > attack.target_rot + 0.01f)
+        if (attack.rot < attack.target_rot - 0.02f || attack.rot > attack.target_rot + 0.02f)
         {
             moving_ = true;
             if (clockwise_)
