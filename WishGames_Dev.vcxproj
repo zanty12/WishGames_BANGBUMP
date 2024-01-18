@@ -172,8 +172,11 @@
     <ClCompile Include="movableobj.cpp" />
     <ClCompile Include="multiplay.cpp" />
     <ClCompile Include="multi_area_capture_mode.cpp" />
+    <ClCompile Include="multi_behavior.cpp" />
     <ClCompile Include="multi_character_select_mode.cpp" />
+    <ClCompile Include="multi_map.cpp" />
     <ClCompile Include="multi_mode_flow.cpp" />
+    <ClCompile Include="multi_player.cpp" />
     <ClCompile Include="number.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
@@ -239,6 +242,7 @@
     <ClInclude Include="mapmngr.h" />
     <ClInclude Include="multiplay.h" />
     <ClInclude Include="multi_area_capture_mode.h" />
+    <ClInclude Include="multi_behavior.h" />
     <ClInclude Include="multi_character_select_mode.h" />
     <ClInclude Include="multi_client_gameobject.h" />
     <ClInclude Include="multi_connect_renderer.h" />
@@ -246,9 +250,14 @@
     <ClInclude Include="multi_final_battle_mode.h" />
     <ClInclude Include="multi_header.h" />
     <ClInclude Include="multi_intermediate_result_mode.h" />
+    <ClInclude Include="multi_map.h" />
     <ClInclude Include="multi_mode.h" />
     <ClInclude Include="multi_mode_flow.h" />
+    <ClInclude Include="multi_object.h" />
     <ClInclude Include="multi_obstacle_race_mode.h" />
+    <ClInclude Include="multi_player.h" />
+    <ClInclude Include="multi_skillorb.h" />
+    <ClInclude Include="multi_transform.h" />
     <ClInclude Include="number.h" />
     <ClInclude Include="original_window.h" />
     <ClInclude Include="movableobj.h" />

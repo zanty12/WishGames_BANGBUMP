@@ -6,7 +6,7 @@ XINPUT_STATE Input::previous[MAX_NUM] = {};
 Vector2 Input::to_vector2(SHORT stickX, SHORT stickY) {
     float deadZoneRatio = 0.2f;
     float x = (float)stickX / +32768.0f;
-    float y = (float)stickY / -32768.0f;
+    float y = (float)stickY / +32768.0f;
     float distance = sqrtf(x * x + y * y);
 
 

@@ -1,8 +1,9 @@
 #pragma once
 #include "lib/network.h"
+#include "multi_player.h"
 #include "storage.h"
-#include "player.h"
 #include "xinput.h"
+#include "attribute.h"
 
 using namespace Network;
 
@@ -54,7 +55,7 @@ struct CLIENT_DATA_SERVER_SIDE {
 	HEADER header;
 	Socket sockfd_;
 	Address clientAddr_;
-	Player* player_;
+	ServerPlayer* player_ = nullptr;
 	XINPUT_GAMEPAD currentInput = XINPUT_GAMEPAD();
 	XINPUT_GAMEPAD previousInput = XINPUT_GAMEPAD();
 	ATTRIBUTE_TYPE actionAttribute = ATTRIBUTE_TYPE_FIRE;
@@ -62,7 +63,8 @@ struct CLIENT_DATA_SERVER_SIDE {
 	int score = 0;
 	int previousSkillPoint = 0;
 
-	CLIENT_DATA_SERVER_SIDE(HEADER header, Socket sockfd, Address addr, Player *player)
+	CLIENT_DATA_SERVER_SIDE() = default;
+	CLIENT_DATA_SERVER_SIDE(HEADER header, Socket sockfd, Address addr, ServerPlayer *player)
 		: header(header), sockfd_(sockfd), clientAddr_(addr), player_(player) { };
 };
 // オブジェクトデータ（クライアント側）

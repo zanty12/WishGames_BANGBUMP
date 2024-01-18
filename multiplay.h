@@ -1,8 +1,10 @@
 #pragma once
 #include <thread>
+#include <map>
 #include "lib/network.h"
 #include "gamebase.h"
 #include "multi_header.h"
+#include "multi_map.h"
 #include "multi_mode_flow.h"
 #include "multi_connect_renderer.h"
 #include "storage_lock.h"
@@ -19,17 +21,16 @@ using namespace Network;
 /*******************************************************
   Server
 ********************************************************/
-class MultiPlayServer : public GameBase {
+class MultiPlayServer {
 private:
 	int maxID = 0;										// IDの最大値				
 	Socket sockfd_;										// ソケット
-	std::list<CLIENT_DATA_SERVER_SIDE> clients_;		// クライアントデータ
+	std::map<int, CLIENT_DATA_SERVER_SIDE> clients_;	// クライアントデータ
 	Storage sendBuff = Storage(1024);					// 送信バッファ
 	Storage recvBuff = Storage(1024);					// 受信バッファ
-	MultiPlayFlowServerSide *gameMode = nullptr;		// ゲームモード
 	StorageLock	lock_;									// リストロック
 	bool isFinish = false;								// 終了状態
-
+	MultiMap map;										// マップ
 
 
 public:
@@ -37,9 +38,9 @@ public:
 
 	~MultiPlayServer() {
 		// 解放
-		delete gameMode;
 		sendBuff.Release();
 		recvBuff.Release();
+		map.Release();
 
 		// 登録解除
 		AllUnregister();
@@ -61,22 +62,13 @@ public:
 	// 送信
 	void SendUpdate(void);
 
-	void Update() override;
-
-
-	std::list<CLIENT_DATA_SERVER_SIDE>::iterator find(int id) {
-		return std::find_if(clients_.begin(), clients_.end(), [&](CLIENT_DATA_SERVER_SIDE client) {
-			return client.header.id == id;
-			}
-		);
-	}
 
 
 public:
 
 	void OpenTerminal(void);
 
-	std::list<CLIENT_DATA_SERVER_SIDE> &GetClients(void) { return clients_; }
+	std::map<int, CLIENT_DATA_SERVER_SIDE> &GetClients(void) { return clients_; }
 };
 
 
@@ -85,7 +77,7 @@ public:
 ********************************************************/
 
 
-class MultiPlayClient : public GameBase {
+class MultiPlayClient {
 private:
 	int id = -1;										// ID
 	Socket sockfd_;										// ソケット
@@ -93,13 +85,11 @@ private:
 	FD readfd_;											// ファイルディスクリプタ
 	Storage sendBuff = Storage(1024);					// 送信バッファ
 	Storage recvBuff = Storage(1024);					// 受信バッファ
-	MultiPlayFlowClientSide *gameMode = nullptr;		// ゲームモード
+	//MultiPlayFlowClientSide *gameMode = nullptr;		// ゲームモード
 	RESPONSE_PLAYER res_;								// レスポンス
 	char *recvTmpBuff = nullptr;						// 受信バッファ（仮格納用）
+	MultiMap map;										// マップ
 
-	ClientGameObject playerObject;
-	MultiRenderer *multiRenderer_ = nullptr;			// 描画
-	//Animator anim;
 	std::thread sendUpdateFunc;							// 送信関数
 	std::thread recvUpdateFunc;							// 受信関数
 
@@ -118,8 +108,8 @@ public:
 		recvUpdateFunc.join();
 
 		// 解放
-		delete gameMode;
-		delete multiRenderer_;
+		map.Release();
+		//delete gameMode;
 		delete recvTmpBuff;
 		sendBuff.Release();
 		recvBuff.Release();

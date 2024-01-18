@@ -1,26 +1,22 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include "multiplay.h"
 #include "xinput.h"
-#include "thunder.h"
-#include "fire.h"
-#include "wind.h"
-#include "dark.h"
 #include "time.h"
-#include "enemy1.h"
 #include <windows.h>
 #include <thread>
 #pragma comment(lib, "lib/lib.lib")
 
 //#define DEBUG_INPUT
-#define DEBUG_LOCKED
+//#define DEBUG_LOCKED
 //#define DEBUG_SENDLEN
 std::string SERVER_ADDRESS;
 
 MultiPlayServer::MultiPlayServer() {
 	WSAData data;
 	Startup(v2_2, data);
+	map.Load("data/map/MultiPlay_Map1.csv");
 
-	gameMode = new MultiPlayFlowServerSide(this);
+	//gameMode = new MultiPlayFlowServerSide(this);
 }
 
 int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
@@ -34,9 +30,8 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	Vector2 pos = Vector2(200, 200);
 	float rot = 0.0f;
 	Vector2 vel = Vector2::Zero;
-	Player *player = new Player(pos, rot, vel, mapmngr_);
-	player->SetAttribute(new Fire(player));
-	player->SetAttackAttribute(new Fire(player));
+	ServerPlayer *player = new ServerPlayer();
+	player->transform.position = *map.startPosition.begin();
 
 	// ヘッダーの更新
 	header.command = HEADER::RESPONSE_LOGIN;
@@ -52,7 +47,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 
 
 	// プレイヤー追加
-	clients_.push_back(clientData);
+	clients_[header.id] = clientData;
 
 
 	// 送信
@@ -79,26 +74,17 @@ void MultiPlayServer::Unregister(int id) {
 #endif
 
 
-
-
-
-	// プレイヤーの検索
-	auto iterator = find(id);
-
-	// 検索不一致
-	if (iterator == clients_.end()) return;
-
 	// 解除
-	iterator->header.command = HEADER::RESPONSE_LOGOUT;
-	iterator->sockfd_.Close();
+	clients_[id].header.command = HEADER::RESPONSE_LOGOUT;
+	clients_[id].sockfd_.Close();
 
 	// 送信
-	SendTo(sockfd_, (char *)&iterator->header, sizeof(HEADER), 0, iterator->clientAddr_);
+	SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
 	std::cout << "Res >> ID:" << " Logout" << std::endl;
 
 	// 削除
-	delete iterator->player_;
-	clients_.erase(iterator);
+	delete clients_[id].player_;
+	clients_.erase(id);
 
 
 
@@ -112,7 +98,7 @@ void MultiPlayServer::Unregister(int id) {
 void MultiPlayServer::AllUnregister(void) {
 	while (clients_.size())
 	{
-		Unregister(clients_.begin()->header.id);
+		Unregister(clients_.begin()->second.header.id);
 	}
 }
 
@@ -123,26 +109,27 @@ void MultiPlayServer::PlayerUpdate(void) {
 	std::cout << "UPD LOCK";
 #endif
 
-	// ゲームプレイモードなら（キャラ選択 or リザルト系ではない）
-	if (gameMode && gameMode->GetMode() % 2 == 1) {
-		// プレイヤーの更新
-		for (auto client : clients_) {
-			// 入力の更新
-			Input::SetState(0, client.currentInput);
-			Input::SetPreviousState(0, client.previousInput);
+	for (auto &kvp : clients_) {
+		auto &client = kvp.second;
+		auto &player = client.player_;
 
-			// プレイヤーの更新
-			client.player_->Update();
+		Input::SetState(0, client.currentInput);
+		Input::SetPreviousState(0, client.previousInput);
+		player->Update();
+		Vector2 normal;
+		int type = map.Collision(player->transform.position, player->radius, &normal);
+		// ヒットしたなら反射
+		if (type >= 0) {
+			float t = Vector2::Dot(normal, -player->velocity);
+			player->velocity = 2 * t * normal + player->velocity;
 		}
+		player->transform.position += player->velocity;
 
-		// コリジョンの更新
-		if (coll_mngr_) {
-			coll_mngr_->Update();
-		}
+#ifdef DEBUG_INPUT
+		std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
+#endif
 	}
-
-	// ゲームモードの更新
-	if (gameMode) gameMode->Update(clients_);
+	
 
 	// ロック解除
 #ifdef DEBUG_LOCKED
@@ -165,21 +152,22 @@ void MultiPlayServer::RecvUpdate(void) {
 #endif
 
 	// プレイヤーの検索
-	auto iterator = find(req.input.id);
+	auto iterator = clients_.find(req.input.id);
 
 	// 検索したなら
 	if (iterator != clients_.end()) {
+		CLIENT_DATA_SERVER_SIDE &data = iterator->second;
 		// 入力情報を設定
-		iterator->currentInput = req.input.curInput;
-		iterator->previousInput = req.input.preInput;
+		data.currentInput = req.input.curInput;
+		data.previousInput = req.input.preInput;
 
 		// 属性を設定
-		iterator->moveAttribute = req.input.move;
-		iterator->actionAttribute = req.input.action;
+		data.moveAttribute = req.input.move;
+		data.actionAttribute = req.input.action;
 
 #ifdef DEBUG_INPUT
-		Input::SetState(1, iterator->currentInput);
-		Input::SetPreviousState(1, iterator->previousInput);
+		Input::SetState(1, data.currentInput);
+		Input::SetPreviousState(1, data.previousInput);
 		std::cout << Input::GetStickLeft(1).x << ", " << Input::GetPreviousStickLeft(1).y << std::endl;
 #endif
 	}
@@ -212,41 +200,47 @@ void MultiPlayServer::SendUpdate(void) {
 			// レスポンスの作成
 			RESPONSE_PLAYER res;
 
-			// レスポンス情報の登録
-			res.mode = gameMode->GetMode();
-			res.maxTime = gameMode->GetMaxTime();
-			res.time = gameMode->GetTime();
+			//// レスポンス情報の登録
+			static float time = 0.0f;
+			time += 1;
+			res.time = time;
+			//res.mode = gameMode->GetMode();
+			//res.maxTime = gameMode->GetMaxTime();
+			//res.time = gameMode->GetTime();
 
 			// クライアント情報の登録
 			for (auto &client : clients_) {
+				auto &player = client.second;
 				res.clients.push_back({ 
-					client.header.id, 
-					client.moveAttribute, client.actionAttribute, 
-					client.player_->GetPos(), client.player_->GetColor(),
-					0, client.player_->GetSkillPoint(), 0}
+					player.header.id, 
+					player.moveAttribute, player.actionAttribute,
+					player.player_->transform.position, Color::White,
+					0, 0, 0}
 				);
 			}
 
-			// オブジェクト情報の登録
-			for (auto &skillorb : orb_mngr_->GetSkillOrbs()) {
-				if (skillorb->GetDiscard()) continue;
-				int id = std::atoi(skillorb->GetID().c_str());
-				Vector2 position = skillorb->GetPos();
-				float rotation = skillorb->GetRot();
-				Vector2 scale = skillorb->GetScl();
-				res.objects.push_back({
-					id,										// ID
-					OBJECT_DATA_CLIENT_SIDE::SKILL_POINT,	// tag
-					0,										// animation
-					position,								// pos
-					rotation,								// rot
-					scale									// scl
-					}
-				);
-			}
+			//// オブジェクト情報の登録
+			//for (auto &skillorb : orb_mngr_->GetSkillOrbs()) {
+			//	if (skillorb->GetDiscard()) continue;
+			//	int id = std::atoi(skillorb->GetID().c_str());
+			//	Vector2 position = skillorb->GetPos();
+			//	float rotation = skillorb->GetRot();
+			//	Vector2 scale = skillorb->GetScl();
+			//	res.objects.push_back({
+			//		id,										// ID
+			//		OBJECT_DATA_CLIENT_SIDE::SKILL_POINT,	// tag
+			//		0,										// animation
+			//		position,								// pos
+			//		rotation,								// rot
+			//		scale									// scl
+			//		}
+			//	);
+			//}
 
 			// クライアント全員に送信する
-			for (auto &client : clients_) {
+			for (auto &kvp : clients_) {
+				auto &client = kvp.second;
+
 				// 登録されていないならスキップ
 				if (client.header.id < 0) continue;
 
@@ -254,7 +248,7 @@ void MultiPlayServer::SendUpdate(void) {
 				res.CreateResponse(sendBuff, client.header.id);
 
 				// ゲームモードのレスポンス内容の結合
-				gameMode->CreateResponse(sendBuff);
+				//gameMode->CreateResponse(sendBuff);
 
 #ifdef DEBUG_SENDLEN
 				std::cout << "SENDBUFF : " << sendBuff.Length() << std::endl;
@@ -273,15 +267,6 @@ void MultiPlayServer::SendUpdate(void) {
 	}
 }
 
-void MultiPlayServer::Update() {
-	//// 衝突判定
-	//coll_mngr_->Update();
-	//// プレイヤーアップデート
-	//PlayerUpdate(req);
-	//// ゲームモードアップデート
-	//gameMode->Update(clients_);
-	
-}
 
 void MultiPlayServer::OpenTerminal(void) {
 	// ソケット作成
@@ -404,8 +389,10 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	WSAData data;
 	Startup(v2_2, data);
 
-	gameMode = new MultiPlayFlowClientSide(this);
-	multiRenderer_ = new MultiRenderer();
+	//gameMode = new MultiPlayFlowClientSide(this);
+
+	map.Initialize();
+	map.Load("data/map/MultiPlay_Map1.csv");
 
 	// スレッドを立てる
 	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);
@@ -413,9 +400,6 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// 受信用領域を確保する
 	recvTmpBuff = new char[MAX_BUFF];
-
-	// カメラ作成
-	camera_ = new Camera(Vector2::Zero, Vector2(31, 100));
 
 	// IPV4アドレスの登録
 	wchar_t addr_w[128] = {};
@@ -471,40 +455,16 @@ void MultiPlayClient::Unregister() {
 	std::cout << "Req << ID:" << header.id << " Logout" << std::endl;
 	SendTo(sockfd_, (char *)&header, sizeof(HEADER), 0, serverAddr);
 
-	//while (true) {
-	//	HEADER data;
-	//	Recv(sockfd_, (char *)&data, sizeof(HEADER), 0);
-
-	//	// ㇿグラウト成功なら
-	//	if (data.command == HEADER::RESPONSE_LOGOUT &&
-	//		data.id == header.id) {
-	//		std::cout << "Res << ID:" << id << " Logout" << std::endl;
-	//		break;
-	//	}
-	//}
-
 	std::cout << id << "を解除しました。" << std::endl;
 
 	sockfd_.Close();
 }
 
 void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
-	// モードがNONEなら終了
-	if (res_.mode == MULTI_MODE::NONE || res_.clients.size() == 0) {
-		return;
+	map.Draw(Vector2(0, 0));
+	for (auto &client : res.clients) {
+		DrawSprite(texNo, client.position, 0.0, Vector2::One * 100, Color::White);
 	}
-
-
-
-
-	camera_->Update(res_.clients.begin()->position, Vector2::Zero, PLAYER_STATE::FALL);
-	camera_->Draw();
-
-	if (gameMode) gameMode->Draw(res_);
-	renderer_->CheckDiscard();
-	coll_mngr_->CheckDiscard();
-	multiRenderer_->Draw(res_);
-	renderer_->Draw(camera_);
 }
 
 void MultiPlayClient::SendUpdate(void) {
@@ -543,6 +503,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 
 
+	std::cout << res_.time << std::endl;
 	if (tmp.Contains(sockfd_)) {
 		// 受信する
 		int	buffLen = Recv(sockfd_, recvTmpBuff, MAX_BUFF, 0);
@@ -558,11 +519,13 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 		// モードがNONEではないなら
 		if (res.mode != MULTI_MODE::NONE) {
 			// 受信したモードと実行しているゲームモードが同じなら解析する
-			if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
+			//if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
 
-			// レスポンスの保存
-			res_ = res;
 		}
+		// レスポンスの保存
+		res_ = res;
+
+		std::cout << res_.time << std::endl;
 
 		// 初期化
 		recvBuff = nullptr;
@@ -577,7 +540,7 @@ void MultiPlayClient::Update() {
 			isFinish = true;
 			break;
 		}
-		//Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
+		Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
 		Time::Update();
 		RecvUpdate(1, res);
 		PlayerUpdate(res);
