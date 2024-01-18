@@ -208,9 +208,6 @@
     <ClCompile Include="multi_character_select_mode.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="multi_mode_flow.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="number.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -230,6 +227,12 @@
       <Filter>Multiplay\src</Filter>
     </ClCompile>
     <ClCompile Include="multi_behavior.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_mode_flow.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_object.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -432,19 +435,10 @@
     <ClInclude Include="multi_enemy_rush_mode.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="multi_final_battle_mode.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="multi_header.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="multi_intermediate_result_mode.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="multi_mode.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="multi_mode_flow.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="multi_obstacle_race_mode.h">
@@ -484,6 +478,15 @@
       <Filter>Multiplay\head</Filter>
     </ClInclude>
     <ClInclude Include="multi_behavior.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_mode_flow.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_final_battle_mode.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
   </ItemGroup>

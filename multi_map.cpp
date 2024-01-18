@@ -4,6 +4,7 @@
 #include "sprite.h"
 #include "texture.h"
 #include "lib/collider2d.h"
+#include "multi_skillorb.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -27,18 +28,24 @@ void MultiMap::Initialize() {
 	texNumbers[MAP_READ_HAMMERBRO] = LoadTexture("data/texture/enemy2.png");
 	texNumbers[MAP_READ_PHANTOM] = LoadTexture("data/texture/enemy3.png");
 
-	gameObjects = new MultiBehavior("MapMngr");
+	skillOrbs = new MultiBehavior("SkillOrbMngr");
+	enemies = new MultiBehavior("EnemiesMngr");
 }
 
 void MultiMap::Release(void) {
 	// マップデータの削除
 	if (map) delete map;    
+	if (collMap) delete collMap;
 	map = nullptr;
+	collMap = nullptr;
 
 	// オブジェクトデータ削除
-	if (gameObjects) delete gameObjects;
-	gameObjects = nullptr;
+	if (enemies) delete enemies;
+	if (skillOrbs) delete skillOrbs;
+	enemies = nullptr;
+	skillOrbs = nullptr;
 }
+
 
 void MultiMap::Load(std::string path)
 {
@@ -60,7 +67,9 @@ void MultiMap::Load(std::string path)
 	height = stoi(item);
 	// 領域確保
 	map = new int[width * height];
+	collMap = new int[width * height];
 	memset(map, -1, sizeof(int) * width * height);
+	memset(collMap, -1, sizeof(int) * width * height);
 	int y = height - 1; //上から読み込む
 	while (std::getline(file, line))
 	{
@@ -77,12 +86,32 @@ void MultiMap::Load(std::string path)
 			};
 			// start spawn
 			if (item2 == "S" || item2 == "s") {
-				startPosition.push_back(Vector2(x, y));
+				startPosition.push_back(Vector2(x, y) * cellSize);
 			}
 			// map
 			else {
+				int id = stoi(item2);
+				// スキルオーブの登録
+				if (id == MAP_READ_ORB_SMALL ||
+					id == MAP_READ_ORB_MID ||
+					id == MAP_READ_ORB_BIG) {
+					skillOrbs->Add<ServerSkillOrb>(Transform(Vector2(x, y) * cellSize));
+				}
+				// エネミーの登録
+				else if (id == MAP_READ_KOOPA ||
+					id == MAP_READ_HAMMERBRO ||
+					id == MAP_READ_PHANTOM) {
+					//skillOrbs->Add<ServerSkillOrb>(Transform(Vector2(x, y) * cellSize));
+				}
+				// エリアキャプチャの登録
+				else if (id == MAP_READ_MULTI_AREA_CAPTURE) {
+					// 今はなし
+				}
 				// 登録
-				GetMap(x, y) = stoi(item2);
+				else {
+					GetColliderMap(x, y) = id;
+				}
+				GetMap(x, y) = id;
 			}
 			x++;
 		}
@@ -90,7 +119,7 @@ void MultiMap::Load(std::string path)
 		y--;
 	}
 	file.close();
-}
+}	
 
 void MultiMap::Draw(Vector2 offset) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());                        // 画面のサイズ
@@ -120,10 +149,14 @@ void MultiMap::Draw(Vector2 offset) {
 	}
 }
 
-int MultiMap::Collision(Vector2 &position, float radius, Vector2 *outNormal) {
+int MultiMap::Collision(Vector2 &position, float radius) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());						// 画面のサイズ
 	Vector2Int leftBottomIdx = ToIndex(position - Vector2(radius, radius));							// 左下のインデックス
 	Vector2Int rightTopIdx = ToIndex(position + Vector2(radius, radius));							// 右上のインデックス
+	leftBottomIdx.x--;
+	leftBottomIdx.y--;
+	rightTopIdx.x++;
+	rightTopIdx.y++;
 
 	if (leftBottomIdx.x < 0) leftBottomIdx.x = 0;
 	if (rightTopIdx.x >= width) rightTopIdx.x = width;
@@ -132,43 +165,40 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *outNormal) {
 
 	// 判定
 	using namespace PHYSICS;
-	Vector2 normals[] = {
-		Vector2::Up, Vector2::Right, Vector2::Down, Vector2::Left
-	};
+	NearHit hit;
+	float minDistance = -1;
+	int id = -1;
 	
-	for (int x = leftBottomIdx.x; x < rightTopIdx.x; x++) {
-		for (int y = leftBottomIdx.y; y < rightTopIdx.y; y++) {
+	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
+		for (int y = leftBottomIdx.y; y <= rightTopIdx.y; y++) {
 			// 範囲外なら処理をしない
 			if (x < 0 || y < 0 || x >= width || y >= height) continue;
 
 			// ブロックのIDを取得
-			int id = GetMap(x, y);
+			int tmpId = GetColliderMap(x, y);
 			// 判定できるなら
-			if (id != -1) {
+			if (tmpId != -1) {
 				Vector2 cellPos = ToPosition({ x, y });							// セルの座標
-				Vector2 startPos, endPos;										// 線分の始点終点
-				Vector2 normal;													// 線分の法線ベクトル
-				for (int i = 0; i < 4; i++) {
-					Vector2 tmpCellPos = cellPos + normals[i] * cellSize;
-					// 判定するセルを調べて記録する
-					if (Vector2::Dot(normals[i], tmpCellPos - cellPos) < 0) {
-						normal = normals[i];
-						startPos = tmpCellPos + normals[i].Normal() * cellSize;
-						endPos = tmpCellPos - normals[i].Normal() * cellSize;
-						break;
-					}
-				}
+				Vertex1 playerCollision(position, radius);
+				Vertex4 cellCollision(cellPos, 0.0f, Vector2(cellSize, cellSize));
+				NearHit tmpHit;
 
-				Vertex2 cellCollider(startPos, endPos);
-				Vertex1 playerCollider(position, radius);
-				NearHit hit;
-				if (Collider2D::Touch(playerCollider, cellCollider, &hit)) {
-					if (outNormal) *outNormal = normal;
-					return id;
+
+				if (Collider2D::Touch(playerCollision, cellCollision, &tmpHit)) {
+
+					float distance = (position - cellPos).Distance();
+					if (minDistance < 0.0f || distance < minDistance) {
+						hit = tmpHit;
+						minDistance = distance;
+						id = tmpId;
+					}
 				}
 			}
 		}
 	}
-	return -1;
-}
 
+	if (id != -1) {
+		position = hit.position -hit.tilt.Normal() * cellSize * 0.25f;
+	}
+	return id;
+}

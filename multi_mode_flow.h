@@ -5,6 +5,7 @@
 #include "multi_area_capture_mode.h"
 #include "multi_obstacle_race_mode.h"
 #include "multi_enemy_rush_mode.h"
+#include "multi_final_battle_mode.h"
 #include "number.h"
 #include "follow.h"
 
@@ -16,14 +17,14 @@ class MultiPlayClient;
 ************************************************************/
 class MultiPlayFlowServerSide {
 private:
-	MultiPlayServerSide *gameMode_ = nullptr;
+	MultiPlayModeServerSide *gameMode_ = nullptr;
 	MultiPlayServer *game_ = nullptr;
 	DWORD startTime = 0ul;
 
 
 
 private:
-	MultiPlayServerSide *CreateMode(MULTI_MODE mode);
+	MultiPlayModeServerSide *CreateMode(MULTI_MODE mode);
 
 public:
 	MultiPlayFlowServerSide(MultiPlayServer* game) : game_(game) {
@@ -34,11 +35,11 @@ public:
 
 	void CreateResponse(Storage &out);
 
-	MapMngr *GetMap(void) const { return gameMode_ ? gameMode_->map_ : nullptr; }
+	MultiMap *GetMap(void) const { return gameMode_ ? gameMode_->map_ : nullptr; }
 	MULTI_MODE GetMode(void) const { return gameMode_ ? gameMode_->GetMode() : MULTI_MODE::NONE; }
 	float GetTime(void) const { return gameMode_ ? gameMode_->time_ : 0.0f; }
 	float GetMaxTime(void) const { return gameMode_ ? gameMode_->maxTime_ : 0.0f; }
-	MultiPlayServerSide *GetGame(void) const { return gameMode_; }
+	MultiPlayModeServerSide *GetGame(void) const { return gameMode_; }
 };
 
 
@@ -51,14 +52,14 @@ public:
 ************************************************************/
 class MultiPlayFlowClientSide {
 private:
-	MultiPlayClientSide *gameMode_ = nullptr;
+	MultiPlayModeClientSide *gameMode_ = nullptr;
 	MultiPlayClient *game_ = nullptr;
 	MULTI_MODE currentMode_ = MULTI_MODE::NONE;
 	int numTexNo = LoadTexture("data/texture/UI/number.png");
 	int icon = LoadTexture("data/texture/UI/player_ui.png");
 
 private:
-	MultiPlayClientSide *CreateMode(MULTI_MODE mode);
+	MultiPlayModeClientSide *CreateMode(MULTI_MODE mode);
 public:
 	MultiPlayFlowClientSide(MultiPlayClient *game) : game_(game) { }
 
@@ -71,6 +72,6 @@ public:
 	void ParseResponse(Storage &in);
 
 
-	MapMngr *GetMap(void) const { return gameMode_ ? gameMode_->map_ : nullptr; }
+	MultiMap *GetMap(void) const { return gameMode_ ? gameMode_->map_ : nullptr; }
 	MULTI_MODE GetMode(void) const { return gameMode_ ? gameMode_->GetMode() : MULTI_MODE::NONE; }
 };

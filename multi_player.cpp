@@ -3,4 +3,5 @@
 
 void ServerPlayer::Update(void) {
 	velocity = Input::GetStickLeft(0) * 10;
+	transform.position += velocity;
 }

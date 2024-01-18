@@ -6,6 +6,8 @@ struct Transform {
 	float rotation = 0.0f;
 	Vector2 scale = Vector2::One;
 
-	Transform() = default;
-	Transform(Vector2 pos, float rot = 0.0f, Vector2 scl = Vector2::One) : position(pos), rotation(rot), scale(scl) { }
+	Transform() { }
+	Transform(Vector2 pos) : position(pos) { }
+	Transform(Vector2 pos, float rot) : position(pos), rotation(rot) { }
+	Transform(Vector2 pos, float rot, Vector2 scl) : position(pos), rotation(rot), scale(scl) { }
 };

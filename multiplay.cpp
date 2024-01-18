@@ -2,6 +2,7 @@
 #include "multiplay.h"
 #include "xinput.h"
 #include "time.h"
+#include "multi_skillorb.h"
 #include <windows.h>
 #include <thread>
 #pragma comment(lib, "lib/lib.lib")
@@ -109,6 +110,23 @@ void MultiPlayServer::PlayerUpdate(void) {
 	std::cout << "UPD LOCK";
 #endif
 
+	for (auto &skillOrb : *map.GetSkillOrbs()) {
+		auto orb = skillOrb.Cast<ServerSkillOrb>();
+
+		for (auto &kvp : clients_) {
+			auto &player = kvp.second.player_;
+			Vector2 direction = orb->transform.position - player->transform.position;
+			float distance = direction.Distance();
+
+			if (distance <= orb->radius + player->radius) {
+				auto &client = kvp.second;
+				client.skillPoint++;
+				orb->Destroy();
+			}
+		}
+	}
+
+	// プレイヤーの移動
 	for (auto &kvp : clients_) {
 		auto &client = kvp.second;
 		auto &player = client.player_;
@@ -116,14 +134,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 		Input::SetState(0, client.currentInput);
 		Input::SetPreviousState(0, client.previousInput);
 		player->Update();
-		Vector2 normal;
-		int type = map.Collision(player->transform.position, player->radius, &normal);
-		// ヒットしたなら反射
-		if (type >= 0) {
-			float t = Vector2::Dot(normal, -player->velocity);
-			player->velocity = 2 * t * normal + player->velocity;
-		}
-		player->transform.position += player->velocity;
+		map.Collision(player->transform.position, player->radius);
 
 #ifdef DEBUG_INPUT
 		std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
@@ -266,7 +277,6 @@ void MultiPlayServer::SendUpdate(void) {
 		}
 	}
 }
-
 
 void MultiPlayServer::OpenTerminal(void) {
 	// ソケット作成

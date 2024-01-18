@@ -176,6 +176,7 @@
     <ClCompile Include="multi_character_select_mode.cpp" />
     <ClCompile Include="multi_map.cpp" />
     <ClCompile Include="multi_mode_flow.cpp" />
+    <ClCompile Include="multi_object.cpp" />
     <ClCompile Include="multi_player.cpp" />
     <ClCompile Include="number.cpp" />
     <ClCompile Include="original_window.cpp" />

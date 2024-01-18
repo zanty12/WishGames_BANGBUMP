@@ -1,57 +1,48 @@
 #pragma once
 #include "multi_header.h"
+#include "multi_map.h"
 #include "time.h"
 
 class MultiPlayFlowServerSide;
-class MultiPlayServerSide {
+class MultiPlayModeServerSide {
 protected:
 	float maxTime_ = 100.0f;
 	float time_ = 0.0f;
-	MapMngr *map_ = nullptr;
-
+	MultiMap *map_ = nullptr;
 	friend MultiPlayFlowServerSide;
 
 
-protected:
 public:
-	MultiPlayServerSide(MapMngr *map) : map_(map) { }
-	virtual ~MultiPlayServerSide() {
-		if (map_) delete map_;
-		map_ = nullptr;
-	}
-
-	virtual void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) = 0;
-	virtual void CreateResponse(Storage& out) = 0;
+	MultiPlayModeServerSide(MultiMap *map) : map_(map) {  }
+	~MultiPlayModeServerSide() { if (map_) delete map_; }
+	virtual void Update(std::list<CLIENT_DATA_SERVER_SIDE> &clients) { };
+	virtual void CreateResponse(Storage& out) { };
 	virtual void Release(std::list<CLIENT_DATA_SERVER_SIDE> &clients) { };
 
-	MapMngr *GetMap(void) const { return map_; }
 	virtual MULTI_MODE GetMode(void) const = 0;
 	float GetTime(void) const { return time_; }
 	float GetMaxTime(void) const { return maxTime_; }
+	MultiMap *GetMap(void) { return map_; }
 };
 
 
 
 
 class MultiPlayFlowClientSide;
-class MultiPlayClientSide {
+class MultiPlayModeClientSide {
 protected:
-	MapMngr *map_ = nullptr;
-
+	MultiMap *map_;
 	friend MultiPlayFlowClientSide;
 
 public:
-	MultiPlayClientSide(MapMngr *map) : map_(map) { }
-	virtual ~MultiPlayClientSide() {
-		if (map_) delete map_;
-		map_ = nullptr;
-	}
+	MultiPlayModeClientSide(MultiMap* map) : map_(map) { };
+	~MultiPlayModeClientSide() { if (map_) delete map_; }
 
-	virtual void Draw(RESPONSE_PLAYER &players) = 0;
-	virtual void ParseResponse(Storage& in) = 0;
+	virtual void Draw(RESPONSE_PLAYER &players) { };
+	virtual void ParseResponse(Storage& in) { };
 	virtual void Release(RESPONSE_PLAYER &players) { };
 
 
-	MapMngr *GetMap(void) const { return map_; }
 	virtual MULTI_MODE GetMode(void) const = 0;
+	MultiMap *GetMap(void) { return map_; }
 };

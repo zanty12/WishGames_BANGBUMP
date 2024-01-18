@@ -60,7 +60,7 @@ struct CLIENT_DATA_SERVER_SIDE {
 	XINPUT_GAMEPAD previousInput = XINPUT_GAMEPAD();
 	ATTRIBUTE_TYPE actionAttribute = ATTRIBUTE_TYPE_FIRE;
 	ATTRIBUTE_TYPE moveAttribute = ATTRIBUTE_TYPE_FIRE;
-	int score = 0;
+	int skillPoint = 0;
 	int previousSkillPoint = 0;
 
 	CLIENT_DATA_SERVER_SIDE() = default;

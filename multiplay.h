@@ -8,6 +8,7 @@
 #include "multi_mode_flow.h"
 #include "multi_connect_renderer.h"
 #include "storage_lock.h"
+#include "multi_player.h"
 #include <fstream>
 
 extern std::string SERVER_ADDRESS;
