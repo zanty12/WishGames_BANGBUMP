@@ -20,7 +20,7 @@ void ServerSkillOrb::Loop(void) {
 }
 
 
-ClientSkillOrb::ClientSkillOrb(Transform transform) : ClientGameObject(transform) {
+ClientSkillOrb::ClientSkillOrb() {
 	texNo = LoadTexture(Asset::textures_.at(textures::skill_orb));
 	transform.scale = Vector2::One * 50;
 }

@@ -14,8 +14,7 @@ public:
 
 class ClientSkillOrb : public ClientGameObject {
 public:
-	ClientSkillOrb() { };
-	ClientSkillOrb(Transform transform);
+	ClientSkillOrb();
 
 	void Loop(void) override;
 };
