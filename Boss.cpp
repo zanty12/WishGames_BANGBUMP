@@ -35,6 +35,7 @@ void Boss::Update()
 
     if (time_ > 5.0f)
     {
+        HpDown(10);
         time_ = 0;
         if (atk_now == false)
         {
@@ -48,8 +49,7 @@ void Boss::Update()
 
     if (atk_now == true)
     {
-        Wind();
-        //Atk();
+        Atk();
         atk_now = false;
     }
 
