@@ -23,6 +23,7 @@ public:
 	Transform transform;
 	Vector2 velocity;
 	float radius = 10.0f;
+	int texNo = -1;
 	int id = 0;
 
 

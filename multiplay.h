@@ -94,6 +94,7 @@ private:
 	RESPONSE_PLAYER res_;								// レスポンス
 	char *recvTmpBuff = nullptr;						// 受信バッファ（仮格納用）
 	MultiMap map;										// マップ
+	std::unordered_map<int, ClientPlayer*> clients;		// 描画用クライアント
 	std::unordered_map<int, ClientGameObject*> objects;	// 描画用オブジェクト
 	Vector2 cameraPos;									// カメラ座標
 

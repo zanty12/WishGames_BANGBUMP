@@ -11,3 +11,14 @@ public:
 
 	void Loop(void) override;
 };
+
+class ClientSkillOrb : public ClientGameObject {
+public:
+	ClientSkillOrb() { };
+	ClientSkillOrb(Transform transform) : ClientGameObject(transform) { 
+		texNo = LoadTexture(Asset::textures_.at(textures::skill_orb));
+		transform.scale = Vector2::One * 50;
+	}
+
+	void Loop(void) override;
+};

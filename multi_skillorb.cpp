@@ -18,3 +18,8 @@ void ServerSkillOrb::Loop(void) {
 		}
 	}
 }
+
+
+void ClientSkillOrb::Loop(void) {
+	DrawSprite(texNo, transform.position, 0.0f, transform.scale, Color::White);
+}

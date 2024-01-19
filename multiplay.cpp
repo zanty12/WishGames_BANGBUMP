@@ -544,17 +544,40 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 		// レスポンスの解析
 		res.ParseResponse(recvBuff);
 
+		// クライアント更新
 		for (auto &client : res.clients) {
 			// IDを検索する
-			auto iterator = objects.find(client.id);
+			auto iterator = clients.find(client.id);
+
+			// オブジェクトが作成されていないなら作成する
+			if (iterator == clients.end()) {
+				clients[client.id] = new ClientPlayer(Transform(client.position));
+			}
+			else {
+				auto &player = iterator->second;
+				player->transform.position = client.position;
+				player->moveAttribute = client.moveAttributeType;
+				player->attackAttribute = client.attackAttributeType;
+				player->animType = client.animType;
+			}			
+		}
+
+		// オブジェクト更新
+		for (auto &object : res.objects) {
+			// IDを検索する
+			auto iterator = objects.find(object.id);
 
 			// オブジェクトが作成されていないなら作成する
 			if (iterator == objects.end()) {
-				objects[client.id] = new ClientPlayer(Transform(client.position));
+				ClientGameObject *pObject = nullptr;
+				switch (object.tag) {
+				case OBJECT_DATA_CLIENT_SIDE::SKILL_POINT: pObject = new ClientSkillOrb();
+				}
+				objects[object.id] = pObject;
 			}
 			else {
-				auto &client = iterator->second;
-				client.
+				auto &obj = iterator->second;
+				obj->transform.position = object.position;
 			}			
 		}
 
