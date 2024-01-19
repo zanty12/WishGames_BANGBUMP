@@ -2,6 +2,7 @@
 #include "sprite.h"
 #include <iostream>
 #include <thread>
+#include "lib/collider2d.h"
 
 #include "DebugUI.h"
 #include "xinput.h"
