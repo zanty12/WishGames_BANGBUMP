@@ -29,6 +29,7 @@ public:
     bool Add(Collider* collider);
     void Update();
     void CheckDiscard();
+    void UpdateCollision(Collider* collider);
 
 private:
     static void Collision(Collider* collider, Collider* other);

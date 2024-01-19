@@ -18,7 +18,6 @@ void Title::Update()
 	if (Input::GetKeyDown(0, Input::North))	//Aƒ{ƒ^ƒ“
 	{
 		scene_mngr_->ChangeScene(SCENE_PREP);
-
 	}
 }
 

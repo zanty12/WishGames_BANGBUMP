@@ -79,6 +79,7 @@ public:
 		int tex = LoadTexture("data/texture/player.png");
 		SetTexNo(tex);
 		GetAnimator()->SetTexNo(tex);
+		SetType(OBJ_PLAYER);
 	}
 
 	~Player() { delete move_attribute_; delete attack_attribute_; }

@@ -70,7 +70,7 @@ Vector2 Thunder::Move()
         //put indicator
         if(move_indicator_ == nullptr)
         {
-            move_indicator_ = new Indicator();
+            move_indicator_ = new ThunderIndicator();
         }
         float angle = atan2(previousStick.y, -previousStick.x);
         Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + move_indicator_->GetScale().x / 2);
@@ -148,7 +148,7 @@ void Thunder::Action()
         //put indicator
         if(attack_indicator_ == nullptr)
         {
-            attack_indicator_ = new Indicator();
+            attack_indicator_ = new ThunderIndicator();
         }
         float angle = atan2(previousStick.y, -previousStick.x);
         Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_indicator_->GetScale().x / 2);
@@ -206,7 +206,7 @@ void ThunderAttack::Update()
     AddVel(GetVel());
 }
 
-Indicator::Indicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(thunder_indicator)), Vector2::Zero)
+ThunderIndicator::ThunderIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(thunder_indicator)), Vector2::Zero)
 {
     SetScale(Vector2(2 * GameObject::SIZE_, 0.5 * GameObject::SIZE_));
     SetType(OBJ_VOID);
