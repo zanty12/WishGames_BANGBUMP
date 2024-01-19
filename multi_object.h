@@ -17,3 +17,16 @@ public:
 	ServerGameObject(Transform transform) : transform(transform) { }
 	virtual void Update(void) { };
 };
+
+class ClientGameObject : public MultiBehavior {
+public:
+	Transform transform;
+	Vector2 velocity;
+	float radius = 10.0f;
+	int id = 0;
+
+
+	ClientGameObject() = default;
+	ClientGameObject(Transform transform) : transform(transform) { }
+	virtual void Update(void) { };
+};

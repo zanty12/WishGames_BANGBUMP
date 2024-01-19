@@ -92,46 +92,44 @@ void MultiFire::Move(void) {
     Vector2 &vel = player->velocity;
     Vector2 stick = Input::GetStickLeft(0);
     stick.y *= -1;
-    if (stick.Distance() > responseMinStickDistance && vel.Distance() < speed * Time::GetDeltaTime())
-    {
-        Vector2 dir = stick.Normalize();
-        vel += dir * speed;
-        Vector2 player_dir = vel.Normalize();
 
-        float angle = acos(Vector2::Dot(dir, player_dir));
-        if (acos(Vector2::Dot(dir, player_dir)) > MATH::PI * 0.5f)
-            vel += dir * speed * Time::GetDeltaTime() * Time::GetDeltaTime();
+    // 移動中
+    if (stick.Distance() > judgeScale) {
+        player->animType = ANIMATION_TYPE_MOVE;
+
+        velocity += stick;
+        if (velocity.Distance() > maxSpeed) velocity = velocity.Normalize() * maxSpeed;
+        player->velocity = velocity;
     }
-    else if (stick.Distance() > responseMinStickDistance && vel.Distance() > speed * Time::GetDeltaTime())
-    {
-        Vector2 dir = stick.Normalize();
-        Vector2 vel = dir * speed * Time::GetDeltaTime();
+    // 停止中
+    else {
+        player->animType = ANIMATION_TYPE_IDEL;
     }
-    else
-    {
-        if (vel.Distance() > 6 * Time::GetDeltaTime())
-            vel *= friction;
-    }
+
+    velocity *= friction;
 }
 
 void MultiFire::Attack(void) {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
 
-    if (responseMinStickDistance < stick.Distance())
-    {
-        //get angle from stick
+    // 攻撃
+    if (stick.Distance() > judgeScale && player->animType != ANIMATION_TYPE_MOVE) {
+        player->animType = ANIMATION_TYPE_ATTACK;
+
+        // 角度を調べる
         float angle = atan2(stick.y, stick.x);
+        // 攻撃オブジェクトの生成
         if (attack_ == nullptr)
             attack_ = new MultiFireAttack(player);
-        //get pos of attack from angle
+
+        // 座標の指定
         Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player->transform.scale.x / 2 + attack_->transform.scale.x / 2);
-        pos = player->transform.position + pos;
+        pos += player->transform.position;
         attack_->transform.position = pos;
         attack_->transform.rotation = angle;
     }
-    else
-    {
+    else {
         delete attack_;
         attack_ = nullptr;
     }

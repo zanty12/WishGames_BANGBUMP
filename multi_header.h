@@ -45,6 +45,7 @@ struct CLIENT_DATA_CLIENT_SIDE {
 	int id = -1;						// ID
 	ATTRIBUTE_TYPE moveAttributeType;	// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType;	// 攻撃属性タイプ
+	ANIMATION_TYPE animType;			// アニメーションタイプ
 	Vector2 position;					// 座標
 	int score = 0;						// スコア
 	int skillPoint = 0;					// スキルポイント
@@ -58,10 +59,6 @@ struct CLIENT_DATA_SERVER_SIDE {
 	ServerPlayer* player_ = nullptr;
 	XINPUT_GAMEPAD currentInput = XINPUT_GAMEPAD();
 	XINPUT_GAMEPAD previousInput = XINPUT_GAMEPAD();
-	ATTRIBUTE_TYPE actionAttribute = ATTRIBUTE_TYPE_FIRE;
-	ATTRIBUTE_TYPE moveAttribute = ATTRIBUTE_TYPE_FIRE;
-	int skillPoint = 0;
-	int previousSkillPoint = 0;
 
 	CLIENT_DATA_SERVER_SIDE() = default;
 	CLIENT_DATA_SERVER_SIDE(HEADER header, Socket sockfd, Address addr, ServerPlayer *player)

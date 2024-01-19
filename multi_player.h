@@ -7,12 +7,13 @@
 class MultiAttribute;
 class ServerPlayer : public ServerGameObject {
 private:
-	MultiAttribute *moveAttribute = nullptr;
-	MultiAttribute *attackAttribute = nullptr;
+	MultiAttribute *moveAttribute = nullptr;			// 移動属性
+	MultiAttribute *attackAttribute = nullptr;			// 攻撃属性
 
 public:
-	MultiMap *map = nullptr;
-	ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;
+	int skillPoint = 0;									// スキルポイント
+	MultiMap *map = nullptr;							// マップ
+	ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;		// アニメーション
 
 	
 	
@@ -31,4 +32,18 @@ public:
 	MultiAttribute *GetAttackAttribute(void) { return attackAttribute; }
 
 	void Update(void) override;
+};
+
+class ClientPlayer : public ClientGameObject {
+public:
+	int skillPoint = 0;									// スキルポイント
+	ATTRIBUTE_TYPE moveAttribute;						// 移動属性
+	ATTRIBUTE_TYPE attackAttribute;						// 攻撃属性
+	ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;		// アニメーション
+
+
+	
+public:
+	ClientPlayer(Transform transform, ATTRIBUTE_TYPE moveAttribute, ATTRIBUTE_TYPE attackAttribute, ANIMATION_TYPE animType)
+		: moveAttribute(moveAttribute), attackAttribute(attackAttribute), animType(animType), ClientGameObject(transform) { }
 };

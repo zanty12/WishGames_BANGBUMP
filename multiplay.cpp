@@ -172,10 +172,6 @@ void MultiPlayServer::RecvUpdate(void) {
 		data.currentInput = req.input.curInput;
 		data.previousInput = req.input.preInput;
 
-		// 属性を設定
-		data.moveAttribute = req.input.move;
-		data.actionAttribute = req.input.action;
-
 #ifdef DEBUG_INPUT
 		Input::SetState(1, data.currentInput);
 		Input::SetPreviousState(1, data.previousInput);
@@ -217,13 +213,15 @@ void MultiPlayServer::SendUpdate(void) {
 			res.time = gameMode->GetTime();
 
 			// クライアント情報の登録
-			for (auto &client : clients_) {
-				auto &player = client.second;
+			for (auto &kvp : clients_) {
+				auto &client = kvp.second;
+				auto &player = client.player_;
 				res.clients.push_back({ 
-					player.header.id, 
-					player.moveAttribute, player.actionAttribute,
-					player.player_->transform.position,
-					0, player.skillPoint, 0}
+					client.header.id,
+					player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
+					player->animType,
+					player->transform.position,
+					0, player->skillPoint, 0}
 				);
 			}
 
@@ -242,6 +240,7 @@ void MultiPlayServer::SendUpdate(void) {
 			}
 
 			// レスポンスの作成
+			sendBuff = nullptr;
 			res.CreateResponse(sendBuff, 0);
 
 			// クライアント全員に送信する
@@ -377,7 +376,6 @@ void MultiPlayServer::OpenTerminal(void) {
 		Time::Update();
 
 		recvBuff = nullptr;
-		sendBuff = nullptr;
 	}
 
 	sendUpdateFunc.join();
@@ -546,6 +544,16 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 		// レスポンスの解析
 		res.ParseResponse(recvBuff);
 
+		for (auto &client : res.clients) {
+			// IDを検索する
+			auto iterator = objects.find(client.id);
+
+			// オブジェクトが作成されていないなら作成する
+			if (iterator == objects.end()) {
+				objects[client.id] = new ClientPlayer(client.position);
+			}
+		}
+
 		// モードがNONEではないなら
 		if (res.mode != MULTI_MODE::NONE) {
 			// 受信したモードと実行しているゲームモードが同じなら解析する
@@ -569,7 +577,7 @@ void MultiPlayClient::Update() {
 			isFinish = true;
 			break;
 		}
-		//Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
+		Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
 		Time::Update();
 		RecvUpdate(1, res);
 		PlayerUpdate(res);

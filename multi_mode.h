@@ -6,7 +6,7 @@
 class MultiPlayFlowServerSide;
 class MultiPlayModeServerSide {
 protected:
-	float maxTime_ = 100.0f;
+	float maxTime_ = 60.0f;
 	float time_ = 0.0f;
 	MultiMap *map_ = nullptr;
 	friend MultiPlayFlowServerSide;

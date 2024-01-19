@@ -12,8 +12,8 @@ void ServerSkillOrb::Loop(void) {
 		float distance = direction.Distance();
 
 		if (distance <= radius + player->radius) {
-			auto &client = kvp.second;
-			client.skillPoint++;
+			auto &player = kvp.second.player_;
+			player->skillPoint++;
 			Destroy();
 		}
 	}
