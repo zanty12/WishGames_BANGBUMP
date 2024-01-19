@@ -39,7 +39,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	Vector2 vel = Vector2::Zero;
 	ServerPlayer *player = new ServerPlayer();
 	player->SetMoveAttribute(new MultiFire(player));
-	player->SetAttackAttribute(new MultiFire(player));
+	player->SetAttackAttribute(new MultiWind(player));
 	player->transform.position = *map.startPosition.begin();
 
 	// ヘッダーの更新
