@@ -9,22 +9,23 @@
 //--------------------------------------------------------------------------------
 #pragma once
 #include "attribute.h"
+#include "thunder.h"
 
+class DarkAttack;
+class DarkIndicator;
 class Dark : public Attribute
 {
 	Vector2 warpPosition;
-	Vector2 attackDirection;						// 攻撃する向き
+	Vector2 attackDirection_;						// 攻撃する向き
 	//const float maxSpeedFalling = 0.5f;				// 落下中のスピード
 	//const float warpDistance = 800.0f;				// ワープ距離
-	//const float attackWidthLength = 5.0f;			// レーザーの幅の長さ
 	const float responseMinStickDistance = 0.2f;	// スティックの傾けたときに判定する最小値
-
-	bool isDraw = false;
-
+	DarkAttack* attack_ = nullptr;
+	DarkIndicator* move_indicator_ = nullptr;
+	ThunderIndicator* attack_indicator_ = nullptr;
 	//ここからは調整用のためconst抜き
 	float maxSpeedFalling = -0.5f;
-	float warpDistance = 800.0f;
-	float attackWidthLength = 5.0f;
+	float warpDistance_ = 20*GameObject::SIZE_;
 
 public:
 
@@ -32,7 +33,27 @@ public:
 	~Dark() override = default;
 	Vector2 Move() override;
 	void Action() override;
-	void Draw(Vector2 offset) override;
 	void DebugMenu() override;
-	void Gravity() override;
+};
+
+class DarkAttack : public MovableObj,public PlayerAttack
+{
+	Dark* parent_;
+	Vector2 size_ = Vector2(5* GameObject::SIZE_, 2*GameObject::SIZE_);
+public:
+	DarkAttack() = delete;
+	DarkAttack(Dark* parent);
+	~DarkAttack() override = default;
+	void Update() override{};
+};
+
+class DarkIndicator : public MovableObj
+{
+private:
+	Vector2 target_pos_;
+public:
+	DarkIndicator();
+	~DarkIndicator() override = default;
+	void Update() override;
+	void SetTargetPos(Vector2 pos) { target_pos_ = pos; }
 };

@@ -2,6 +2,7 @@
 #include "sprite.h"
 #include <iostream>
 #include <thread>
+#include "lib/collider2d.h"
 
 #include "DebugUI.h"
 #include "xinput.h"
@@ -10,6 +11,7 @@
 #include "text.h"
 #include "time.h"
 #include "video.h"
+#include "sound.h"
 
 bool debug_mode = true;
 
@@ -19,6 +21,9 @@ int main()
     DebugUI::Initialize();
     MSG msg;
     Time::Initialize();
+    WIN::Window window = Graphical::GetHwnd();
+    const HWND hWnd = window.GetHwnd();
+    InitSound(hWnd);
     HRESULT result = Text::CreateResources();
     if (FAILED(result))
     {
@@ -83,6 +88,23 @@ int main()
             Text::TextEnd();
             DebugUI::EndDraw();
 
+            /*using namespace PHYSICS;
+            static float x = 100.0f;
+            static float y = 100.0f;
+            static float r = 0.0f;
+            x += Input::GetStickLeft(0).x;
+            y += Input::GetStickLeft(0).y;
+            x += Input::GetKey(0, Input::Right) - Input::GetKey(0, Input::Left);
+            y += Input::GetKey(0, Input::Up) - Input::GetKey(0, Input::Down);
+            r += Input::GetKey(0, Input::R) * 0.01f;
+            r -= Input::GetKey(0, Input::L) * 0.01f;
+
+            Vertex1 v1(Vector2(100, 100), 100);
+            Vertex4 v4(Vector2(x,y), r, Vector2(100,100));
+            Color color = Collider2D::TouchNew(v1, VertexN(v4.v, 4)) ? Color::Red : Color::Green;
+            DrawCollider(v1, color, Vector2::Zero);
+            DrawCollider(v4, color, Vector2::Zero);*/
+
             Graphical::Present();
         }
     }
@@ -91,6 +113,7 @@ int main()
     DebugUI::Release();
     Time::Release();
     Text::DiscardResources();
+    UninitSound();
 
     std::cout << "Hello World!\n"; //基本
 }

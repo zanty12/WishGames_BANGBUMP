@@ -124,6 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>;$(SolutionDir)\lib\ffmpeg\include\</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -169,6 +170,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapmngr.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="movableobj.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
@@ -181,6 +183,7 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="skillorb.cpp" />
     <ClCompile Include="skillorbmngr.cpp" />
+    <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="text.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -236,6 +239,8 @@
     <ClInclude Include="penfloor.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="colliderrect.h" />
+    <ClInclude Include="playerattack.h" />
+    <ClInclude Include="playerstate.h" />
     <ClInclude Include="prep.h" />
     <ClInclude Include="projectilemngr.h" />
     <ClInclude Include="renderer.h" />
@@ -245,6 +250,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="skillorb.h" />
     <ClInclude Include="skillorbmngr.h" />
+    <ClInclude Include="sound.h" />
     <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="text.h" />
@@ -288,6 +294,7 @@
     <Content Include="data\texture\title.png" />
     <Content Include="data\texture\title.webp" />
     <Content Include="data\texture\wall.png" />
+    <Content Include="data\texture\wapuro-mincho.otf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

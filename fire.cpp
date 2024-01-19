@@ -2,6 +2,7 @@
 
 #include <libavutil/mathematics.h>
 
+#include "asset.h"
 #include "xinput.h"
 #include "sprite.h"
 #include"lib/collider2d.h"
@@ -32,7 +33,7 @@ Vector2 Fire::Move()
     else
     {
         player_->SetGravityState(GRAVITY_FULL);
-        if(player_->GetVel().Distance() > Player::GRAVITY_SCALE_ * Time::GetDeltaTime())
+        if (player_->GetVel().Distance() > Player::GRAVITY_SCALE_ * Time::GetDeltaTime())
             return player_->GetVel() * friction;
         else
             return player_->GetVel();
@@ -43,41 +44,26 @@ void Fire::Action()
 {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
-    float distance = stick.Distance();
-    isDraw = false;
 
     if (responseMinStickDistance < stick.Distance())
     {
-        attackDirection = stick * speed;
-        auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
-        auto attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + attackDirection * attackInjectionLength,
-                                      attackWidthLength);
-
-        isDraw = true;
-
-        for (auto enemy : enemies)
-        {
-            if (enemy)
-            {
-                Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
-
-                if (Collider2D::Touch(attackCollider, enemyCollider))
-                {
-                    enemy->Discard();
-                }
-            }
-        }
+        //get angle from stick
+        float angle = atan2(stick.y, stick.x);
+        if (attack_ == nullptr)
+            attack_ = new FireAttack(this);
+        //get pos of attack from angle
+        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2);
+        pos = player_->GetPos() + pos;
+        attack_->SetPos(pos);
+        attack_->SetRot(angle);
     }
-}
-
-void Fire::Draw(Vector2 offset)
-{
-    if (isDraw)
+    else
     {
-        auto attackCollider = PHYSICS::Vertex4(player_->GetPos(),
-                                               player_->GetPos() + attackDirection * attackInjectionLength,
-                                               attackWidthLength);
-        DrawCollider(attackCollider, Color::Green, offset);
+        if (attack_ != nullptr)
+        {
+            delete attack_;
+            attack_ = nullptr;
+        }
     }
 }
 
@@ -85,11 +71,16 @@ void Fire::DebugMenu()
 {
     ImGui::Begin("Fire");
     ImGui::SliderFloat2("speed", &speed, 0.0f, 9 * GameObject::SIZE_);
-    ImGui::SliderFloat("attackInjectionLength", &attackInjectionLength, 0.0f, 50.0f);
-    ImGui::SliderFloat("attackWidthLength", &attackWidthLength, 0.0f, 10.0f);
     ImGui::End();
 }
 
-void Fire::Gravity()
+FireAttack::FireAttack(Fire* parent) : parent_(parent),
+                                       MovableObj(
+                                           Vector2(
+                                               parent->GetPlayer()->GetPos().x + parent->GetPlayer()->GetScale().x / 2 +
+                                               1.5 * GameObject::SIZE_, parent->GetPlayer()->GetPos().y), 0.0f,
+                                           LoadTexture(Asset::GetAsset(fire_attack)), Vector2::Zero),PlayerAttack(10000)
 {
+    SetScale(size_);
+    SetType(OBJ_ATTACK);
 }

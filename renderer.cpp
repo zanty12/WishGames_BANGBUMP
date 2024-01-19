@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "camera.h"
 
 void Renderer::Update()
 {
@@ -14,11 +15,12 @@ void Renderer::Update()
 
 void Renderer::Draw() { for (auto animator : animators_)animator->Draw(); }
 
-void Renderer::Draw(Vector2 offset)
+void Renderer::Draw(Camera* camera)
 {
+    Vector2 offset = camera->GetCameraOffset();
     for (std::list<Animator*>::iterator it = animators_.begin(); it != animators_.end(); ++it)
     {
-        if (*it != nullptr)
+        if (*it != nullptr && camera->InCamera((*it)->GetPos()))
             (*it)->Draw(offset);
     }
 }

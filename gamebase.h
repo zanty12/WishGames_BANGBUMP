@@ -7,6 +7,7 @@
 #include "scenemngr.h"
 #include "renderer.h"
 #include "skillorbmngr.h"
+#include "text.h"
 
 class MapMngr;
 class Player;
@@ -25,6 +26,9 @@ protected:
 	static CollMngr *coll_mngr_;
 	static ProjectileMngr *projectile_mngr_;
 	static SkillOrbMngr *orb_mngr_;
+	IDWriteTextFormat* text_format_;
+	ID2D1SolidColorBrush* brush_;
+
 	int change_scene_;		//シーン遷移フラグ
 
 

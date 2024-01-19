@@ -11,6 +11,7 @@ private:
 public:
     ColliderRect() = delete;
     ColliderRect(GameObject* parent,bool movable);
+    void SetPos(Vector2 pos);
     Vertex4 GetRect() const { return rect_; }
     bool Collide(Collider* other) override;
     void Update() override;

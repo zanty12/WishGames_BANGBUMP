@@ -13,6 +13,11 @@ enum textures
 {
     //player
     player,
+    //attibute_move
+    //attibute_attack
+    fire_attack,
+    wind_attack,
+    water_attack,
     //enemy
     //block
     skill_orb,
@@ -23,12 +28,22 @@ enum textures
     bg_stage2_back,
     bg_stage3_front,
     bg_stage3_back,
+    //UI
+    timer,
+    thunder_indicator,
 };
 
 enum sounds
 {
     //bgm
     //se
+    SE_1,
+    SE_2,
+    SE_3,
+    SE_4,
+    SE_5,
+    SE_6,
+
 };
 
 enum maps
@@ -38,16 +53,23 @@ enum maps
     single_stage_2,
 };
 
+enum fonts
+{
+    notosans_jp,
+    wapuro_mincho,
+};
+
 class Asset
 {
 public:
     static const std::map<textures,std::string> textures_;
     static const std::map<sounds,std::string> sounds_;
     static const std::map<maps,std::string> maps_;
+    static const std::map<fonts,std::wstring> fonts_;
 
     template<typename T>
     static std::string GetAsset(T asset);
-
+    static std::wstring GetFont(const fonts asset);
 };
 
 

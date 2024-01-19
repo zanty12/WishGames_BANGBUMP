@@ -5,15 +5,16 @@
 #include "game.h"
 #include "prep.h"
 #include "title.h"
+#include "menu.h"
 #include "result.h"
 #include "thunder.h"
 #include "wind.h"
 
-std::map<std::string,int> attribute_dict = {
-    {"FIRE",0},
-    {"WIND",1},
-    {"THUNDER",2},
-    {"DARK",3},
+std::map<std::string, int> attribute_dict = {
+    {"FIRE", 0},
+    {"WIND", 1},
+    {"THUNDER", 2},
+    {"DARK", 3},
 };
 
 SceneMngr::SceneMngr(SCENE scene)
@@ -24,6 +25,7 @@ SceneMngr::SceneMngr(SCENE scene)
         scene_ = new Title(this);
         break;
     case SCENE_MENU:
+        scene_ = new Menu(this);
         break;
     case SCENE_PREP:
         scene_ = new Prep(this);
@@ -53,6 +55,7 @@ void SceneMngr::ChangeScene(SCENE scene)
         scene_ = new Title(this);
         break;
     case SCENE_MENU:
+        scene_ = new Menu(this);
         break;
     case SCENE_PREP:
         scene_ = new Prep(this);
@@ -87,6 +90,7 @@ void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
         scene_ = new Title(this);
         break;
     case SCENE_MENU:
+        scene_ = new Menu(this);
         break;
     case SCENE_PREP:
         scene_ = new Prep(this);
@@ -187,5 +191,7 @@ void SceneMngr::ParseGame(const std::string& message)
         }
     }
     game->AddPlayer(player);
-    game->AddCamera(new Camera(player));
+    game->AddCamera(new Camera(player->GetPos(),
+                               Vector2(game->GetMapMngr()->GetMap()->GetWidth(),
+                                       game->GetMapMngr()->GetMap()->GetHeight())));
 }

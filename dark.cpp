@@ -8,116 +8,182 @@
 // 
 //--------------------------------------------------------------------------------
 #include"dark.h"
+
+#include "asset.h"
 #include"xinput.h"
 #include"lib/collider2d.h"
 
 
 Vector2 Dark::Move()
 {
-	Vector2 velocity = player_->GetVel();
+    Vector2 velocity = player_->GetVel();
+    Vector2 stick = Input::GetStickLeft(0);
 
-	if (Input::GetKey(0, Input::LThumb)) {
-		if (velocity.y <= -maxSpeedFalling) {
-			velocity.y = maxSpeedFalling;
-			return velocity;
-		}
-	}
-	if (Input::GetKeyUp(0, Input::LThumb)) {
-		Vector2 stick = Input::GetStickLeft(0);
-		stick.y *= -1;
-		Vector2 warpDirection = stick * warpDistance;
-		warpPosition = player_->GetPos() + warpDirection;
+    if (stick != Vector2::Zero)
+    {
+        if (move_indicator_ == nullptr)
+        {
+            move_indicator_ = new DarkIndicator();
+        }
+        Vector2 dir = stick.Normalize();
+        dir.y *= -1;
+        Vector2 target_pos = player_->GetPos() + dir * warpDistance_ / 2;
+        move_indicator_->SetPos(player_->GetPos());
+        move_indicator_->SetTargetPos(target_pos);
+        move_indicator_->Update();
+    }
 
-		player_->SetPos(warpPosition);
-	}
-	else warpPosition = Vector2::Zero;
+    else
+    {
+        delete move_indicator_;
+        move_indicator_ = nullptr;
+    }
+    if (Input::GetKey(0, Input::LThumb))
+    {
+        if (velocity.y <= -maxSpeedFalling)
+        {
+            velocity.y = maxSpeedFalling;
+            return velocity;
+        }
+    }
+    if (Input::GetKeyUp(0, Input::LThumb))
+    {
+        Vector2 stick = Input::GetStickLeft(0);
+        stick = stick.Normalize();
+        stick.y *= -1;
+        Vector2 warpDirection = stick * warpDistance_;
+        warpPosition = move_indicator_->GetPos();
 
+        player_->SetPos(warpPosition);
+        delete move_indicator_;
+        move_indicator_ = nullptr;
+    }
+    else warpPosition = Vector2::Zero;
 
-	return player_->GetVel();
+    return player_->GetVel();
 };
 
 void Dark::Action()
 {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
-    float distance = stick.Distance();
-	isDraw = false;
+    //float distance = stick.Distance();
+    if (stick != Vector2::Zero)
+    {
+        if (attack_indicator_ == nullptr)
+        {
+            attack_indicator_ = new ThunderIndicator();
+            attack_indicator_->GetAnimator()->SetColor(Color(0.0f, 0.0f, 1.0f, 1.0f));
+        }
+        Vector2 dir = stick.Normalize();
+        float angle = atan2(dir.y, dir.x);
+        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_indicator_->GetScale().x /
+            2);
+        pos = player_->GetPos() + pos;
+        attack_indicator_->SetPos(pos);
+        attack_indicator_->SetRot(angle);
+    }
 
 
-
-	float width = Graphical::GetWidth();
-	float height = Graphical::GetHeight();
-	Vector2 screenVertices[] = {
-		Vector2(0.0f, 0.0f),
-		Vector2(0.0f, height),
-		Vector2(width, height),
-		Vector2(width, 0.0f)
-	};
-	VertexN screenCollider(screenVertices, 4);					// スクリーンのコライダー
-
-	// 押し込む
-	if (Input::GetKeyDown(0, Input::RThumb) && responseMinStickDistance < stick.Distance()) {
-		attackDirection = stick.Normalize();
-	}
-	// 攻撃
-	else if (Input::GetKey(0, Input::RThumb)) {
-		auto enemies = player_->GetMapMngr()->GetEnemyMngr()->GetEnemies();
-		Vector2 normalize = attackDirection.Normalize();		// スティックの正規化ベクトル
-		Vector2 maxAttackDirection = normalize * 1000.0f;		// 最大射程
-		RayHit screenEndPoint;									// スクリーンにぶつかった場所を格納
-
-		attackDirection = maxAttackDirection;
-		auto attackCollider = Vertex4(player_->GetPos(), player_->GetPos() + maxAttackDirection, attackWidthLength);
-		isDraw = true;
-
-		for (auto enemy : enemies) {
-			if (enemy) {
-				Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
-
-				if (Collider2D::Touch(attackCollider, enemyCollider)) {
-					enemy->Discard();
-				}
-			}
-		}
-		//if (Collider2D::TouchLine(Vertex2(player_->GetPos(), maxAttackDirection), screenCollider, &screenEndPoint)) {
-		//	// 画面までの距離
-		//	float laserDistance = Vector2::Distance(player_->GetPos(), screenEndPoint.position);
-		//	// レーザーのコライダー
-		//	Vector2 laserEndPosition = player_->GetPos() + Vector2(normalize.x, -normalize.y) * laserDistance;
-		//	attackCollider = Vertex4(player_->GetPos(), laserEndPosition, attackWidthLength);
-
-		//	DrawCollider(Vertex1(screenEndPoint.position, 100), Color::White);
-
-		//	DrawCollider(attackCollider, Color::Green);
-
-		//	for (auto enemy : enemies) {
-		//		if (enemy) {
-		//			Vertex4 enemyCollider(enemy->GetPos(), 0.0f, enemy->GetScale());
-
-		//			if (Collider2D::Touch(attackCollider, enemyCollider)) {
-		//				enemy->Die();
-		//			}
-		//		}
-		//	}
-		//}
-	}
-}
-void Dark::Draw(Vector2 offset) {
-	if (isDraw) {
-		auto attackCollider = PHYSICS::Vertex4(player_->GetPos(), player_->GetPos() + attackDirection, attackWidthLength);
-		DrawCollider(attackCollider, Color::Green, offset);
-	}
+    // 押し込む
+    if (Input::GetKeyDown(0, Input::RThumb) && responseMinStickDistance < stick.Distance())
+    {
+        attackDirection_ = stick.Normalize();
+    }
+    // 攻撃
+    else if (Input::GetKey(0, Input::RThumb))
+    {
+        if (attack_ == nullptr)
+            attack_ = new DarkAttack(this);
+        float angle = atan2(attackDirection_.y, attackDirection_.x);
+        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2);
+        pos = player_->GetPos() + pos;
+        attack_->SetPos(pos);
+        attack_->SetRot(angle);
+    }
+    else
+    {
+        if (attack_ != nullptr)
+        {
+            delete attack_;
+            attack_ = nullptr;
+        }
+    }
 }
 
 void Dark::DebugMenu()
 {
-	ImGui::Begin("Dark");
-	ImGui::SliderFloat2("maxSpeedFalling",&maxSpeedFalling,0.0f,1.0f);
-	ImGui::SliderFloat2("warpDistance", &warpDistance, 400.0f, 1000.0f);
-	ImGui::SliderFloat2("attackWidthLength", &attackWidthLength, 1.0f, 10.0f);
-	ImGui::End();
+    ImGui::Begin("Dark");
+    ImGui::SliderFloat2("maxSpeedFalling", &maxSpeedFalling, 0.0f, 1.0f);
+    ImGui::SliderFloat2("warpDistance", &warpDistance_, 400.0f, 1000.0f);
+    ImGui::End();
 }
 
-void Dark::Gravity() {
+DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
+                                       MovableObj(
+                                           Vector2(
+                                               parent->GetPlayer()->GetPos().x + parent->GetPlayer()->GetScale().x / 2 +
+                                               5 * GameObject::SIZE_, parent->GetPlayer()->GetPos().y), 0.0f,
+                                           LoadTexture(Asset::GetAsset(water_attack)), Vector2::Zero),PlayerAttack(10000)
+{
+    SetScale(size_);
+    SetType(OBJ_ATTACK);
+}
 
+DarkIndicator::DarkIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(player)), Vector2::Zero)
+{
+    SetScale(Vector2(2 * GameObject::SIZE_, 2 * GameObject::SIZE_));
+    GetAnimator()->SetColor(Color(0.0f, 0.0f, 0.5f, 0.5f));
+    SetType(OBJ_VOID);
+}
+
+void DarkIndicator::Update()
+{
+    bool hit = false;
+    //try collision at target_pos_
+    ColliderRect* target_collider = dynamic_cast<ColliderRect*>(GetCollider());
+    ColliderRect* temp= new ColliderRect(*target_collider);
+    temp->SetPos(target_pos_);
+    GameBase::GetCollMngr()->UpdateCollision(temp);
+    if(temp->GetCollision().size() == 0 || temp->GetCollision().front()->GetParent()->GetType() == OBJ_VOID)
+    {
+        //std::cout<<"target_pos_ is valid"<<std::endl;
+        SetPos(target_pos_);
+        target_collider->SetPos(target_pos_);
+        hit = true;
+        return;
+    }
+    //std::cout<<"target_pos_ is invalid"<<std::endl;
+    //try moving to target
+    while ((GetPos() - target_pos_).Distance() > 0.1f && !hit)
+    {
+        Vector2 dir = (target_pos_ - GetPos()).Normalize();
+        Vector2 pos = GetPos() + dir * GameObject::SIZE_ / 2;
+        SetPos(pos);
+        //Get collision
+        Collider* collider = GetCollider();
+        collider->Update();
+        GameBase::GetCollMngr()->UpdateCollision(collider);
+        std::list<Collider*> collision = collider->GetCollision();
+        if (collision.size() == 0)
+        {
+            continue;
+        }
+        else if (collision.size())
+        {
+            collision.sort([collider](Collider* a, Collider* b)
+            {
+                return (a->GetPos() - collider->GetPos()).Distance() < (b->GetPos() - collider->GetPos()).Distance();
+            });
+            for (auto& col : collision)
+            {
+                if (col->GetParent()->GetType() == OBJ_SOLID)
+                {
+                    hit = true;
+                    collider->CollisionSolid(col);
+                }
+            }
+        }
+    }
+    SetPos(GetCollider()->GetPos());
 }

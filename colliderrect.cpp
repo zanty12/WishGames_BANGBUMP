@@ -1,5 +1,6 @@
 #include "colliderrect.h"
 
+#include "bossatk.h"
 #include "gamebase.h"
 
 ColliderRect::ColliderRect(GameObject* parent, bool movable) : Collider(RECTANGLE, parent, movable)
@@ -9,7 +10,17 @@ ColliderRect::ColliderRect(GameObject* parent, bool movable) : Collider(RECTANGL
         Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),
         Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2),
         Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2));
+    rect_.Rotate(parent->GetRot());
     GameBase::GetCollMngr()->Add(this);
+}
+
+void ColliderRect::SetPos(Vector2 pos)
+{
+    Collider::SetPos(pos);
+    rect_.a = Vector2(GetPos().x - GetParent()->GetScale().x / 2, GetPos().y + GetParent()->GetScale().y / 2);
+    rect_.b = Vector2(GetPos().x + GetParent()->GetScale().x / 2, GetPos().y + GetParent()->GetScale().y / 2);
+    rect_.c = Vector2(GetPos().x + GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
+    rect_.d = Vector2(GetPos().x - GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
 }
 
 bool ColliderRect::Collide(Collider* other)
@@ -41,6 +52,7 @@ void ColliderRect::Update()
         rect_.c = Vector2(GetPos().x + GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
         rect_.d = Vector2(GetPos().x - GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
     }
+    rect_.Rotate(GetParent()->GetRot());
 }
 
 void ColliderRect::CollisionInteract()
@@ -50,6 +62,9 @@ void ColliderRect::CollisionInteract()
         switch (other->GetParent()->GetType())
         {
         case OBJ_SOLID:
+            CollisionSolid(other);
+            break;
+        case OBJ_PLAYER:
             CollisionSolid(other);
             break;
         case OBJ_PENETRABLE:
@@ -63,6 +78,11 @@ void ColliderRect::CollisionInteract()
         case OBJ_VOID:
             break;
         case OBJ_ITEM:
+            break;
+        case OBJ_ATTACK:
+            //îΩéÀÇ∑ÇÈÇ‡ÇÃÇ…ÇæÇØè’ìÀèàóù
+            if (dynamic_cast<Boss_Wind*>(other->GetParent()) != nullptr)
+                CollisionSolid(other);
             break;
         default:
             CollisionSolid(other);
@@ -148,7 +168,12 @@ void ColliderRect::CollisionSolid(Collider* other)
                         Vector2 vel= parent->GetVel() * GetBounciness();
                         //if the object is moving towards the collision, bounce it
                         if (Vector2::Dot(vel, coll_dir) > 0)
-                            vel = -vel;
+                        {
+                            if(overlap_x != 0.0f)
+                                vel.x = -vel.x;
+                            if(overlap_y != 0.0f)
+                                vel.y = -vel.y;
+                        }
                         //vel += Vector2(-move_amount.x * GetBounciness(), move_amount.y * GetBounciness());
                         parent->SetVel(vel);
                     }

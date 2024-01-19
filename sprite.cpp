@@ -81,7 +81,7 @@ void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color c
 	translation.SetTranslation(pos);
 	rotation.SetRotation(Vector3(0.0f, 0.0f, rot));
 	scaler.SetScaling(scale);
-	transform = scaler * rotation;
+	transform = rotation * scaler;
 	transform = translation * transform;
 	g_WorldMatrix = transform;
 
@@ -165,7 +165,7 @@ void DrawLine(Vector2 startPosition, Vector2 endPosition, Color color, float wid
 	MATRIX translation, rotation, scaler, transform;
 	Vector2 pos, scale;
 	pos = centerLine;
-	//pos.y = -pos.y + Graphical::GetHeight();
+	pos.y = -pos.y + Graphical::GetHeight();
 	scale = Vector2(width, distance);
 
 
@@ -193,10 +193,10 @@ void DrawLine(Vector2 startPosition, Vector2 endPosition, Color color, float wid
 }
 
 void DrawCollider(PHYSICS::Vertex1 vertex, Color color, Vector2 offset, float width) {
-	// 描画用の座標系に変換する
-	const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
-	const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
-	vertex.a.x = (vertex.a.x - offset.x) * scale_x, vertex.a.y = (vertex.a.y - offset.y) * scale_y;
+	//// 描画用の座標系に変換する
+	//const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
+	//const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
+	//vertex.a.x = (vertex.a.x - offset.x) * scale_x, vertex.a.y = (vertex.a.y - offset.y) * scale_y;
 	Vector2 previous = Vector2(cosf(0.0f), sinf(0.0f)) * vertex.radius + vertex.a;
 
 	for (float rad = 0.0f; rad < 6.28f; rad += MATH::Deg2Rad) {
@@ -207,28 +207,28 @@ void DrawCollider(PHYSICS::Vertex1 vertex, Color color, Vector2 offset, float wi
 }
 
 void DrawCollider(PHYSICS::Vertex2 vertex, Color color, Vector2 offset, float width) {
-	// 描画用の座標系に変換する
-	const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
-	const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
-	vertex.a.x = (vertex.a.x - offset.x) * scale_x, vertex.a.y = (vertex.a.y - offset.y) * scale_y;
-	vertex.b.x = (vertex.b.x - offset.x) * scale_x, vertex.b.y = (vertex.b.y - offset.y) * scale_y;
+	//// 描画用の座標系に変換する
+	//const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
+	//const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
+	//vertex.a.x = (vertex.a.x - offset.x) * scale_x, vertex.a.y = (vertex.a.y - offset.y) * scale_y;
+	//vertex.b.x = (vertex.b.x - offset.x) * scale_x, vertex.b.y = (vertex.b.y - offset.y) * scale_y;
 
 	DrawLine(vertex.a, vertex.b, Color::Green, width);
 }
 
 void DrawCollider(PHYSICS::Vertex4 vertex, Color color, Vector2 offset, float width) {
 	// 描画用の座標系に変換する
-	const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
-	const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
-	vertex.a.x = (vertex.a.x - offset.x) * scale_x, vertex.a.y = (vertex.a.y - offset.y) * scale_y;
-	vertex.b.x = (vertex.b.x - offset.x) * scale_x, vertex.b.y = (vertex.b.y - offset.y) * scale_y;
-	vertex.c.x = (vertex.c.x - offset.x) * scale_x, vertex.c.y = (vertex.c.y - offset.y) * scale_y;
-	vertex.d.x = (vertex.d.x - offset.x) * scale_x, vertex.d.y = (vertex.d.y - offset.y) * scale_y;
+	//const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
+	//const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
+	//vertex.a.x = (vertex.a.x - offset.x) * scale_x, vertex.a.y = (vertex.a.y - offset.y) * scale_y;
+	//vertex.b.x = (vertex.b.x - offset.x) * scale_x, vertex.b.y = (vertex.b.y - offset.y) * scale_y;
+	//vertex.c.x = (vertex.c.x - offset.x) * scale_x, vertex.c.y = (vertex.c.y - offset.y) * scale_y;
+	//vertex.d.x = (vertex.d.x - offset.x) * scale_x, vertex.d.y = (vertex.d.y - offset.y) * scale_y;
 
-	DrawLine(vertex.a, vertex.b, Color::Green, width);
-	DrawLine(vertex.b, vertex.c, Color::Green, width);
-	DrawLine(vertex.c, vertex.d, Color::Green, width);
-	DrawLine(vertex.d, vertex.a, Color::Green, width);
+	DrawLine(vertex.a, vertex.b, color, width);
+	DrawLine(vertex.b, vertex.c, color, width);
+	DrawLine(vertex.c, vertex.d, color, width);
+	DrawLine(vertex.d, vertex.a, color, width);
 }
 
 void DrawCollider(PHYSICS::VertexN vertex, Color color, Vector2 offset, float width) {
