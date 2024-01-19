@@ -12,8 +12,7 @@ Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
 {
     startPosition = GetPos();
     SetScale(Vector2(SIZE_ * 6, SIZE_ * 6));
-    //SetHp(300);
-    SetHp(30);
+    SetHp(300);
     time_ = 0;
     atk_time_ = 0;
     atk_now = false;
