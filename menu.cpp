@@ -19,13 +19,11 @@ void Menu::Update()
 	if (Input::GetStickLeft(0).x > 0.0f) //マルチ
 	{
 		scene_mngr_->ChangeScene(SCENE_PREP);
-
 	}
 	//コントローラーを接続しないとずっとタイトルに行くよ(^^♪
 	else if(Input::GetStickLeft(0).x < 0.0f) //ソロ
 	{
-		scene_mngr_->ChangeScene(SCENE_TITLE);
-
+		scene_mngr_->ChangeScene(SCENE_PREP);
 	}
 
 }

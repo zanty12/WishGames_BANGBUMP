@@ -9,7 +9,7 @@ private:
 	SceneMngr* scene_mngr_;
 public:
 	Menu(SceneMngr* scene_mngr);
-	~Menu();
+	~Menu() override;
 	void Update()override;
 	void Draw()override;
 	void DebugMenu() override;

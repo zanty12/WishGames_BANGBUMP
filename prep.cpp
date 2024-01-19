@@ -251,6 +251,48 @@ void Prep::Update()
     }
 
     video_->Update();
+    if (Input::GetKeyDown(0, Input::North))	//Aƒ{ƒ^ƒ“
+    {
+        {
+            std::string message;
+            switch (move_)
+            {
+            case FIRE_MOVE:
+                message += "FIRE ";
+                break;
+            case WIND_MOVE:
+                message += "WIND ";
+                break;
+            case THUNDER_MOVE:
+                message += "THUNDER ";
+                break;
+            case DARK_MOVE:
+                message += "DARK ";
+                break;
+            default:
+                message += "FIRE ";
+                break;
+            }
+            switch (attack_)
+            {
+            case FIRE_ATTACK:
+                message += "FIRE ";
+                break;
+            case WIND_ATTACK:
+                message += "WIND ";
+                break;
+            case THUNDER_ATTACK:
+                message += "THUNDER ";
+                break;
+            case DARK_ATTACK:
+                message += "DARK ";
+                break;
+            default:
+                message += "FIRE ";
+            }
+            if (scene_mngr_) scene_mngr_->ChangeScene(SCENE_GAME, message);
+        }
+    }
 }
 
 void Prep::Draw()
