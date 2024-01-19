@@ -17,7 +17,7 @@ void Title::Update()
 {
 	if (Input::GetKeyDown(0, Input::North))	//Aボタン
 	{
-		scene_mngr_->ChangeScene(SCENE_PREP);
+		scene_mngr_->ChangeScene(SCENE_MENU);
 
 	}
 }
@@ -32,7 +32,7 @@ void Title::DebugMenu()
 	ImGui::Begin(u8"タイトル");
 	if(ImGui::Button(u8"ゲームスタート"))
 	{
-		scene_mngr_->ChangeScene(SCENE_PREP);
+		scene_mngr_->ChangeScene(SCENE_MENU);
 	}
 	ImGui::End();
 }
