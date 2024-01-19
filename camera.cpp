@@ -1,6 +1,7 @@
 #include "camera.h"
 #include "asset.h"
 #include "gameobject.h"
+#include "time.h"
 
 Camera::Camera(Vector2 start_pos,Vector2 map_size) : pos_(start_pos)
 {
@@ -40,14 +41,14 @@ void Camera::Update(Vector2 pos, Vector2 vel, PLAYER_STATE state)
             if (vel.y != 0.0f)
                 new_vel = -abs(vel.y);
             else
-                new_vel = -5.0f; //TODO: deltatimeí≤êÆ
+                new_vel = -follow_speed_ * Time::GetDeltaTime();
         }
         else
         {
             if (vel.y != 0.0f)
                 new_vel = abs(vel.y);
             else
-                new_vel = 5.0f;
+                new_vel = follow_speed_ * Time::GetDeltaTime();
         }
 
         SetPos(Vector2(GetPos().x, GetPos().y + new_vel));

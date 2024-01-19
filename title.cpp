@@ -15,10 +15,9 @@ Title::~Title()
 
 void Title::Update()
 {
-	if (Input::GetKeyDown(0, Input::North))	//Aƒ{ƒ^ƒ“
+	if (Input::GetKeyDown(0, Input::North))	//Aãƒœã‚¿ãƒ³
 	{
 		scene_mngr_->ChangeScene(SCENE_MENU);
-
 	}
 }
 
@@ -29,8 +28,8 @@ void Title::Draw()
 
 void Title::DebugMenu()
 {
-	ImGui::Begin(u8"ƒ^ƒCƒgƒ‹");
-	if(ImGui::Button(u8"ƒQ[ƒ€ƒXƒ^[ƒg"))
+	ImGui::Begin(u8"ã‚¿ã‚¤ãƒˆãƒ«");
+	if(ImGui::Button(u8"ã‚²ãƒ¼ãƒ ã‚¹ã‚¿ãƒ¼ãƒˆ"))
 	{
 		scene_mngr_->ChangeScene(SCENE_MENU);
 	}

@@ -1,5 +1,6 @@
 #pragma once
 #include "attribute.h"
+#include "playerattack.h"
 
 struct SignalFilter
 {
@@ -71,7 +72,7 @@ public:
     void DebugMenu(void) override;
 };
 
-class WindAttack : public MovableObj
+class WindAttack : public MovableObj,public PlayerAttack
 {
     Wind* parent_;
     Vector2 size_ = Vector2(4 * GameObject::SIZE_, 4* GameObject::SIZE_);

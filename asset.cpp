@@ -15,14 +15,15 @@ const std::map<textures, std::string> Asset::textures_ = {
     {textures::bg_stage3_front, "data/texture/bg/BG_stage3_front.png"},
     {textures::bg_stage3_back, "data/texture/bg/BG_stage3_back.png"},
     {textures::timer, "data/texture/UI/timer.png"},
+    {textures::thunder_indicator, "data/texture/UI/thunder_indicator.png"},
 };
 
 const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::string>{};
 
 const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{
     {maps::test, "data/map/1.csv"},
-    {maps::single_stage_1, "data/map/single_stage_1.csv"},
-    {maps::single_stage_2, "data/map/2.csv"},
+    {maps::single_stage_1, "data/map/SoloPlay_map.csv"},
+    {maps::single_stage_2, "data/map/Boss_Map.csv"},
 };
 
 const std::map<fonts, std::wstring> Asset::fonts_ = {

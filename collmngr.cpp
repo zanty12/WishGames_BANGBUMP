@@ -159,3 +159,27 @@ void CollMngr::CheckDiscard()
         );
     }
 }
+
+void CollMngr::UpdateCollision(Collider* collider)
+{
+    collider->SetCollision(std::list<Collider*>());
+    collider->SetLoD(GameBase::UpdateLoD(collider->GetPos()));
+    for (const auto other : dynamic_colliders_)
+    {
+        if (collider == other)
+            continue;
+        if (collider->GetLoD() != other->GetLoD())
+            continue;
+        Collision(collider, other);
+    }
+    //動かないコライダーと衝突
+    Vector2 world_pos = GameObject::GetWorldCoord(collider->GetPos());
+    const int hash = ID::Hash(world_pos.y);
+    if (hash > static_colliders_.size())
+        return;
+    for (const auto other : static_colliders_[hash])
+    {
+        if (other != nullptr)
+            Collision(collider, other);
+    }
+}
