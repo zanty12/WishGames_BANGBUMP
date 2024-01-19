@@ -6,6 +6,7 @@ const std::map<textures, std::string> Asset::textures_ = {
     {textures::player, "data/texture/player.png"},
     {textures::fire_attack, "data/texture/attack/fire_attack.png"},
     {textures::wind_attack, "data/texture/attack/wind_attack.png"},
+    {textures::water_attack, "data/texture/attack/water_attack.png"},
     {textures::skill_orb, "data/texture/blocks/skillorb.png"},
     {textures::bg_stage1_front, "data/texture/bg/BG_stage1_front.png"},
     {textures::bg_stage1_back, "data/texture/bg/BG_stage1_back.png"},
@@ -14,6 +15,7 @@ const std::map<textures, std::string> Asset::textures_ = {
     {textures::bg_stage3_front, "data/texture/bg/BG_stage3_front.png"},
     {textures::bg_stage3_back, "data/texture/bg/BG_stage3_back.png"},
     {textures::timer, "data/texture/UI/timer.png"},
+    {textures::thunder_indicator, "data/texture/UI/thunder_indicator.png"},
 };
 
 const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::string>{
@@ -27,8 +29,8 @@ const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::strin
 
 const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{
     {maps::test, "data/map/1.csv"},
-    {maps::single_stage_1, "data/map/single_stage_1.csv"},
-    {maps::single_stage_2, "data/map/2.csv"},
+    {maps::single_stage_1, "data/map/SoloPlay_map.csv"},
+    {maps::single_stage_2, "data/map/Boss_Map.csv"},
 };
 
 const std::map<fonts, std::wstring> Asset::fonts_ = {

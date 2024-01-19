@@ -5,6 +5,7 @@
 #include "game.h"
 #include "prep.h"
 #include "title.h"
+#include "menu.h"
 #include "result.h"
 #include "thunder.h"
 #include "wind.h"
@@ -24,6 +25,7 @@ SceneMngr::SceneMngr(SCENE scene)
         scene_ = new Title(this);
         break;
     case SCENE_MENU:
+        scene_ = new Menu(this);
         break;
     case SCENE_PREP:
         scene_ = new Prep(this);
@@ -48,6 +50,7 @@ void SceneMngr::ChangeScene(SCENE scene)
         scene_ = new Title(this);
         break;
     case SCENE_MENU:
+        scene_ = new Menu(this);
         break;
     case SCENE_PREP:
         scene_ = new Prep(this);
@@ -77,6 +80,7 @@ void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
         scene_ = new Title(this);
         break;
     case SCENE_MENU:
+        scene_ = new Menu(this);
         break;
     case SCENE_PREP:
         scene_ = new Prep(this);

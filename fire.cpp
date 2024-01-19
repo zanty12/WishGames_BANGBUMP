@@ -49,18 +49,21 @@ void Fire::Action()
     {
         //get angle from stick
         float angle = atan2(stick.y, stick.x);
-        if(attack_ == nullptr)
+        if (attack_ == nullptr)
             attack_ = new FireAttack(this);
         //get pos of attack from angle
-        Vector2 pos = Vector2(cos(angle),-sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x /2);
+        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2);
         pos = player_->GetPos() + pos;
         attack_->SetPos(pos);
         attack_->SetRot(angle);
     }
     else
     {
-        delete attack_;
-        attack_ = nullptr;
+        if (attack_ != nullptr)
+        {
+            delete attack_;
+            attack_ = nullptr;
+        }
     }
 }
 
@@ -76,7 +79,7 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
                                            Vector2(
                                                parent->GetPlayer()->GetPos().x + parent->GetPlayer()->GetScale().x / 2 +
                                                1.5 * GameObject::SIZE_, parent->GetPlayer()->GetPos().y), 0.0f,
-                                           LoadTexture(Asset::GetAsset(fire_attack)), Vector2::Zero)
+                                           LoadTexture(Asset::GetAsset(fire_attack)), Vector2::Zero),PlayerAttack(10000)
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);

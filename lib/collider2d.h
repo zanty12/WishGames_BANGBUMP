@@ -198,7 +198,7 @@ namespace PHYSICS {
 		}
 		Vertex4(Vector2 startPosition, Vector2 endPosition, float width) {
 			Vertex4 vertex4 = Vertex4(
-				Vector2(-1.0f, +0.0f),
+				Vector2(-1.0f, +1.0f),
 				Vector2(-1.0f, +1.0f),
 				Vector2(+1.0f, +1.0f),
 				Vector2(+1.0f, +0.0f)
@@ -294,6 +294,40 @@ namespace PHYSICS {
 		static bool Touch(Vertex1 a, Vertex3 b, NearHit *hit = nullptr);
 		static bool Touch(Vertex1 a, Vertex4 b, NearHit *hit = nullptr);
 		static bool Touch(Vertex1 a, VertexN b, NearHit *hit = nullptr);
+
+		static bool TouchNew(Vertex1 a, Vertex4 b) {
+			TouchNew(a, VertexN(b.v, 4));
+		}
+		static bool TouchNew(Vertex1 a, VertexN b) {
+			bool isTouch = true;
+
+			for (int i = 0; i < b.num; i++) {
+				Vector2 startPosition = b.v[i];
+				Vector2 endPosition = b.v[(i + 1) % b.num];
+				Vector2 segment = endPosition - startPosition;
+				Vector2 direction = a.a - startPosition;
+				Vector2 normalize = segment.Normalize();
+				Vector2 normal = normalize.Normal();
+
+				float distance = segment.Distance();
+				float horizontal = Vector2::Dot(direction, normalize);
+				if (0.0f <= horizontal && horizontal <= distance) {
+					float vertical = -Vector2::Dot(direction, normal);
+					if (0.0f <= vertical && vertical <= a.radius) {
+						return true;
+					}
+					else if (0.0f < vertical) isTouch = false;
+				}
+				else if (horizontal < 0.0f) {
+					if (direction.Distance() <= a.radius) return true;
+				}
+				else {
+					if (Vector2::Distance(a.a, endPosition) <= a.radius) return true;
+				}
+			}
+
+			return isTouch;
+		}
 		static bool Touch(Vertex2 a, Vertex1 b, RayHit *hit = nullptr);
 		static bool Touch(Vertex2 a, Vertex2 b, RayHit *hit = nullptr);
 		static bool Touch(Vertex2 a, Vertex3 b, RayHit *hit = nullptr);
