@@ -191,7 +191,7 @@ ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range
                                                                        MovableObj(parent->GetPlayer()->GetPos(),
                                                                            atan2(-dir.y, dir.x),
                                                                            LoadTexture(Asset::GetAsset(fire_attack)),
-                                                                           dir * vel)
+                                                                           dir * vel),PlayerAttack(10000)
 {
     start_pos_ = parent_->GetPlayer()->GetPos();
     SetPos(parent_->GetPlayer()->GetPos());

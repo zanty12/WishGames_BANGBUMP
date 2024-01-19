@@ -28,6 +28,7 @@ public:
 	{
 		GetAnimator()->SetIsMovable(true);
 	}
+	~MovableObj() override = default;
 
 	void SetVel(Vector2 vel) { vel_ = vel; }		//速度セット
 	Vector2 GetVel(void) const { return vel_; }		//速度ゲット

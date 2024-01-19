@@ -36,7 +36,7 @@ public:
 	void DebugMenu() override;
 };
 
-class DarkAttack : public MovableObj
+class DarkAttack : public MovableObj,public PlayerAttack
 {
 	Dark* parent_;
 	Vector2 size_ = Vector2(5* GameObject::SIZE_, 2*GameObject::SIZE_);
