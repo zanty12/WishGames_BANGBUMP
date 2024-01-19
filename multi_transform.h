@@ -4,7 +4,7 @@
 struct Transform {
 	Vector2 position = Vector2::Zero;
 	float rotation = 0.0f;
-	Vector2 scale = Vector2::One;
+	Vector2 scale = Vector2::One * 50;
 
 	Transform() { }
 	Transform(Vector2 pos) : position(pos) { }

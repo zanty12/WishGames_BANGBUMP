@@ -501,6 +501,9 @@
     <ClInclude Include="multi_animenum.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
+    <ClInclude Include="multi_anim.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h">

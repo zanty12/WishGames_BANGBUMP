@@ -244,6 +244,7 @@
     <ClInclude Include="map.h" />
     <ClInclude Include="mapmngr.h" />
     <ClInclude Include="multiplay.h" />
+    <ClInclude Include="multi_anim.h" />
     <ClInclude Include="multi_animenum.h" />
     <ClInclude Include="multi_area_capture_mode.h" />
     <ClInclude Include="multi_attribute.h" />
