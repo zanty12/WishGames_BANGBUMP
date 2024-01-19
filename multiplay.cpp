@@ -241,6 +241,9 @@ void MultiPlayServer::SendUpdate(void) {
 				);
 			}
 
+			// レスポンスの作成
+			res.CreateResponse(sendBuff, 0);
+
 			// クライアント全員に送信する
 			for (auto &kvp : clients_) {
 				auto &client = kvp.second;
@@ -248,8 +251,10 @@ void MultiPlayServer::SendUpdate(void) {
 				// 登録されていないならスキップ
 				if (client.header.id < 0) continue;
 
-				// 宛先の登録とレスポンス内容の結合
-				res.CreateResponse(sendBuff, client.header.id);
+				HEADER header;
+				header.id = client.header.id;
+				header.command = HEADER::RESPONSE_UPDATE;
+				memcpy(&sendBuff[0], &header, sizeof(HEADER));
 
 				// ゲームモードのレスポンス内容の結合
 				gameMode->CreateResponse(sendBuff);
@@ -525,7 +530,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 	Address serverAddr;
 	int serverAddrLen = sizeof(serverAddr);
-
+	memset(&recvBuff[0], 0, sizeof(char) * recvBuff.Length());
 
 
 	if (tmp.Contains(sockfd_)) {

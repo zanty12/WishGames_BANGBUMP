@@ -123,6 +123,10 @@ public:
 		Push(src.head, src.maxSize);
 	}
 
+	char &operator [](int idx) {
+		return head[idx];
+	}
+
 	operator char *() { return head; }
 
 	unsigned int Length(void) { return maxSize; }
