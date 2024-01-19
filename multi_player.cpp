@@ -7,3 +7,11 @@ void ServerPlayer::Loop(void) {
 
 	transform.position += velocity;
 }
+
+
+
+void ClientPlayer::Loop(void) {
+	if()
+
+	//texNo
+}

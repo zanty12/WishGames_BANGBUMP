@@ -1,9 +1,11 @@
 #pragma once
+#include <sstream>
 #include "attribute_type.h"
 #include "multi_animenum.h"
 #include "multi_object.h"
 #include "multi_map.h"
 #include "multi_attribute.h"
+#include "texture.h"
 
 class MultiAttribute;
 class ServerPlayer : public ServerGameObject {
@@ -45,5 +47,14 @@ public:
 
 	
 public:
-	ClientPlayer(Transform transform) : ClientGameObject(transform) { }
+	ClientPlayer(ATTRIBUTE_TYPE moveAttribute, ATTRIBUTE_TYPE attackAttribute, Transform transform)
+		: moveAttribute(moveAttribute), attackAttribute(attackAttribute), ClientGameObject(transform) {
+		// パスを指定
+		std::ostringstream path;
+		path << "data/texture/Player/Player1_" << std::to_string((int)attackAttribute + 1) << std::to_string((int)moveAttribute + 1);
+		// テクスチャを読み込む
+		texNo = LoadTexture("data/texture/Player");
+	}
+
+	void Loop(void) override;
 };

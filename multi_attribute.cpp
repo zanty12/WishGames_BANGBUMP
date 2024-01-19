@@ -91,7 +91,6 @@ bool MultiFire::StickTrigger(Vector2 stick, Vector2 previousStick) {
 void MultiFire::Move(void) {
     Vector2 &vel = player->velocity;
     Vector2 stick = Input::GetStickLeft(0);
-    stick.y *= -1;
 
     // ˆÚ“®’†
     if (stick.Distance() > judgeScale) {
@@ -99,14 +98,13 @@ void MultiFire::Move(void) {
 
         velocity += stick;
         if (velocity.Distance() > maxSpeed) velocity = velocity.Normalize() * maxSpeed;
-        player->velocity = velocity;
     }
     // ’âŽ~’†
     else {
         player->animType = ANIMATION_TYPE_IDEL;
     }
-
     velocity *= friction;
+    player->velocity = velocity;
 }
 
 void MultiFire::Attack(void) {

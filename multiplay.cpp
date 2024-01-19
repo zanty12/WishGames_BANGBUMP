@@ -477,7 +477,10 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	// ゲームモードの描画
 	gameMode->Draw(res, offset);
 
+	// オブジェクトの描画
 	for (auto &object : objects) object.second->Loop();
+	// プレイヤーの描画
+	for (auto &player : clients) player.second->Loop();
 	//for (auto &object : res.objects) {
 	//	if (object.tag == OBJECT_DATA_CLIENT_SIDE::SKILL_POINT) {
 	//		DrawSprite(
@@ -487,10 +490,10 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	//	}
 	//}
 
-	// プレイヤーの描画
-	for (auto &client : res.clients) {
-		DrawSprite(texNo, client.position - offset, 0.0, Vector2::One * 100, Color::White);
-	}
+	//// プレイヤーの描画
+	//for (auto &client : res.clients) {
+	//	DrawSprite(texNo, client.position - offset, 0.0, Vector2::One * 100, Color::White);
+	//}
 
 #ifdef DEBUG_LINK
 	if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
@@ -553,7 +556,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 			// オブジェクトが作成されていないなら作成する
 			if (iterator == clients.end()) {
-				clients[client.id] = new ClientPlayer(Transform(client.position));
+				clients[client.id] = new ClientPlayer(client.moveAttributeType, client.attackAttributeType, Transform(client.position));
 			}
 			else {
 				auto &player = iterator->second;
@@ -608,7 +611,7 @@ void MultiPlayClient::Update() {
 			isFinish = true;
 			break;
 		}
-		Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
+		//Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
 		Time::Update();
 		RecvUpdate(1, res);
 		PlayerUpdate(res);
