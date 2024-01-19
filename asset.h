@@ -30,6 +30,7 @@ enum textures
     bg_stage3_back,
     //UI
     timer,
+    thunder_indicator,
 };
 
 enum sounds

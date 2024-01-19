@@ -36,7 +36,7 @@ public:
 class DarkAttack : public MovableObj
 {
 	Dark* parent_;
-	Vector2 size_ = Vector2(10* GameObject::SIZE_, GameObject::SIZE_);
+	Vector2 size_ = Vector2(5* GameObject::SIZE_, 2*GameObject::SIZE_);
 public:
 	DarkAttack() = delete;
 	DarkAttack(Dark* parent);

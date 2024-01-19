@@ -15,6 +15,7 @@ const std::map<textures, std::string> Asset::textures_ = {
     {textures::bg_stage3_front, "data/texture/bg/BG_stage3_front.png"},
     {textures::bg_stage3_back, "data/texture/bg/BG_stage3_back.png"},
     {textures::timer, "data/texture/UI/timer.png"},
+    {textures::thunder_indicator, "data/texture/UI/thunder_indicator.png"},
 };
 
 const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::string>{};
