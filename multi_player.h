@@ -44,6 +44,5 @@ public:
 
 	
 public:
-	ClientPlayer(Transform transform, ATTRIBUTE_TYPE moveAttribute, ATTRIBUTE_TYPE attackAttribute, ANIMATION_TYPE animType)
-		: moveAttribute(moveAttribute), attackAttribute(attackAttribute), animType(animType), ClientGameObject(transform) { }
+	ClientPlayer(Transform transform) : ClientGameObject(transform) { }
 };

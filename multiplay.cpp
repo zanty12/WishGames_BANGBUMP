@@ -550,8 +550,12 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 			// オブジェクトが作成されていないなら作成する
 			if (iterator == objects.end()) {
-				objects[client.id] = new ClientPlayer(client.position);
+				objects[client.id] = new ClientPlayer(Transform(client.position));
 			}
+			else {
+				auto &client = iterator->second;
+				client.
+			}			
 		}
 
 		// モードがNONEではないなら
