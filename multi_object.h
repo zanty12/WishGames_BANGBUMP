@@ -15,7 +15,6 @@ public:
 
 	ServerGameObject() = default;
 	ServerGameObject(Transform transform) : transform(transform) { }
-	virtual void Update(void) { };
 };
 
 class ClientGameObject : public MultiBehavior {
@@ -25,9 +24,9 @@ public:
 	float radius = 10.0f;
 	int texNo = -1;
 	int id = 0;
+	bool isShow = true;
 
 
 	ClientGameObject() = default;
 	ClientGameObject(Transform transform) : transform(transform) { }
-	virtual void Update(void) { };
 };

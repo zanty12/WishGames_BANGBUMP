@@ -128,7 +128,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 
 		Input::SetState(0, client.currentInput);
 		Input::SetPreviousState(0, client.previousInput);
-		player->Update();
+		player->Loop();
 		map.Collision(player->transform.position, player->radius);
 
 #ifdef DEBUG_INPUT
@@ -557,6 +557,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 			}
 			else {
 				auto &player = iterator->second;
+				player->isShow = true;
 				player->transform.position = client.position;
 				player->moveAttribute = client.moveAttributeType;
 				player->attackAttribute = client.attackAttributeType;
@@ -579,6 +580,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 			}
 			else {
 				auto &obj = iterator->second;
+				obj->isShow = true;
 				obj->transform.position = object.position;
 			}			
 		}

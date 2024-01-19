@@ -32,7 +32,7 @@ public:
 	MultiAttribute *GetMoveAttribute(void) { return moveAttribute; }
 	MultiAttribute *GetAttackAttribute(void) { return attackAttribute; }
 
-	void Update(void) override;
+	void Loop(void) override;
 };
 
 class ClientPlayer : public ClientGameObject {
