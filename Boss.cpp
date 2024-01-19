@@ -17,7 +17,6 @@ Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
     time_ = 0;
     atk_time_ = 0;
     atk_now = false;
-    change_scene_ = false;
     srand((unsigned int)time(NULL));
 }
 
@@ -28,7 +27,7 @@ void Boss::Update()
     {
         GameObject::Discard();
         Discard();
-        change_scene_ = true;
+        GetEnemyMngr()->GetMapMngr()->GetGame()->GetChangeScene(1);
     }
 
     time_ += Time::GetDeltaTime();

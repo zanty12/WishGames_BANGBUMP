@@ -25,6 +25,8 @@ protected:
 	static CollMngr *coll_mngr_;
 	static ProjectileMngr *projectile_mngr_;
 	static SkillOrbMngr *orb_mngr_;
+	int change_scene_;		//シーン遷移フラグ
+
 
 private:
 	constexpr static float LoD_threshold_ = 2500.0f;
@@ -49,5 +51,6 @@ public:
 	MapMngr *GetMapMngr(void) { return mapmngr_; }
 	static bool UpdateLoD(const Vector2 pos);
 	SceneMngr* GetSceneMngr(void) { return scene_mngr_; }
+	int GetChangeScene(void) const { return change_scene_; }	//シーンチェンジのフラグ
 
 };

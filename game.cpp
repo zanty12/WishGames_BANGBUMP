@@ -55,6 +55,11 @@ void Game::Update()
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
     }
+    if (GetChangeScene() == 1)
+    {
+        scene_mngr_->ChangeScene(SCENE_RESULT);
+    }
+    
 
     timer_ -= Time::GetDeltaTime();
 }
