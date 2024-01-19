@@ -51,9 +51,9 @@ public:
 		: moveAttribute(moveAttribute), attackAttribute(attackAttribute), ClientGameObject(transform) {
 		// パスを指定
 		std::ostringstream path;
-		path << "data/texture/Player/Player1_" << std::to_string((int)attackAttribute + 1) << std::to_string((int)moveAttribute + 1);
+		path << "data/texture/Player/Player1_" << std::to_string((int)attackAttribute + 1) << std::to_string((int)moveAttribute + 1) << ".png";
 		// テクスチャを読み込む
-		texNo = LoadTexture("data/texture/Player");
+		texNo = LoadTexture(path.str());
 	}
 
 	void Loop(void) override;
