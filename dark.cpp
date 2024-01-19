@@ -21,6 +21,10 @@ Vector2 Dark::Move()
 
     if (move_indicator_ != nullptr)
     {
+        Vector2 dir = stick.Normalize();
+        dir.y *= -1;
+        Vector2 target_pos = player_->GetPos() + dir * warpDistance_ / 2;
+        move_indicator_->SetPos(target_pos);
         move_indicator_->Update();
     }
 
@@ -30,11 +34,6 @@ Vector2 Dark::Move()
         {
             move_indicator_ = new DarkIndicator();
         }
-        Vector2 dir = stick.Normalize();
-        dir.y *= -1;
-        Vector2 target_pos = player_->GetPos() + dir * warpDistance_;
-        move_indicator_->SetPos(target_pos);
-        //move_indicator_->Update();
     }
     else
     {
@@ -56,7 +55,7 @@ Vector2 Dark::Move()
         stick = stick.Normalize();
         stick.y *= -1;
         Vector2 warpDirection = stick * warpDistance_;
-        warpPosition = player_->GetPos() + warpDirection;
+        warpPosition = move_indicator_->GetPos();
 
         player_->SetPos(warpPosition);
         delete move_indicator_;
@@ -154,4 +153,5 @@ void DarkIndicator::Update()
             dynamic_cast<ColliderRect*>(collider)->CollisionSolid(col);
         }
     }
+    //SetPos(GetCollider()->GetPos());
 }
