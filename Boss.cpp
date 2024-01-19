@@ -27,7 +27,7 @@ void Boss::Update()
     {
         GameObject::Discard();
         Discard();
-        GetEnemyMngr()->GetMapMngr()->GetGame()->GetChangeScene(1);
+        GetEnemyMngr()->GetMapMngr()->GetGame()->SetChangeScene(1);
     }
 
     time_ += Time::GetDeltaTime();

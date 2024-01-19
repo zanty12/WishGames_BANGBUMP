@@ -51,6 +51,7 @@ public:
 	MapMngr *GetMapMngr(void) { return mapmngr_; }
 	static bool UpdateLoD(const Vector2 pos);
 	SceneMngr* GetSceneMngr(void) { return scene_mngr_; }
+	void SetChangeScene(int change_scene) { change_scene_ = change_scene; }
 	int GetChangeScene(void) const { return change_scene_; }	//シーンチェンジのフラグ
 
 };
