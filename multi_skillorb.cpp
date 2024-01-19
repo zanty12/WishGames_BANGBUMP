@@ -20,6 +20,11 @@ void ServerSkillOrb::Loop(void) {
 }
 
 
+ClientSkillOrb::ClientSkillOrb(Transform transform) : ClientGameObject(transform) {
+	texNo = LoadTexture(Asset::textures_.at(textures::skill_orb));
+	transform.scale = Vector2::One * 50;
+}
+
 void ClientSkillOrb::Loop(void) {
 	DrawSprite(texNo, transform.position, 0.0f, transform.scale, Color::White);
 }

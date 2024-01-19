@@ -1,4 +1,5 @@
 #pragma once
+#include "attribute_type.h"
 #include "multi_animenum.h"
 #include "multi_object.h"
 #include "multi_map.h"
@@ -36,10 +37,10 @@ public:
 
 class ClientPlayer : public ClientGameObject {
 public:
-	int skillPoint = 0;									// スキルポイント
-	ATTRIBUTE_TYPE moveAttribute;						// 移動属性
-	ATTRIBUTE_TYPE attackAttribute;						// 攻撃属性
-	ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;		// アニメーション
+	int skillPoint = 0;										// スキルポイント
+	ATTRIBUTE_TYPE moveAttribute = ATTRIBUTE_TYPE_FIRE;		// 移動属性
+	ATTRIBUTE_TYPE attackAttribute = ATTRIBUTE_TYPE_FIRE;	// 攻撃属性
+	ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;			// アニメーション
 
 
 	

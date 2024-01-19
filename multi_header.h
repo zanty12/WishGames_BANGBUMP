@@ -1,6 +1,8 @@
 #pragma once
 #include "lib/network.h"
 #include "multi_player.h"
+#include "multi_animenum.h"
+#include "attribute_type.h"
 #include "storage.h"
 #include "xinput.h"
 #include "attribute.h"
