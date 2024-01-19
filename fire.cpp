@@ -79,7 +79,7 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
                                            Vector2(
                                                parent->GetPlayer()->GetPos().x + parent->GetPlayer()->GetScale().x / 2 +
                                                1.5 * GameObject::SIZE_, parent->GetPlayer()->GetPos().y), 0.0f,
-                                           LoadTexture(Asset::GetAsset(fire_attack)), Vector2::Zero)
+                                           LoadTexture(Asset::GetAsset(fire_attack)), Vector2::Zero),PlayerAttack(10000)
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);

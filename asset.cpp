@@ -22,8 +22,8 @@ const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::strin
 
 const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{
     {maps::test, "data/map/1.csv"},
-    {maps::single_stage_1, "data/map/single_stage_1.csv"},
-    {maps::single_stage_2, "data/map/2.csv"},
+    {maps::single_stage_1, "data/map/SoloPlay_map.csv"},
+    {maps::single_stage_2, "data/map/Boss_Map.csv"},
 };
 
 const std::map<fonts, std::wstring> Asset::fonts_ = {

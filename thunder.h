@@ -9,6 +9,7 @@
 //--------------------------------------------------------------------------------
 #pragma once
 #include "attribute.h"
+#include "playerattack.h"
 #include "lib/list.h"
 
 class ThunderAttack;
@@ -48,7 +49,7 @@ public:
     void DebugMenu() override;
 };
 
-class ThunderAttack : public MovableObj
+class ThunderAttack : public MovableObj,public PlayerAttack
 {
     Thunder* parent_;
     Vector2 size_ = Vector2(2 * GameObject::SIZE_, 2 * GameObject::SIZE_);

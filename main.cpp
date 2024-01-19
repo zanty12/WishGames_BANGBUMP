@@ -84,7 +84,7 @@ int main()
             Text::TextEnd();
             DebugUI::EndDraw();
 
-            using namespace PHYSICS;
+            /*using namespace PHYSICS;
             static float x = 100.0f;
             static float y = 100.0f;
             static float r = 0.0f;
@@ -99,7 +99,7 @@ int main()
             Vertex4 v4(Vector2(x,y), r, Vector2(100,100));
             Color color = Collider2D::TouchNew(v1, VertexN(v4.v, 4)) ? Color::Red : Color::Green;
             DrawCollider(v1, color, Vector2::Zero);
-            DrawCollider(v4, color, Vector2::Zero);
+            DrawCollider(v4, color, Vector2::Zero);*/
 
             Graphical::Present();
         }

@@ -94,7 +94,7 @@ void Wind::DebugMenu()
 }
 
 WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPlayer()->GetPos(), 0.0f,
-                                           LoadTexture(Asset::GetAsset(wind_attack)), Vector2::Zero)
+                                           LoadTexture(Asset::GetAsset(wind_attack)), Vector2::Zero),PlayerAttack(10000)
 {
     SetScale(size_);
     SetType(OBJ_VOID);

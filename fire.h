@@ -1,5 +1,6 @@
 #pragma once
 #include"attribute.h"
+#include "playerattack.h"
 
 class FireAttack;
 
@@ -28,7 +29,7 @@ public:
     void DebugMenu() override;
 };
 
-class FireAttack : public MovableObj
+class FireAttack : public MovableObj,public PlayerAttack
 {
     Fire* parent_;
     Vector2 size_ = Vector2(3 * GameObject::SIZE_, GameObject::SIZE_);
