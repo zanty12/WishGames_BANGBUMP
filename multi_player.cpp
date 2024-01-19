@@ -13,5 +13,5 @@ void ServerPlayer::Loop(void) {
 
 
 void ClientPlayer::Loop(void) {
-	DrawSprite(texNo, transform.position /*- MultiPlayClient::offset*/, 0.0f, transform.scale, Color::White);
+	DrawSprite(texNo, transform.position - MultiPlayClient::offset, transform.rotation, transform.scale, Color::White);
 }
