@@ -9,11 +9,15 @@ public:
     ProjectileMngr() = default;
     ~ProjectileMngr()
     {
-        for(MovableObj* projectile : projectiles_)
+        if (!projectiles_.empty())
         {
-            delete projectile;
+            for (MovableObj* projectile : projectiles_)
+            {
+                delete projectile;
+            }
+            projectiles_.clear();
         }
-        projectiles_.clear();
+
     }
     void Update();
     void Add(MovableObj* projectile)

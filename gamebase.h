@@ -48,4 +48,6 @@ public:
 	void AddCamera(Camera *camera) { camera_ = camera; }
 	MapMngr *GetMapMngr(void) { return mapmngr_; }
 	static bool UpdateLoD(const Vector2 pos);
+	SceneMngr* GetSceneMngr(void) { return scene_mngr_; }
+
 };

@@ -15,6 +15,7 @@ private:
 	float time_;			// 時間
 	float atk_time_;		// 攻撃時間
 	bool atk_now;			// 攻撃チェック
+	bool change_scene_;		//シーン遷移フラグ
 
 public:
 
@@ -33,6 +34,8 @@ public:
 	void Thunder();
 	void Wind();
 	void Water();
+
+	bool GetChangeSceneFlag(void) const { return change_scene_; }	//シーンチェンジのフラグ true=別のシーンへ
 
 };
 

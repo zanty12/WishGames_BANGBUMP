@@ -5,26 +5,30 @@
 #include "lib/collider2d.h"
 #include "time.h"
 #include <random>
+#include "scene.h"
 
 Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
     : Enemy(x, y, LoadTexture("data/texture/boss.png"), enemy_mngr)
 {
     startPosition = GetPos();
     SetScale(Vector2(SIZE_ * 6, SIZE_ * 6));
-    SetHp(300);
+    //SetHp(300);
+    SetHp(30);
     time_ = 0;
     atk_time_ = 0;
     atk_now = false;
+    change_scene_ = false;
     srand((unsigned int)time(NULL));
 }
 
 void Boss::Update()
 {
-    //HP‚ª0‚É‚È‚Á‚½‚çÁ‚·
+    //HP‚ª0‚É‚È‚Á‚½‚çÁ‚·,ƒŠƒUƒ‹ƒg‚Ö
     if (GetHp() <= 0)
     {
         GameObject::Discard();
         Discard();
+        change_scene_ = true;
     }
 
     time_ += Time::GetDeltaTime();
@@ -99,10 +103,6 @@ void Boss::Fire()
         atk_time_ = 0;
         SetAtk(50);
     }
-
-
-
-
 }
 
 void Boss::Thunder()

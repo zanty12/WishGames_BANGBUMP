@@ -55,6 +55,7 @@ void Game::Update()
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
     }
+
     timer_ -= Time::GetDeltaTime();
 }
 
@@ -68,11 +69,14 @@ void Game::Draw()
     std::wstring time = L"Žc‚èŽžŠÔ: ";
     time += std::to_wstring(itimeer);
     Text::WriteText(time.c_str(),Graphical::GetWidth()/ 2, 100, 100, 50);
+
+
 }
 
 Player *Game::GetPlayer() {
     return *GetPlayers().begin();
 }
+
 
 void Game::DebugMenu()
 {

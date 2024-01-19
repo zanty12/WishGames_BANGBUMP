@@ -111,28 +111,73 @@ void Boss_Wind::Update()
 	for (auto collision : collisions)
 	{
 		OBJECT_TYPE type = collision->GetParent()->GetType();
-		Vector2 direction = collision->GetParent()->GetPos() - GetPos();
+		
+		Vector2 wallup, walldown, walllaft, wallright;
+		Vector2 wallpos;
+		wallpos = collision->GetPos();
+
+		wallup = wallpos - GetPos();
+		walldown = wallpos - GetPos();
+		walllaft = wallpos - GetPos();
+		wallright = wallpos - GetPos();
+
+		wallup.y += SIZE_ / 2;
+		walldown.y -= SIZE_ / 2;
+		walllaft.x -= SIZE_ / 2;
+		wallright.x += SIZE_ / 2;
+
+		float up, down, laft, right;
+
+		
+		up = wallup.Distance();
+		down = walldown.Distance();
+		laft = walllaft.Distance();
+		right = wallright.Distance();
+
+
 
 		switch (type)
 		{
 		case OBJ_SOLID:
-			if (direction.x)
+			
+			if (up < down && up < laft && up < right)
 			{
-				Reflection((collision->GetPos().x + 48.0f), (collision->GetPos().y + 48.0f), (collision->GetPos().x + 48.0f), (collision->GetPos().y - 48.0f), GetVel().x, GetVel().y);
+				if (GetVel().y < 0)
+				{
+					SetVel(Vector2(GetVel().x, GetVel().y * -1));
+					//SetVel(Reflection((collision->GetPos().x + 48.0f), (collision->GetPos().y + 48.0f), (collision->GetPos().x - 48.0f), (collision->GetPos().y + 48.0f), GetVel().x, GetVel().y));
+					//ã
+				}
 			}
-			else if (GetPos().x > collision->GetPos().x)
+			else if (down < laft && down < right)
 			{
-				Reflection((collision->GetPos().x - 48.0f), (collision->GetPos().y + 48.0f), (collision->GetPos().x - 48.0f), (collision->GetPos().y - 48.0f), GetVel().x, GetVel().y);
+				if (GetVel().y > 0)
+				{
+					SetVel(Vector2(GetVel().x, GetVel().y * -1));
+					//SetVel(Reflection((collision->GetPos().x + 48.0f), (collision->GetPos().y - 48.0f), (collision->GetPos().x - 48.0f), (collision->GetPos().y - 48.0f), GetVel().x, GetVel().y));
+					//‰º
+				}
 			}
-			else if (GetPos().y < collision->GetPos().y)
+			else if (laft < right)
 			{
-				Reflection((collision->GetPos().x - 48.0f), (collision->GetPos().y - 48.0f), (collision->GetPos().x + 48.0f), (collision->GetPos().y - 48.0f), GetVel().x, GetVel().y);
+				if (GetVel().x > 0)
+				{
+					SetVel(Vector2(GetVel().x * -1, GetVel().y));
+					//SetVel(Reflection((collision->GetPos().x - 48.0f), (collision->GetPos().y + 48.0f), (collision->GetPos().x - 48.0f), (collision->GetPos().y - 48.0f), GetVel().x, GetVel().y));
+					//¶
+				}
 			}
-			else if (GetPos().y > collision->GetPos().y)
+			else
 			{
-				Reflection((collision->GetPos().x - 48.0f), (collision->GetPos().y + 48.0f), (collision->GetPos().x + 48.0f), (collision->GetPos().y + 48.0f), GetVel().x, GetVel().y);
+				if (GetVel().x < 0)
+				{
+					SetVel(Vector2(GetVel().x * -1, GetVel().y));
+					//SetVel(Reflection((collision->GetPos().x + 48.0f), (collision->GetPos().y - 48.0f), (collision->GetPos().x + 48.0f), (collision->GetPos().y + 48.0f), -GetVel().x, GetVel().y));
+					//‰E
+				}
 			}
 			break;
+
 		default:
 			break;
 		}
@@ -145,14 +190,17 @@ void Boss_Wind::Update()
 	this->AddVel(GetVel());
 }
 
-void Boss_Wind::Reflection(float spx, float spy, float epx, float epy, float velx, float vely)
+Vector2 Boss_Wind::Reflection(float spx, float spy, float epx, float epy, float velx, float vely)
 {
 	Sp.x = spx;
 	Sp.y = spy;
 	Ep.x = epx;
 	Ep.y = epy;
+	v = Ep - Sp;
 	N.x = -v.y;
 	N.y = v.x;
+	/*N.x = v.x;
+	N.y = -v.y;*/
 	N = N.Normalize();
 	vel_.x = velx;
 	vel_.y = vely;
@@ -162,6 +210,7 @@ void Boss_Wind::Reflection(float spx, float spy, float epx, float epy, float vel
 	
 	Vector2 reflection_ = vel_ + reflection_vel_;
 
+	return reflection_;
 
 }
 
