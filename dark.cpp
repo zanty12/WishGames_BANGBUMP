@@ -17,6 +17,30 @@
 Vector2 Dark::Move()
 {
     Vector2 velocity = player_->GetVel();
+    Vector2 stick = Input::GetStickLeft(0);
+
+    if (move_indicator_ != nullptr)
+    {
+        move_indicator_->Update();
+    }
+
+    if (stick != Vector2::Zero)
+    {
+        if (move_indicator_ == nullptr)
+        {
+            move_indicator_ = new DarkIndicator();
+        }
+        Vector2 dir = stick.Normalize();
+        dir.y *= -1;
+        Vector2 target_pos = player_->GetPos() + dir * warpDistance_;
+        move_indicator_->SetPos(target_pos);
+        //move_indicator_->Update();
+    }
+    else
+    {
+        delete move_indicator_;
+        move_indicator_ = nullptr;
+    }
 
     if (Input::GetKey(0, Input::LThumb))
     {
@@ -29,11 +53,14 @@ Vector2 Dark::Move()
     if (Input::GetKeyUp(0, Input::LThumb))
     {
         Vector2 stick = Input::GetStickLeft(0);
+        stick = stick.Normalize();
         stick.y *= -1;
-        Vector2 warpDirection = stick * warpDistance;
+        Vector2 warpDirection = stick * warpDistance_;
         warpPosition = player_->GetPos() + warpDirection;
 
         player_->SetPos(warpPosition);
+        delete move_indicator_;
+        move_indicator_ = nullptr;
     }
     else warpPosition = Vector2::Zero;
 
@@ -46,18 +73,34 @@ void Dark::Action()
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
     //float distance = stick.Distance();
+    if (stick != Vector2::Zero)
+    {
+        if (attack_indicator_ == nullptr)
+        {
+            attack_indicator_ = new ThunderIndicator();
+            attack_indicator_->GetAnimator()->SetColor(Color(0.0f, 0.0f, 1.0f, 1.0f));
+        }
+        Vector2 dir = stick.Normalize();
+        float angle = atan2(dir.y, dir.x);
+        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_indicator_->GetScale().x /
+            2);
+        pos = player_->GetPos() + pos;
+        attack_indicator_->SetPos(pos);
+        attack_indicator_->SetRot(angle);
+    }
+
 
     // 押し込む
     if (Input::GetKeyDown(0, Input::RThumb) && responseMinStickDistance < stick.Distance())
     {
-        attackDirection = stick.Normalize();
+        attackDirection_ = stick.Normalize();
     }
     // 攻撃
     else if (Input::GetKey(0, Input::RThumb))
     {
-        float angle = atan2(attackDirection.y, attackDirection.x);
         if (attack_ == nullptr)
             attack_ = new DarkAttack(this);
+        float angle = atan2(attackDirection_.y, attackDirection_.x);
         Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2);
         pos = player_->GetPos() + pos;
         attack_->SetPos(pos);
@@ -77,7 +120,7 @@ void Dark::DebugMenu()
 {
     ImGui::Begin("Dark");
     ImGui::SliderFloat2("maxSpeedFalling", &maxSpeedFalling, 0.0f, 1.0f);
-    ImGui::SliderFloat2("warpDistance", &warpDistance, 400.0f, 1000.0f);
+    ImGui::SliderFloat2("warpDistance", &warpDistance_, 400.0f, 1000.0f);
     ImGui::End();
 }
 
@@ -90,4 +133,25 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);
+}
+
+DarkIndicator::DarkIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(player)), Vector2::Zero)
+{
+    SetScale(Vector2(2 * GameObject::SIZE_, 2 * GameObject::SIZE_));
+    GetAnimator()->SetColor(Color(0.0f, 0.0f, 0.5f, 0.5f));
+    SetType(OBJ_VOID);
+}
+
+void DarkIndicator::Update()
+{
+    //Get collision
+    Collider* collider = GetCollider();
+    std::list<Collider*> collision = collider->GetCollision();
+    for (auto& col : collision)
+    {
+        if (col->GetParent()->GetType() == OBJ_SOLID)
+        {
+            dynamic_cast<ColliderRect*>(collider)->CollisionSolid(col);
+        }
+    }
 }

@@ -9,20 +9,23 @@
 //--------------------------------------------------------------------------------
 #pragma once
 #include "attribute.h"
+#include "thunder.h"
 
 class DarkAttack;
+class DarkIndicator;
 class Dark : public Attribute
 {
 	Vector2 warpPosition;
-	Vector2 attackDirection;						// 攻撃する向き
+	Vector2 attackDirection_;						// 攻撃する向き
 	//const float maxSpeedFalling = 0.5f;				// 落下中のスピード
 	//const float warpDistance = 800.0f;				// ワープ距離
 	const float responseMinStickDistance = 0.2f;	// スティックの傾けたときに判定する最小値
 	DarkAttack* attack_ = nullptr;
-
+	DarkIndicator* move_indicator_ = nullptr;
+	ThunderIndicator* attack_indicator_ = nullptr;
 	//ここからは調整用のためconst抜き
 	float maxSpeedFalling = -0.5f;
-	float warpDistance = 800.0f;
+	float warpDistance_ = 20*GameObject::SIZE_;
 
 public:
 
@@ -42,4 +45,12 @@ public:
 	DarkAttack(Dark* parent);
 	~DarkAttack() override = default;
 	void Update() override{};
+};
+
+class DarkIndicator : public MovableObj
+{
+public:
+	DarkIndicator();
+	~DarkIndicator() override = default;
+	void Update() override;
 };

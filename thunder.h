@@ -12,7 +12,7 @@
 #include "lib/list.h"
 
 class ThunderAttack;
-class Indicator;
+class ThunderIndicator;
 class Thunder : public Attribute
 {
     const float responseMinStickDistance = 0.5f;    // スティック傾けたとき判定する距離
@@ -27,7 +27,7 @@ class Thunder : public Attribute
     const float move_cd_max_ = 1.0f;
     Vector2 move_dir_;
     bool moving_ = false;
-    Indicator* move_indicator_ = nullptr;
+    ThunderIndicator* move_indicator_ = nullptr;
     //attack
     const float attack_charge_max_ = 1.5f;
     const float atttack_trigger_min_ = 0.1f;
@@ -35,7 +35,7 @@ class Thunder : public Attribute
     float attack_cd_ = 0.0f;
     const float attack_vel_ = 10*GameObject::SIZE_;
     ThunderAttack* attack_[5] = {nullptr};
-    Indicator* attack_indicator_ = nullptr;
+    ThunderIndicator* attack_indicator_ = nullptr;
     //ここからは調整用のためconst抜き
     float movePower = 11 * GameObject::SIZE_;
 
@@ -62,10 +62,10 @@ public:
     void Update() override;
 };
 
-class Indicator : public MovableObj
+class ThunderIndicator : public MovableObj
 {
 public:
-    Indicator();
-    ~Indicator() override = default;
+    ThunderIndicator();
+    ~ThunderIndicator() override = default;
     void Update() override{};
 };
