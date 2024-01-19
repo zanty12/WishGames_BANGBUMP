@@ -43,7 +43,12 @@ SceneMngr::SceneMngr(SCENE scene)
 
 void SceneMngr::ChangeScene(SCENE scene)
 {
-    delete scene_;
+    if (scene_)
+    {
+        delete scene_;
+        scene_ = nullptr;
+    }
+
     switch (scene)
     {
     case SCENE_TITLE:
@@ -73,7 +78,12 @@ void SceneMngr::DebugMenu()
 
 void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
 {
-    delete scene_;
+    if (scene_)
+    {
+        delete scene_;
+        scene_ = nullptr;
+    }
+
     switch (scene)
     {
     case SCENE_TITLE:

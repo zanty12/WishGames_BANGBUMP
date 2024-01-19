@@ -5,6 +5,7 @@
 #include "lib/collider2d.h"
 #include "time.h"
 #include <random>
+#include "scene.h"
 
 Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
     : Enemy(x, y, LoadTexture("data/texture/boss.png"), enemy_mngr)
@@ -20,27 +21,19 @@ Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
 
 void Boss::Update()
 {
-    //HP‚ª0<< ‚É‚È‚Á‚½‚çÁ‚·
+    //HP‚ª0‚É‚È‚Á‚½‚çÁ‚·,ƒŠƒUƒ‹ƒg‚Ö
     if (GetHp() <= 0)
     {
         GameObject::Discard();
-        Die();
-    }
-    if (GetDiscard())
-    {
-        Die();
+        Discard();
+        GetEnemyMngr()->GetMapMngr()->GetGame()->SetChangeScene(1);
     }
 
     time_ += Time::GetDeltaTime();
 
-    std::list<Collider*> collisions = GetCollider()->GetCollision();
-    for (auto collision : collisions)
-    {
-        OBJECT_TYPE type = collision->GetParent()->GetType();
-    }
-
     if (time_ > 5.0f)
     {
+        HpDown(10);
         time_ = 0;
         if (atk_now == false)
         {
@@ -72,31 +65,13 @@ SkillOrb* Boss::DropSkillOrb()
 
 void Boss::Atk()
 {
-    /*int boosrand = rand() % 100;
-    if (boosrand < 10)
-    {
-
-    }
-    else if (boosrand > 10 && boosrand < 30)
-    {
-        Fire();
-    }
-    else if (boosrand > 30 && boosrand < 60)
-    {
-
-    }
-    else if (boosrand > 60 && boosrand < 100)
-    {
-
-    }*/
-
     std::random_device rd;
     std::uniform_int_distribution<> dist(0, 100);
     int boosrand = dist(rd);
 
     if (boosrand < 10)
     {
-
+        Thunder();
     }
     else if (boosrand > 10 && boosrand < 30)
     {
@@ -108,7 +83,7 @@ void Boss::Atk()
     }
     else if (boosrand > 60 && boosrand < 100)
     {
-
+        Water();
     }
 
 
@@ -118,7 +93,7 @@ void Boss::Atk()
 void Boss::Fire()
 {
     //3•ª‚Ì‚P•b‚É‚Pƒqƒbƒg@‚T‚Oƒ_ƒ[ƒW
-    Boss_Fire* fire = new Boss_Fire(GetPos());
+    Boss_Fire* fire = new Boss_Fire(startPosition);
     atk_time_ += Time::GetDeltaTime();
     GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(fire);
     if (atk_time_ > (1.0f / 3))
@@ -126,37 +101,66 @@ void Boss::Fire()
         atk_time_ = 0;
         SetAtk(50);
     }
-
-
-
-
 }
 
 void Boss::Thunder()
 {
     //‚Pƒqƒbƒg@‚Q‚O‚Oƒ_ƒ[ƒW
+    atk_time_ ++;
+
+    if (atk_time_ > 0 && atk_time_ < 2)
+    {
+        Boss_Thunder* thunder = new Boss_Thunder(startPosition);
+        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder);
+        SetAtk(200);
+    }
+    else if (atk_time_ > 2 && atk_time_ < 4)
+    {
+        Boss_Thunder* thunder1 = new Boss_Thunder(startPosition);
+        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder1);
+        thunder1->SetVel(Vector2(0.0f, thunder1->GetVel().y));
+        SetAtk(200);
+    }
+    else if (atk_time_ > 4 && atk_time_ < 6)
+    {
+        Boss_Thunder* thunder2 = new Boss_Thunder(startPosition);
+        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder2);
+        thunder2->SetVel(Vector2(thunder2->GetVel().x * -1, thunder2->GetVel().y));
+        SetAtk(200);
+    }
+
+    if (atk_time_ > 6)
+    {
+        atk_time_ = 0;
+    }
     
-    SetAtk(200);
 
 }
 
 void Boss::Wind()
 {
     //‚S•ª‚Ì‚P•b‚É‚Pƒqƒbƒg@‚R‚Oƒ_ƒ[ƒW
-    Boss_Wind* wind = new Boss_Wind(GetPos());
+    Boss_Wind* wind = new Boss_Wind(startPosition);
     atk_time_ += Time::GetDeltaTime();
     GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(wind);
-    if (atk_time_ > (1.0f / 4))
-    {
-        atk_time_ = 0;
-        SetAtk(30);
-    }
+    
+        if (atk_time_ > (1.0f / 4))
+        {
+            atk_time_ = 0;
+            SetAtk(30);
+        }
 }
 
 void Boss::Water()
 {
     //‚Q•ª‚Ì‚P•b‚É‚Pƒqƒbƒg@‚R‚Oƒ_ƒ[ƒW
+    Boss_Water* water = new Boss_Water(startPosition);
+    Boss_Water* water1 = new Boss_Water(startPosition - (Vector2(SIZE_ * 6, 0.0f)));
+    Boss_Water* water2 = new Boss_Water(startPosition + (Vector2(SIZE_ * 6, 0.0f)));
     atk_time_ += Time::GetDeltaTime();
+    GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(water);
+    GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(water1);
+    GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(water2);
     if (atk_time_ > (1.0f / 2))
     {
         atk_time_ = 0;
@@ -164,5 +168,4 @@ void Boss::Water()
     }
     
 }
-
 

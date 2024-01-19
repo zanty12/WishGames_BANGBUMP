@@ -4,7 +4,6 @@
 #include "animator.h"
 #include "time.h"
 
-
 class Boss : public Enemy
 {
 private:
@@ -16,8 +15,7 @@ private:
 	float time_;			// 時間
 	float atk_time_;		// 攻撃時間
 	bool atk_now;			// 攻撃チェック
-
-	//SKILLORB_ATTRIBUTE_DESC drop;
+	
 
 public:
 
@@ -36,5 +34,7 @@ public:
 	void Thunder();
 	void Wind();
 	void Water();
+	
 
 };
+

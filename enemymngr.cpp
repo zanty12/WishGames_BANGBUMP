@@ -9,7 +9,7 @@ void EnemyMngr::Update()
     //”jŠü‚·‚é
     enemies_.remove_if(
         [](Enemy* enemy) {
-            if (enemy->IsDead()) {
+            if (enemy->GetDiscard()) {
                 delete enemy;
                 enemy = nullptr;
                 return true;

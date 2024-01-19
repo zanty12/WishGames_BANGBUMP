@@ -14,6 +14,8 @@ class Player;
 class Camera;
 class SceneMngr;
 class GameBase;
+class Scene;
+
 
 class Game :public GameBase
 {
@@ -43,6 +45,10 @@ public:
 	//	return player_list_;
 	//}
 	void DebugMenu() override;
+	
+	SceneMngr* GetSceneMngr() { return scene_mngr_; }
+
+	
 
 	//static Renderer* GetRenderer(){return renderer_;}
 	//static CollMngr* GetCollMngr() {return coll_mngr_;}

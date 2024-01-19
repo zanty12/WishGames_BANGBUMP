@@ -53,6 +53,12 @@ void Game::Update()
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
     }
+    if (GetChangeScene() == 1)
+    {
+        scene_mngr_->ChangeScene(SCENE_RESULT);
+    }
+
+
     timer_ -= Time::GetDeltaTime();
     if (timer_ <= 0.0f)
     {
@@ -167,3 +173,4 @@ void Game::DebugMenu()
     ImGui::End();
     player_->DebugMenu();
 }
+

@@ -6,6 +6,7 @@
 #include "time.h"
 
 
+
 class Boss_Fire : public MovableObj
 {
 private:
@@ -25,7 +26,9 @@ public:
 class Boss_Thunder : public MovableObj
 {
 private:
-
+	float time_;
+	float speed_;
+	Vector2 boss_pos_;
 
 public:
 	Boss_Thunder() = delete;
@@ -33,6 +36,8 @@ public:
 
 	Boss_Thunder(Vector2 pos);
 	void Update() override;
+
+
 };
 class Boss_Wind : public MovableObj
 {
@@ -40,7 +45,10 @@ private:
 	float time_;
 	float speed_;
 	Vector2 boss_pos_;
-	MAP_READ type;
+	Vector2 Sp, Ep;
+	Vector2 N;		//法線ベクトル
+	Vector2 v;
+	Vector2 vel_;
 
 public:
 	Boss_Wind() = delete;
@@ -48,12 +56,16 @@ public:
 
 	Boss_Wind(Vector2 pos);
 	void Update() override;
-	void CollosionAction(void);
+
+	Vector2 Reflection(float spx, float spy, float epx, float epy, float velx, float vely);
+
+
 };
 class Boss_Water : public MovableObj
 {
 private:
-
+	float time_;
+	Vector2 boss_pos_;
 
 public:
 	Boss_Water() = delete;

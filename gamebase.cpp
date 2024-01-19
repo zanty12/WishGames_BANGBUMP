@@ -7,17 +7,29 @@ SkillOrbMngr *GameBase::orb_mngr_ = new SkillOrbMngr();
 std::list<Player *> GameBase::players_ = std::list<Player *>();
 
 GameBase::~GameBase() {
-    if (mapmngr_) delete mapmngr_;
-    if (camera_) delete camera_;
+    if (mapmngr_) 
+    {
+        delete mapmngr_;
+        mapmngr_ = nullptr;
+    }
+    if (camera_) 
+    {
+        delete camera_;
+        camera_ = nullptr;
+    }
     delete renderer_;
     delete coll_mngr_;
     delete projectile_mngr_;
     delete orb_mngr_;
 
-    for (auto player : players_) {
-        delete player;
+    if (!players_.empty())
+    {
+        for (auto player : players_) {
+            delete player;
+        }
+        players_.clear();
     }
-    players_.clear();
+
 }
 
 bool GameBase::UpdateLoD(const Vector2 pos)

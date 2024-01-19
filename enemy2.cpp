@@ -18,7 +18,7 @@ void Enemy2::Update()
     if (GetHp() <= 0)
     {
         GameObject::Discard();
-        Die();
+        Discard();
         DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_MID);
     }
 
@@ -76,7 +76,7 @@ void Enemy2::Update()
             Vector2 distance = close_player->GetPos() - startPosition;
             bullet_pos = distance.Normalize();
             bullet->SetVel(distance.Normalize() * (96.0f * 2) * dt);
-            bullet->SetPos(GetPos() + (bullet_pos * SIZE_ * 2.5f));
+            bullet->SetPos(startPosition + (bullet_pos * SIZE_ * 1.5f));
             GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(bullet);
         }
     }

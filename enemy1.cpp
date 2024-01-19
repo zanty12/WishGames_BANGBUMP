@@ -13,11 +13,11 @@ void Enemy1::Update()
     if (GetHp() <= 0)
     {
         GameObject::Discard();
-        Die();
-        DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_SMALL);
+		Discard();
+		DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_SMALL);
     }
 
-    CollisionAction();
+	CollisionAction();
 
     GetAnimator()->SetIsAnim(true);
 
@@ -26,6 +26,7 @@ void Enemy1::Update()
         startPosition = GetPos();
         SetVel(Vector2(GetVel().x * -1, GetVel().y));
         dir_ *= -1;
+		SetScale(Vector2(GetScale().x * -1, GetScale().y));
     }
 
     this->AddVel(GetVel());
@@ -33,27 +34,37 @@ void Enemy1::Update()
 
 void Enemy1::CollisionAction(void)
 {
-    std::list<Collider*> collisions = GetCollider()->GetCollision();
+	std::list<Collider*> collisions = GetCollider()->GetCollision();
 
-    for (auto collision : collisions)
-    {
-        OBJECT_TYPE type = collision->GetParent()->GetType();
-        switch (type)
-        {
-        case OBJ_SPIKE:
-            CollisionSpike();
-            break;
-        case OBJ_ATTACK:
-            {
-                PlayerAttack* attack = dynamic_cast<PlayerAttack*>(collision->GetParent());
-                if(attack != nullptr)
-                    SetHp(GetHp() - attack->GetDamage());
-            }
-            break;
-        default:
-            break;
-        }
-    }
+	for (auto collision : collisions)
+	{
+		OBJECT_TYPE type = collision->GetParent()->GetType();
+		switch (type)
+		{
+		case OBJ_PLAYER:
+		{
+			GameObject* attack = collision->GetParent();
+			if (attack != nullptr)
+			{
+				blinking(attack);
+			}
+
+			break;
+		}
+		case OBJ_SPIKE:
+			CollisionSpike();
+			break;
+		case OBJ_ATTACK:
+			{
+				PlayerAttack* attack = dynamic_cast<PlayerAttack*>(collision->GetParent());
+				if(attack != nullptr)
+					SetHp(GetHp() - attack->GetDamage());
+			}
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 //================================================================================
@@ -135,6 +146,7 @@ void Enemy1::CollisionSpike(void)
 
 bool CheckLength(Vector2 a, Vector2 b, float len)
 {
+
     if (Vector2::Distance(a, b) < len)
     {
         return true;
