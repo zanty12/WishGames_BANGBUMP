@@ -9,7 +9,6 @@
 #include "block.h"
 #include "cloud.h"
 #include "floor.h"
-#include "penfloor.h"
 #include "skillorb.h"
 #include "wall.h"
 #include "mapenum.h"
@@ -46,12 +45,6 @@ void Map::PutCell(int x, int y, int MAP_READ) const
         {
             Floor* floor = new Floor(x, y);
             map_[y * width_ + x] = floor;
-            break;
-        }
-    case MAP_READ_PENFLOOR:
-        {
-            PenFloor* penfloor = new PenFloor(x, y);
-            map_[y * width_ + x] = penfloor;
             break;
         }
     case MAP_READ_BLOCK:

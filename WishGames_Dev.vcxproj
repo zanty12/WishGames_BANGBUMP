@@ -236,7 +236,6 @@
     <ClInclude Include="mapmngr.h" />
     <ClInclude Include="original_window.h" />
     <ClInclude Include="movableobj.h" />
-    <ClInclude Include="penfloor.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="colliderrect.h" />
     <ClInclude Include="playerattack.h" />

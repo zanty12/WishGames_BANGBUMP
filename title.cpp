@@ -16,6 +16,7 @@ Title::Title(SceneMngr* scene_mngr)
 
 Title::~Title()
 {
+	StopSoundAll();
 }
 
 void Title::Update()
