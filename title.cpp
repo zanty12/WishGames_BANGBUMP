@@ -1,12 +1,17 @@
 #include "title.h"
 #include "xinput.h"
+#include "asset.h"
+#include "sound.h"
 
 static int	g_TextureNo = 0;
+static int g_BGM = 0;
 
 Title::Title(SceneMngr* scene_mngr)
 	:scene_mngr_(scene_mngr)
 {
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/title.webp");
+	g_BGM = LoadSound(Asset::GetAsset(SE_1).c_str());
+	PlaySound(g_BGM, -1);
 }
 
 Title::~Title()
