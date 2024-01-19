@@ -49,8 +49,11 @@ public:
 
 class DarkIndicator : public MovableObj
 {
+private:
+	Vector2 target_pos_;
 public:
 	DarkIndicator();
 	~DarkIndicator() override = default;
 	void Update() override;
+	void SetTargetPos(Vector2 pos) { target_pos_ = pos; }
 };

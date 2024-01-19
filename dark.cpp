@@ -19,28 +19,25 @@ Vector2 Dark::Move()
     Vector2 velocity = player_->GetVel();
     Vector2 stick = Input::GetStickLeft(0);
 
-    if (move_indicator_ != nullptr)
-    {
-        Vector2 dir = stick.Normalize();
-        dir.y *= -1;
-        Vector2 target_pos = player_->GetPos() + dir * warpDistance_ / 2;
-        move_indicator_->SetPos(target_pos);
-        move_indicator_->Update();
-    }
-
     if (stick != Vector2::Zero)
     {
         if (move_indicator_ == nullptr)
         {
             move_indicator_ = new DarkIndicator();
         }
+        Vector2 dir = stick.Normalize();
+        dir.y *= -1;
+        Vector2 target_pos = player_->GetPos() + dir * warpDistance_ / 2;
+        move_indicator_->SetPos(player_->GetPos());
+        move_indicator_->SetTargetPos(target_pos);
+        move_indicator_->Update();
     }
+
     else
     {
         delete move_indicator_;
         move_indicator_ = nullptr;
     }
-
     if (Input::GetKey(0, Input::LThumb))
     {
         if (velocity.y <= -maxSpeedFalling)
@@ -62,7 +59,6 @@ Vector2 Dark::Move()
         move_indicator_ = nullptr;
     }
     else warpPosition = Vector2::Zero;
-
 
     return player_->GetVel();
 };
@@ -143,15 +139,51 @@ DarkIndicator::DarkIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Ass
 
 void DarkIndicator::Update()
 {
-    //Get collision
-    Collider* collider = GetCollider();
-    std::list<Collider*> collision = collider->GetCollision();
-    for (auto& col : collision)
+    bool hit = false;
+    //try collision at target_pos_
+    ColliderRect* target_collider = dynamic_cast<ColliderRect*>(GetCollider());
+    ColliderRect* temp= new ColliderRect(*target_collider);
+    temp->SetPos(target_pos_);
+    GameBase::GetCollMngr()->UpdateCollision(temp);
+    if(temp->GetCollision().size() == 0 || temp->GetCollision().front()->GetParent()->GetType() == OBJ_VOID)
     {
-        if (col->GetParent()->GetType() == OBJ_SOLID)
+        //std::cout<<"target_pos_ is valid"<<std::endl;
+        SetPos(target_pos_);
+        target_collider->SetPos(target_pos_);
+        hit = true;
+        return;
+    }
+    //std::cout<<"target_pos_ is invalid"<<std::endl;
+    //try moving to target
+    while ((GetPos() - target_pos_).Distance() > 0.1f && !hit)
+    {
+        Vector2 dir = (target_pos_ - GetPos()).Normalize();
+        Vector2 pos = GetPos() + dir * GameObject::SIZE_ / 2;
+        SetPos(pos);
+        //Get collision
+        Collider* collider = GetCollider();
+        collider->Update();
+        GameBase::GetCollMngr()->UpdateCollision(collider);
+        std::list<Collider*> collision = collider->GetCollision();
+        if (collision.size() == 0)
         {
-            dynamic_cast<ColliderRect*>(collider)->CollisionSolid(col);
+            continue;
+        }
+        else if (collision.size())
+        {
+            collision.sort([collider](Collider* a, Collider* b)
+            {
+                return (a->GetPos() - collider->GetPos()).Distance() < (b->GetPos() - collider->GetPos()).Distance();
+            });
+            for (auto& col : collision)
+            {
+                if (col->GetParent()->GetType() == OBJ_SOLID)
+                {
+                    hit = true;
+                    collider->CollisionSolid(col);
+                }
+            }
         }
     }
-    //SetPos(GetCollider()->GetPos());
+    SetPos(GetCollider()->GetPos());
 }

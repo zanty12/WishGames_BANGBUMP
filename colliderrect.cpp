@@ -14,20 +14,29 @@ ColliderRect::ColliderRect(GameObject* parent, bool movable) : Collider(RECTANGL
     GameBase::GetCollMngr()->Add(this);
 }
 
+void ColliderRect::SetPos(Vector2 pos)
+{
+    Collider::SetPos(pos);
+    rect_.a = Vector2(GetPos().x - GetParent()->GetScale().x / 2, GetPos().y + GetParent()->GetScale().y / 2);
+    rect_.b = Vector2(GetPos().x + GetParent()->GetScale().x / 2, GetPos().y + GetParent()->GetScale().y / 2);
+    rect_.c = Vector2(GetPos().x + GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
+    rect_.d = Vector2(GetPos().x - GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
+}
+
 bool ColliderRect::Collide(Collider* other)
 {
     switch (other->GetType())
     {
     case CIRCLE:
-        return Collider2D::TouchNew(rect_, dynamic_cast<ColliderCir*>(other)->GetCircle());
+        return Collider2D::Touch(rect_, dynamic_cast<ColliderCir*>(other)->GetCircle());
     case RECTANGLE:
-        return Collider2D::TouchNew(rect_, dynamic_cast<ColliderRect*>(other)->GetRect());
-        /*{
+        //return Collider2D::Touch(rect_, dynamic_cast<ColliderRect*>(other)->GetRect());
+        {
             //bounding box
             Vertex4 other_rect = dynamic_cast<ColliderRect*>(other)->GetRect();
             return (rect_.a.x < other_rect.b.x && rect_.b.x > other_rect.a.x &&
                 rect_.a.y > other_rect.c.y && rect_.c.y < other_rect.a.y);
-        }*/
+        }
     default:
         return false;
     }
@@ -53,6 +62,9 @@ void ColliderRect::CollisionInteract()
         switch (other->GetParent()->GetType())
         {
         case OBJ_SOLID:
+            CollisionSolid(other);
+            break;
+        case OBJ_PLAYER:
             CollisionSolid(other);
             break;
         case OBJ_PENETRABLE:
