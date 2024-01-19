@@ -1,5 +1,7 @@
 #include "multi_player.h"
 #include "xinput.h"
+#include "sprite.h"
+#include "multiplay.h"
 
 void ServerPlayer::Loop(void) {
 	if (moveAttribute) moveAttribute->Move();
@@ -11,7 +13,5 @@ void ServerPlayer::Loop(void) {
 
 
 void ClientPlayer::Loop(void) {
-	if()
-
-	//texNo
+	DrawSprite(texNo, transform.position - MultiPlayClient::offset, transform.rotation, transform.scale, Color::White);
 }
