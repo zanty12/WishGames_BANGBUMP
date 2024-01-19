@@ -295,6 +295,9 @@ namespace PHYSICS {
 		static bool Touch(Vertex1 a, Vertex4 b, NearHit *hit = nullptr);
 		static bool Touch(Vertex1 a, VertexN b, NearHit *hit = nullptr);
 
+		static bool TouchNew(Vertex1 a, Vertex4 b) {
+			TouchNew(a, VertexN(b.v, 4));
+		}
 		static bool TouchNew(Vertex1 a, VertexN b) {
 			bool isTouch = true;
 
