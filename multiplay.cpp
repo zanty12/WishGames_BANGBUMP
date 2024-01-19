@@ -476,14 +476,15 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	// ゲームモードの描画
 	gameMode->Draw(res, cameraPos);
 
-	for (auto &object : res.objects) {
-		if (object.tag == OBJECT_DATA_CLIENT_SIDE::SKILL_POINT) {
-			DrawSprite(
-				LoadTexture(Asset::textures_.at(textures::skill_orb)),
-				object.position - cameraPos, 0.0, Vector2::One * 100, Color::White
-			);
-		}
-	}
+	for (auto &object : objects) object.second->Loop();
+	//for (auto &object : res.objects) {
+	//	if (object.tag == OBJECT_DATA_CLIENT_SIDE::SKILL_POINT) {
+	//		DrawSprite(
+	//			LoadTexture(Asset::textures_.at(textures::skill_orb)),
+	//			object.position - cameraPos, 0.0, Vector2::One * 100, Color::White
+	//		);
+	//	}
+	//}
 
 	// プレイヤーの描画
 	for (auto &client : res.clients) {
