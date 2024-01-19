@@ -391,6 +391,7 @@ void MultiPlayServer::OpenTerminal(void) {
 
 
 
+Vector2 MultiPlayClient::offset;
 /*******************************************************
   Client
 ********************************************************/
@@ -471,10 +472,10 @@ void MultiPlayClient::Unregister() {
 
 void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	// カメラ座標の計算
-	if (res.clients.size()) cameraPos = Vector2(0.0f, res.clients.begin()->position.y - Graphical::GetHeight() * 0.75f);
+	if (res.clients.size()) offset = Vector2(0.0f, res.clients.begin()->position.y - Graphical::GetHeight() * 0.75f);
 
 	// ゲームモードの描画
-	gameMode->Draw(res, cameraPos);
+	gameMode->Draw(res, offset);
 
 	for (auto &object : objects) object.second->Loop();
 	//for (auto &object : res.objects) {
@@ -488,7 +489,7 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 
 	// プレイヤーの描画
 	for (auto &client : res.clients) {
-		DrawSprite(texNo, client.position - cameraPos, 0.0, Vector2::One * 100, Color::White);
+		DrawSprite(texNo, client.position - offset, 0.0, Vector2::One * 100, Color::White);
 	}
 
 #ifdef DEBUG_LINK

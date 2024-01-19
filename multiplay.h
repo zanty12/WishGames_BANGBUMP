@@ -96,13 +96,13 @@ private:
 	MultiMap map;										// マップ
 	std::unordered_map<int, ClientPlayer*> clients;		// 描画用クライアント
 	std::unordered_map<int, ClientGameObject*> objects;	// 描画用オブジェクト
-	Vector2 cameraPos;									// カメラ座標
 
 	std::thread sendUpdateFunc;							// 送信関数
 	std::thread recvUpdateFunc;							// 受信関数
 
 
 public:
+	static Vector2 offset;								// カメラ座標
 	bool isFinish = false;								// 終了状態
 	int texNo = 0;
 	ATTRIBUTE_TYPE move_ = ATTRIBUTE_TYPE_FIRE;
