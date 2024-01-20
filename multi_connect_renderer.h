@@ -69,5 +69,13 @@ public:
 		for (auto &object : res.objects) {
 			DrawObject(res.clients.begin()->position, object);
 		}
+		// プレイヤーのアニメーション更新
+		for (const auto &players : res.clients) {
+			Animator* anim = objects[players.id];
+			// 次にループするアニメーションが今のアニメーションと異なる場合
+			if (anim->GetLoopAnim() != anim->GetLoopAnimNext()) {
+				anim->PlayerAnim(players.moveAttributeType, players.attackAttributeType);
+			}
+		}
 	}
 };

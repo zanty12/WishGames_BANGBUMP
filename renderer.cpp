@@ -1,6 +1,13 @@
 #include "renderer.h"
 #include "camera.h"
 
+
+void Renderer::InitRenderer()
+{
+    ImageDataDictionary::InitDictionary();  //ImageDataDictionary‚Ì«‘“o˜^‚ğ‚µ‚Ä‚©‚ç
+    Animator::InitDictionary();             //Animator‚Ì«‘“o˜^‚ğs‚¤iImageDataDictionary‚Ì«‘‚ğg‚¤‚½‚ßj
+}
+
 void Renderer::Update()
 {
     CheckDiscard();

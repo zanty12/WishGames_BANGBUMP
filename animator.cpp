@@ -9,7 +9,8 @@
 #include "image_data.h"
 
 std::map<textures, IMAGE_DATA> ImageDataDictionary::img_data_;
-bool ImageDataDictionary::setup_ = false;
+
+std::map<LOOP_ANIM, ANIM_DATA> Animator::DICTIONARY_;
 
 //textures enumのみの登録
 ANIM_DATA::ANIM_DATA(textures texture)
@@ -24,19 +25,15 @@ ANIM_DATA::ANIM_DATA(textures texture)
 //★それぞれのアニメーションごとに設定していく★
 void Animator::InitDictionary(void)
 {
-    //map登録用
-    if (ImageDataDictionary::setup_ == false)
-    {
-        ImageDataDictionary imgData;
-    }
-
     //DICTIONARY_[PLAYER] = ANIM_DATA(LoadTexture(Asset::GetAsset(player)), 5, 6);
 
     //player
     DICTIONARY_[PLAYER_IDOL_ANIM] = ANIM_DATA(0, 0, 4, 5);
-    DICTIONARY_[PLAYER_ATTACK_ANIM] = ANIM_DATA(6, 0, 3, 7);
+    DICTIONARY_[PLAYER_ATTACK_ANIM] = ANIM_DATA(0, 6, 3, 7);
     DICTIONARY_[PLAYER_FD_MOVE_ANIM] = ANIM_DATA(4, 7, 3, 13);
     DICTIONARY_[PLAYER_TW_MOVE_ANIM] = ANIM_DATA(4, 7, 4, 7);
+    DICTIONARY_[PLAYER_TA_CHARGE_ANIM] = ANIM_DATA(); //thunderアタックチャージ（属性ごとに設定するため未設定）
+    DICTIONARY_[PLAYER_TM_CHARGE_ANIM] = ANIM_DATA(0, 8, 2, 8); //thunder移動チャージ
 
     //move
     DICTIONARY_[FIRE_MOVE_ANIM] = ANIM_DATA(fire_move);
@@ -79,7 +76,6 @@ Animator::Animator()
     :loop_anim_(MULTI_NONE), loop_anim_next_(MULTI_NONE), 
     now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false), invert_(1)
 {
-    InitDictionary();
 
     if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
@@ -89,7 +85,6 @@ Animator::Animator(GameObject* game_object)
     : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), loop_anim_(MULTI_NONE), loop_anim_next_(MULTI_NONE),
     now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false),invert_(1)//初期化
 {
-    InitDictionary();
 
     if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
@@ -101,7 +96,6 @@ Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_n
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(false),
     now_matrix_number_(0), u_(0.0f), v_(0.0f), invert_(1)//初期化
 {
-    InitDictionary();
 
     if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
@@ -114,7 +108,6 @@ Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_n
     loop_anim_(loop_anim),
     now_matrix_number_(0), u_(0.0f), v_(0.0f), invert_(1)//初期化
 {
-    InitDictionary();
 
     if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
@@ -190,10 +183,10 @@ void Animator::LoopAnimation(void)
 {
     int xMatrix = now_matrix_number_ % x_matrix_num_;
     int yMatrix = now_matrix_number_ / x_matrix_num_;
-    if (xMatrix == DICTIONARY_[loop_anim_].loop_end_x && yMatrix == DICTIONARY_[loop_anim_].loop_end_y)
+    if (xMatrix == loop_end_x_ && yMatrix == loop_end_y_)
     {
         //横の最大数 * 目的の縦の場所 + 目的の横の場所(10*4+6=46みたいな)
-        now_matrix_number_ = x_matrix_num_ * DICTIONARY_[loop_anim_].loop_start_y + DICTIONARY_[loop_anim_].loop_start_x - 1;//この後インクリメントするので1引いておく
+        now_matrix_number_ = x_matrix_num_ * loop_start_y_ + loop_start_x_ - 1;//この後インクリメントするので1引いておく
     }
 }
 
@@ -227,6 +220,15 @@ void Animator::Reset(void)
         y_matrix_num_ = ImageDataDictionary::img_data_[texture_enum_].yMatrixNum;
     }
 
+    //ループの設定
+    if (DICTIONARY_[loop_anim_].loop_start_x != -1)
+    {
+        loop_start_x_ = DICTIONARY_[loop_anim_].loop_start_x;
+        loop_start_y_ = DICTIONARY_[loop_anim_].loop_start_y;
+        loop_end_x_ = DICTIONARY_[loop_anim_].loop_end_x;
+        loop_end_y_ = DICTIONARY_[loop_anim_].loop_end_y;
+    }
+
     //シングルプレイの時の画像マトリックス設定
     if (parent_ && parent_->GetType() == OBJ_PLAYER)
     {
@@ -242,26 +244,25 @@ void Animator::Reset(void)
 
 void Animator::PlayerAnim(ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack)
 {
-
-
-
-    //移動アトリビュートがTHUNDERの時
-    if (move == ATTRIBUTE_TYPE_THUNDER)
+    if (loop_anim_ == PLAYER_TA_CHARGE_ANIM)
     {
-        x_matrix_num_ = 5;
-        y_matrix_num_ = 20;
+        if (move == ATTRIBUTE_TYPE_WIND)
+        {
+            loop_start_x_ = 0;
+            loop_start_y_ = 8;
+            loop_end_x_ = 4;
+            loop_end_y_ = 8;
+        }
+        else
+        {
+            loop_start_x_ = 0;
+            loop_start_y_ = 13;
+            loop_end_x_ = 3;
+            loop_end_y_ = 14;
+        }
     }
-    //攻撃アトリビュートがTHUNDERの時
-    else if (attack == ATTRIBUTE_TYPE_THUNDER)
-    {
-        x_matrix_num_ = 5;
-        y_matrix_num_ = 16;
-    }
-    //どちらでもない時
-    else
-    {
 
-    }
+
 }
 
 

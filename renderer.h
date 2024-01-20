@@ -2,6 +2,7 @@
 #include <list>
 
 #include "animator.h"
+#include "image_data.h"
 
 class Animator;
 class Camera;
@@ -14,6 +15,9 @@ private:
 public:
     Renderer() = default;
     ~Renderer() = default;
+
+    void InitRenderer();
+
     void Update();
     void Draw();
     void Draw(Camera* camera);

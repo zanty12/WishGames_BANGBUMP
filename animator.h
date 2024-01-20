@@ -15,7 +15,9 @@ struct ANIM_DATA
     int loop_start_x, loop_start_y;
     int loop_end_x, loop_end_y;
 
-    ANIM_DATA() {}; //消すとエラー
+    ANIM_DATA() {
+        loop_start_x = loop_start_y = loop_end_x = loop_end_y = -1; //設定しないときは-1にして例外処理に通す
+    };
     //----------------------------------------
     // int start_x      ループアニメのスタート画像[よこ]（右端 = 0）
     // int start_y      ループアニメのスタート画像[たて]（上端 = 0）
@@ -93,7 +95,7 @@ class GameObject;
 class Animator
 {
 private:
-    std::map<LOOP_ANIM, ANIM_DATA> DICTIONARY_;
+    static std::map<LOOP_ANIM, ANIM_DATA> DICTIONARY_;
 
     GameObject* parent_;  //アニメーション対象のゲームオブジェクト
 
@@ -199,6 +201,7 @@ public:
 
     void SetLoopAnim(LOOP_ANIM loop_anim) { loop_anim_next_ = loop_anim; }    //ループするアニメーションの設定
     LOOP_ANIM GetLoopAnim(void) const { return loop_anim_; }                  //今ループしているアニメーション
+    LOOP_ANIM GetLoopAnimNext(void) const { return loop_anim_next_; }         //次にループするアニメーション
 
     float UWidth(void) const { return (1.0f / x_matrix_num_) * invert_; }    //UV(U)の幅を取得
     float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)の高さを取得
@@ -223,8 +226,9 @@ public:
 
     void PlayerAnim(ATTRIBUTE_TYPE move,ATTRIBUTE_TYPE attack);
 
+
+    static void InitDictionary(void);  //辞書登録
 private:
-    void InitDictionary(void);
     void LoopAnimation(void);
     void Reset(void);
 
