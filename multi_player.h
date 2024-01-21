@@ -5,7 +5,7 @@
 #include "multi_object.h"
 #include "multi_map.h"
 #include "multi_attribute.h"
-#include "texture.h"
+#include "multi_anim.h"
 
 class MultiAttribute;
 class ServerPlayer : public ServerGameObject {
@@ -13,11 +13,11 @@ private:
 	MultiAttribute *moveAttribute = nullptr;			// 移動属性
 	MultiAttribute *attackAttribute = nullptr;			// 攻撃属性
 
+
 public:
 	int skillPoint = 0;									// スキルポイント
 	MultiMap *map = nullptr;							// マップ
 	ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;		// アニメーション
-
 	
 	
 public:
@@ -38,25 +38,25 @@ public:
 };
 
 class ClientPlayer : public ClientGameObject {
+private:
+	ANIMATION_TYPE preAnimType = ANIMATION_TYPE_IDEL;	// アニメーション（1フレーム前）
+
 public:
 	int skillPoint = 0;										// スキルポイント
 	ATTRIBUTE_TYPE moveAttribute = ATTRIBUTE_TYPE_FIRE;		// 移動属性
 	ATTRIBUTE_TYPE attackAttribute = ATTRIBUTE_TYPE_FIRE;	// 攻撃属性
 	ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;			// アニメーション
+	MultiAnimator anim;
+	bool isReverseX = false;								// 横軸の向き
 
 
 	
 public:
 	ClientPlayer(ATTRIBUTE_TYPE moveAttribute, ATTRIBUTE_TYPE attackAttribute, Transform transform)
 		: moveAttribute(moveAttribute), attackAttribute(attackAttribute), ClientGameObject(transform) {
-		// パスを指定
-		std::ostringstream path;
-		//path << "data/texture/Player/Player1_" << std::to_string((int)attackAttribute + 1) << std::to_string((int)moveAttribute + 1) << ".png";
-		// テクスチャを読み込む
-		//texNo = LoadTexture(path.str());
-
-		texNo = LoadTexture("data/texture/player.png");
+		anim = MultiAnimator::GetPlayerInitialize(0, moveAttribute, attackAttribute);
 	}
 
 	void Loop(void) override;
+
 };

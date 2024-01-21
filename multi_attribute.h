@@ -70,8 +70,9 @@ public:
 ********************************************************/
 class MultiFire : public MultiAttribute {
 private:
-	float friction = 0.88f;				// 摩擦定数
-	float maxSpeed = 10.0f;				// 加速の最大値
+	float friction = 0.99f;				// 摩擦係数
+	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
+	float maxSpeed = 5.0f;				// 加速の最大値
 	float judgeScale = 0.2f;			// スティックの傾けたときに判定する最小値
 	Vector2 velocity;					// 向き
 

@@ -241,6 +241,9 @@
     <ClCompile Include="multi_attribute.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
+    <ClCompile Include="multi_anim.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphical.h">

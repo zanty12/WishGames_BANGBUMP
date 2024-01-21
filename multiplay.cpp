@@ -119,7 +119,10 @@ void MultiPlayServer::PlayerUpdate(void) {
 #endif
 
 	// スキルオーブの更新
-	map.GetSkillOrbs()->AllLoop();
+	gameMode->GetMap()->GetSkillOrbs()->AllLoop();
+
+	// ゲームモードの更新
+	gameMode->Update(clients_);
 
 	// プレイヤーの更新
 	for (auto &kvp : clients_) {
@@ -128,8 +131,9 @@ void MultiPlayServer::PlayerUpdate(void) {
 
 		Input::SetState(0, client.currentInput);
 		Input::SetPreviousState(0, client.previousInput);
+		player->map = gameMode->GetMap();
 		player->Loop();
-		map.Collision(player->transform.position, player->radius);
+		gameMode->GetMap()->Collision(player->transform.position, player->radius);
 
 #ifdef DEBUG_INPUT
 		std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
@@ -138,8 +142,6 @@ void MultiPlayServer::PlayerUpdate(void) {
 		std::cout << player->transform.position.x << ", " << player->transform.position.y << std::endl;
 #endif
 	}
-
-	gameMode->Update(clients_);
 	
 
 	// ロック解除
@@ -220,7 +222,7 @@ void MultiPlayServer::SendUpdate(void) {
 					client.header.id,
 					player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
 					player->animType,
-					player->transform.position,
+					player->transform.position, player->velocity,
 					0, player->skillPoint, 0}
 				);
 			}
@@ -472,7 +474,7 @@ void MultiPlayClient::Unregister() {
 
 void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	// カメラ座標の計算
-	if (res.clients.size()) offset = Vector2(0.0f, res.clients.begin()->position.y - Graphical::GetHeight() * 0.75f);
+	if (res.clients.size()) offset = Vector2(0.0f, res.clients.begin()->position.y - Graphical::GetHeight() * 0.25f);
 
 	// ゲームモードの描画
 	gameMode->Draw(res, offset);
@@ -481,19 +483,6 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	for (auto &object : objects) object.second->Loop();
 	// プレイヤーの描画
 	for (auto &player : clients) player.second->Loop();
-	//for (auto &object : res.objects) {
-	//	if (object.tag == OBJECT_DATA_CLIENT_SIDE::SKILL_POINT) {
-	//		DrawSprite(
-	//			LoadTexture(Asset::textures_.at(textures::skill_orb)),
-	//			object.position - cameraPos, 0.0, Vector2::One * 100, Color::White
-	//		);
-	//	}
-	//}
-
-	//// プレイヤーの描画
-	//for (auto &client : res.clients) {
-	//	DrawSprite(texNo, client.position - offset, 0.0, Vector2::One * 100, Color::White);
-	//}
 
 #ifdef DEBUG_LINK
 	if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
@@ -513,14 +502,6 @@ void MultiPlayClient::SendUpdate(void) {
 			// リクエストの作成
 			REQUEST_PLAYER req;
 			req.input = { id, Input::GetState(0), Input::GetPreviousState(0), move_, action_ };
-			if (Input::GetStickLeft(0) == Vector2::Zero) {
-				req.input.curInput.sThumbLX = (GetAsyncKeyState('A') - GetAsyncKeyState('D')) * +16384;
-				req.input.curInput.sThumbLY = (GetAsyncKeyState('W') - GetAsyncKeyState('S')) * -16384;
-			}
-			if (Input::GetStickRight(0) == Vector2::Zero) {
-				req.input.curInput.sThumbRX = (GetAsyncKeyState('J') - GetAsyncKeyState('L')) * +16384;
-				req.input.curInput.sThumbRY = (GetAsyncKeyState('I') - GetAsyncKeyState('K')) * -16384;
-			}
 			req.CreateRequest(sendBuff, id);
 
 			// 送信
@@ -570,6 +551,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 				auto &player = iterator->second;
 				player->isShow = true;
 				player->transform.position = client.position;
+				player->velocity = client.velocity;
 				player->moveAttribute = client.moveAttributeType;
 				player->attackAttribute = client.attackAttributeType;
 				player->animType = client.animType;

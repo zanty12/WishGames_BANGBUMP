@@ -68,7 +68,7 @@ void MultiWind::Attack(void) {
     if (StickTrigger(stick, previousStick))
     {
         if (attack_ == nullptr)
-            player->map->GetAttacks()->Add<MultiWindAttack>(player);
+            attack_ = player->map->GetAttacks()->Add<MultiWindAttack>(player);
         attack_->transform.position = player->transform.position;
     }
     else if (attack_ != nullptr)
@@ -89,7 +89,6 @@ bool MultiFire::StickTrigger(Vector2 stick, Vector2 previousStick) {
 }
 
 void MultiFire::Move(void) {
-    Vector2 &vel = player->velocity;
     Vector2 stick = Input::GetStickLeft(0);
 
     // 移動中
@@ -103,7 +102,8 @@ void MultiFire::Move(void) {
     else {
         player->animType = ANIMATION_TYPE_IDEL;
     }
-    velocity *= friction;
+    velocity.x *= friction;
+    velocity.y *= friction;
     player->velocity = velocity;
 }
 
@@ -119,7 +119,7 @@ void MultiFire::Attack(void) {
         float angle = atan2(stick.y, stick.x);
         // 攻撃オブジェクトの生成
         if (attack_ == nullptr)
-            attack_ = new MultiFireAttack(player);
+            attack_ = player->map->GetAttacks()->Add<MultiFireAttack>(player);
 
         // 座標の指定
         Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player->transform.scale.x / 2 + attack_->transform.scale.x / 2);
@@ -128,7 +128,7 @@ void MultiFire::Attack(void) {
         attack_->transform.rotation = angle;
     }
     else {
-        delete attack_;
+        attack_->Destroy();
         attack_ = nullptr;
     }
 }
