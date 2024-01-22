@@ -21,7 +21,6 @@ std::map<int, CLIENT_DATA_SERVER_SIDE> MultiPlayServer::clients_;
 MultiPlayServer::MultiPlayServer() {
 	WSAData data;
 	Startup(v2_2, data);
-	map.Load("data/map/MultiPlay_Map1.csv");
 
 	gameMode = new MultiPlayFlowServerSide(this);
 }
@@ -40,7 +39,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	ServerPlayer *player = new ServerPlayer();
 	player->SetMoveAttribute(new ServerFire(player));
 	player->SetAttackAttribute(new ServerWind(player));
-	player->transform.position = *map.startPosition.begin();
+	player->transform.position = *gameMode->GetMap()->startPosition.begin();
 
 	// ヘッダーの更新
 	header.command = HEADER::RESPONSE_LOGIN;
@@ -143,6 +142,10 @@ void MultiPlayServer::PlayerUpdate(void) {
 #endif
 	}
 	
+	// 攻撃の更新
+	gameMode->GetMap()->GetAttacks()->AllLoop();
+
+
 
 	// ロック解除
 #ifdef DEBUG_LOCKED
@@ -228,13 +231,16 @@ void MultiPlayServer::SendUpdate(void) {
 			}
 
 			// オブジェクト情報の登録
-			res.AddObjects(map.GetSkillOrbs());		// スキルオーブ
-			res.AddObjects(map.GetEnemies());		// エネミー	
-			res.AddObjects(map.GetAttacks());		// アタック
+			res.AddObjects(gameMode->GetMap()->GetSkillOrbs());		// スキルオーブ
+			res.AddObjects(gameMode->GetMap()->GetEnemies());		// エネミー	
+			res.AddObjects(gameMode->GetMap()->GetAttacks());		// アタック
 
 			// レスポンスの作成
 			sendBuff = nullptr;
 			res.CreateResponse(sendBuff, 0);
+
+			// ゲームモードのレスポンス内容の結合
+			gameMode->CreateResponse(sendBuff);
 
 			// クライアント全員に送信する
 			for (auto &kvp : clients_) {
@@ -247,9 +253,6 @@ void MultiPlayServer::SendUpdate(void) {
 				header.id = client.header.id;
 				header.command = HEADER::RESPONSE_UPDATE;
 				memcpy(&sendBuff[0], &header, sizeof(HEADER));
-
-				// ゲームモードのレスポンス内容の結合
-				gameMode->CreateResponse(sendBuff);
 
 #ifdef DEBUG_SENDLEN
 				std::cout << "SENDBUFF : " << sendBuff.Length() << std::endl;
@@ -471,7 +474,9 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	gameMode->Draw(res, offset);
 
 	// オブジェクトの描画
-	for (auto &object : objects) object.second->Loop();
+	for (auto &object : objects) {
+		object.second->Loop();
+	}
 	// プレイヤーの描画
 	for (auto &player : clients) player.second->Loop();
 
@@ -561,7 +566,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: pObject = new ClientSkillOrbMidium();
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: pObject = new ClientSkillOrbBig();
 				}
-				objects[object.id] = pObject;
+				if (pObject) objects[object.id] = pObject;
 			}
 			else {
 				auto &obj = iterator->second;

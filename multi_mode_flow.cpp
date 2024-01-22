@@ -1,6 +1,5 @@
 #include "multiplay.h"
 #include "multi_mode_flow.h"
-#include "multi_final_battle_mode.h"
 
 /***********************************************************
 	Server
@@ -11,7 +10,7 @@ MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 	switch (mode)
 	{
 	//case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeServerSide(game_);
-	//case AREA_CAPTURE: return new MultiPlayAreaCaptureModeServerSide(game_);
+	case AREA_CAPTURE: return new MultiPlayAreaCaptureModeServerSide();
 	//case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeServerSide();
 	//case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeServerSide(game_);
 	//case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResult2ModeServerSide();
@@ -49,8 +48,11 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 		gameMode_ = CreateMode(mode_);
 	}
 	else {
+		// ŽžŠÔ‚ÌXV
 		float deltaTime = (timeGetTime() - startTime) * 0.001f;
-		gameMode_->time_ = (timeGetTime() - startTime) * 0.001f;
+		gameMode_->time_ = deltaTime;
+
+
 
 		gameMode_->Update(clients);
 	}
@@ -73,7 +75,7 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 	switch (mode)
 	{
 	//case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeClientSide(game_);
-	//case AREA_CAPTURE: return new MultiPlayAreaCaptureModeClientSide(game_);
+	case AREA_CAPTURE: return new MultiPlayAreaCaptureModeClientSide();
 	//case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeClientSide();
 	//case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeClientSide(game_);
 	//case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResult2ModeClientSide();

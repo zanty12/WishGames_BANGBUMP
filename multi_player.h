@@ -20,6 +20,7 @@ private:
 
 public:
 	int skillPoint = 0;									// スキルポイント
+	int score = 0;										// スコア
 	MultiMap *map = nullptr;							// マップ
 	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;// アニメーション
 	Vector2 attackVelocity;								// 攻撃のベロシティ

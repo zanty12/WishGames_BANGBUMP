@@ -202,9 +202,6 @@
     <ClCompile Include="id.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="multi_area_capture_mode.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="multi_character_select_mode.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -242,6 +239,15 @@
       <Filter>Multiplay\src</Filter>
     </ClCompile>
     <ClCompile Include="multi_anim.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_area_capture_mode.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -327,9 +333,6 @@
     <ClInclude Include="mapmngr.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="penfloor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="scenemngr.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -384,9 +387,6 @@
     <ClInclude Include="enemy3.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="area_capture.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="attribute_type.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -427,9 +427,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="id.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="multi_area_capture_mode.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="multi_character_select_mode.h">
@@ -506,6 +503,27 @@
     </ClInclude>
     <ClInclude Include="multi_anim.h">
       <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_attack.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_movable_object.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_objenum.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="playerattack.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_area_capture_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="area_capture.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

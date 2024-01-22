@@ -9,6 +9,7 @@
 class ServerSkillOrb : public ServerGameObject {
 public:
 	int addPoint = 1;
+	WIN::Time timer;
 	
 
 	ServerSkillOrb() { };

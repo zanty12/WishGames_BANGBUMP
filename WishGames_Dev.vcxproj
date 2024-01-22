@@ -251,6 +251,7 @@
     <ClInclude Include="multi_anim.h" />
     <ClInclude Include="multi_animenum.h" />
     <ClInclude Include="multi_area_capture_mode.h" />
+    <ClInclude Include="multi_attack.h" />
     <ClInclude Include="multi_attribute.h" />
     <ClInclude Include="multi_behavior.h" />
     <ClInclude Include="multi_character_select_mode.h" />

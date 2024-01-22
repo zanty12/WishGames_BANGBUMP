@@ -102,7 +102,7 @@ void ServerWind::Attack(void) {
 }
 
 void ClientWind::Move(void) {
-    float localScale = 100;
+    float localScale = 200;
 
 
     Vector2 pos = player->transform.position;
@@ -112,7 +112,7 @@ void ClientWind::Move(void) {
     moveAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 }
 void ClientWind::Attack(void) {
-    float localScale = 100;
+    float localScale = 200;
 
 
     Vector2 pos = player->transform.position;
@@ -182,9 +182,12 @@ void ClientFire::Move(void) {
     Vector2 direction = player->velocity;
     float localScale = 100;
 
-
-    for (Animator &anim : attackAnims) {
-        anim.anim.Draw(anim.pos - MultiPlayClient::offset, anim.rot, anim.scl, Color(1.0f, 1.0f, 1.0f, 0.5f));
+    // 描画する
+    float denominator = moveAnims.size();
+    float numerator = denominator * 0.5f;
+    for (Animator &anim : moveAnims) {
+        anim.anim.Draw(anim.pos - MultiPlayClient::offset, anim.rot, anim.scl, Color(1.0f, 1.0f, 1.0f, 1.0f - numerator / denominator));
+        numerator += 0.5f;
     }
 
     // 時間を計測する
@@ -192,16 +195,24 @@ void ClientFire::Move(void) {
     DWORD deltaTime = currentTime - startTime;
 
     // アニメーションを作成する
-    if (500 < deltaTime) {
-        Vector2 pos = player->transform.position + -direction.Normalize() * localScale;
-        float rot = atan2f(direction.y, direction.x);
+    if (25 < deltaTime) {
+        // 計測をリセットする
+        startTime = currentTime;
+
+        // 炎の位置をずらす
+        direction += direction.Normal() * MATH::Rand(-0.25f, 0.25f);
+
+        // アニメーション生成
+        float distance = 50.0f;
+        Vector2 pos = player->transform.position + -direction.Normalize() * distance;
+        float rot = atan2f(direction.y, -direction.x);
         Vector2 scl = Vector2::One * localScale;
         Color col = Color::White;
-        attackAnims.push_back({ pos, rot, scl, moveAnim });
+        moveAnims.push_front({ pos, rot, scl, moveAnim });
 
         // 要素が多いなら削除
-        if (10 < attackAnims.size()) {
-            attackAnims.pop_front();
+        if (10 < moveAnims.size()) {
+            moveAnims.pop_back();
         }
     }
 }

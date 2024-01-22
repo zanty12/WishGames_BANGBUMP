@@ -4,6 +4,7 @@
 #include "multi_anim.h"
 #include "multi_player.h"
 #include "multi_object.h"
+#include "multi_attack.h"
 #include "attribute_type.h"
 
 /*******************************************************
@@ -36,28 +37,7 @@ public:
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	static ClientAttribute *Create(ClientPlayer *player, ATTRIBUTE_TYPE type);
 };
-class ServerAttack : public ServerGameObject {
-private:
-	ServerGameObject *self = nullptr;
 
-public:
-	int damage = 0;
-	int drop = 0;
-
-
-
-public:
-	ServerAttack(int damage, int drop, ServerGameObject *self) : self(self), damage(damage), drop(drop) { }
-
-	const ServerGameObject *GetSelf(void) { return self; }
-	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
-};
-class ClientAttack : public ClientGameObject {
-public:
-	ClientAttack(Transform transform) : ClientGameObject(transform) { }
-
-	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
-};
 
 
 /*******************************************************
@@ -100,7 +80,7 @@ private:
 	ServerGameObject *self = nullptr;
 
 public:
-	ServerWindAttack(ServerGameObject* self) : ServerAttack(1, 1, self) { }
+	ServerWindAttack(ServerGameObject* self) : ServerAttack(1, 1, 100, self) { }
 
 	const ServerGameObject *GetSelf(void) { return self; }
 
@@ -159,8 +139,8 @@ public:
 		moveTexNo = LoadTexture("data/texture/Effect/effect_fire_move.png");
 		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
 
-		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25);
-		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29);
+		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true, 0, 25);
+		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true, 0, 25);
 		startTime = timeGetTime();
 	}
 
@@ -174,7 +154,7 @@ private:
 	ServerGameObject *self = nullptr;
 
 public:
-	ServerFireAttack(ServerGameObject *self) : ServerAttack(1, 1, self) { }
+	ServerFireAttack(ServerGameObject *self) : ServerAttack(1, 1, 50, self) { }
 
 	const ServerGameObject *GetSelf(void) { return self; }
 

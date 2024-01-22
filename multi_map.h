@@ -17,6 +17,7 @@ private:
 	MultiBehavior *skillOrbs;
 	MultiBehavior *enemies;
 	MultiBehavior *attacks;
+	std::list<Vector2> areaCaptures;
 	std::map<int, int> texNumbers;
 
 public:
@@ -43,6 +44,7 @@ public:
 	MultiBehavior *GetSkillOrbs(void) { return skillOrbs; }
 	MultiBehavior *GetEnemies(void) { return enemies; }
 	MultiBehavior *GetAttacks(void) { return attacks; }
+	std::list<Vector2> GetAreaCaptures(void) { return areaCaptures; }
 
 private:
 };

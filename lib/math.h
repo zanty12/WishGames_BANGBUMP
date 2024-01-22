@@ -49,14 +49,14 @@ namespace MATH {
 	*	乗算
 	------------------------------------------------------------------------------*/
 	// 2乗
-	template<class Unit>
-	Unit Pow(Unit value) { return value * value; }
+	template<class T>
+	T Pow(T value) { return value * value; }
 	// 3乗
-	template<class Unit>
-	Unit Cubic(Unit value) { return value * value * value; }
+	template<class T>
+	T Cubic(T value) { return value * value * value; }
 	// 4乗
-	template<class Unit>
-	Unit Quartic(Unit value) { return value * value * value * value; }
+	template<class T>
+	T Quartic(T value) { return value * value * value * value; }
 
 
 
@@ -70,15 +70,17 @@ namespace MATH {
 	// 四捨五入
 	float Round(float value);
 	// 絶対値
-	float Abs(float value);
+	template<class T>
+	T Abs(T value) { return 0 <= value ? value : -value; }
 	// 最大値
-	float Max(float a, float b);
+	template<class T>
+	T Max(T a, T b) { return a < b ? b : a; }
 	// 最小値
-	float Min(float a, float b);
-	// 最大値
-	int Max(int a, int b);
-	// 最小値
-	int Min(int a, int b);
+	template<class T>
+	T Min(T a, T b) { return a < b ? a : b; }
+	// 範囲値
+	template<class T>
+	T Range(T a, T b, T t) { return a < t && t < b ? t : t <= a ? a : b; }
 
 
 
@@ -113,9 +115,14 @@ namespace MATH {
 	*	数学関数
 	------------------------------------------------------------------------------*/
 	// 反復
-	float Repetition(float t);
+	float Repetition(float value);
 	// 往復
-	float repetition(float t);
+	float RoundTrip(float value);
+	// スパン (span倍 <= t < span + 1倍より小さい spanの倍数の値を調べる)
+	float Span(int t, float span);
+	// スパン (span倍 <= t < span + 1倍より小さい spanの倍数の値を調べる)
+	int Span(int t, int span);
+
 }
 
 #endif

@@ -28,7 +28,10 @@ private:
 
 public:
 	MultiPlayFlowServerSide(MultiPlayServer* game) : game_(game) {
-		gameMode_ = CreateMode(FINAL_BATTLE);
+		gameMode_ = CreateMode(AREA_CAPTURE);
+	}
+	~MultiPlayFlowServerSide() {
+		if (gameMode_) delete gameMode_;
 	}
 
 	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);

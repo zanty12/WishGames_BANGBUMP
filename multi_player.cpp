@@ -8,6 +8,16 @@ void ServerPlayer::Loop(void) {
 	if (moveAttribute) moveAttribute->Move();
 	if (attackAttribute) attackAttribute->Attack();
 
+
+	for (auto &attackObject : *map->GetAttacks()) {
+		auto attack = attackObject.Cast<ServerAttack>();
+
+		// プレイヤーと判定
+		if (attack->radius + radius >= Vector2::Distance(attack->transform.position, transform.position)) {
+			Damage(attack);
+		}
+	}
+
 	transform.position += velocity;
 }
 
@@ -20,35 +30,35 @@ void ServerPlayer::Damage(ServerAttack *attack) {
 
 void ServerPlayer::SkillOrbDrop(int drop) {
 	// マップがないなら終了
-	if (!map) return;	
+	if (!map) return;
 
 	while (0 < drop) {
 		// ドロップする値
 		int tmpDrop = 0;
 
-		// スキルポイント（大）
-		if (skillPoint <= ServerSkillOrbBig::AddPoint) {
+		// スキルポイントをドロップ（大）
+		if (skillPoint >= ServerSkillOrbBig::AddPoint) {
 			map->GetSkillOrbs()->Add<ServerSkillOrbBig>(Transform(transform.position));
 			tmpDrop = ServerSkillOrbBig::AddPoint;
 		}
-		// スキルポイント（中）
-		else if (skillPoint <= ServerSkillOrbMidium::AddPoint) {
+		// スキルポイントをドロップ（中）
+		else if (skillPoint >= ServerSkillOrbMidium::AddPoint) {
 			map->GetSkillOrbs()->Add<ServerSkillOrbMidium>(Transform(transform.position));
 			tmpDrop = ServerSkillOrbMidium::AddPoint;
 		}
-		// スキルポイント（小）
-		else if (skillPoint <= ServerSkillOrbSmall::AddPoint) {
+		// スキルポイントをドロップ（小）
+		else if (skillPoint >= ServerSkillOrbSmall::AddPoint) {
 			map->GetSkillOrbs()->Add<ServerSkillOrbSmall>(Transform(transform.position));
 			tmpDrop = ServerSkillOrbSmall::AddPoint;
 		}
 		else return;
 
-		// ドロップする
-		if (skillPoint <= tmpDrop && drop <= tmpDrop) {
-			skillPoint -= tmpDrop;
-			drop -= tmpDrop;
-		}
-		else return;
+		// スキルポイントを減らす
+		skillPoint -= tmpDrop;
+		drop -= tmpDrop;
+
+		// 最低値0にする
+		if (skillPoint < 0) skillPoint = 0;
 	}
 
 }

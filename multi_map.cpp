@@ -42,6 +42,9 @@ void MultiMap::Release(void) {
 	enemies = nullptr;
 	skillOrbs = nullptr;
 	attacks = nullptr;
+
+	// 占領データ削除
+	areaCaptures.clear();
 }
 
 
@@ -80,6 +83,8 @@ void MultiMap::Load(std::string path)
 		int x = 0;
 		while (std::getline(ss2, item2, ','))
 		{
+			Vector2 position = Vector2(x, y) * cellSize;
+
 			//if got nothing
 			if (item2 == "")
 			{
@@ -88,15 +93,15 @@ void MultiMap::Load(std::string path)
 			};
 			// start spawn
 			if (item2 == "S" || item2 == "s") {
-				startPosition.push_back(Vector2(x, y) * cellSize);
+				startPosition.push_back(position);
 			}
 			// map
 			else {
 				int id = stoi(item2);
 				// スキルオーブの登録
-				if (id == MAP_READ_ORB_SMALL) skillOrbs->Add<ServerSkillOrbSmall>(Transform(Vector2(x, y) * cellSize));
-				else if (id == MAP_READ_ORB_MID) skillOrbs->Add<ServerSkillOrbMidium>(Transform(Vector2(x, y) * cellSize));
-				else if (id == MAP_READ_ORB_BIG) skillOrbs->Add<ServerSkillOrbBig>(Transform(Vector2(x, y) * cellSize));
+				if (id == MAP_READ_ORB_SMALL) skillOrbs->Add<ServerSkillOrbSmall>(Transform(position));
+				else if (id == MAP_READ_ORB_MID) skillOrbs->Add<ServerSkillOrbMidium>(Transform(position));
+				else if (id == MAP_READ_ORB_BIG) skillOrbs->Add<ServerSkillOrbBig>(Transform(position));
 				// エネミーの登録
 				else if (id == MAP_READ_KOOPA ||
 					id == MAP_READ_HAMMERBRO ||
@@ -105,7 +110,7 @@ void MultiMap::Load(std::string path)
 				}
 				// エリアキャプチャの登録
 				else if (id == MAP_READ_MULTI_AREA_CAPTURE) {
-					// 今はなし
+					areaCaptures.push_back(position);
 				}
 				// 登録
 				else {

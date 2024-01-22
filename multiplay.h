@@ -31,7 +31,6 @@ private:
 	MultiPlayFlowServerSide *gameMode = nullptr;			// ゲームモード
 	StorageLock	lock_;										// リストロック
 	bool isFinish = false;									// 終了状態
-	MultiMap map;											// マップ
 
 public:
 	static std::map<int, CLIENT_DATA_SERVER_SIDE> clients_;	// クライアントデータ
@@ -45,7 +44,6 @@ public:
 		// 解放
 		sendBuff.Release();
 		recvBuff.Release();
-		map.Release();
 
 		// 登録解除
 		AllUnregister();
