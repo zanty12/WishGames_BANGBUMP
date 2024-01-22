@@ -29,6 +29,8 @@ protected:
 	IDWriteTextFormat* text_format_;
 	ID2D1SolidColorBrush* brush_;
 
+	int change_scene_;		//シーン遷移フラグ
+
 
 private:
 	constexpr static float LoD_threshold_ = 2500.0f;
@@ -53,4 +55,8 @@ public:
 	void AddCamera(Camera *camera) { camera_ = camera; }
 	MapMngr *GetMapMngr(void) { return mapmngr_; }
 	static bool UpdateLoD(const Vector2 pos);
+	SceneMngr* GetSceneMngr(void) { return scene_mngr_; }
+	void SetChangeScene(int change_scene) { change_scene_ = change_scene; }
+	int GetChangeScene(void) const { return change_scene_; }	//シーンチェンジのフラグ
+
 };

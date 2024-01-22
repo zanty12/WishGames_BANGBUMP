@@ -17,7 +17,6 @@ typedef enum {
     MAP_READ_NONE, ///< 空のセルを表します。
     MAP_READ_WALL, ///< 壁セルを表します。
     MAP_READ_FLOOR, ///< 床セルを表します。
-    MAP_READ_PENFLOOR, ///< 貫通可能な床セルを表します。
     MAP_READ_CLOUD, ///< 雲セルを表します。
     MAP_READ_BLOCK, ///< ブロックセルを表します。
     MAP_READ_ORB_SMALL, ///< 小スキル玉セルを表します。

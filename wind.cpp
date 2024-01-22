@@ -10,7 +10,7 @@ bool Wind::StickTrigger(Vector2 stick, Vector2 previousStick)
     float stickDistance = stick.Distance();
     float preStickDistance = previousStick.Distance();
 
-    if (rotInputJudgeMin < MATH::Abs(Vector2::Cross(stick, previousStick)) &&
+    if (rotInputJudgeMin < MATH::Abs(Vector2::Cross(stick * 10, previousStick * 10)) &&
         0.8f < stickDistance * preStickDistance)
     {
         return true;
@@ -66,9 +66,12 @@ void Wind::Action(void)
 
     // 回転のスピードを取得
     float rotSpeed = Vector2::Cross(stick, previousStick);
-
+    std::cout<<StickTrigger(stick, previousStick);
+    attack_filter_.PassSignal(StickTrigger(stick, previousStick));
+    int attack = attack_filter_.PredictNext();
+    std::cout<<attack<<std::endl;
     // 攻撃中
-    if (StickTrigger(stick, previousStick))
+    if (attack)
     {
         if (attack_ == nullptr)
             attack_ = new WindAttack(this);
@@ -91,8 +94,8 @@ void Wind::DebugMenu()
 }
 
 WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPlayer()->GetPos(), 0.0f,
-                                           LoadTexture(Asset::GetAsset(wind_attack)), Vector2::Zero)
+                                           LoadTexture(Asset::GetAsset(wind_attack)), Vector2::Zero),PlayerAttack(10000)
 {
     SetScale(size_);
-    SetType(OBJ_ATTACK);
+    SetType(OBJ_VOID);
 }

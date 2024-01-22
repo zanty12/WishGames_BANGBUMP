@@ -2,6 +2,7 @@
 #include "bullet.h"
 #include "Cell.h"
 #include "MapMngr.h"
+#include "playerattack.h"
 #include "lib/collider2d.h"
 #include "time.h"
 
@@ -17,7 +18,7 @@ void Enemy2::Update()
     if (GetHp() <= 0)
     {
         GameObject::Discard();
-        Die();
+        Discard();
         DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_MID);
     }
 
@@ -28,6 +29,18 @@ void Enemy2::Update()
     for (auto collision : collisions)
     {
         OBJECT_TYPE type = collision->GetParent()->GetType();
+        switch (type)
+        {
+        case OBJ_ATTACK:
+            {
+                PlayerAttack* attack = dynamic_cast<PlayerAttack*>(collision->GetParent());
+                if(attack != nullptr)
+                    SetHp(GetHp() - attack->GetDamage());
+            }
+            break;
+            default:
+                break;
+        }
     }
 
     GetAnimator()->SetIsAnim(true);
@@ -49,7 +62,6 @@ void Enemy2::Update()
             {
                 close_player = player;
                 Spos_old = Spos_now;
-
             }
         }
     }
@@ -64,19 +76,15 @@ void Enemy2::Update()
             Vector2 distance = close_player->GetPos() - startPosition;
             bullet_pos = distance.Normalize();
             bullet->SetVel(distance.Normalize() * (96.0f * 2) * dt);
-            bullet->SetPos(GetPos() + (bullet_pos * SIZE_ * 2.5f));
+            bullet->SetPos(startPosition + (bullet_pos * SIZE_ * 1.5f));
             GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(bullet);
         }
     }
-
-
 }
-
 
 
 bool CheckEnemy2Length(Vector2 a, Vector2 b, float len)
 {
-
     if (Vector2::Distance(a, b) < len)
     {
         return true;
@@ -84,4 +92,3 @@ bool CheckEnemy2Length(Vector2 a, Vector2 b, float len)
 
     return false;
 }
-

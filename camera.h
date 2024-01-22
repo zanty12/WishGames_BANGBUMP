@@ -1,4 +1,5 @@
 #pragma once
+#include "gameobject.h"
 #include "playerstate.h"
 #include "graphical.h"
 #include "sprite.h"
@@ -21,6 +22,7 @@ private:
     float bg_back_y_ = 1.0f;
     int bg_front_tex_;
     float bg_front_y_ = 1.0f;
+    float follow_speed_ = 5 * GameObject::SIZE_;
 
 public:
     Camera() = delete;

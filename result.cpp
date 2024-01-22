@@ -15,10 +15,10 @@ Result::~Result()
 
 void Result::Update()
 {
-	if (Input::GetKeyDown(0, Input::North))	//Aボタン
-	{
-		scene_mngr_->ChangeScene(SCENE_TITLE);
-	}
+	//if (Input::GetKeyDown(0, Input::North))	//Aボタン
+	//{
+	//	scene_mngr_->ChangeScene(SCENE_TITLE);
+	//}
 }
 
 void Result::Draw()

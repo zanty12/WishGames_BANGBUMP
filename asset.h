@@ -17,6 +17,7 @@ enum textures
     //attibute_attack
     fire_attack,
     wind_attack,
+    water_attack,
     //enemy
     //block
     skill_orb,
@@ -29,12 +30,20 @@ enum textures
     bg_stage3_back,
     //UI
     timer,
+    thunder_indicator,
 };
 
 enum sounds
 {
     //bgm
     //se
+    SE_1,
+    SE_2,
+    SE_3,
+    SE_4,
+    SE_5,
+    SE_6,
+
 };
 
 enum maps

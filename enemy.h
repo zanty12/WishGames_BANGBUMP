@@ -18,9 +18,11 @@ enum ENEMY_TYPE
 class Enemy : public MovableObj
 {
 private:
+    static const float BLLINKING_MAX_TIME_;	//点滅時間
     EnemyMngr* enemy_mngr_;
     ENEMY_TYPE enemy_type_;
-    bool dead = false; //死んでいるかどうか
+    float flash_time_;			//点滅間隔
+    float blinking_time_;	//点滅の経過時間
     int atk_;
     int hp_;
 public:
@@ -32,10 +34,7 @@ public:
     virtual ~Enemy() = default;
     virtual void Update() = 0;
     EnemyMngr* GetEnemyMngr() const { return enemy_mngr_; }
-    bool IsDead() const { return dead; }
-    void Die(){ this->dead = true; }
 
-    //virtual SkillOrb* DropSkillOrb() = 0;
 
     void DropSkillOrb(Vector2 pos, SKILLORB_SIZE_TYPE sizeType);
 
@@ -47,5 +46,7 @@ public:
     void SetHp(int hp) { hp_ = hp; }
     //HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
     void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
+
+    void blinking(GameObject* obj);
 
 };

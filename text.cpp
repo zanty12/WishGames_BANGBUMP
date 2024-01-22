@@ -23,8 +23,8 @@ Color Text::font_color_ = Color(0.0f, 0.0f, 0.0f, 1.0f);
 HRESULT Text::CreateResources()
 {
     HRESULT hr = S_OK;
-    DX::DX11::Renderer renderer = Graphical::GetRenderer();
-    IDXGISwapChain* swapChain = renderer.GetSwapchain();
+    DX::DX11::Renderer *renderer = &Graphical::GetRenderer();
+    IDXGISwapChain* swapChain = renderer->GetSwapchain();
 
     // Direct2D,DirectWriteの初期化
     hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &pD2DFactory_);
