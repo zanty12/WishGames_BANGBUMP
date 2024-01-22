@@ -263,7 +263,9 @@
     <ClInclude Include="multi_map.h" />
     <ClInclude Include="multi_mode.h" />
     <ClInclude Include="multi_mode_flow.h" />
+    <ClInclude Include="multi_movable_object.h" />
     <ClInclude Include="multi_object.h" />
+    <ClInclude Include="multi_objenum.h" />
     <ClInclude Include="multi_obstacle_race_mode.h" />
     <ClInclude Include="multi_player.h" />
     <ClInclude Include="multi_skillorb.h" />

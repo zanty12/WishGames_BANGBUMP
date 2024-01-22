@@ -40,5 +40,5 @@ public:
 	// プレイヤーのアニメーションデータ
 	static MultiAnimator GetPlayerInitialize(int playerIdx, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack);
 	// プレイヤーのアニメーションデータ
-	static void GetPlayer(ANIMATION_TYPE animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack, MultiAnimator* anim);
+	static void GetPlayer(MULTI_ANIMATION_TYPE animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack, MultiAnimator* anim);
 };

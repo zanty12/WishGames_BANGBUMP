@@ -38,8 +38,8 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	float rot = 0.0f;
 	Vector2 vel = Vector2::Zero;
 	ServerPlayer *player = new ServerPlayer();
-	player->SetMoveAttribute(new MultiFire(player));
-	player->SetAttackAttribute(new MultiWind(player));
+	player->SetMoveAttribute(new ServerFire(player));
+	player->SetAttackAttribute(new ServerWind(player));
 	player->transform.position = *map.startPosition.begin();
 
 	// ヘッダーの更新
@@ -222,24 +222,15 @@ void MultiPlayServer::SendUpdate(void) {
 					client.header.id,
 					player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
 					player->animType,
-					player->transform.position, player->velocity,
+					player->transform.position, player->velocity, player->attackVelocity,
 					0, player->skillPoint, 0}
 				);
 			}
 
 			// オブジェクト情報の登録
-			for (auto &instance : *map.GetSkillOrbs()) {
-				auto skillorb = instance.Cast<ServerSkillOrb>();
-				int id = skillorb->id;
-				Vector2 position = skillorb->transform.position;
-				res.objects.push_back({
-					id,										// ID
-					OBJECT_DATA_CLIENT_SIDE::SKILL_POINT,	// tag
-					0,										// animation
-					position								// pos
-					}
-				);
-			}
+			res.AddObjects(map.GetSkillOrbs());		// スキルオーブ
+			res.AddObjects(map.GetEnemies());		// エネミー	
+			res.AddObjects(map.GetAttacks());		// アタック
 
 			// レスポンスの作成
 			sendBuff = nullptr;
@@ -393,10 +384,10 @@ void MultiPlayServer::OpenTerminal(void) {
 
 
 
-Vector2 MultiPlayClient::offset;
 /*******************************************************
   Client
 ********************************************************/
+Vector2 MultiPlayClient::offset;
 MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"))/*, anim(Animator(&playerObject, 2, true, 1, 1, 1))*/ {
 	WSAData data;
 	Startup(v2_2, data);
@@ -551,9 +542,8 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 				auto &player = iterator->second;
 				player->isShow = true;
 				player->transform.position = client.position;
-				player->velocity = client.velocity;
-				player->moveAttribute = client.moveAttributeType;
-				player->attackAttribute = client.attackAttributeType;
+				player->velocity = client.moveVelocity;
+				player->attackVelocity = client.attackVelocity;
 				player->animType = client.animType;
 			}			
 		}
@@ -567,7 +557,9 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 			if (iterator == objects.end()) {
 				ClientGameObject *pObject = nullptr;
 				switch (object.tag) {
-				case OBJECT_DATA_CLIENT_SIDE::SKILL_POINT: pObject = new ClientSkillOrb();
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_SMALL: pObject = new ClientSkillOrbSmall();
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: pObject = new ClientSkillOrbMidium();
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: pObject = new ClientSkillOrbBig();
 				}
 				objects[object.id] = pObject;
 			}

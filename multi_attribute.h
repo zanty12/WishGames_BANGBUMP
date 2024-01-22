@@ -1,37 +1,69 @@
 #pragma once
+#include <list>
 #include "lib/vector.h"
+#include "multi_anim.h"
 #include "multi_player.h"
+#include "multi_object.h"
 #include "attribute_type.h"
 
+/*******************************************************
+  属性
+********************************************************/
 class ServerPlayer;
-class MultiAttribute {
+class ClientPlayer;
+class ServerAttribute {
 protected:
 	ServerPlayer *player = nullptr;
 
 public:
-	MultiAttribute(ServerPlayer* player) : player(player) { }
+	ServerAttribute(ServerPlayer* player) : player(player) { }
 	virtual bool StickTrigger(Vector2 stick, Vector2 previousStick) = 0;
 	virtual void Move(void) = 0;
 	virtual void Attack(void) = 0;
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
+	static ServerAttribute *Create(ServerPlayer *player, ATTRIBUTE_TYPE type);
 };
+class ClientAttribute {
+protected:
+	ClientPlayer *player = nullptr;
+	MultiAnimator attackAnim;
+	MultiAnimator moveAnim;
 
-class MultiAttack : public ServerGameObject {
+public:
+	ClientAttribute(ClientPlayer *player) : player(player) { }
+	virtual void Move(void) = 0;
+	virtual void Attack(void) = 0;
+	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
+	static ClientAttribute *Create(ClientPlayer *player, ATTRIBUTE_TYPE type);
+};
+class ServerAttack : public ServerGameObject {
 private:
 	ServerGameObject *self = nullptr;
 
 public:
-	MultiAttack(ServerGameObject *self) : self(self) { }
+	int damage = 0;
+	int drop = 0;
+
+
+
+public:
+	ServerAttack(int damage, int drop, ServerGameObject *self) : self(self), damage(damage), drop(drop) { }
 
 	const ServerGameObject *GetSelf(void) { return self; }
+	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
 };
+class ClientAttack : public ClientGameObject {
+public:
+	ClientAttack(Transform transform) : ClientGameObject(transform) { }
 
+	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
+};
 
 
 /*******************************************************
   Wind
 ********************************************************/
-class MultiWind : public MultiAttribute {
+class ServerWind : public ServerAttribute {
 private:
 	float power_ = 0.0f;
 	const float rotInputFriction = 0.5f; // まわす加速度の摩擦定数
@@ -42,24 +74,43 @@ private:
 
 	float maxPower_ = 10;
 	float friction_ = 0.8f;
-	MultiAttack *attack_ = nullptr;
+	ServerAttack *attack_ = nullptr;
 
 public:
-	MultiWind(ServerPlayer *player) : MultiAttribute(player) { }
+	ServerWind(ServerPlayer *player) : ServerAttribute(player) { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;
 	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_WIND; };
 };
+class ClientWind : public ClientAttribute {
+public:
+	ClientWind(ClientPlayer *player) : ClientAttribute(player) {
+		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 29);
+		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 25);
+	}
 
-class MultiWindAttack : public MultiAttack {
+	void Move(void) override;
+	void Attack(void) override;
+	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_WIND; };
+};
+
+class ServerWindAttack : public ServerAttack {
 private:
 	ServerGameObject *self = nullptr;
 
 public:
-	MultiWindAttack(ServerGameObject* self) : MultiAttack(self) { }
+	ServerWindAttack(ServerGameObject* self) : ServerAttack(1, 1, self) { }
 
 	const ServerGameObject *GetSelf(void) { return self; }
+
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
+};
+class ClientWindAttack : public ClientAttack {
+public:
+	void Loop(void) override;
+
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
 };
 
 
@@ -68,7 +119,7 @@ public:
 /*******************************************************
   Fire
 ********************************************************/
-class MultiFire : public MultiAttribute {
+class ServerFire : public ServerAttribute {
 private:
 	float friction = 0.99f;				// 摩擦係数
 	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
@@ -76,22 +127,56 @@ private:
 	float judgeScale = 0.2f;			// スティックの傾けたときに判定する最小値
 	Vector2 velocity;					// 向き
 
-	MultiAttack *attack_ = nullptr;
+	ServerAttack *attack_ = nullptr;
 
 public:
-	MultiFire(ServerPlayer *player) : MultiAttribute(player) { }
+	ServerFire(ServerPlayer *player) : ServerAttribute(player) { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;
 	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
 };
+class ClientFire : public ClientAttribute {
+private:
+	static const int ANIM_NUM = 50;
+	static const int FRAME_NUM = 24;
+	struct Animator {
+		Vector2 pos;
+		float rot = 0.0f;
+		Vector2 scl;
+		MultiAnimator anim;
+	};
+	int moveTexNo = -1;
+	int attackTexNo = -1;
+	std::list<Animator> moveAnims;
+	std::list<Animator> attackAnims;
+	DWORD startTime = 0;
 
-class MultiFireAttack : public MultiAttack {
+public:
+
+
+	ClientFire(ClientPlayer *player) : ClientAttribute(player) {
+		moveTexNo = LoadTexture("data/texture/Effect/effect_fire_move.png");
+		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
+
+		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25);
+		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29);
+		startTime = timeGetTime();
+	}
+
+	void Move(void) override;
+	void Attack(void) override;
+	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
+};
+
+class ServerFireAttack : public ServerAttack {
 private:
 	ServerGameObject *self = nullptr;
 
 public:
-	MultiFireAttack(ServerGameObject *self) : MultiAttack(self) { }
+	ServerFireAttack(ServerGameObject *self) : ServerAttack(1, 1, self) { }
 
 	const ServerGameObject *GetSelf(void) { return self; }
+
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_FIRE; }
 };

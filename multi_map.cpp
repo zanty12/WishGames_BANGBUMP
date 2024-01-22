@@ -12,7 +12,6 @@
 void MultiMap::Initialize() {
 	texNumbers[MAP_READ_WALL] = LoadTexture("data/texture/wall.png");
 	texNumbers[MAP_READ_FLOOR] = LoadTexture("data/texture/wall.png");
-	texNumbers[MAP_READ_PENFLOOR] = LoadTexture("data/texture/penfloor.png");
 	texNumbers[MAP_READ_CLOUD] = LoadTexture("data/texture/cloud.png");
 	texNumbers[MAP_READ_BLOCK] = LoadTexture("data/texture/wall.png");
 	texNumbers[MAP_READ_ORB_SMALL] = LoadTexture(Asset::textures_.at(textures::skill_orb));
@@ -95,11 +94,9 @@ void MultiMap::Load(std::string path)
 			else {
 				int id = stoi(item2);
 				// スキルオーブの登録
-				if (id == MAP_READ_ORB_SMALL ||
-					id == MAP_READ_ORB_MID ||
-					id == MAP_READ_ORB_BIG) {
-					skillOrbs->Add<ServerSkillOrb>(Transform(Vector2(x, y) * cellSize));
-				}
+				if (id == MAP_READ_ORB_SMALL) skillOrbs->Add<ServerSkillOrbSmall>(Transform(Vector2(x, y) * cellSize));
+				else if (id == MAP_READ_ORB_MID) skillOrbs->Add<ServerSkillOrbMidium>(Transform(Vector2(x, y) * cellSize));
+				else if (id == MAP_READ_ORB_BIG) skillOrbs->Add<ServerSkillOrbBig>(Transform(Vector2(x, y) * cellSize));
 				// エネミーの登録
 				else if (id == MAP_READ_KOOPA ||
 					id == MAP_READ_HAMMERBRO ||

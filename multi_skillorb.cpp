@@ -13,16 +13,16 @@ void ServerSkillOrb::Loop(void) {
 
 		if (distance <= radius + player->radius) {
 			auto &player = kvp.second.player_;
-			player->skillPoint++;
+			player->skillPoint += addPoint;
 			Destroy();
 		}
 	}
 }
 
 
-ClientSkillOrb::ClientSkillOrb() {
+ClientSkillOrb::ClientSkillOrb(Vector2 scale) {
 	texNo = LoadTexture(Asset::textures_.at(textures::skill_orb));
-	transform.scale = Vector2::One * 50;
+	transform.scale = scale;
 }
 
 void ClientSkillOrb::Loop(void) {

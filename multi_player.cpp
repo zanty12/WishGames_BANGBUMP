@@ -2,6 +2,7 @@
 #include "xinput.h"
 #include "sprite.h"
 #include "multiplay.h"
+#include "multi_skillorb.h"
 
 void ServerPlayer::Loop(void) {
 	if (moveAttribute) moveAttribute->Move();
@@ -10,11 +11,73 @@ void ServerPlayer::Loop(void) {
 	transform.position += velocity;
 }
 
+void ServerPlayer::Damage(ServerAttack *attack) {
+	// 攻撃者が自分なら終了
+	if (attack->GetSelf() == this) return;
 
+	SkillOrbDrop(attack->drop);
+}
+
+void ServerPlayer::SkillOrbDrop(int drop) {
+	// マップがないなら終了
+	if (!map) return;	
+
+	while (0 < drop) {
+		// ドロップする値
+		int tmpDrop = 0;
+
+		// スキルポイント（大）
+		if (skillPoint <= ServerSkillOrbBig::AddPoint) {
+			map->GetSkillOrbs()->Add<ServerSkillOrbBig>(Transform(transform.position));
+			tmpDrop = ServerSkillOrbBig::AddPoint;
+		}
+		// スキルポイント（中）
+		else if (skillPoint <= ServerSkillOrbMidium::AddPoint) {
+			map->GetSkillOrbs()->Add<ServerSkillOrbMidium>(Transform(transform.position));
+			tmpDrop = ServerSkillOrbMidium::AddPoint;
+		}
+		// スキルポイント（小）
+		else if (skillPoint <= ServerSkillOrbSmall::AddPoint) {
+			map->GetSkillOrbs()->Add<ServerSkillOrbSmall>(Transform(transform.position));
+			tmpDrop = ServerSkillOrbSmall::AddPoint;
+		}
+		else return;
+
+		// ドロップする
+		if (skillPoint <= tmpDrop && drop <= tmpDrop) {
+			skillPoint -= tmpDrop;
+			drop -= tmpDrop;
+		}
+		else return;
+	}
+
+}
+
+
+
+ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform) :
+	moveAttribute(ClientAttribute::Create(this, moveAttributeType)), 
+	attackAttribute(ClientAttribute::Create(this, attackAttributeType)) ,
+	ClientMovableGameObject(transform) {	
+	anim = MultiAnimator::GetPlayerInitialize(0, moveAttribute->GetAttribute(), attackAttribute->GetAttribute());
+}
 
 void ClientPlayer::Loop(void) {
+	// 属性がないなら消す
+	if (!moveAttribute || !attackAttribute) return;
+
+
+	// 移動アニメーション
+	if (animType == ANIMATION_TYPE_MOVE) {
+		moveAttribute->Move();
+	}
+	// 攻撃アニメーション
+	if (animType == ANIMATION_TYPE_ATTACK) {
+		attackAttribute->Attack();
+	}
+
 	// アニメーションが切り替わった瞬間、アニメーションする位置を更新する
-	if(preAnimType != animType) MultiAnimator::GetPlayer(animType, moveAttribute, attackAttribute, &anim);
+	if (preAnimType != animType) MultiAnimator::GetPlayer(animType, moveAttribute->GetAttribute(), attackAttribute->GetAttribute(), &anim);
 	
 	if (0.0 < velocity.x) isReverseX = true;
 	else if (velocity.x < 0.0f) isReverseX = false;
@@ -25,3 +88,4 @@ void ClientPlayer::Loop(void) {
 	// アニメーションタイプの更新
 	preAnimType = animType;
 }
+

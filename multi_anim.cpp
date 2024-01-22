@@ -82,7 +82,7 @@ MultiAnimator MultiAnimator::GetPlayerInitialize(int playerIdx, ATTRIBUTE_TYPE m
 	return MultiAnimator(LoadTexture(path.str()), width, height, begin, end, true, begin, end);
 }
 
-void MultiAnimator::GetPlayer(ANIMATION_TYPE animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack, MultiAnimator* anim) {
+void MultiAnimator::GetPlayer(MULTI_ANIMATION_TYPE animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack, MultiAnimator* anim) {
 	if (anim == nullptr) return;
 	// IDLE
 	if (animType == ANIMATION_TYPE_IDEL) {

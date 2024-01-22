@@ -1,8 +1,9 @@
 #pragma once
 #include "multi_transform.h"
 #include "multi_behavior.h"
+#include "multi_objenum.h"
 
-
+class MultiMap;
 class ServerGameObject : public MultiBehavior {
 public:
 	static int MAX_ID;
@@ -12,9 +13,9 @@ public:
 	float radius = 10.0f;
 	int id = MAX_ID++;
 
-
 	ServerGameObject() = default;
 	ServerGameObject(Transform transform) : transform(transform) { }
+	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
 };
 
 class ClientGameObject : public MultiBehavior {
@@ -28,5 +29,5 @@ public:
 
 
 	ClientGameObject() = default;
-	ClientGameObject(Transform transform) : transform(transform) { }
+	ClientGameObject(Transform transform) : transform(transform) { };
 };

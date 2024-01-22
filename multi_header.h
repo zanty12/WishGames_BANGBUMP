@@ -2,6 +2,7 @@
 #include "lib/network.h"
 #include "multi_player.h"
 #include "multi_animenum.h"
+#include "multi_objenum.h"
 #include "attribute_type.h"
 #include "storage.h"
 #include "xinput.h"
@@ -47,9 +48,10 @@ struct CLIENT_DATA_CLIENT_SIDE {
 	int id = -1;						// ID
 	ATTRIBUTE_TYPE moveAttributeType;	// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType;	// 攻撃属性タイプ
-	ANIMATION_TYPE animType;			// アニメーションタイプ
+	MULTI_ANIMATION_TYPE animType;		// アニメーションタイプ
 	Vector2 position;					// 座標
-	Vector2 velocity;					// ベロシティ
+	Vector2 moveVelocity;				// ベロシティ
+	Vector2 attackVelocity;				// ベロシティ
 	int score = 0;						// スコア
 	int skillPoint = 0;					// スキルポイント
 	int previousSkillPoint = 0;			// 1ゲーム前のスキルポイント
@@ -73,13 +75,6 @@ struct OBJECT_DATA_CLIENT_SIDE {
 		NONE = -1,
 	};
 
-	enum TAG {
-		PLAYER,
-		ENEMY1,
-		ENEMY2,
-		ENEMY3,
-		SKILL_POINT,
-	};
 
 
 	int id = -1;
@@ -166,6 +161,21 @@ struct RESPONSE_PLAYER {
 			in >> res;
 			current = in.Current();
 			objects.push_back(res);
+		}
+	}
+
+	void AddObjects(MultiBehavior *list){
+		for (auto &instance : *list) {
+			auto gameObject = instance.Cast<ServerGameObject>();
+			int id = gameObject->id;
+			Vector2 position = gameObject->transform.position;
+			objects.push_back({
+				id,										// ID
+				gameObject->GetType(),					// tag
+				0,										// animation
+				position								// pos
+				}
+			);
 		}
 	}
 };

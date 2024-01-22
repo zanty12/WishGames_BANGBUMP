@@ -1,23 +1,28 @@
 #pragma once
 #include <sstream>
-#include "attribute_type.h"
-#include "multi_animenum.h"
-#include "multi_object.h"
-#include "multi_map.h"
+#include "multi_movable_object.h"
 #include "multi_attribute.h"
 #include "multi_anim.h"
+#include "multi_map.h"
+#include "attribute_type.h"
+#include "multi_animenum.h"
 
-class MultiAttribute;
-class ServerPlayer : public ServerGameObject {
+/*******************************************************
+  Server
+********************************************************/
+class ServerAttribute;
+class ServerAttack;
+class ServerPlayer : public ServerMovableGameObject {
 private:
-	MultiAttribute *moveAttribute = nullptr;			// 移動属性
-	MultiAttribute *attackAttribute = nullptr;			// 攻撃属性
+	ServerAttribute *moveAttribute = nullptr;			// 移動属性
+	ServerAttribute *attackAttribute = nullptr;			// 攻撃属性
 
 
 public:
 	int skillPoint = 0;									// スキルポイント
 	MultiMap *map = nullptr;							// マップ
-	ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;		// アニメーション
+	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;// アニメーション
+	Vector2 attackVelocity;								// 攻撃のベロシティ
 	
 	
 public:
@@ -27,36 +32,46 @@ public:
 		moveAttribute = nullptr;
 		attackAttribute = nullptr;
 	}
+	void Damage(ServerAttack *attack) override;
+	void SkillOrbDrop(int drop);
 
-	void SetMoveAttribute(MultiAttribute *moveAttribute) { this->moveAttribute = moveAttribute; }
-	void SetAttackAttribute(MultiAttribute *attackAttribute) { this->attackAttribute = attackAttribute; }
-	void SetAttackAttribute(MultiAttribute *moveAttribute, MultiAttribute *attackAttribute) { this->moveAttribute = moveAttribute, this->attackAttribute = attackAttribute; }
-	MultiAttribute *GetMoveAttribute(void) { return moveAttribute; }
-	MultiAttribute *GetAttackAttribute(void) { return attackAttribute; }
+	void SetMoveAttribute(ServerAttribute *moveAttribute) { this->moveAttribute = moveAttribute; }
+	void SetAttackAttribute(ServerAttribute *attackAttribute) { this->attackAttribute = attackAttribute; }
+	void SetAttackAttribute(ServerAttribute *moveAttribute, ServerAttribute *attackAttribute) { this->moveAttribute = moveAttribute, this->attackAttribute = attackAttribute; }
+	ServerAttribute *GetMoveAttribute(void) { return moveAttribute; }
+	ServerAttribute *GetAttackAttribute(void) { return attackAttribute; }
 
 	void Loop(void) override;
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_PLAYER; }
 };
 
-class ClientPlayer : public ClientGameObject {
+
+
+
+
+
+/*******************************************************
+  Client
+********************************************************/
+class ClientAttribute;
+class ClientAttack;
+class ClientPlayer : public ClientMovableGameObject {
 private:
-	ANIMATION_TYPE preAnimType = ANIMATION_TYPE_IDEL;	// アニメーション（1フレーム前）
+	ClientAttribute *moveAttribute = nullptr;			// 移動属性
+	ClientAttribute *attackAttribute = nullptr;			// 攻撃属性
+	MULTI_ANIMATION_TYPE preAnimType = ANIMATION_TYPE_IDEL;	// アニメーション（1フレーム前）
 
 public:
 	int skillPoint = 0;										// スキルポイント
-	ATTRIBUTE_TYPE moveAttribute = ATTRIBUTE_TYPE_FIRE;		// 移動属性
-	ATTRIBUTE_TYPE attackAttribute = ATTRIBUTE_TYPE_FIRE;	// 攻撃属性
-	ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;			// アニメーション
-	MultiAnimator anim;
+	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;	// アニメーションタイプ
+	MultiAnimator anim;										// アニメーション
 	bool isReverseX = false;								// 横軸の向き
+	Vector2 attackVelocity;									// 攻撃のベロシティ
 
 
 	
 public:
-	ClientPlayer(ATTRIBUTE_TYPE moveAttribute, ATTRIBUTE_TYPE attackAttribute, Transform transform)
-		: moveAttribute(moveAttribute), attackAttribute(attackAttribute), ClientGameObject(transform) {
-		anim = MultiAnimator::GetPlayerInitialize(0, moveAttribute, attackAttribute);
-	}
+	ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform);
 
 	void Loop(void) override;
-
 };

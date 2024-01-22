@@ -1,14 +1,35 @@
-#include "multi_attribute.h"
 #include "lib/math.h"
+#include "multi_attribute.h"
+#include "multiplay.h"
 #include "lib/collider2d.h"
 #include "xinput.h"
 #include "time.h"
 
 
+
+
+
+
+ServerAttribute *ServerAttribute::Create(ServerPlayer *player, ATTRIBUTE_TYPE type) {
+    switch (type) {
+    case ATTRIBUTE_TYPE_FIRE: return new ServerFire(player);
+    case ATTRIBUTE_TYPE_WIND: return new ServerWind(player);
+    }
+    return nullptr;
+}
+
+ClientAttribute *ClientAttribute::Create(ClientPlayer*player, ATTRIBUTE_TYPE type) {
+    switch (type) {
+    case ATTRIBUTE_TYPE_FIRE: return new ClientFire(player);
+    case ATTRIBUTE_TYPE_WIND: return new ClientWind(player);
+    }
+    return nullptr;
+}
+
 /*******************************************************
   Wind
 ********************************************************/
-bool MultiWind::StickTrigger(Vector2 stick, Vector2 previousStick)
+bool ServerWind::StickTrigger(Vector2 stick, Vector2 previousStick)
 {
     float stickDistance = stick.Distance();
     float preStickDistance = previousStick.Distance();
@@ -20,8 +41,7 @@ bool MultiWind::StickTrigger(Vector2 stick, Vector2 previousStick)
     }
     return false;
 }
-
-void MultiWind::Move(void) {
+void ServerWind::Move(void) {
     Vector2 &vel = player->velocity;
     Vector2 stick = Input::GetStickLeft(0);
     Vector2 previousStick = Input::GetPreviousStickLeft(0);
@@ -32,6 +52,7 @@ void MultiWind::Move(void) {
     // 移動中
     if (StickTrigger(stick, previousStick))
     {
+        player->animType = ANIMATION_TYPE_MOVE;
         power_ += rotSpeed * rotSpeed * rotInputFriction / Time::GetDeltaTime();
         if (maxPower_ < power_) power_ = maxPower_;
 
@@ -54,8 +75,7 @@ void MultiWind::Move(void) {
     }
     prev_y_ = vel.y;
 }
-
-void MultiWind::Attack(void) {
+void ServerWind::Attack(void) {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
     Vector2 previousStick = Input::GetPreviousStickRight(0);
@@ -67,8 +87,9 @@ void MultiWind::Attack(void) {
     // 攻撃中
     if (StickTrigger(stick, previousStick))
     {
+        player->animType = ANIMATION_TYPE_ATTACK;
         if (attack_ == nullptr)
-            attack_ = player->map->GetAttacks()->Add<MultiWindAttack>(player);
+            attack_ = player->map->GetAttacks()->Add<ServerWindAttack>(player);
         attack_->transform.position = player->transform.position;
     }
     else if (attack_ != nullptr)
@@ -76,6 +97,29 @@ void MultiWind::Attack(void) {
         attack_->Destroy();
         attack_ = nullptr;
     }
+
+    player->attackVelocity = stick;
+}
+
+void ClientWind::Move(void) {
+    float localScale = 100;
+
+
+    Vector2 pos = player->transform.position;
+    float rot = 0.0f;
+    Vector2 scl = Vector2::One * localScale;
+    Color col = Color::White;
+    moveAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
+}
+void ClientWind::Attack(void) {
+    float localScale = 100;
+
+
+    Vector2 pos = player->transform.position;
+    float rot = 0.0f;
+    Vector2 scl = Vector2::One * localScale;
+    Color col = Color::White;
+    attackAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 }
 
 
@@ -84,11 +128,11 @@ void MultiWind::Attack(void) {
 /*******************************************************
   Fire
 ********************************************************/
-bool MultiFire::StickTrigger(Vector2 stick, Vector2 previousStick) {
+bool ServerFire::StickTrigger(Vector2 stick, Vector2 previousStick) {
     return false;
 }
 
-void MultiFire::Move(void) {
+void ServerFire::Move(void) {
     Vector2 stick = Input::GetStickLeft(0);
 
     // 移動中
@@ -106,8 +150,7 @@ void MultiFire::Move(void) {
     velocity.y *= friction;
     player->velocity = velocity;
 }
-
-void MultiFire::Attack(void) {
+void ServerFire::Attack(void) {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
 
@@ -119,7 +162,7 @@ void MultiFire::Attack(void) {
         float angle = atan2(stick.y, stick.x);
         // 攻撃オブジェクトの生成
         if (attack_ == nullptr)
-            attack_ = player->map->GetAttacks()->Add<MultiFireAttack>(player);
+            attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
 
         // 座標の指定
         Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player->transform.scale.x / 2 + attack_->transform.scale.x / 2);
@@ -131,4 +174,37 @@ void MultiFire::Attack(void) {
         attack_->Destroy();
         attack_ = nullptr;
     }
+
+    player->attackVelocity = stick;
 }
+
+void ClientFire::Move(void) {
+    Vector2 direction = player->velocity;
+    float localScale = 100;
+
+
+    for (Animator &anim : attackAnims) {
+        anim.anim.Draw(anim.pos - MultiPlayClient::offset, anim.rot, anim.scl, Color(1.0f, 1.0f, 1.0f, 0.5f));
+    }
+
+    // 時間を計測する
+    DWORD currentTime = timeGetTime();
+    DWORD deltaTime = currentTime - startTime;
+
+    // アニメーションを作成する
+    if (500 < deltaTime) {
+        Vector2 pos = player->transform.position + -direction.Normalize() * localScale;
+        float rot = atan2f(direction.y, direction.x);
+        Vector2 scl = Vector2::One * localScale;
+        Color col = Color::White;
+        attackAnims.push_back({ pos, rot, scl, moveAnim });
+
+        // 要素が多いなら削除
+        if (10 < attackAnims.size()) {
+            attackAnims.pop_front();
+        }
+    }
+}
+void ClientFire::Attack(void) {
+}
+
