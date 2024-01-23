@@ -21,9 +21,10 @@ private:
     float bounciness_ = 0.0f; //’e—Í, 0.0f‚Ìê‡‚È‚µAˆÈã‚Ìê‡”½Ë‚Ì‘¬“x‚Í‚»‚Ì’l‚ÉæZ‚·‚é
     bool is_discard_ = false; //”jŠü‚·‚é‚©‚Ç‚¤‚©
     bool LoD_ = false; //LoD—p
+    int weight_ = 1;
 
     protected:
-    std::list<Collider*> collision_;
+    std::list<Collider*> collision_ = std::list<Collider*>();
 
 public:
     Collider() = delete;
@@ -62,5 +63,7 @@ public:
     bool GetDiscard() const { return is_discard_; }
     void SetLoD(bool LoD) { LoD_ = LoD; }
     bool GetLoD() const { return LoD_; }
+    void SetWeight(int weight) { weight_ = weight; }
+    int GetWeight() const { return weight_; }
 
 };
