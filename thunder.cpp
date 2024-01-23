@@ -201,6 +201,25 @@ ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range
 
 void ThunderAttack::Update()
 {
+    std::list<Collider*> collisions = GetCollider()->GetCollision();
+    for (auto collision : collisions)
+    {
+        OBJECT_TYPE type = collision->GetParent()->GetType();
+        switch (type)
+        {
+        case OBJ_ENEMY:
+            {
+                Enemy* enemy = dynamic_cast<Enemy*>(collision->GetParent());
+                if (enemy != nullptr)
+                {
+                    enemy->SetHp(enemy->GetHp() - GetDamage());
+                }
+            }
+            break;
+        default:
+            break;
+        }
+    }
     if ((GetPos() - start_pos_).Distance() > range_)
         Discard();
     AddVel(GetVel());

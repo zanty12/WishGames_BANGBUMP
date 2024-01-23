@@ -99,3 +99,31 @@ WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPl
     SetScale(size_);
     SetType(OBJ_VOID);
 }
+
+void WindAttack::Update()
+{
+    UpdateTick();
+    std::list<Collider*> collisions = GetCollider()->GetCollision();
+    for (auto collision : collisions)
+    {
+        OBJECT_TYPE type = collision->GetParent()->GetType();
+        switch (type)
+        {
+        case OBJ_ENEMY:
+            {
+                Enemy* enemy = dynamic_cast<Enemy*>(collision->GetParent());
+                if (enemy != nullptr)
+                {
+                    if (GetTick() > GetMaxTick())
+                    {
+                        SetTick(0.0f);
+                        enemy->SetHp(enemy->GetHp() - GetDamage());
+                    }
+                }
+            }
+            break;
+        default:
+            break;
+        }
+    }
+}

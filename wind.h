@@ -80,6 +80,6 @@ public:
     WindAttack() = delete;
     WindAttack(Wind* parent);
     ~WindAttack() override = default;
-    void Update() override{};
+    void Update() override;
 };
 
