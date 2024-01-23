@@ -51,11 +51,11 @@ public:
 };
 class ClientSkillOrbSmall : public ClientSkillOrb {
 public:
-	ClientSkillOrbSmall() : ClientSkillOrb(Vector2::One * 50) { };
+	ClientSkillOrbSmall() : ClientSkillOrb(Vector2::One * 10) { };
 };
 class ClientSkillOrbMidium : public ClientSkillOrb {
 public:
-	ClientSkillOrbMidium() : ClientSkillOrb(Vector2::One * 60) { };
+	ClientSkillOrbMidium() : ClientSkillOrb(Vector2::One * 50) { };
 };
 class ClientSkillOrbBig : public ClientSkillOrb {
 public:
