@@ -21,6 +21,8 @@ private:
     float bounciness_ = 0.0f; //弾力, 0.0fの場合なし、以上の場合反射の速度はその値に乗算する
     bool is_discard_ = false; //破棄するかどうか
     bool LoD_ = false; //LoD用
+    int weight_ = 1; //重さ
+
 
     protected:
     std::list<Collider*> collision_;
@@ -62,5 +64,7 @@ public:
     bool GetDiscard() const { return is_discard_; }
     void SetLoD(bool LoD) { LoD_ = LoD; }
     bool GetLoD() const { return LoD_; }
+    void SetWeight(int weight) { weight_ = weight; }
+    int GetWeight() const { return weight_; }
 
 };
