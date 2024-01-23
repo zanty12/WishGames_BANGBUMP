@@ -119,6 +119,9 @@ void MultiPlayServer::PlayerUpdate(void) {
 	// スキルオーブの更新
 	gameMode->GetMap()->GetSkillOrbs()->AllLoop();
 
+	// 攻撃の更新
+	gameMode->GetMap()->AttakUpdate();
+
 	// ゲームモードの更新
 	gameMode->Update(clients_);
 

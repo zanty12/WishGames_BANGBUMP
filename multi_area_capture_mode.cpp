@@ -83,6 +83,8 @@ MultiPlayAreaCaptureModeServerSide::MultiPlayAreaCaptureModeServerSide()
 	for (auto &areaPosition : GetMap()->GetAreaCaptures()) {
 		areas.push_back(Area(areaPosition));
 	}
+
+	maxTime_ = 1000.0f;
 }
 
 // ゲームアップデート
