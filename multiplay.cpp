@@ -500,8 +500,8 @@ void MultiPlayClient::SendUpdate(void) {
 			// リクエストの作成
 			REQUEST_PLAYER req;
 			req.input = { id, Input::GetState(0), Input::GetPreviousState(0), move_, action_ };
-			req.input.curInput.sThumbLX = (GetAsyncKeyState('A') - GetAsyncKeyState('D')) * +16384;
-			req.input.curInput.sThumbLY = (GetAsyncKeyState('W') - GetAsyncKeyState('S')) * -16384;
+			//req.input.curInput.sThumbLX = (GetAsyncKeyState('A') - GetAsyncKeyState('D')) * +16384;
+			//req.input.curInput.sThumbLY = (GetAsyncKeyState('W') - GetAsyncKeyState('S')) * -16384;
 			req.CreateRequest(sendBuff, id);
 
 			// 送信
