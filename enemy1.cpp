@@ -26,8 +26,8 @@ void Enemy1::Update()
         startPosition = GetPos();
         SetVel(Vector2(GetVel().x * -1, GetVel().y));
         dir_ *= -1;
-		SetScale(Vector2(GetScale().x * -1, GetScale().y));
     }
+
 
     this->AddVel(GetVel());
 }
@@ -42,24 +42,27 @@ void Enemy1::CollisionAction(void)
 		switch (type)
 		{
 		case OBJ_PLAYER:
-		{
-			GameObject* attack = collision->GetParent();
-			if (attack != nullptr)
-			{
-				blinking(attack);
-			}
+        {
+            GameObject* attack = collision->GetParent();
+            if (attack != nullptr)
+            {
+                blinking(attack);
+            }
 
-			break;
-		}
+            break;
+        }
 		case OBJ_SPIKE:
 			CollisionSpike();
 			break;
 		case OBJ_ATTACK:
-			{
-				PlayerAttack* attack = dynamic_cast<PlayerAttack*>(collision->GetParent());
-				if(attack != nullptr)
-					SetHp(GetHp() - attack->GetDamage());
-			}
+        {
+            PlayerAttack* player_attack = dynamic_cast<PlayerAttack*>(collision->GetParent());
+            if (player_attack != nullptr)
+            {
+                SetHp(GetHp() - player_attack->GetDamage());
+                blinking(player_attack);
+            }
+        }
 			break;
 		default:
 			break;
@@ -94,54 +97,6 @@ void Enemy1::CollisionSpike(void)
     knockback_start_ = GetPos();
     knockback_end_ = GetPos() - (dir_ * knockback_distance_);
 }
-
-////================================================================================
-//// エネミーに当たった時のアクション
-////================================================================================
-//void Player::CollisionEnemy(GameObject* obj)
-//{
-//	Enemy* enemy = dynamic_cast<Enemy*>(obj);
-//
-//	if (enemy == nullptr)
-//	{
-//		return;
-//	}
-//	if (invincibility_time_ < INVINCIBILITY_MAX_TIME_)
-//	{
-//		return;
-//	}
-//
-//	invincibility_time_ = 0.0f;
-//
-//	dir_ = GetVel().Normalize();
-//	if (abs(GetVel().x) < 0.1f && abs(GetVel().y < 0.1f))
-//	{
-//		dir_ = -enemy->GetVel().Normalize();
-//	}
-//	dir_ *= -1;	//反転させる
-//
-//	SkillPointDown(enemy->GetAtk());
-//
-//
-//	switch (enemy->GetEnemyType())
-//	{
-//	case TYPE__KOOPA:
-//		knockback_distance_ = SIZE_;
-//		break;
-//	case TYPE__HAMMERBRO:
-//		knockback_distance_ = SIZE_;
-//		break;
-//	case TYPE__PHANTOM:
-//		knockback_distance_ = SIZE_ * 3;
-//		break;
-//	default:
-//		break;
-//	}
-//
-//	knockback_start_ = GetPos();
-//	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
-//
-//}
 
 
 bool CheckLength(Vector2 a, Vector2 b, float len)

@@ -12,7 +12,7 @@
 Game::Game(SceneMngr* scene_mngr)
     : GameBase(scene_mngr)
 {
-    mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_1).c_str(), this);
+    mapmngr_ = new MapMngr(Asset::GetAsset(test).c_str(), this);
     text_format_ = Text::MakeTextFormat(L"ÉèÅ[ÉvÉçñæí©", 50, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL);
     brush_ = Text::MakeBrush(Color(1.0f, 1.0f, 1.0f, 1.0f));
     timer_tex_ = LoadTexture(Asset::GetAsset(timer));

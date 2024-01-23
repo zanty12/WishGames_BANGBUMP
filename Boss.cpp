@@ -33,8 +33,6 @@ void Boss::Update()
 
     if (time_ > 5.0f)
     {
-        HpDown(10);
-        time_ = 0;
         if (atk_now == false)
         {
             atk_now = true;
@@ -43,13 +41,16 @@ void Boss::Update()
         {
             atk_now = false;
         }
+        time_ = 0;
+
+
+        if (atk_now == true)
+        {
+            Atk();
+            atk_now = false;
+        }
     }
 
-    if (atk_now == true)
-    {
-        Atk();
-        atk_now = false;
-    }
 
     GetAnimator()->SetIsAnim(true);
 

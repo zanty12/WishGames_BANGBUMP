@@ -14,10 +14,10 @@
 bool CheckBulletLength(Vector2 a, Vector2 b, float len);
 
 Bullet::Bullet(Vector2 pos)
-    : MovableObj(pos,0.0f, /*LoadTexture(Asset::GetAsset(skill_orb))*/LoadTexture("data/texture/bullet.png"), Vector2::Zero)
+    : MovableObj(pos,0.0f, LoadTexture("data/texture/bullet.png"), Vector2::Zero)
 {
     SetPos(pos);
-    SetType(OBJ_ATTACK);
+    SetType(OBJ_BULLET);
     SetAtk(10);
     startPosition = GetPos();
 }
@@ -29,7 +29,8 @@ void Bullet::Update()
     
     if (CheckBulletLength(GetPos(), startPosition, RANGE))
     {
-        Die();
+        GameObject::Discard();
+        Discard();
     }
 
 }
@@ -43,10 +44,12 @@ void Bullet::CollisionAction(void)
         switch (type)
         {
         case OBJ_SOLID:
-            Die();
+            GameObject::Discard();
+            Discard();
             break;
         case OBJ_SPIKE:
-            Die();
+            GameObject::Discard();
+            Discard();
             break;
         default:
             break;

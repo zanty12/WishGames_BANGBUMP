@@ -2,6 +2,7 @@
 #include "movableobj.h"
 #include "mapmngr.h"
 #include "skillorb.h"
+#include "playerattack.h"
 
 class EnemyMngr;
 
@@ -48,5 +49,7 @@ public:
     void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
     void blinking(GameObject* obj);
+
+    void blinking(PlayerAttack* obj);
 
 };

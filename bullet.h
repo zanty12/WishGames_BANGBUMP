@@ -25,9 +25,6 @@ public:
 
 	void Update() override;
 
-
-	void Die() { Discard(); }
-
 private:
 
 	void CollisionAction(void);
