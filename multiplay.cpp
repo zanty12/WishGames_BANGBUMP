@@ -110,20 +110,25 @@ void MultiPlayServer::AllUnregister(void) {
 }
 
 void MultiPlayServer::PlayerUpdate(void) {
+	std::cout << "0" << std::endl;
 	// ロック
 	lock_.Lock();
 #ifdef DEBUG_LOCKED
 	std::cout << "UPD LOCK";
 #endif
+	std::cout << "A" << std::endl;
 
 	// スキルオーブの更新
 	gameMode->GetMap()->GetSkillOrbs()->AllLoop();
+	std::cout << "B" << std::endl;
 
 	// 攻撃の更新
 	gameMode->GetMap()->AttakUpdate();
+	std::cout << "C" << std::endl;
 
 	// ゲームモードの更新
 	gameMode->Update(clients_);
+	std::cout << "D" << std::endl;
 
 	// プレイヤーの更新
 	for (auto &kvp : clients_) {
@@ -143,9 +148,11 @@ void MultiPlayServer::PlayerUpdate(void) {
 		std::cout << player->transform.position.x << ", " << player->transform.position.y << std::endl;
 #endif
 	}
-	
+	std::cout << "E" << std::endl;
+
 	// 攻撃の更新
 	gameMode->GetMap()->GetAttacks()->AllLoop();
+	std::cout << "F" << std::endl;
 
 
 
@@ -153,6 +160,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 #ifdef DEBUG_LOCKED
 	std::cout << " - UPD UNLOCK" << std::endl;
 #endif
+	std::cout << "G" << std::endl;
 	lock_.Unlock();
 }
 
