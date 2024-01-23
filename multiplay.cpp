@@ -515,22 +515,37 @@ void MultiPlayClient::SendUpdate(void) {
 }
 
 void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
-	// ファイルディスクリプタ
-	FD tmp;
-	memcpy(&tmp, &readfd_, sizeof(FD));
-	Select(&tmp, nullptr, nullptr, 0, 1);
+	int	buffLen = 0;
+	while (true) {
+		// ファイルディスクリプタ
+		FD tmp;
+		memcpy(&tmp, &readfd_, sizeof(FD));
+		Select(&tmp, nullptr, nullptr, 0, 1);
+
+		// 受信
+		if (tmp.Contains(sockfd_)) {
+			// 受信する
+			buffLen = Recv(sockfd_, recvTmpBuff, MAX_BUFF, 0);
+
+			// 終了
+			if (buffLen <= 0) return;
+		}
+		// 受信終了
+		else {
+			break;
+		}
+	}
+
 
 	Address serverAddr;
 	int serverAddrLen = sizeof(serverAddr);
 	memset(&recvBuff[0], 0, sizeof(char) * recvBuff.Length());
 
 
-	if (tmp.Contains(sockfd_)) {
+	if (0 < buffLen) {
 		// 受信する
 		int	buffLen = Recv(sockfd_, recvTmpBuff, MAX_BUFF, 0);
 
-		// 終了
-		if (buffLen <= 0) return;
 		// データを取り込む
 		recvBuff.Push(recvTmpBuff, buffLen);
 
