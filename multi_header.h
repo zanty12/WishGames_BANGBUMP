@@ -45,23 +45,25 @@ struct HEADER {
 };
 // クライアントデータ（クライアント側）
 struct CLIENT_DATA_CLIENT_SIDE {
-	int id = -1;						// ID
-	ATTRIBUTE_TYPE moveAttributeType;	// 移動属性タイプ
-	ATTRIBUTE_TYPE attackAttributeType;	// 攻撃属性タイプ
-	MULTI_ANIMATION_TYPE animType;		// アニメーションタイプ
-	Vector2 position;					// 座標
-	Vector2 moveVelocity;				// ベロシティ
-	Vector2 attackVelocity;				// ベロシティ
-	int score = 0;						// スコア
-	int skillPoint = 0;					// スキルポイント
-	int previousSkillPoint = 0;			// 1ゲーム前のスキルポイント
+	int id = -1;												// ID
+	ATTRIBUTE_TYPE moveAttributeType = ATTRIBUTE_TYPE_FIRE;		// 移動属性タイプ
+	ATTRIBUTE_TYPE attackAttributeType = ATTRIBUTE_TYPE_FIRE;	// 攻撃属性タイプ
+	MULTI_ANIMATION_TYPE animType;								// アニメーションタイプ
+	Vector2 position;											// 座標
+	Vector2 moveVelocity;										// ベロシティ
+	Vector2 attackVelocity;										// ベロシティ
+	int score = 0;												// スコア
+	int skillPoint = 0;											// スキルポイント
+	int previousSkillPoint = 0;									// 1ゲーム前のスキルポイント
 };
 // クライアントデータ（サーバー側）
 struct CLIENT_DATA_SERVER_SIDE {
 	HEADER header;
 	Socket sockfd_;
-	Address clientAddr_;
-	ServerPlayer* player_ = nullptr;
+	Address clientAddr_;										// クライアントアドレス
+	ATTRIBUTE_TYPE moveAttributeType = ATTRIBUTE_TYPE_FIRE;		// 移動属性タイプ
+	ATTRIBUTE_TYPE attackAttributeType = ATTRIBUTE_TYPE_FIRE;	// 攻撃属性タイプ
+	ServerPlayer* player_ = nullptr;							// プレイヤー
 	XINPUT_GAMEPAD currentInput = XINPUT_GAMEPAD();
 	XINPUT_GAMEPAD previousInput = XINPUT_GAMEPAD();
 

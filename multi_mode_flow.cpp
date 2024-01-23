@@ -9,14 +9,14 @@ MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 	MultiPlayModeServerSide *rstMode = nullptr;
 	switch (mode)
 	{
-	//case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeServerSide(game_);
-	case AREA_CAPTURE: return new MultiPlayAreaCaptureModeServerSide();
+	case CHARACTER_SELECT: rstMode = new MultiPlayCharacterSelectModeServerSide(game_); break;
+	case AREA_CAPTURE: rstMode = new MultiPlayAreaCaptureModeServerSide(); break;
 	//case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeServerSide();
 	//case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeServerSide(game_);
 	//case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResult2ModeServerSide();
 	//case ENEMY_RUSH: return new MultiPlayEnemyRushModeServerSide(game_);
 	//case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResult3ModeServerSide();
-	case FINAL_BATTLE: rstMode = new MultiPlayFinalBattleModeServerSide();
+	case FINAL_BATTLE: rstMode = new MultiPlayFinalBattleModeServerSide(); break;
 	}
 
 	// 現在いるマップの更新
@@ -74,7 +74,7 @@ void MultiPlayFlowServerSide::CreateResponse(Storage &out) {
 MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 	switch (mode)
 	{
-	//case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeClientSide(game_);
+	case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeClientSide(game_);
 	case AREA_CAPTURE: return new MultiPlayAreaCaptureModeClientSide();
 	//case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeClientSide();
 	//case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeClientSide(game_);

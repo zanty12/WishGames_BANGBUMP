@@ -38,7 +38,8 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	ServerPlayer *player = new ServerPlayer();
 	player->SetMoveAttribute(new ServerFire(player));
 	player->SetAttackAttribute(new ServerWind(player));
-	player->transform.position = *gameMode->GetMap()->startPosition.begin();
+	if (gameMode->GetMap()->startPosition.size())
+		player->transform.position = *gameMode->GetMap()->startPosition.begin();
 
 	// ヘッダーの更新
 	header.command = HEADER::RESPONSE_LOGIN;
@@ -116,44 +117,39 @@ void MultiPlayServer::PlayerUpdate(void) {
 #ifdef DEBUG_LOCKED
 	std::cout << "UPD LOCK";
 #endif
-	std::cout << "A" << std::endl;
 
-	// スキルオーブの更新
-	gameMode->GetMap()->GetSkillOrbs()->AllLoop();
-	std::cout << "B" << std::endl;
 
-	// 攻撃の更新
-	gameMode->GetMap()->AttakUpdate();
-	std::cout << "C" << std::endl;
+	if (gameMode->GetGame()->IsPlayerMove()) {
+		// プレイヤーの更新
+		for (auto &kvp : clients_) {
+			auto &client = kvp.second;
+			auto &player = client.player_;
 
-	// ゲームモードの更新
-	gameMode->Update(clients_);
-	std::cout << "D" << std::endl;
-
-	// プレイヤーの更新
-	for (auto &kvp : clients_) {
-		auto &client = kvp.second;
-		auto &player = client.player_;
-
-		Input::SetState(0, client.currentInput);
-		Input::SetPreviousState(0, client.previousInput);
-		player->map = gameMode->GetMap();
-		player->Loop();
-		gameMode->GetMap()->Collision(player->transform.position, player->radius);
+			Input::SetState(0, client.currentInput);
+			Input::SetPreviousState(0, client.previousInput);
+			player->map = gameMode->GetMap();
+			player->Loop();
+			gameMode->GetMap()->Collision(player->transform.position, player->radius);
 
 #ifdef DEBUG_INPUT
-		std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
+			std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
 #endif
 #ifdef DEBUG_LINK
-		std::cout << player->transform.position.x << ", " << player->transform.position.y << std::endl;
+			std::cout << player->transform.position.x << ", " << player->transform.position.y << std::endl;
 #endif
+		}
+
+		// スキルオーブの更新
+		gameMode->GetMap()->GetSkillOrbs()->AllLoop();
+
+		// 攻撃オブジェクトの更新
+		gameMode->GetMap()->GetAttacks()->AllLoop();
+
+		// 攻撃判定の更新
+		gameMode->GetMap()->AttakUpdate();
 	}
-	std::cout << "E" << std::endl;
-
-	// 攻撃の更新
-	gameMode->GetMap()->GetAttacks()->AllLoop();
-	std::cout << "F" << std::endl;
-
+	// ゲームモードの更新
+	gameMode->Update(clients_);
 
 
 	// ロック解除
@@ -218,7 +214,6 @@ void MultiPlayServer::SendUpdate(void) {
 #ifdef DEBUG_LOCKED
 			std::cout << "SND LOCK";
 #endif
-
 			// レスポンスの作成
 			RESPONSE_PLAYER res;
 
@@ -241,9 +236,11 @@ void MultiPlayServer::SendUpdate(void) {
 			}
 
 			// オブジェクト情報の登録
-			res.AddObjects(gameMode->GetMap()->GetSkillOrbs());		// スキルオーブ
-			res.AddObjects(gameMode->GetMap()->GetEnemies());		// エネミー	
-			res.AddObjects(gameMode->GetMap()->GetAttacks());		// アタック
+			if (gameMode->GetMap()) {
+				res.AddObjects(gameMode->GetMap()->GetSkillOrbs());		// スキルオーブ
+				res.AddObjects(gameMode->GetMap()->GetEnemies());		// エネミー	
+				res.AddObjects(gameMode->GetMap()->GetAttacks());		// アタック
+			}
 
 			// レスポンスの作成
 			sendBuff = nullptr;

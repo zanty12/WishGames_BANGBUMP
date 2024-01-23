@@ -19,6 +19,7 @@ public:
 	virtual void CreateResponse(Storage& out) { };
 	virtual void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
 
+	virtual bool IsPlayerMove(void) const { return time_ <= maxTime_; };
 	virtual MULTI_MODE GetMode(void) const = 0;
 	float GetTime(void) const { return time_; }
 	float GetMaxTime(void) const { return maxTime_; }
