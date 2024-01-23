@@ -26,7 +26,7 @@ private:
 	/// <summary>
 	/// ‘®«ì¬
 	/// </summary>
-	Attribute *CreateAttribute(ATTRIBUTE_TYPE type, Player* player);
+	ServerAttribute *CreateAttribute(ATTRIBUTE_TYPE type, ServerPlayer * player);
 
 public:
 	MultiPlayCharacterSelectModeServerSide(MultiPlayServer *game)
@@ -53,24 +53,24 @@ public:
 ************************************************************/
 class MultiPlayCharacterSelectModeClientSide : public MultiPlayModeClientSide {
 private:
-	//struct AnimData {
-	//	Follow uAttackAnim, uMoveAnim;
-	//	ATTRIBUTE_TYPE attackAttributeType = ATTRIBUTE_TYPE_FIRE, moveAttributeType = ATTRIBUTE_TYPE_FIRE;
+	struct AnimData {
+		Follow uAttackAnim, uMoveAnim;
+		ATTRIBUTE_TYPE attackAttributeType = ATTRIBUTE_TYPE_FIRE, moveAttributeType = ATTRIBUTE_TYPE_FIRE;
 
-	//	AnimData() = default;
-	//	AnimData(ATTRIBUTE_TYPE attackAttributeType, ATTRIBUTE_TYPE moveAttributeType)
-	//		: attackAttributeType(attackAttributeType), moveAttributeType(moveAttributeType) { }
+		AnimData() = default;
+		AnimData(ATTRIBUTE_TYPE attackAttributeType, ATTRIBUTE_TYPE moveAttributeType)
+			: attackAttributeType(attackAttributeType), moveAttributeType(moveAttributeType) { }
 
-	//	void set(ATTRIBUTE_TYPE attackAttributeType, ATTRIBUTE_TYPE moveAttributeType) {
-	//		this->attackAttributeType = attackAttributeType, this->moveAttributeType = moveAttributeType;
-	//	}
-	//};
+		void set(ATTRIBUTE_TYPE attackAttributeType, ATTRIBUTE_TYPE moveAttributeType) {
+			this->attackAttributeType = attackAttributeType, this->moveAttributeType = moveAttributeType;
+		}
+	};
 
 private:
 	RESPONSE_CHARACTER_SELECT res;
-	//std::map<int, AnimData> characters;
-	//int charsTexNo = LoadTexture("data/texture/player1_11_22_33_44.png");
-	Prep prep = nullptr;
+	std::map<int, AnimData> characters;
+	int charsTexNo = LoadTexture("data/texture/player1_11_22_33_44.png");
+	//Prep prep = nullptr;
 	MultiPlayClient *game_ = nullptr;
 
 

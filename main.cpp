@@ -23,9 +23,9 @@ int main() {
 
     MSG msg;
     Graphical::Initialize(1600, 900);
-    DebugUI::Initialize();
+    //DebugUI::Initialize();
     Time::Initialize();
-    Text::CreateResources();
+    //Text::CreateResources();
     srand(time(NULL));
 
     //MultiMap map;
@@ -83,8 +83,8 @@ int main() {
     }
 
     Time::Release();
-    Text::DiscardResources();
-    DebugUI::Release();
+    //Text::DiscardResources();
+    //DebugUI::Release();
     Graphical::Release();
 
     std::cout << "Hello World!\n"; //基本

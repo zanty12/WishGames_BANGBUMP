@@ -111,7 +111,6 @@ void MultiPlayServer::AllUnregister(void) {
 }
 
 void MultiPlayServer::PlayerUpdate(void) {
-	std::cout << "0" << std::endl;
 	// ロック
 	lock_.Lock();
 #ifdef DEBUG_LOCKED
@@ -156,7 +155,6 @@ void MultiPlayServer::PlayerUpdate(void) {
 #ifdef DEBUG_LOCKED
 	std::cout << " - UPD UNLOCK" << std::endl;
 #endif
-	std::cout << "G" << std::endl;
 	lock_.Unlock();
 }
 
@@ -521,6 +519,8 @@ void MultiPlayClient::SendUpdate(void) {
 
 void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 	int	buffLen = 0;
+	bool IsNotLag = false;
+
 	while (true) {
 		// ファイルディスクリプタ
 		FD tmp;
@@ -534,6 +534,9 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 			// 終了
 			if (buffLen <= 0) return;
+
+			// ラグ対策ループをしない
+			if (!IsNotLag) break;
 		}
 		// 受信終了
 		else {
@@ -553,7 +556,6 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 		// データを取り込む
 		recvBuff.Push(recvTmpBuff, buffLen);
-
 
 		// レスポンスの解析
 		res.ParseResponse(recvBuff);
@@ -605,6 +607,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 			if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
 
 		}
+
 		// レスポンスの保存
 		res_ = res;
 
@@ -616,7 +619,6 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 void MultiPlayClient::Update() {
 	while (!isFinish) {
 		RESPONSE_PLAYER res;
-		std::cout << isFinish << std::endl;
 
 		if (GetAsyncKeyState(VK_ESCAPE)) {
 			isFinish = true;
@@ -625,7 +627,7 @@ void MultiPlayClient::Update() {
 		//Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
 		Time::Update();
 		RecvUpdate(1, res);
-		PlayerUpdate(res);
+		PlayerUpdate(res_);
 		Graphical::Present();
 		recvBuff = nullptr;
 	}

@@ -1,8 +1,5 @@
 #include "multiplay.h"
-#include "fire.h"
-#include "wind.h"
-#include "thunder.h"
-#include "dark.h"
+#include "multi_attribute.h"
 #include "multi_character_select_mode.h"
 
 /***********************************************************
@@ -13,24 +10,27 @@
 /// </summary>
 void MultiPlayCharacterSelectModeServerSide::AttributeSelect(Vector2 stick, Vector2 previousStick, ATTRIBUTE_TYPE &attributeType) {
 	Vector2 direction = stick - previousStick;					// 入力のベクトル
-	float accelerationX = direction.x;							// Xの加速度
-	const float acceleActivate = 0.05f;							// X入力の判定値
+	float triggerJudge = 0.75f;									// 入力判定
 	int type = (int)attributeType;								// 属性
 
 	// X入力に入力されたなら
-	if (acceleActivate < MATH::Abs(accelerationX)) {
+	if (previousStick.x < +triggerJudge && +triggerJudge <= stick.x ||
+		stick.x <= -triggerJudge && -triggerJudge < previousStick.x) {
 		// 右に移動
-		if (0.0f < accelerationX) type = ((type + 1) % 4);
+		if (0.0f < stick.x) type++;
 		// 左に移動
-		else type = (4 - ((type - 1) % 4));
-		// 万が一属性がエラー値になった場合初期化する
-		if (type < 0 || 4 < type) type = 0;
+		else if (stick.x < 0.0f) type--;
+
+		// 属性がエラー値になった場合値をずらす
+		if (3 < type) type = type % 4;
+		else if (type < 0) type = 4 + (type % 4);
 		attributeType = (ATTRIBUTE_TYPE)type;
 	}
 }
 
 void MultiPlayCharacterSelectModeServerSide::PlayerUpdate(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
 	RESPONSE_CHARACTER_SELECT res;
+	bool isSkip = true;
 
 	// キャラクターの設定
 	for (auto &kvp : MultiPlayServer::clients_) {
@@ -42,32 +42,52 @@ void MultiPlayCharacterSelectModeServerSide::PlayerUpdate(std::map<int, CLIENT_D
 		// 選択する
 		AttributeSelect(Input::GetStickLeft(0), Input::GetPreviousStickLeft(0), client.moveAttributeType);
 		AttributeSelect(Input::GetStickRight(0), Input::GetPreviousStickRight(0), client.attackAttributeType);
+
+		// 決定
+		if (Input::GetKey(0, Input::A)) {
+			client.isSkip = true;
+		}
+		// キャンセル
+		else if (Input::GetKey(0, Input::B)) {
+			client.isSkip = false;
+		}
+
+		// スキップしない
+		if (client.isSkip == false) isSkip = false;
+	}
+
+	// 全員OKならスキップする
+	if (isSkip) {
+		this->isSkip = isSkip;
 	}
 }
 
-Attribute *MultiPlayCharacterSelectModeServerSide::CreateAttribute(ATTRIBUTE_TYPE type, Player* player) {
+ServerAttribute *MultiPlayCharacterSelectModeServerSide::CreateAttribute(ATTRIBUTE_TYPE type, ServerPlayer* player) {
 	switch (type) {
-	case ATTRIBUTE_TYPE_FIRE: return new Fire(player);
-	case ATTRIBUTE_TYPE_WIND: return new Wind(player);
-	case ATTRIBUTE_TYPE_THUNDER: return new Thunder(player);
-	case ATTRIBUTE_TYPE_DARK: return new Dark(player);
+	case ATTRIBUTE_TYPE_FIRE: return new ServerFire(player);
+	case ATTRIBUTE_TYPE_WIND: return new ServerWind(player);
+	case ATTRIBUTE_TYPE_THUNDER: return new ServerThunder(player);
+	case ATTRIBUTE_TYPE_DARK: return new ServerWater(player);
 	}
 }
 
 void MultiPlayCharacterSelectModeServerSide::Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
-	for (auto &client : clients) {
+	for (auto &kvp : clients) {
 		// プレイヤーの検索
-		auto player = client;
+		auto &client = kvp.second;
+		auto &player = client.player_;
 
 		// 移動属性更新
 		{
-			//Attribute *moveAttribute = CreateAttribute(player.moveAttribute, player.player_);
-			//player.player_->SetAttribute(moveAttribute);
+			ServerAttribute *moveAttribute = CreateAttribute(client.moveAttributeType, player);
+			if (player->GetMoveAttribute()) delete player->GetMoveAttribute();
+			player->SetMoveAttribute(moveAttribute);
 		}
 		// 攻撃属性更新
 		{
-			//Attribute *actionAttribute = CreateAttribute(player.actionAttribute, player.player_);
-			//player.player_->SetAttribute(actionAttribute);
+			ServerAttribute *attackAttribute = CreateAttribute(client.attackAttributeType, player);
+			if (player->GetAttackAttribute()) delete player->GetAttackAttribute();
+			player->SetAttackAttribute(attackAttribute);
 		}
 	}
 }
@@ -164,28 +184,29 @@ void MultiPlayCharacterSelectModeClientSide::CharacterDraw(int idx, int maxIdx, 
 }
 
 void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {
-	DebugUI::BeginDraw();
-	Text::TextStart();
-	prep.Update();
-	prep.Draw();
-	game_->move_ = (ATTRIBUTE_TYPE)((int)prep.GetMove() * 0.5f);
-	game_->action_ = (ATTRIBUTE_TYPE)((int)prep.GetAttack() * 0.5f);
-	Text::TextEnd();
-	DebugUI::EndDraw();
-	//int idx = 0;
-	//for (auto &character : res.characters) {
-	//	int id = character.id;
-	//	if (characters.find(id) == characters.end()) characters[id] = AnimData();
+	//DebugUI::BeginDraw();
+	//Text::TextStart();
+	//prep.Update();
+	//prep.Draw();
+	//game_->move_ = (ATTRIBUTE_TYPE)((int)prep.GetMove() * 0.5f);
+	//game_->action_ = (ATTRIBUTE_TYPE)((int)prep.GetAttack() * 0.5f);
+	//Text::TextEnd();
+	//DebugUI::EndDraw();
+	int idx = 0;
+	for (auto &character : res.characters) {
+		int id = character.id;
+		if (characters.find(id) == characters.end()) characters[id] = AnimData();
 
-	//	characters[id].uMoveAnim = character.moveAttributeType;
-	//	characters[id].uAttackAnim = character.attackAttributeType;
-	//	characters[id].uMoveAnim.update();
-	//	characters[id].uAttackAnim.update();
+		characters[id].uMoveAnim = character.moveAttributeType;
+		characters[id].uAttackAnim = character.attackAttributeType;
+		characters[id].uMoveAnim.update();
+		characters[id].uAttackAnim.update();
 
-	//	std::cout << characters[id].uMoveAnim << std::endl;
-	//	CharacterDraw(idx, res.characters.size(), 100, 10, characters[id].uMoveAnim, 0.0f, 1.0f);
-	//	idx++;
-	//}
+		std::cout << characters[id].uMoveAnim << std::endl;
+		CharacterDraw(idx, res.characters.size(), 0, 10, characters[id].uAttackAnim, 0.0f, 0.6f);
+		CharacterDraw(idx, res.characters.size(), 0, 10, characters[id].uMoveAnim, 0.6f, 1.0f);
+		idx++;
+	}
 }
 
 void MultiPlayCharacterSelectModeClientSide::ParseResponse(Storage &in) {

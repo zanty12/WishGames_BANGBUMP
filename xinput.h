@@ -23,6 +23,11 @@ public:
 		North,
 		South,
 
+		X = West,
+		B = East,
+		Y = North,
+		A = South,
+
 		L,
 		R,
 		LThumb,

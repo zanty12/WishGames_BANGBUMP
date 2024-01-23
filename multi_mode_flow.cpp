@@ -32,20 +32,39 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 	if (gameMode_ == nullptr) return;
 
 	// 制限時間が来たなら、次のモードへ移行
-	if (gameMode_->maxTime_ < gameMode_->time_) {
+	if (gameMode_->maxTime_ < gameMode_->time_ || gameMode_->isSkip) {
 		// 現在のモードの取得
 		MULTI_MODE mode_ = GetMode();
 
-		// 現在のモードの削除
+		// 現在のモードのリリース関数を呼び出す
 		gameMode_->Release(clients);
-		delete gameMode_;
-		gameMode_ = nullptr;
+
+		// 現在のモードの削除
+		if (gameMode_) delete gameMode_;
 
 		// 次のモードを計算
 		mode_ = (MULTI_MODE)((int)mode_ + 1);
 
 		// 次のモードの作成
 		gameMode_ = CreateMode(mode_);
+
+		// プレイヤーの移動
+		if (gameMode_ && gameMode_->map_->startPosition.size()) {
+			auto spawnPosIterator = gameMode_->map_->startPosition.begin();
+			for (auto &client : clients) {
+				// 移動する
+				auto &player = client.second.player_;
+				player->transform.position = *spawnPosIterator;
+
+				// スタート地点を1つずらす
+				spawnPosIterator++;
+
+				// もしスタート地点がないなら、リストの最初からにする
+				if (gameMode_->map_->startPosition.end() == spawnPosIterator) {
+					spawnPosIterator = gameMode_->map_->startPosition.begin();
+				}
+			}
+		}
 	}
 	else {
 		// 時間の更新

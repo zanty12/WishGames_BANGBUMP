@@ -6,7 +6,7 @@ private:
 	float dest_ = 0.0f;
 
 public:
-	float rate = 0.75f;
+	float rate = 0.25f;
 
 	Follow() = default;
 	Follow(float value_) : value_(value_), dest_(value_) { }

@@ -41,62 +41,6 @@ public:
 
 
 /*******************************************************
-  Wind
-********************************************************/
-class ServerWind : public ServerAttribute {
-private:
-	float power_ = 0.0f;
-	const float rotInputFriction = 0.5f; // まわす加速度の摩擦定数
-	const float rotInputJudgeMin = 0.1f; // まわすを判定する
-
-	float prev_y_ = 0.0f;
-	float previous_time_ = 0.0f;
-
-	float maxPower_ = 10;
-	float friction_ = 0.8f;
-	AttackServerSide *attack_ = nullptr;
-
-public:
-	ServerWind(ServerPlayer *player) : ServerAttribute(player) { }
-	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
-	void Move(void) override;
-	void Attack(void) override;
-	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_WIND; };
-};
-class ClientWind : public ClientAttribute {
-public:
-	ClientWind(ClientPlayer *player) : ClientAttribute(player) {
-		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 29);
-		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 25);
-	}
-
-	void Move(void) override;
-	void Attack(void) override;
-	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_WIND; };
-};
-
-class ServerWindAttack : public AttackServerSide {
-private:
-	GameObjectServerSide *self = nullptr;
-
-public:
-	ServerWindAttack(GameObjectServerSide * self) : AttackServerSide(1, 1, 100, self) { }
-
-	const GameObjectServerSide *GetSelf(void) { return self; }
-
-	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
-};
-class ClientWindAttack : public ClientAttack {
-public:
-	void Loop(void) override;
-
-	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
-};
-
-
-
-
-/*******************************************************
   Fire
 ********************************************************/
 class ServerFire : public ServerAttribute {
@@ -159,4 +103,199 @@ public:
 	const GameObjectServerSide *GetSelf(void) { return self; }
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_FIRE; }
+};
+
+
+
+
+
+/*******************************************************
+  Water
+********************************************************/
+class ServerWater : public ServerAttribute {
+private:
+	float friction = 0.99f;				// 摩擦係数
+	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
+	float maxSpeed = 5.0f;				// 加速の最大値
+	float judgeScale = 0.2f;			// スティックの傾けたときに判定する最小値
+	Vector2 velocity;					// 向き
+
+	AttackServerSide *attack_ = nullptr;
+
+public:
+	ServerWater(ServerPlayer *player) : ServerAttribute(player) { }
+	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
+	void Move(void) override;
+	void Attack(void) override;
+	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
+};
+class ClientWater : public ClientAttribute {
+private:
+	static const int ANIM_NUM = 50;
+	static const int FRAME_NUM = 24;
+	struct Animator {
+		Vector2 pos;
+		float rot = 0.0f;
+		Vector2 scl;
+		MultiAnimator anim;
+	};
+	int moveTexNo = -1;
+	int attackTexNo = -1;
+	std::list<Animator> moveAnims;
+	std::list<Animator> attackAnims;
+	DWORD startTime = 0;
+
+public:
+
+
+	ClientWater(ClientPlayer *player) : ClientAttribute(player) {
+		moveTexNo = LoadTexture("data/texture/Effect/effect_fire_move.png");
+		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
+
+		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true, 0, 25);
+		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true, 0, 25);
+		startTime = timeGetTime();
+	}
+
+	void Move(void) override;
+	void Attack(void) override;
+	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
+};
+
+class ServerWaterAttack : public AttackServerSide {
+private:
+	GameObjectServerSide *self = nullptr;
+
+public:
+	ServerWaterAttack(GameObjectServerSide *self) : AttackServerSide(1, 1, 50, self) { }
+
+	const GameObjectServerSide *GetSelf(void) { return self; }
+
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_FIRE; }
+};
+
+
+
+
+
+/*******************************************************
+  Thunder
+********************************************************/
+class ServerThunder : public ServerAttribute {
+private:
+	float friction = 0.99f;				// 摩擦係数
+	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
+	float maxSpeed = 5.0f;				// 加速の最大値
+	float judgeScale = 0.2f;			// スティックの傾けたときに判定する最小値
+	Vector2 velocity;					// 向き
+
+	AttackServerSide *attack_ = nullptr;
+
+public:
+	ServerThunder(ServerPlayer *player) : ServerAttribute(player) { }
+	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
+	void Move(void) override;
+	void Attack(void) override;
+	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
+};
+class ClientThunder : public ClientAttribute {
+private:
+	static const int ANIM_NUM = 50;
+	static const int FRAME_NUM = 24;
+	struct Animator {
+		Vector2 pos;
+		float rot = 0.0f;
+		Vector2 scl;
+		MultiAnimator anim;
+	};
+	int moveTexNo = -1;
+	int attackTexNo = -1;
+	std::list<Animator> moveAnims;
+	std::list<Animator> attackAnims;
+	DWORD startTime = 0;
+
+public:
+
+
+	ClientThunder(ClientPlayer *player) : ClientAttribute(player) {
+		moveTexNo = LoadTexture("data/texture/Effect/effect_fire_move.png");
+		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
+
+		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true, 0, 25);
+		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true, 0, 25);
+		startTime = timeGetTime();
+	}
+
+	void Move(void) override;
+	void Attack(void) override;
+	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
+};
+
+class ServerThunderAttack : public AttackServerSide {
+private:
+	GameObjectServerSide *self = nullptr;
+
+public:
+	ServerThunderAttack(GameObjectServerSide *self) : AttackServerSide(1, 1, 50, self) { }
+
+	const GameObjectServerSide *GetSelf(void) { return self; }
+
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_FIRE; }
+};
+
+
+
+
+
+/*******************************************************
+  Wind
+********************************************************/
+class ServerWind : public ServerAttribute {
+private:
+	float power_ = 0.0f;
+	const float rotInputFriction = 0.5f; // まわす加速度の摩擦定数
+	const float rotInputJudgeMin = 0.1f; // まわすを判定する
+
+	float prev_y_ = 0.0f;
+	float previous_time_ = 0.0f;
+
+	float maxPower_ = 10;
+	float friction_ = 0.8f;
+	AttackServerSide *attack_ = nullptr;
+
+public:
+	ServerWind(ServerPlayer *player) : ServerAttribute(player) { }
+	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
+	void Move(void) override;
+	void Attack(void) override;
+	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_WIND; };
+};
+class ClientWind : public ClientAttribute {
+public:
+	ClientWind(ClientPlayer *player) : ClientAttribute(player) {
+		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 29);
+		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 25);
+	}
+
+	void Move(void) override;
+	void Attack(void) override;
+	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_WIND; };
+};
+
+class ServerWindAttack : public AttackServerSide {
+private:
+	GameObjectServerSide *self = nullptr;
+
+public:
+	ServerWindAttack(GameObjectServerSide * self) : AttackServerSide(1, 1, 100, self) { }
+
+	const GameObjectServerSide *GetSelf(void) { return self; }
+
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
+};
+class ClientWindAttack : public ClientAttack {
+public:
+	void Loop(void) override;
+
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
 };

@@ -64,6 +64,7 @@ struct CLIENT_DATA_SERVER_SIDE {
 	ATTRIBUTE_TYPE moveAttributeType = ATTRIBUTE_TYPE_FIRE;		// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType = ATTRIBUTE_TYPE_FIRE;	// 攻撃属性タイプ
 	ServerPlayer* player_ = nullptr;							// プレイヤー
+	bool isSkip = false;										// スキップ
 	XINPUT_GAMEPAD currentInput = XINPUT_GAMEPAD();
 	XINPUT_GAMEPAD previousInput = XINPUT_GAMEPAD();
 
