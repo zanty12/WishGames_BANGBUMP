@@ -4,7 +4,10 @@
 #include "sprite.h"
 #include "texture.h"
 #include "lib/collider2d.h"
+#include "lib/win_time.h"
+#include "multiplay.h"
 #include "multi_skillorb.h"
+#include "multi_attack.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -210,4 +213,65 @@ int MultiMap::Collision(Vector2 &position, float radius) {
 		position = hit.position -hit.tilt.Normal() * cellSize * 0.25f;
 	}
 	return id;
+}
+
+void MultiMap::AttakUpdate(void) {
+	for (auto &attackObject : *GetAttacks()) {
+		auto attack = attackObject.Cast<AttackServerSide>();
+
+		// プレイヤーと判定
+		for (auto &kvp : MultiPlayServer::clients_) {
+
+			auto &player = kvp.second.player_;
+			float maxRadius = attack->radius + player->radius;
+			float maxRadiusSq = maxRadius * maxRadius;
+
+			// イテレータの取得
+			auto iterator = attack->touchGameObjects.find(player);
+
+			// ダメージを与えてもいい時間ではないなら終了
+			if (iterator != attack->touchGameObjects.end()) {
+				if (iterator->second.GetNowTime() * 0.001f < attack->spanTime) continue;
+				else iterator->second.Start();
+			}
+			// 計測開始
+			else {
+				attack->touchGameObjects[player] = WIN::Time();
+				attack->touchGameObjects[player].Start();
+			}
+
+			// ダメージ
+			if (maxRadiusSq >= Vector2::DistanceSq(attack->transform.position, player->transform.position)) {
+				
+				player->Damage(attack);
+			}
+		}
+
+
+		// エネミーと判定
+		for (auto &instance : *enemies) {
+			auto enemy = instance.Cast<GameObjectServerSide>();
+			float maxRadius = attack->radius + enemy->radius;
+			float maxRadiusSq = maxRadius * maxRadius;
+
+			// イテレータの取得
+			auto iterator = attack->touchGameObjects.find(enemy);
+
+			// ダメージを与えてもいい時間ではないなら終了
+			if (iterator != attack->touchGameObjects.end()) {
+				if (iterator->second.GetNowTime() * 0.001f < attack->spanTime) continue;
+			}
+			// 計測開始
+			else {
+				attack->touchGameObjects[enemy] = WIN::Time();
+				attack->touchGameObjects[enemy].Start();
+			}
+
+			// ダメージ
+			if (maxRadiusSq >= Vector2::DistanceSq(attack->transform.position, enemy->transform.position)) {
+				// ダメージ
+
+			}
+		}
+	}
 }

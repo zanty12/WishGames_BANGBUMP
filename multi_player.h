@@ -11,7 +11,7 @@
   Server
 ********************************************************/
 class ServerAttribute;
-class ServerAttack;
+class AttackServerSide;
 class ServerPlayer : public ServerMovableGameObject {
 private:
 	ServerAttribute *moveAttribute = nullptr;			// ˆÚ“®‘®«
@@ -33,7 +33,7 @@ public:
 		moveAttribute = nullptr;
 		attackAttribute = nullptr;
 	}
-	void Damage(ServerAttack *attack) override;
+	void Damage(AttackServerSide *attack) override;
 	void SkillOrbDrop(int drop);
 
 	void SetMoveAttribute(ServerAttribute *moveAttribute) { this->moveAttribute = moveAttribute; }

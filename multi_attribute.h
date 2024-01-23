@@ -54,7 +54,7 @@ private:
 
 	float maxPower_ = 10;
 	float friction_ = 0.8f;
-	ServerAttack *attack_ = nullptr;
+	AttackServerSide *attack_ = nullptr;
 
 public:
 	ServerWind(ServerPlayer *player) : ServerAttribute(player) { }
@@ -75,14 +75,14 @@ public:
 	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_WIND; };
 };
 
-class ServerWindAttack : public ServerAttack {
+class ServerWindAttack : public AttackServerSide {
 private:
-	ServerGameObject *self = nullptr;
+	GameObjectServerSide *self = nullptr;
 
 public:
-	ServerWindAttack(ServerGameObject* self) : ServerAttack(1, 1, 100, self) { }
+	ServerWindAttack(GameObjectServerSide * self) : AttackServerSide(1, 1, 100, self) { }
 
-	const ServerGameObject *GetSelf(void) { return self; }
+	const GameObjectServerSide *GetSelf(void) { return self; }
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
 };
@@ -107,7 +107,7 @@ private:
 	float judgeScale = 0.2f;			// スティックの傾けたときに判定する最小値
 	Vector2 velocity;					// 向き
 
-	ServerAttack *attack_ = nullptr;
+	AttackServerSide *attack_ = nullptr;
 
 public:
 	ServerFire(ServerPlayer *player) : ServerAttribute(player) { }
@@ -149,14 +149,14 @@ public:
 	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
 };
 
-class ServerFireAttack : public ServerAttack {
+class ServerFireAttack : public AttackServerSide {
 private:
-	ServerGameObject *self = nullptr;
+	GameObjectServerSide *self = nullptr;
 
 public:
-	ServerFireAttack(ServerGameObject *self) : ServerAttack(1, 1, 50, self) { }
+	ServerFireAttack(GameObjectServerSide *self) : AttackServerSide(1, 1, 50, self) { }
 
-	const ServerGameObject *GetSelf(void) { return self; }
+	const GameObjectServerSide *GetSelf(void) { return self; }
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_FIRE; }
 };

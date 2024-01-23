@@ -6,14 +6,14 @@
 /*******************************************************
   Server
 ********************************************************/
-class ServerSkillOrb : public ServerGameObject {
+class ServerSkillOrb : public GameObjectServerSide {
 public:
 	int addPoint = 1;
 	WIN::Time timer;
 	
 
 	ServerSkillOrb() { };
-	ServerSkillOrb(int addPoint, Transform transform) : addPoint(addPoint), ServerGameObject(transform) { }
+	ServerSkillOrb(int addPoint, Transform transform) : addPoint(addPoint), GameObjectServerSide(transform) { }
 
 	void Initialize(void) override;
 	void Loop(void) override;

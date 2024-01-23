@@ -1,3 +1,3 @@
 #include "multi_object.h"
 
-int ServerGameObject::MAX_ID = 0;
+int GameObjectServerSide::MAX_ID = 0;

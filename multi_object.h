@@ -4,7 +4,7 @@
 #include "multi_objenum.h"
 
 class MultiMap;
-class ServerGameObject : public MultiBehavior {
+class GameObjectServerSide : public MultiBehavior {
 public:
 	static int MAX_ID;
 
@@ -13,8 +13,8 @@ public:
 	float radius = 10.0f;
 	int id = MAX_ID++;
 
-	ServerGameObject() = default;
-	ServerGameObject(Transform transform) : transform(transform) { }
+	GameObjectServerSide() = default;
+	GameObjectServerSide(Transform transform) : transform(transform) { }
 	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
 };
 

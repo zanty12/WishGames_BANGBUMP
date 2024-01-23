@@ -9,19 +9,11 @@ void ServerPlayer::Loop(void) {
 	if (attackAttribute) attackAttribute->Attack();
 
 
-	for (auto &attackObject : *map->GetAttacks()) {
-		auto attack = attackObject.Cast<ServerAttack>();
-
-		// プレイヤーと判定
-		if (attack->radius + radius >= Vector2::Distance(attack->transform.position, transform.position)) {
-			Damage(attack);
-		}
-	}
 
 	transform.position += velocity;
 }
 
-void ServerPlayer::Damage(ServerAttack *attack) {
+void ServerPlayer::Damage(AttackServerSide *attack) {
 	// 攻撃者が自分なら終了
 	if (attack->GetSelf() == this) return;
 

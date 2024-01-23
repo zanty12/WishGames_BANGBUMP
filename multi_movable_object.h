@@ -2,12 +2,12 @@
 #include "multi_attribute.h"
 #include "multi_object.h"
 
-class ServerAttack;
-class ServerMovableGameObject : public ServerGameObject {
+class AttackServerSide;
+class ServerMovableGameObject : public GameObjectServerSide {
 public:
 	ServerMovableGameObject() = default;
-	ServerMovableGameObject(Transform transform) : ServerGameObject(transform) { }
-	virtual void Damage(ServerAttack *attack) { };
+	ServerMovableGameObject(Transform transform) : GameObjectServerSide(transform) { }
+	virtual void Damage(AttackServerSide *attack) { };
 };
 
 

@@ -1,21 +1,26 @@
 #pragma once
+#include <map>
+#include "lib/win_time.h"
+
 /***********************************************************
 	Server
 ************************************************************/
-class ServerAttack : public ServerGameObject {
+class AttackServerSide : public GameObjectServerSide {
 private:
-	ServerGameObject *self = nullptr;
+	GameObjectServerSide *self = nullptr;
 
 public:
 	int damage = 0;
 	int drop = 0;
+	float spanTime = 1.0f;
+	std::map<GameObjectServerSide*, WIN::Time> touchGameObjects;
 
 
 
 public:
-	ServerAttack(int damage, int drop, float radius, ServerGameObject *self) : self(self), damage(damage), drop(drop) { this->radius = radius; }
+	AttackServerSide(int damage, int drop, float radius, GameObjectServerSide *self) : self(self), damage(damage), drop(drop) { this->radius = radius; }
 
-	const ServerGameObject *GetSelf(void) { return self; }
+	const GameObjectServerSide *GetSelf(void) { return self; }
 	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
 };
 

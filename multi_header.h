@@ -166,7 +166,7 @@ struct RESPONSE_PLAYER {
 
 	void AddObjects(MultiBehavior *list){
 		for (auto &instance : *list) {
-			auto gameObject = instance.Cast<ServerGameObject>();
+			auto gameObject = instance.Cast<GameObjectServerSide>();
 			int id = gameObject->id;
 			Vector2 position = gameObject->transform.position;
 			objects.push_back({

@@ -38,6 +38,7 @@ public:
 	Vector2Int ToIndex(Vector2 pos) { return Vector2Int(pos.x / cellSize, pos.y / cellSize); }
 	Vector2 ToPosition(Vector2Int idx) { return Vector2(idx.x * cellSize, idx.y * cellSize); }
 	void Draw(Vector2 offset);
+	void AttakUpdate(void);
 	int Collision(Vector2 &position, float radius);
 	int &GetMap(int x, int y) { return map[x + y * width]; }
 	int &GetColliderMap(int x, int y) { return collMap[x + y * width]; }
