@@ -5,7 +5,6 @@
 #include "multi_skillorb.h"
 #include <windows.h>
 #include <thread>
-#pragma comment(lib, "lib/lib.lib")
 
 //#define DEBUG_LINK
 //#define DEBUG_INPUT

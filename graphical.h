@@ -2,11 +2,6 @@
 #include "lib/dxlib.h"
 #include "lib/winlib.h"
 #include "original_window.h"
-#ifdef _DEBUG
-#pragma comment(lib, "lib/lib.lib")
-#else
-#pragma comment(lib, "lib/release_lib.lib")
-#endif
 
 class Graphical {
 private:

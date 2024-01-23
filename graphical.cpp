@@ -1,5 +1,10 @@
 #include "graphical.h"
 #include "sprite.h"
+#ifdef _DEBUG
+#pragma comment(lib, "lib/debug_lib.lib")
+#else
+#pragma comment(lib, "lib/release_lib.lib")
+#endif
 
 OrigialWindow Graphical::window;
 DX::DX11::Device3D Graphical::device;
