@@ -31,7 +31,7 @@ ClientSkillOrb::ClientSkillOrb(Vector2 scale) {
 }
 
 void ClientSkillOrb::Loop(void) {
-	//if (!isShow) return;
+	if (!isShow) return;
 	DrawSprite(texNo, transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
 	isShow = false;
 }
