@@ -62,7 +62,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	attackAttribute(ClientAttribute::Create(this, attackAttributeType)) ,
 	ClientMovableGameObject(transform) {	
 	anim = MultiAnimator::GetPlayerInitialize(0, moveAttribute->GetAttribute(), attackAttribute->GetAttribute());
-	transform.scale = Vector2::One * 150;
+	this->transform.scale = Vector2::One * 150;
 }
 
 void ClientPlayer::Loop(void) {
