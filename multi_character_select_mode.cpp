@@ -115,9 +115,20 @@ void MultiPlayCharacterSelectModeServerSide::CreateResponse(Storage &out) {
 
 
 
+
 /***********************************************************
 	Client
 ************************************************************/
+
+ClientAttribute *MultiPlayCharacterSelectModeClientSide::CreateAttribute(ATTRIBUTE_TYPE type, ClientPlayer *player){
+	switch (type) {
+	case ATTRIBUTE_TYPE_FIRE: return new ClientFire(player);
+	case ATTRIBUTE_TYPE_WIND: return new ClientWind(player);
+	case ATTRIBUTE_TYPE_THUNDER: return new ClientThunder(player);
+	case ATTRIBUTE_TYPE_DARK: return new ClientWater(player);
+	}
+}
+
 void MultiPlayCharacterSelectModeClientSide::CharacterDraw(int idx, int maxIdx, float protrude, float gap, float showAttribute, float showRateMin, float showRateMax) {
 	const float SCREEN_WIDTH = Graphical::GetWidth();				// 画面の幅
 	const float SCREEN_HEIGHT = Graphical::GetHeight();				// 画面の高さ
@@ -192,25 +203,57 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 	//game_->action_ = (ATTRIBUTE_TYPE)((int)prep.GetAttack() * 0.5f);
 	//Text::TextEnd();
 	//DebugUI::EndDraw();
+	ATTRIBUTE_TYPE moveAttributeType, attackAttributeType;
+
 	int idx = 0;
 	for (auto &character : res.characters) {
 		int id = character.id;
 		if (characters.find(id) == characters.end()) characters[id] = AnimData();
 
+		// 自分のIDなら属性を記録する
+		if (game_->GetID() == id) {
+			moveAttributeType = character.moveAttributeType;
+			attackAttributeType = character.attackAttributeType;
+		}
+
+		// アニメーションのUV値の更新
 		characters[id].uMoveAnim = character.moveAttributeType;
 		characters[id].uAttackAnim = character.attackAttributeType;
 		characters[id].uMoveAnim.update();
 		characters[id].uAttackAnim.update();
 
-		std::cout << characters[id].uMoveAnim << std::endl;
+		// アニメーションの描画
 		CharacterDraw(idx, res.characters.size(), 0, 10, characters[id].uAttackAnim, 0.0f, 0.6f);
 		CharacterDraw(idx, res.characters.size(), 0, 10, characters[id].uMoveAnim, 0.6f, 1.0f);
 		idx++;
 	}
+
+	video->Update();
+	video->Draw();
 }
 
 void MultiPlayCharacterSelectModeClientSide::ParseResponse(Storage &in) {
 	res = RESPONSE_CHARACTER_SELECT();
 	// レスポンス解析
 	res.ParseResponse(in);
+}
+
+void MultiPlayCharacterSelectModeClientSide::Release(RESPONSE_PLAYER &players) {
+	for (auto &client : players.clients) {
+		// プレイヤーの検索
+		auto &player = game_->clients[client.id];
+
+		// 移動属性更新
+		{
+			ClientAttribute *moveAttribute = CreateAttribute(client.moveAttributeType, player);
+			if (player->GetMoveAttribute()) delete player->GetMoveAttribute();
+			player->SetMoveAttribute(moveAttribute);
+		}
+		// 攻撃属性更新
+		{
+			ClientAttribute *attackAttribute = CreateAttribute(client.attackAttributeType, player);
+			if (player->GetAttackAttribute()) delete player->GetAttackAttribute();
+			player->SetAttackAttribute(attackAttribute);
+		}
+	}
 }

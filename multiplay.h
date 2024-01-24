@@ -92,8 +92,6 @@ private:
 	RESPONSE_PLAYER res_;								// レスポンス
 	char *recvTmpBuff = nullptr;						// 受信バッファ（仮格納用）
 	MultiMap map;										// マップ
-	std::unordered_map<int, ClientPlayer*> clients;		// 描画用クライアント
-	std::unordered_map<int, ClientGameObject*> objects;	// 描画用オブジェクト
 
 	std::thread sendUpdateFunc;							// 送信関数
 	std::thread recvUpdateFunc;							// 受信関数
@@ -105,6 +103,8 @@ public:
 	int texNo = 0;
 	ATTRIBUTE_TYPE move_ = ATTRIBUTE_TYPE_FIRE;
 	ATTRIBUTE_TYPE action_ = ATTRIBUTE_TYPE_FIRE;
+	std::unordered_map<int, ClientPlayer *> clients;		// 描画用クライアント
+	std::unordered_map<int, ClientGameObject *> objects;	// 描画用オブジェクト
 
 	MultiPlayClient();
 
@@ -149,4 +149,6 @@ public:
 			}
 		);
 	}
+
+	int GetID(void) const { return id; }
 };

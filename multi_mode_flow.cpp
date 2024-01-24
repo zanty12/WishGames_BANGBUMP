@@ -36,11 +36,13 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 		// 現在のモードの取得
 		MULTI_MODE mode_ = GetMode();
 
-		// 現在のモードのリリース関数を呼び出す
-		gameMode_->Release(clients);
-
 		// 現在のモードの削除
-		if (gameMode_) delete gameMode_;
+		if (gameMode_) {
+			// 現在のモードのリリース関数を呼び出す
+			gameMode_->Release(clients);
+			
+			delete gameMode_;
+		}
 
 		// 次のモードを計算
 		mode_ = (MULTI_MODE)((int)mode_ + 1);
@@ -113,7 +115,12 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		MULTI_MODE mode_ = GetMode();
 
 		// 現在のモードの削除
-		if (gameMode_) delete gameMode_;
+		if (gameMode_) {
+			// 現在のモードのリリース関数を呼び出す
+			gameMode_->Release(res);
+			
+			delete gameMode_;
+		}
 
 		// 次のモードの作成
 		gameMode_ = CreateMode(res.mode);

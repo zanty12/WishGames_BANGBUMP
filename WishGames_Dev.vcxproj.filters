@@ -498,6 +498,9 @@
     <ClInclude Include="multi_anim.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
+    <ClInclude Include="multi_attack.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
     <ClInclude Include="multi_movable_object.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -515,9 +518,6 @@
     </ClInclude>
     <ClInclude Include="area_capture.h">
       <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="multi_attack.h">
-      <Filter>Multiplay\head</Filter>
     </ClInclude>
     <ClInclude Include="multi_character_select_mode.h">
       <Filter>Multiplay\head</Filter>

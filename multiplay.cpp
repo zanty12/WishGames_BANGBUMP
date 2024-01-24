@@ -584,6 +584,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				player->transform.position = client.position;
 				player->velocity = client.moveVelocity;
 				player->attackVelocity = client.attackVelocity;
+				player->warpVelocity = client.warpVelocity;
 				player->animType = client.animType;
 			}			
 		}

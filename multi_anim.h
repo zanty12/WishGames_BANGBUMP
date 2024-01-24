@@ -41,6 +41,7 @@ public:
 	void MoveEnd(void) { idx = end + 1; }
 	void MoveLoopBegin(void) { idx = loopBegin; }
 	void MoveLoopEnd(void) { idx = loopEnd + 1; }
+	bool IsEnd(void) { return idx + 1 <= end; }
 
 	// プレイヤーのアニメーションデータ
 	static MultiAnimator GetPlayerInitialize(int playerIdx, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack);

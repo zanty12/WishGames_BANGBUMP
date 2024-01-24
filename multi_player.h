@@ -38,7 +38,7 @@ public:
 
 	void SetMoveAttribute(ServerAttribute *moveAttribute) { this->moveAttribute = moveAttribute; }
 	void SetAttackAttribute(ServerAttribute *attackAttribute) { this->attackAttribute = attackAttribute; }
-	void SetAttackAttribute(ServerAttribute *moveAttribute, ServerAttribute *attackAttribute) { this->moveAttribute = moveAttribute, this->attackAttribute = attackAttribute; }
+	void SetAttribute(ServerAttribute *moveAttribute, ServerAttribute *attackAttribute) { this->moveAttribute = moveAttribute, this->attackAttribute = attackAttribute; }
 	ServerAttribute *GetMoveAttribute(void) { return moveAttribute; }
 	ServerAttribute *GetAttackAttribute(void) { return attackAttribute; }
 
@@ -76,4 +76,10 @@ public:
 	ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform);
 
 	void Loop(void) override;
+
+	void SetMoveAttribute(ClientAttribute *moveAttribute) { this->moveAttribute = moveAttribute; }
+	void SetAttackAttribute(ClientAttribute *attackAttribute) { this->attackAttribute = attackAttribute; }
+	void SetAttribute(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute) { this->moveAttribute = moveAttribute, this->attackAttribute = attackAttribute; }
+	ClientAttribute *GetMoveAttribute(void) { return moveAttribute; }
+	ClientAttribute *GetAttackAttribute(void) { return attackAttribute; }
 };

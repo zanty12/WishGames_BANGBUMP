@@ -2,6 +2,8 @@
 #include "multi_anim.h"
 #include "texture.h"
 
+
+
 void MultiAnimator::Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool isReverseX, bool isReverseY) {
 	DWORD deltaTime = timeGetTime() - startTime;
 	// アニメーションさせる
@@ -11,7 +13,7 @@ void MultiAnimator::Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool is
 		startTime = timeGetTime();
 
 		// 終点なら始点にする
-		if (isLoop) if (loopEnd < idx) idx = loopBegin;
+		if (isLoop) { if (loopEnd < idx) idx = loopBegin; }
 		// ループしないなら終了
 		else if (end < idx) return;
 	}

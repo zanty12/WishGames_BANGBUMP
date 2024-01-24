@@ -114,9 +114,9 @@ public:
 ********************************************************/
 class ServerWater : public ServerAttribute {
 private:
-	float charge = 0.50f;				// スピード
+	float charge = 50.0f;				// スピード
 	float warpDistance = 0.0f;			// ワープ距離
-	float maxDistance = 5.0f;			// ワープの最大距離
+	float maxDistance = 500.0f;			// ワープの最大距離
 	float judgeScale = 0.2f;			// スティックの傾けたときに判定する最小値
 
 	AttackServerSide *attack_ = nullptr;
@@ -131,6 +131,7 @@ public:
 class ClientWater : public ClientAttribute {
 public:
 	MultiAnimator moveChargeAnim;
+	Vector2 prevPosition;			// ワープ前の座標
 
 
 	ClientWater(ClientPlayer *player) : ClientAttribute(player) {

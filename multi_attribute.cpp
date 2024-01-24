@@ -148,14 +148,14 @@ void ServerWater::Move(void) {
 		if (maxDistance < warpDistance) warpDistance = maxDistance;
 
 		// ワープベクトルの指定
-		player->warpVelocity = Input::GetStickLeft(0) * warpDistance;
+		player->warpVelocity = player->transform.position + Input::GetStickLeft(0) * warpDistance;
 	}
 	// ワープ
 	else if(Input::GetKeyUp(0, Input::LThumb)) {
 		// アニメーションの指定
 		player->animType = ANIMATION_TYPE_MOVE;
 
-		player->warpVelocity = player->transform.position + player->warpVelocity;
+		player->transform.position = player->warpVelocity;
 	}
 }
 void ServerWater::Attack(void) {
@@ -175,6 +175,8 @@ void ServerWater::Attack(void) {
 	// ワープ
 	else if (Input::GetKeyUp(0, Input::RThumb)) {
 		player->warpVelocity = player->transform.position + player->warpVelocity;
+
+		warpDistance = 0.0f;
 	}
 }
 
@@ -186,7 +188,6 @@ void ClientWater::Move(void) {
 	Vector2 scl = Vector2::One * localScale;
 	Color col = Color::White;
 
-	std::cout << player->animType << std::endl;
 	if (player->animType == ANIMATION_TYPE_MOVE) {
 		// 移動
 		moveAnim.MoveBegin();
@@ -195,15 +196,18 @@ void ClientWater::Move(void) {
 		moveChargeAnim.Draw(pos, rot, scl, col);
 
 		player->anim.Draw(
-			player->transform.position - MultiPlayClient::offset,
+			player->warpVelocity - MultiPlayClient::offset,
 			player->transform.rotation,
 			player->transform.scale,
 			Color(1.0f, 1.0f, 1.0f, 0.5f)
 		);
+
+		// 現在地を記録
+		if(moveAnim.IsEnd()) prevPosition = player->transform.position;
 	}
 
 
-	moveAnim.Draw(pos, rot, scl, col);
+	moveAnim.Draw(prevPosition - MultiPlayClient::offset, rot, scl, col);
 }
 void ClientWater::Attack(void) {
 
