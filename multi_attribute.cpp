@@ -186,6 +186,7 @@ void ClientWater::Move(void) {
 	Vector2 scl = Vector2::One * localScale;
 	Color col = Color::White;
 
+	std::cout << player->animType << std::endl;
 	if (player->animType == ANIMATION_TYPE_MOVE) {
 		// ˆÚ“®
 		moveAnim.MoveBegin();
