@@ -62,6 +62,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	attackAttribute(ClientAttribute::Create(this, attackAttributeType)) ,
 	ClientMovableGameObject(transform) {	
 	anim = MultiAnimator::GetPlayerInitialize(0, moveAttribute->GetAttribute(), attackAttribute->GetAttribute());
+	transform.scale = transform.scale * 3.0f;
 }
 
 void ClientPlayer::Loop(void) {
@@ -85,7 +86,7 @@ void ClientPlayer::Loop(void) {
 	else if (velocity.x < 0.0f) isReverseX = false;
 
 	// 描画する
-	anim.Draw(transform.position - MultiPlayClient::offset, transform.rotation, transform.scale * 3.0f, Color::White, isReverseX);
+	anim.Draw(transform.position - MultiPlayClient::offset, transform.rotation, transform.scale, Color::White, isReverseX);
 
 	// アニメーションタイプの更新
 	preAnimType = animType;

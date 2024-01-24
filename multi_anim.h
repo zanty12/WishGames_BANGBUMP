@@ -38,7 +38,9 @@ public:
 	void Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool isReverseX = false, bool isReverseY = false);
 
 	void MoveBegin(void) { idx = begin; }
+	void MoveEnd(void) { idx = end + 1; }
 	void MoveLoopBegin(void) { idx = loopBegin; }
+	void MoveLoopEnd(void) { idx = loopEnd + 1; }
 
 	// プレイヤーのアニメーションデータ
 	static MultiAnimator GetPlayerInitialize(int playerIdx, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack);

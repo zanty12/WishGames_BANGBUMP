@@ -137,6 +137,8 @@ public:
 		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_move.png"), 5, 3, 0, 14);
 		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_attack.png"), 5, 6, 0, 29, true, 0, 29);
 		moveChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_charge.png"), 5, 10, 0, 47, true, 0, 47);
+
+		moveAnim.MoveEnd();
 	}
 
 	void Move(void) override;

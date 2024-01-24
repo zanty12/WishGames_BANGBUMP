@@ -134,6 +134,9 @@ bool ServerWater::StickTrigger(Vector2 stick, Vector2 previousStick) {
 	return false;
 }
 void ServerWater::Move(void) {
+	// アニメーションの指定
+	player->animType = ANIMATION_TYPE_IDEL;
+
 	// ワープ距離のチャージ
 	if (Input::GetKey(0, Input::LThumb)) {
 		// アニメーションの指定
@@ -176,10 +179,30 @@ void ServerWater::Attack(void) {
 }
 
 void ClientWater::Move(void) {
+	float localScale = 100.0f;
+
+	Vector2 pos = player->transform.position - MultiPlayClient::offset;
+	float rot = 0.0f;
+	Vector2 scl = Vector2::One * localScale;
+	Color col = Color::White;
+
 	if (player->animType == ANIMATION_TYPE_MOVE) {
 		// 移動
 		moveAnim.MoveBegin();
 	}
+	else if (player->animType == ANIMATION_TYPE_MOVE_CHARGE) {
+		moveChargeAnim.Draw(pos, rot, scl, col);
+
+		player->anim.Draw(
+			player->transform.position - MultiPlayClient::offset,
+			player->transform.rotation,
+			player->transform.scale,
+			Color(1.0f, 1.0f, 1.0f, 0.5f)
+		);
+	}
+
+
+	moveAnim.Draw(pos, rot, scl, col);
 }
 void ClientWater::Attack(void) {
 
