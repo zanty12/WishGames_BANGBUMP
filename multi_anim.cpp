@@ -7,11 +7,13 @@ void MultiAnimator::Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool is
 	// アニメーションさせる
 	if (frameTime <= deltaTime) {
 		idx++;
-		// 終点なら始点にする
-		if (isLoop) if (loopEnd < idx) idx = loopBegin;
-		else if (end < idx) idx = begin;
 
 		startTime = timeGetTime();
+
+		// 終点なら始点にする
+		if (isLoop) if (loopEnd < idx) idx = loopBegin;
+		// ループしないなら終了
+		else if (end < idx) return;
 	}
 
 	// UV値の計算

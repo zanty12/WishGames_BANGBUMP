@@ -50,8 +50,9 @@ struct CLIENT_DATA_CLIENT_SIDE {
 	ATTRIBUTE_TYPE attackAttributeType = ATTRIBUTE_TYPE_FIRE;	// 攻撃属性タイプ
 	MULTI_ANIMATION_TYPE animType;								// アニメーションタイプ
 	Vector2 position;											// 座標
-	Vector2 moveVelocity;										// ベロシティ
-	Vector2 attackVelocity;										// ベロシティ
+	Vector2 moveVelocity;										// 移動ベロシティ
+	Vector2 attackVelocity;										// 攻撃ベロシティ
+	Vector2 warpVelocity;										// ワープベロシティ
 	int score = 0;												// スコア
 	int skillPoint = 0;											// スキルポイント
 	int previousSkillPoint = 0;									// 1ゲーム前のスキルポイント

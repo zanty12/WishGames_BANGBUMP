@@ -11,111 +11,112 @@
 
 
 ServerAttribute *ServerAttribute::Create(ServerPlayer *player, ATTRIBUTE_TYPE type) {
-    switch (type) {
-    case ATTRIBUTE_TYPE_FIRE: return new ServerFire(player);
-    case ATTRIBUTE_TYPE_WIND: return new ServerWind(player);
-    }
-    return nullptr;
+	switch (type) {
+	case ATTRIBUTE_TYPE_FIRE: return new ServerFire(player);
+	case ATTRIBUTE_TYPE_WIND: return new ServerWind(player);
+	}
+	return nullptr;
 }
 
 ClientAttribute *ClientAttribute::Create(ClientPlayer*player, ATTRIBUTE_TYPE type) {
-    switch (type) {
-    case ATTRIBUTE_TYPE_FIRE: return new ClientFire(player);
-    case ATTRIBUTE_TYPE_WIND: return new ClientWind(player);
-    }
-    return nullptr;
+	switch (type) {
+	case ATTRIBUTE_TYPE_FIRE: return new ClientFire(player);
+	case ATTRIBUTE_TYPE_WIND: return new ClientWind(player);
+	}
+	return nullptr;
 }
 
 /*******************************************************
   Fire
 ********************************************************/
 bool ServerFire::StickTrigger(Vector2 stick, Vector2 previousStick) {
-    return false;
+	return false;
 }
 
 void ServerFire::Move(void) {
-    Vector2 stick = Input::GetStickLeft(0);
+	Vector2 stick = Input::GetStickLeft(0);
 
-    // 移動中
-    if (stick.Distance() > judgeScale) {
-        player->animType = ANIMATION_TYPE_MOVE;
+	// 移動中
+	if (stick.Distance() > judgeScale) {
+		// アニメーションの指定
+		player->animType = ANIMATION_TYPE_MOVE;
 
-        velocity += stick;
-        if (velocity.Distance() > maxSpeed) velocity = velocity.Normalize() * maxSpeed;
-    }
-    // 停止中
-    else {
-        player->animType = ANIMATION_TYPE_IDEL;
-    }
-    velocity.x *= friction;
-    velocity.y *= friction;
-    player->velocity = velocity;
+		velocity += stick;
+		if (velocity.Distance() > maxSpeed) velocity = velocity.Normalize() * maxSpeed;
+	}
+	// 停止中
+	else {
+		player->animType = ANIMATION_TYPE_IDEL;
+	}
+	velocity.x *= friction;
+	velocity.y *= friction;
+	player->velocity = velocity;
 }
 void ServerFire::Attack(void) {
-    using namespace PHYSICS;
-    Vector2 stick = Input::GetStickRight(0);
+	using namespace PHYSICS;
+	Vector2 stick = Input::GetStickRight(0);
 
-    // 攻撃
-    if (stick.Distance() > judgeScale && player->animType != ANIMATION_TYPE_MOVE) {
-        player->animType = ANIMATION_TYPE_ATTACK;
+	// 攻撃
+	if (stick.Distance() > judgeScale && player->animType != ANIMATION_TYPE_MOVE) {
+		player->animType = ANIMATION_TYPE_ATTACK;
 
-        // 角度を調べる
-        float angle = atan2(stick.y, stick.x);
-        // 攻撃オブジェクトの生成
-        if (attack_ == nullptr)
-            attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
+		// 角度を調べる
+		float angle = atan2(stick.y, stick.x);
+		// 攻撃オブジェクトの生成
+		if (attack_ == nullptr)
+			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
 
-        // 座標の指定
-        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player->transform.scale.x / 2 + attack_->transform.scale.x / 2);
-        pos += player->transform.position;
-        attack_->transform.position = pos;
-        attack_->transform.rotation = angle;
-    }
-    else {
-        attack_->Destroy();
-        attack_ = nullptr;
-    }
+		// 座標の指定
+		Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player->transform.scale.x / 2 + attack_->transform.scale.x / 2);
+		pos += player->transform.position;
+		attack_->transform.position = pos;
+		attack_->transform.rotation = angle;
+	}
+	else {
+		attack_->Destroy();
+		attack_ = nullptr;
+	}
 
-    player->attackVelocity = stick;
+	player->attackVelocity = stick;
 }
 
 void ClientFire::Move(void) {
-    Vector2 direction = player->velocity;
-    float localScale = 100;
+	Vector2 direction = player->velocity;
+	float localScale = 100;
 
-    // 描画する
-    float denominator = moveAnims.size();
-    float numerator = denominator * 0.5f;
-    for (Animator &anim : moveAnims) {
-        anim.anim.Draw(anim.pos - MultiPlayClient::offset, anim.rot, anim.scl, Color(1.0f, 1.0f, 1.0f, 1.0f - numerator / denominator));
-        numerator += 0.5f;
-    }
+	// 描画する
+	float denominator = moveAnims.size();
+	float numerator = denominator * 0.5f;
+	for (Animator &anim : moveAnims) {
+		anim.anim.Draw(anim.pos - MultiPlayClient::offset, anim.rot, anim.scl, Color(1.0f, 1.0f, 1.0f, 1.0f - numerator / denominator));
+		numerator += 0.5f;
+	}
 
-    // 時間を計測する
-    DWORD currentTime = timeGetTime();
-    DWORD deltaTime = currentTime - startTime;
+	// 時間を計測する
+	DWORD currentTime = timeGetTime();
+	DWORD deltaTime = currentTime - startTime;
 
-    // アニメーションを作成する
-    if (25 < deltaTime) {
-        // 計測をリセットする
-        startTime = currentTime;
+	// アニメーションを作成する
+	if (25 < deltaTime) {
+		// 計測をリセットする
+		startTime = currentTime;
 
-        // 炎の位置をずらす
-        direction += direction.Normal() * MATH::Rand(-0.25f, 0.25f);
+		// 炎の位置をずらす
+		direction += direction.Normal() * MATH::Rand(-0.25f, 0.25f);
 
-        // アニメーション生成
-        float distance = 50.0f;
-        Vector2 pos = player->transform.position + -direction.Normalize() * distance;
-        float rot = atan2f(direction.y, -direction.x);
-        Vector2 scl = Vector2::One * localScale;
-        Color col = Color::White;
-        moveAnims.push_front({ pos, rot, scl, moveAnim });
+		// アニメーション生成
+		float distance = 50.0f;
+		Vector2 pos = player->transform.position + -direction.Normalize() * distance;
+		float rot = atan2f(direction.y, -direction.x);
+		Vector2 scl = Vector2::One * localScale;
+		Color col = Color::White;
+		moveAnims.push_front({ pos, rot, scl, moveAnim });
 
-        // 要素が多いなら削除
-        if (10 < moveAnims.size()) {
-            moveAnims.pop_back();
-        }
-    }
+		// 要素が多いなら削除
+		if (10 < moveAnims.size()) {
+			moveAnims.pop_back();
+		}
+	}
 }
 void ClientFire::Attack(void) {
 }
@@ -130,20 +131,55 @@ void ClientFire::Attack(void) {
 bool ServerWater::StickTrigger(Vector2 stick, Vector2 previousStick) {
 
 
-    return false;
+	return false;
 }
 void ServerWater::Move(void) {
-    // 
-    //if (Input::GetKey(Input::LThumb)) {
+	// ワープ距離のチャージ
+	if (Input::GetKey(0, Input::LThumb)) {
+		// アニメーションの指定
+		player->animType = ANIMATION_TYPE_MOVE_CHARGE;
 
-    //}
+		warpDistance += charge;
+
+		// ワープ距離を最大距離にする
+		if (maxDistance < warpDistance) warpDistance = maxDistance;
+
+		// ワープベクトルの指定
+		player->warpVelocity = Input::GetStickLeft(0) * warpDistance;
+	}
+	// ワープ
+	else if(Input::GetKeyUp(0, Input::LThumb)) {
+		// アニメーションの指定
+		player->animType = ANIMATION_TYPE_MOVE;
+
+		player->warpVelocity = player->transform.position + player->warpVelocity;
+	}
 }
 void ServerWater::Attack(void) {
+	// ワープ距離のチャージ
+	if (Input::GetKey(0, Input::RThumb)) {
+		warpDistance += charge;
 
+		// ワープ距離を最大距離にする
+		if (maxDistance < warpDistance) warpDistance = maxDistance;
+
+		// ワープベクトルの指定
+		player->warpVelocity = Input::GetStickLeft(0) * warpDistance;
+
+		// 移動チャージアニメーション
+		player->animType = ANIMATION_TYPE_MOVE_CHARGE;
+	}
+	// ワープ
+	else if (Input::GetKeyUp(0, Input::RThumb)) {
+		player->warpVelocity = player->transform.position + player->warpVelocity;
+	}
 }
 
 void ClientWater::Move(void) {
-
+	if (player->animType == ANIMATION_TYPE_MOVE) {
+		// 移動
+		moveAnim.MoveBegin();
+	}
 }
 void ClientWater::Attack(void) {
 
@@ -157,7 +193,7 @@ void ClientWater::Attack(void) {
   Thunder
 ********************************************************/
 bool ServerThunder::StickTrigger(Vector2 stick, Vector2 previousStick) {
-    return false;
+	return false;
 }
 void ServerThunder::Move(void) {
 
@@ -183,93 +219,93 @@ void ClientThunder::Attack(void) {
 ********************************************************/
 bool ServerWind::StickTrigger(Vector2 stick, Vector2 previousStick)
 {
-    float stickDistance = stick.Distance();
-    float preStickDistance = previousStick.Distance();
+	float stickDistance = stick.Distance();
+	float preStickDistance = previousStick.Distance();
 
-    if (rotInputJudgeMin < MATH::Abs(Vector2::Cross(stick, previousStick)) &&
-        0.8f < stickDistance * preStickDistance)
-    {
-        return true;
-    }
-    return false;
+	if (rotInputJudgeMin < MATH::Abs(Vector2::Cross(stick, previousStick)) &&
+		0.8f < stickDistance * preStickDistance)
+	{
+		return true;
+	}
+	return false;
 }
 void ServerWind::Move(void) {
-    Vector2 &vel = player->velocity;
-    Vector2 stick = Input::GetStickLeft(0);
-    Vector2 previousStick = Input::GetPreviousStickLeft(0);
+	Vector2 &vel = player->velocity;
+	Vector2 stick = Input::GetStickLeft(0);
+	Vector2 previousStick = Input::GetPreviousStickLeft(0);
 
-    // 回転のスピードを取得
-    float rotSpeed = Vector2::Cross(stick, previousStick);
+	// 回転のスピードを取得
+	float rotSpeed = Vector2::Cross(stick, previousStick);
 
-    // 移動中
-    if (StickTrigger(stick, previousStick))
-    {
-        player->animType = ANIMATION_TYPE_MOVE;
-        power_ += rotSpeed * rotSpeed * rotInputFriction / Time::GetDeltaTime();
-        if (maxPower_ < power_) power_ = maxPower_;
+	// 移動中
+	if (StickTrigger(stick, previousStick))
+	{
+		player->animType = ANIMATION_TYPE_MOVE;
+		power_ += rotSpeed * rotSpeed * rotInputFriction / Time::GetDeltaTime();
+		if (maxPower_ < power_) power_ = maxPower_;
 
-        vel = Vector2::Up * power_ * Time::GetDeltaTime();
-        previous_time_ = Time::GetCurrentTime();
-    }
-    // 落下処理
-    else if (0 < Vector2::Dot(Vector2::Down, vel) || prev_y_ > vel.y || Time::GetDeltaTime(previous_time_) > 0.04f)
-    {
-        power_ *= friction_;
+		vel = Vector2::Up * power_ * Time::GetDeltaTime();
+		previous_time_ = Time::GetCurrentTime();
+	}
+	// 落下処理
+	else if (0 < Vector2::Dot(Vector2::Down, vel) || prev_y_ > vel.y || Time::GetDeltaTime(previous_time_) > 0.04f)
+	{
+		power_ *= friction_;
 
-        vel.x = stick.x * 6 * Time::GetDeltaTime();
-        //上移動の慣性残っている場合
-        if (vel.y > 0)
-            vel.y -= vel.y * 2 * Time::GetDeltaTime();
-    }
-    else if (stick.Distance() < rotInputJudgeMin)
-    {
-        power_ *= friction_;
-    }
-    prev_y_ = vel.y;
+		vel.x = stick.x * 6 * Time::GetDeltaTime();
+		//上移動の慣性残っている場合
+		if (vel.y > 0)
+			vel.y -= vel.y * 2 * Time::GetDeltaTime();
+	}
+	else if (stick.Distance() < rotInputJudgeMin)
+	{
+		power_ *= friction_;
+	}
+	prev_y_ = vel.y;
 }
 void ServerWind::Attack(void) {
-    using namespace PHYSICS;
-    Vector2 stick = Input::GetStickRight(0);
-    Vector2 previousStick = Input::GetPreviousStickRight(0);
+	using namespace PHYSICS;
+	Vector2 stick = Input::GetStickRight(0);
+	Vector2 previousStick = Input::GetPreviousStickRight(0);
 
 
-    // 回転のスピードを取得
-    float rotSpeed = Vector2::Cross(stick, previousStick);
+	// 回転のスピードを取得
+	float rotSpeed = Vector2::Cross(stick, previousStick);
 
-    // 攻撃中
-    if (StickTrigger(stick, previousStick))
-    {
-        player->animType = ANIMATION_TYPE_ATTACK;
-        if (attack_ == nullptr)
-            attack_ = player->map->GetAttacks()->Add<ServerWindAttack>(player);
-        attack_->transform.position = player->transform.position;
-    }
-    else if (attack_ != nullptr)
-    {
-        attack_->Destroy();
-        attack_ = nullptr;
-    }
+	// 攻撃中
+	if (StickTrigger(stick, previousStick))
+	{
+		player->animType = ANIMATION_TYPE_ATTACK;
+		if (attack_ == nullptr)
+			attack_ = player->map->GetAttacks()->Add<ServerWindAttack>(player);
+		attack_->transform.position = player->transform.position;
+	}
+	else if (attack_ != nullptr)
+	{
+		attack_->Destroy();
+		attack_ = nullptr;
+	}
 
-    player->attackVelocity = stick;
+	player->attackVelocity = stick;
 }
 
 void ClientWind::Move(void) {
-    float localScale = 200;
+	float localScale = 200;
 
 
-    Vector2 pos = player->transform.position;
-    float rot = 0.0f;
-    Vector2 scl = Vector2::One * localScale;
-    Color col = Color::White;
-    moveAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
+	Vector2 pos = player->transform.position;
+	float rot = 0.0f;
+	Vector2 scl = Vector2::One * localScale;
+	Color col = Color::White;
+	moveAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 }
 void ClientWind::Attack(void) {
-    float localScale = 200;
+	float localScale = 200;
 
 
-    Vector2 pos = player->transform.position;
-    float rot = 0.0f;
-    Vector2 scl = Vector2::One * localScale;
-    Color col = Color::White;
-    attackAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
+	Vector2 pos = player->transform.position;
+	float rot = 0.0f;
+	Vector2 scl = Vector2::One * localScale;
+	Color col = Color::White;
+	attackAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 }

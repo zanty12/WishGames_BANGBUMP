@@ -114,11 +114,10 @@ public:
 ********************************************************/
 class ServerWater : public ServerAttribute {
 private:
-	float friction = 0.99f;				// 摩擦係数
-	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
-	float maxSpeed = 5.0f;				// 加速の最大値
+	float charge = 0.50f;				// スピード
+	float warpDistance = 0.0f;			// ワープ距離
+	float maxDistance = 5.0f;			// ワープの最大距離
 	float judgeScale = 0.2f;			// スティックの傾けたときに判定する最小値
-	Vector2 velocity;					// 向き
 
 	AttackServerSide *attack_ = nullptr;
 
@@ -130,19 +129,14 @@ public:
 	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_DARK; };
 };
 class ClientWater : public ClientAttribute {
-private:
-	int moveTexNo = -1;
-	int attackTexNo = -1;
-
 public:
+	MultiAnimator moveChargeAnim;
 
 
 	ClientWater(ClientPlayer *player) : ClientAttribute(player) {
-		moveTexNo = LoadTexture("data/texture/Effect/effect_fire_move.png");
-		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
-
-		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true, 0, 25);
-		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true, 0, 25);
+		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_move.png"), 5, 3, 0, 14);
+		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_attack.png"), 5, 6, 0, 29, true, 0, 29);
+		moveChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_charge.png"), 5, 10, 0, 47, true, 0, 47);
 	}
 
 	void Move(void) override;

@@ -228,7 +228,7 @@ void MultiPlayServer::SendUpdate(void) {
 					client.header.id,
 					player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
 					player->animType,
-					player->transform.position, player->velocity, player->attackVelocity,
+					player->transform.position, player->velocity, player->attackVelocity, player->warpVelocity,
 					0, player->skillPoint, 0}
 				);
 			}
@@ -561,7 +561,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 		RESPONSE_PLAYER res;
 
 		// 受信する
-		int	buffLen = Recv(sockfd_, recvTmpBuff, MAX_BUFF, 0);
+		//int	buffLen = Recv(sockfd_, recvTmpBuff, MAX_BUFF, 0);
 
 		// データを取り込む
 		recvBuff.Push(recvTmpBuff, buffLen);

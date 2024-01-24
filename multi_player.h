@@ -24,7 +24,7 @@ public:
 	MultiMap *map = nullptr;							// マップ
 	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;// アニメーション
 	Vector2 attackVelocity;								// 攻撃のベロシティ
-	
+	Vector2 warpVelocity;								// ワープベロシティ
 	
 public:
 	~ServerPlayer() {
@@ -68,6 +68,7 @@ public:
 	MultiAnimator anim;										// アニメーション
 	bool isReverseX = false;								// 横軸の向き
 	Vector2 attackVelocity;									// 攻撃のベロシティ
+	Vector2 warpVelocity;								// ワープベロシティ
 
 
 	

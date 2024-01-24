@@ -70,11 +70,11 @@ void ClientPlayer::Loop(void) {
 
 
 	// 移動アニメーション
-	if (animType == ANIMATION_TYPE_MOVE) {
+	if (animType == ANIMATION_TYPE_MOVE || animType == ANIMATION_TYPE_MOVE_CHARGE) {
 		moveAttribute->Move();
 	}
 	// 攻撃アニメーション
-	if (animType == ANIMATION_TYPE_ATTACK) {
+	if (animType == ANIMATION_TYPE_ATTACK || animType == ANIMATION_TYPE_ATTACK_CHARGE) {
 		attackAttribute->Attack();
 	}
 

@@ -202,9 +202,6 @@
     <ClCompile Include="id.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="multi_character_select_mode.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="number.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -248,6 +245,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="multi_area_capture_mode.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_character_select_mode.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -429,9 +429,6 @@
     <ClInclude Include="id.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="multi_character_select_mode.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="multi_client_gameobject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -439,9 +436,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="multi_enemy_rush_mode.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="multi_header.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="multi_intermediate_result_mode.h">
@@ -504,9 +498,6 @@
     <ClInclude Include="multi_anim.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
-    <ClInclude Include="multi_attack.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="multi_movable_object.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -524,6 +515,15 @@
     </ClInclude>
     <ClInclude Include="area_capture.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_attack.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_character_select_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_header.h">
+      <Filter>Multiplay\head</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
