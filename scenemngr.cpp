@@ -81,12 +81,6 @@ void SceneMngr::DebugMenu()
         captured_ = true;
     }
     ImGui::End();
-    if(captured_)
-    {
-        ImGui::Begin("screenshot");
-        ImGui::Image(savedFrameTexture_, ImVec2(853.0f, 480.0f));
-        ImGui::End();
-    }
 }
 
 void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
@@ -228,13 +222,19 @@ void SceneMngr::CaptureScreen()
     // Create a new texture with the same description
     if(savedFrameTexture_ != nullptr)
         savedFrameTexture_->Release();
-
+    
     Graphical::GetDevice().Get()->CreateTexture2D(&textureDesc, nullptr, &savedFrameTexture_);
 
     // Copy the back buffer to the new texture
     deviceContext->CopyResource(savedFrameTexture_, backBufferTexture);
 
     // Now you can use savedFrameTexture later as needed
+    DirectX::ScratchImage image;
+    HRESULT hr = DirectX::CaptureTexture(Graphical::GetDevice().Get(),Graphical::GetDevice().GetContext(),savedFrameTexture_,image);
+    if (SUCCEEDED(hr)) {
+        const DirectX::Image* img = image.GetImage(0, 0, 0);
+        DirectX::SaveToTGAFile(*img, L"screen.tga");
+    }
 
     // Don't forget to release COM objects when you're done with them
     backBufferResource->Release();
