@@ -2,10 +2,14 @@
 #include <string>
 
 #include "scene.h"
+#include "texture.h"
+
 class SceneMngr
 {
 private:
 	Scene* scene_;
+	ID3D11Texture2D* savedFrameTexture_;
+	bool captured_;
 
 public:
 	SceneMngr() = delete;
@@ -31,4 +35,5 @@ public:
 
 private:
 	void ParseGame(const std::string& message);
+	void CaptureScreen();
 };
