@@ -29,7 +29,6 @@ ClientSkillOrb::ClientSkillOrb(Vector2 scale) {
 	texNo = LoadTexture(Asset::textures_.at(textures::skill_orb));
 	transform.scale = scale;
 }
-
 void ClientSkillOrb::Loop(void) {
 	if (!isShow) return;
 	DrawSprite(texNo, transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);

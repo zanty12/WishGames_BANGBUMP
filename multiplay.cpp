@@ -479,6 +479,11 @@ void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
 	gameMode->Draw(res, offset);
 
 	// オブジェクトの描画
+	std::list<bool> aaa;
+	for (auto &object : objects) {
+		aaa.push_back(object.second->isShow);
+	}
+
 	for (auto &object : objects) {
 		object.second->Loop();
 	}
@@ -520,6 +525,7 @@ void MultiPlayClient::SendUpdate(void) {
 void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 	int	buffLen = 0;
 	bool IsNotLag = true;
+	int recvCount = 0;		// 受信回数
 
 	while (true) {
 		// ファイルディスクリプタ
@@ -531,15 +537,16 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 		if (tmp.Contains(sockfd_)) {
 			// 受信する
 			buffLen = Recv(sockfd_, recvTmpBuff, MAX_BUFF, 0);
+			recvCount++;
 
 			// 終了
-			if (buffLen <= 0) return;
+			if (recvCount && buffLen <= 0) return;
 
 			// ラグ対策ループをしない
-			if (!IsNotLag) break;
+			if (recvCount && !IsNotLag) break;
 		}
 		// 受信終了
-		else {
+		else if (recvCount) {
 			break;
 		}
 	}
@@ -598,7 +605,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 				auto &obj = iterator->second;
 				obj->isShow = true;
 				obj->transform.position = object.position;
-			}			
+			}		
 		}
 
 		// モードがNONEではないなら
@@ -607,9 +614,6 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 			if (gameMode && res.mode == gameMode->GetMode()) gameMode->ParseResponse(recvBuff);
 
 		}
-
-		// レスポンスの保存
-		res_ = res;
 
 		// 初期化
 		recvBuff = nullptr;
