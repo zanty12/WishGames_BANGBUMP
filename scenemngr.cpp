@@ -1,5 +1,7 @@
 #include "scenemngr.h"
 
+#include <future>
+
 #include "dark.h"
 #include "fire.h"
 #include "game.h"
@@ -39,6 +41,7 @@ SceneMngr::SceneMngr(SCENE scene)
     default:
         break;
     }
+    loading_tex_ = LoadTexture("data/texture/UI/loading.png");
 }
 
 void SceneMngr::ChangeScene(SCENE scene)
@@ -48,27 +51,24 @@ void SceneMngr::ChangeScene(SCENE scene)
         delete scene_;
         scene_ = nullptr;
     }
+    Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+    DrawSprite(loading_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2),
+                       0.0f, Vector2(1920.0f, 1080.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    Graphical::Present();
+    std::future<void> loadSceneFuture = std::async(std::launch::async, &SceneMngr::LoadScene, this, scene);
 
-    switch (scene)
+    auto start = std::chrono::high_resolution_clock::now();
+    loading_ = true;
+    while(true)
     {
-    case SCENE_TITLE:
-        scene_ = new Title(this);
-        break;
-    case SCENE_MENU:
-        scene_ = new Menu(this);
-        break;
-    case SCENE_PREP:
-        scene_ = new Prep(this);
-        break;
-    case SCENE_GAME:
-        scene_ = new Game(this);
-        break;
-    case SCENE_RESULT:
-        scene_ = new Result(this);
-        break;
-    default:
-        break;
+        auto now = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - start);
+        if(loadSceneFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready && duration.count() >= 2)
+        {
+            break;
+        }
     }
+    loading_ = false;
 }
 
 void SceneMngr::DebugMenu()
@@ -83,14 +83,8 @@ void SceneMngr::DebugMenu()
     ImGui::End();
 }
 
-void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
+void SceneMngr::LoadScene(SCENE scene)
 {
-    if (scene_)
-    {
-        delete scene_;
-        scene_ = nullptr;
-    }
-
     switch (scene)
     {
     case SCENE_TITLE:
@@ -104,7 +98,6 @@ void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
         break;
     case SCENE_GAME:
         scene_ = new Game(this);
-        ParseGame(message);
         break;
     case SCENE_RESULT:
         scene_ = new Result(this);
@@ -112,6 +105,35 @@ void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
     default:
         break;
     }
+}
+
+void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
+{
+    if (scene_)
+    {
+        delete scene_;
+        scene_ = nullptr;
+    }
+    std::future<void> loadSceneFuture = std::async(std::launch::async, &SceneMngr::LoadScene, this, scene);
+    Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+    DrawSprite(loading_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2),
+                       0.0f, Vector2(1920.0f, 1080.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    Graphical::Present();
+    auto start = std::chrono::high_resolution_clock::now();
+    loading_ = true;
+    while(true)
+    {
+        auto now = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - start);
+        if(loadSceneFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready && duration.count() >= 2)
+        {
+            break;
+        }
+    }
+    loading_ = false;
+
+    if(scene == SCENE_GAME)
+        ParseGame(message);
 }
 
 
