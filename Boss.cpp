@@ -107,22 +107,23 @@ void Boss::Fire()
 void Boss::Thunder()
 {
     //‚Pƒqƒbƒg@‚Q‚O‚Oƒ_ƒ[ƒW
-    atk_time_ ++;
+    atk_time_ += Time::GetDeltaTime();
+    
 
-    if (atk_time_ > 0 && atk_time_ < 2)
+    if (abs(atk_time_) > 0 && abs(atk_time_) < 2)
     {
         Boss_Thunder* thunder = new Boss_Thunder(startPosition);
         GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder);
         SetAtk(200);
     }
-    else if (atk_time_ > 2 && atk_time_ < 4)
+    else if (abs(atk_time_) > 2 && abs(atk_time_) < 4)
     {
         Boss_Thunder* thunder1 = new Boss_Thunder(startPosition);
         GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder1);
         thunder1->SetVel(Vector2(0.0f, thunder1->GetVel().y));
         SetAtk(200);
     }
-    else if (atk_time_ > 4 && atk_time_ < 6)
+    else if (abs(atk_time_) > 4 && abs(atk_time_) < 6)
     {
         Boss_Thunder* thunder2 = new Boss_Thunder(startPosition);
         GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder2);
