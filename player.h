@@ -97,6 +97,7 @@ public:
 	bool GetChangeSceneFlag(void) const { return change_scene_; }	//シーンチェンジのフラグ true=別のシーンへ
 	PLAYER_STATE GetPlayerState(void) const { return player_state_; }	//プレイヤーのステータスをゲット
 	int GetSkillPoint(void) const { return skillpt_; }	//現在所有しているスキルポイントのゲット
+	int GetLv(void) const { return lv_; }	//現在のレベルのゲット
 
 	//スキルポイントの減少（ダメージが所持スキルポイントを超える場合、スキルポイントは0になる）
 	void SkillPointDown(int damage) { damage <= skillpt_ ? skillpt_ -= damage : skillpt_ = 0; }
@@ -128,6 +129,8 @@ private:
 	void CollisionSpike(void);
 	//当たり判定（エネミー）
 	void CollisionEnemy(GameObject* obj);
+	//当たり判定（エネミー２バレット）
+	void CollisionBullet(GameObject* obj);
 
 	//無敵の時
 	void Invincibility(void);
