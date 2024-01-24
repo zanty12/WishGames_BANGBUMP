@@ -128,10 +128,15 @@ void ClientFire::Attack(void) {
   Water
 ********************************************************/
 bool ServerWater::StickTrigger(Vector2 stick, Vector2 previousStick) {
+
+
     return false;
 }
 void ServerWater::Move(void) {
+    // 
+    //if (Input::GetKey(Input::LThumb)) {
 
+    //}
 }
 void ServerWater::Attack(void) {
 

@@ -454,7 +454,7 @@ int MultiPlayClient::Register() {
 	return header.id;
 }
 
-void MultiPlayClient::Unregister() {
+void MultiPlayClient::Unregister(void) {
 	HEADER header;
 
 	// コマンド設定
@@ -471,12 +471,12 @@ void MultiPlayClient::Unregister() {
 	sockfd_.Close();
 }
 
-void MultiPlayClient::PlayerUpdate(RESPONSE_PLAYER &res) {
+void MultiPlayClient::PlayerUpdate(void) {
 	// カメラ座標の計算
-	if (res.clients.size()) offset = Vector2(0.0f, res.clients.begin()->position.y - Graphical::GetHeight() * 0.25f);
+	if (res_.clients.size()) offset = Vector2(0.0f, res_.clients.begin()->position.y - Graphical::GetHeight() * 0.25f);
 
 	// ゲームモードの描画
-	gameMode->Draw(res, offset);
+	gameMode->Draw(res_, offset);
 
 	// オブジェクトの描画
 	std::list<bool> aaa;
@@ -522,7 +522,7 @@ void MultiPlayClient::SendUpdate(void) {
 	}
 }
 
-void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
+void MultiPlayClient::RecvUpdate(int waitTime) {
 	int	buffLen = 0;
 	bool IsNotLag = true;
 	int recvCount = 0;		// 受信回数
@@ -558,6 +558,8 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 
 	if (0 < buffLen) {
+		RESPONSE_PLAYER res;
+
 		// 受信する
 		int	buffLen = Recv(sockfd_, recvTmpBuff, MAX_BUFF, 0);
 
@@ -605,7 +607,7 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 				auto &obj = iterator->second;
 				obj->isShow = true;
 				obj->transform.position = object.position;
-			}		
+			}
 		}
 
 		// モードがNONEではないなら
@@ -617,21 +619,21 @@ void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 
 		// 初期化
 		recvBuff = nullptr;
+
+		res_ = res;
 	}
 }
 
 void MultiPlayClient::Update() {
 	while (!isFinish) {
-		RESPONSE_PLAYER res;
-
 		if (GetAsyncKeyState(VK_ESCAPE)) {
 			isFinish = true;
 			break;
 		}
 		//Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
 		Time::Update();
-		RecvUpdate(1, res);
-		PlayerUpdate(res_);
+		RecvUpdate(1);
+		PlayerUpdate();
 		Graphical::Present();
 		recvBuff = nullptr;
 	}

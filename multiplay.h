@@ -128,13 +128,13 @@ public:
 	}
 
 	// 登録
-	int Register();
+	int Register(void);
 	// 解除
-	void Unregister();
+	void Unregister(void);
 	// 更新
-	void PlayerUpdate(RESPONSE_PLAYER &res);
+	void PlayerUpdate(void);
 	// 受信
-	void RecvUpdate(int waitTime, RESPONSE_PLAYER &res);
+	void RecvUpdate(int waitTime);
 	// 送信
 	void SendUpdate(void);
 
