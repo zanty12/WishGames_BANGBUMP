@@ -149,7 +149,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 				Color::White,
 				uv, Vector2(0.25f, 1.0f / 12.0f)
 				);
-			Number(Vector2(200 * i, 200), Vector2(100, 100), client.skillPoint + 1);
+			Number(Vector2(200 * (i + 1), 200), Vector2(100, 100), client.skillPoint + 1);
 			i++;
 		}
 	}

@@ -519,7 +519,7 @@ void MultiPlayClient::SendUpdate(void) {
 
 void MultiPlayClient::RecvUpdate(int waitTime, RESPONSE_PLAYER &res) {
 	int	buffLen = 0;
-	bool IsNotLag = false;
+	bool IsNotLag = true;
 
 	while (true) {
 		// ファイルディスクリプタ

@@ -31,7 +31,6 @@ ClientSkillOrb::ClientSkillOrb(Vector2 scale) {
 }
 
 void ClientSkillOrb::Loop(void) {
-	std::cout << "-- : " << isShow << std::endl;
 	if (!isShow) return;
 	DrawSprite(texNo, transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
 	isShow = false;
