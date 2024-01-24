@@ -127,23 +127,12 @@ public:
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;
-	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
+	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_DARK; };
 };
 class ClientWater : public ClientAttribute {
 private:
-	static const int ANIM_NUM = 50;
-	static const int FRAME_NUM = 24;
-	struct Animator {
-		Vector2 pos;
-		float rot = 0.0f;
-		Vector2 scl;
-		MultiAnimator anim;
-	};
 	int moveTexNo = -1;
 	int attackTexNo = -1;
-	std::list<Animator> moveAnims;
-	std::list<Animator> attackAnims;
-	DWORD startTime = 0;
 
 public:
 
@@ -154,12 +143,11 @@ public:
 
 		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true, 0, 25);
 		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true, 0, 25);
-		startTime = timeGetTime();
 	}
 
 	void Move(void) override;
 	void Attack(void) override;
-	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
+	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_DARK; };
 };
 
 class ServerWaterAttack : public AttackServerSide {
@@ -171,7 +159,7 @@ public:
 
 	const GameObjectServerSide *GetSelf(void) { return self; }
 
-	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_FIRE; }
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WATER; }
 };
 
 
@@ -187,7 +175,6 @@ private:
 	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
 	float maxSpeed = 5.0f;				// 加速の最大値
 	float judgeScale = 0.2f;			// スティックの傾けたときに判定する最小値
-	Vector2 velocity;					// 向き
 
 	AttackServerSide *attack_ = nullptr;
 
@@ -196,23 +183,12 @@ public:
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;
-	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
+	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_THUNDER; };
 };
 class ClientThunder : public ClientAttribute {
 private:
-	static const int ANIM_NUM = 50;
-	static const int FRAME_NUM = 24;
-	struct Animator {
-		Vector2 pos;
-		float rot = 0.0f;
-		Vector2 scl;
-		MultiAnimator anim;
-	};
 	int moveTexNo = -1;
 	int attackTexNo = -1;
-	std::list<Animator> moveAnims;
-	std::list<Animator> attackAnims;
-	DWORD startTime = 0;
 
 public:
 
@@ -223,12 +199,11 @@ public:
 
 		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true, 0, 25);
 		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true, 0, 25);
-		startTime = timeGetTime();
 	}
 
 	void Move(void) override;
 	void Attack(void) override;
-	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
+	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_THUNDER; };
 };
 
 class ServerThunderAttack : public AttackServerSide {
@@ -240,7 +215,7 @@ public:
 
 	const GameObjectServerSide *GetSelf(void) { return self; }
 
-	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_FIRE; }
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER; }
 };
 
 

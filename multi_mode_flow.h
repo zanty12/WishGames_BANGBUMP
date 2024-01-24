@@ -28,7 +28,7 @@ private:
 
 public:
 	MultiPlayFlowServerSide(MultiPlayServer* game) : game_(game) {
-		gameMode_ = CreateMode(CHARACTER_SELECT);
+		gameMode_ = CreateMode(AREA_CAPTURE);
 	}
 	~MultiPlayFlowServerSide() {
 		if (gameMode_) delete gameMode_;
