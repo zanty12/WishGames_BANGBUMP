@@ -15,6 +15,7 @@
 #include "skillorb.h"
 #include "enemy.h"
 #include "xinput.h"
+#include "bullet.h"
 
 #define LV_NUM (10)
 
@@ -161,6 +162,8 @@ void Player::DebugMenu()
 	ImGui::Begin("Player");
 	ImGui::Text("LV:%d", lv_);
 	ImGui::Text("HP:%d", hp_);
+	ImGui::Text("VelX%f", GetVel().x);
+	ImGui::Text("VelY%f", GetVel().y);
 	ImGui::Text("SkillPoint:%d", skillpt_);
 	ImGui::Text("PlayerState:%d", player_state_);
 	ImGui::End();
@@ -185,10 +188,8 @@ void Player::CollisionAction(void)
 		switch (type)
 		{
 		case OBJ_SOLID:
-			/*if (GetVel().x != 0.0f)
-				SetVel(Vector2(0.0f, GetVel().y));
-			if (GetVel().y != 0.0f)
-				SetVel(Vector2(GetVel().x, 0.0f));*/
+			player_state_ = TOUCH_GROUND;
+
 			if (invincibility_time_ < 1.0f / 4)
 				invincibility_time_ = 1.0f / 4;
 			break;
@@ -207,6 +208,12 @@ void Player::CollisionAction(void)
 		{
 			GameObject* gameObj = collision->GetParent();
 			CollisionEnemy(gameObj);
+			break;
+		}
+		case OBJ_BULLET:
+		{
+			GameObject* gameObj = collision->GetParent();
+			CollisionBullet(gameObj);
 			break;
 		}
 		case OBJ_ATTACK:
@@ -427,6 +434,39 @@ void Player::CollisionEnemy(GameObject* obj)
 	knockback_start_ = GetPos();
 	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
 
+}
+
+//================================================================================
+// エネミー２のバレットに当たった時のアクション
+//================================================================================
+void Player::CollisionBullet(GameObject* obj)
+{
+	Bullet* bullet = dynamic_cast<Bullet*>(obj);
+
+	if (bullet == nullptr)
+	{
+		return;
+	}
+	if (invincibility_time_ < INVINCIBILITY_MAX_TIME_)
+	{
+		return;
+	}
+
+	invincibility_time_ = 0.0f;
+
+	dir_ = GetVel().Normalize();
+	if (abs(GetVel().x) < 0.1f && abs(GetVel().y < 0.1f))
+	{
+		dir_ = bullet->GetVel().Normalize();
+	}
+
+	SkillPointDown(bullet->GetAtk());
+
+	knockback_time_ = 1.0f / 4;
+	knockback_distance_ = SIZE_;
+
+	knockback_start_ = GetPos();
+	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
 }
 
 //================================================================================

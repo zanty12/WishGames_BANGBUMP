@@ -74,6 +74,13 @@ void SceneMngr::ChangeScene(SCENE scene)
 void SceneMngr::DebugMenu()
 {
     scene_->DebugMenu();
+    ImGui::Begin("screen capture");
+    if(ImGui::Button("capture"))
+    {
+        CaptureScreen();
+        captured_ = true;
+    }
+    ImGui::End();
 }
 
 void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
@@ -194,4 +201,42 @@ void SceneMngr::ParseGame(const std::string& message)
     game->AddCamera(new Camera(player->GetPos(),
                                Vector2(game->GetMapMngr()->GetMap()->GetWidth(),
                                        game->GetMapMngr()->GetMap()->GetHeight())));
+}
+
+void SceneMngr::CaptureScreen()
+{
+    // Assuming you have a valid ID3D11DeviceContext* named deviceContext
+    // and a valid ID3D11RenderTargetView* named renderTargetView
+    ID3D11DeviceContext* deviceContext = Graphical::GetDevice().GetContext();
+    ID3D11RenderTargetView* renderTargetView = Graphical::GetRenderer().GetRTV();
+
+    ID3D11Resource* backBufferResource;
+    renderTargetView->GetResource(&backBufferResource);
+
+    ID3D11Texture2D* backBufferTexture;
+    backBufferResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&backBufferTexture);
+
+    D3D11_TEXTURE2D_DESC textureDesc;
+    backBufferTexture->GetDesc(&textureDesc);
+
+    // Create a new texture with the same description
+    if(savedFrameTexture_ != nullptr)
+        savedFrameTexture_->Release();
+    
+    Graphical::GetDevice().Get()->CreateTexture2D(&textureDesc, nullptr, &savedFrameTexture_);
+
+    // Copy the back buffer to the new texture
+    deviceContext->CopyResource(savedFrameTexture_, backBufferTexture);
+
+    // Now you can use savedFrameTexture later as needed
+    DirectX::ScratchImage image;
+    HRESULT hr = DirectX::CaptureTexture(Graphical::GetDevice().Get(),Graphical::GetDevice().GetContext(),savedFrameTexture_,image);
+    if (SUCCEEDED(hr)) {
+        const DirectX::Image* img = image.GetImage(0, 0, 0);
+        DirectX::SaveToTGAFile(*img, L"screen.tga");
+    }
+
+    // Don't forget to release COM objects when you're done with them
+    backBufferResource->Release();
+    backBufferTexture->Release();
 }
