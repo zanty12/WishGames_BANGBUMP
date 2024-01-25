@@ -12,8 +12,18 @@ private:
     std::list<Animator*> animators_;
 
 public:
-    Renderer() = default;
-    ~Renderer() = default;
+    Renderer()
+    {
+        animators_ = std::list<Animator*>();
+    };
+    ~Renderer()
+    {
+        for (auto animator : animators_)
+        {
+            delete animator;
+        }
+        animators_.clear();
+    }
     void Update();
     void Draw();
     void Draw(Camera* camera);

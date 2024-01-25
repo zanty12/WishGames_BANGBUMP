@@ -1,5 +1,7 @@
 #include "scenemngr.h"
 
+#include <future>
+
 #include "dark.h"
 #include "fire.h"
 #include "game.h"
@@ -39,6 +41,7 @@ SceneMngr::SceneMngr(SCENE scene)
     default:
         break;
     }
+    loading_tex_ = LoadTexture("data/texture/UI/loading.png");
 }
 
 void SceneMngr::ChangeScene(SCENE scene)
@@ -48,7 +51,40 @@ void SceneMngr::ChangeScene(SCENE scene)
         delete scene_;
         scene_ = nullptr;
     }
+    Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+    DrawSprite(loading_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2),
+                       0.0f, Vector2(1920.0f, 1080.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    Graphical::Present();
+    std::future<void> loadSceneFuture = std::async(std::launch::async, &SceneMngr::LoadScene, this, scene);
 
+    auto start = std::chrono::high_resolution_clock::now();
+    loading_ = true;
+    while(true)
+    {
+        auto now = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - start);
+        if(loadSceneFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready && duration.count() >= 2)
+        {
+            break;
+        }
+    }
+    loading_ = false;
+}
+
+void SceneMngr::DebugMenu()
+{
+    scene_->DebugMenu();
+    ImGui::Begin("screen capture");
+    if(ImGui::Button("capture"))
+    {
+        CaptureScreen();
+        captured_ = true;
+    }
+    ImGui::End();
+}
+
+void SceneMngr::LoadScene(SCENE scene)
+{
     switch (scene)
     {
     case SCENE_TITLE:
@@ -69,11 +105,6 @@ void SceneMngr::ChangeScene(SCENE scene)
     default:
         break;
     }
-}
-
-void SceneMngr::DebugMenu()
-{
-    scene_->DebugMenu();
 }
 
 void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
@@ -83,28 +114,26 @@ void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
         delete scene_;
         scene_ = nullptr;
     }
-
-    switch (scene)
+    std::future<void> loadSceneFuture = std::async(std::launch::async, &SceneMngr::LoadScene, this, scene);
+    Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+    DrawSprite(loading_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2),
+                       0.0f, Vector2(1920.0f, 1080.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    Graphical::Present();
+    auto start = std::chrono::high_resolution_clock::now();
+    loading_ = true;
+    while(true)
     {
-    case SCENE_TITLE:
-        scene_ = new Title(this);
-        break;
-    case SCENE_MENU:
-        scene_ = new Menu(this);
-        break;
-    case SCENE_PREP:
-        scene_ = new Prep(this);
-        break;
-    case SCENE_GAME:
-        scene_ = new Game(this);
-        ParseGame(message);
-        break;
-    case SCENE_RESULT:
-        scene_ = new Result(this);
-        break;
-    default:
-        break;
+        auto now = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - start);
+        if(loadSceneFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready && duration.count() >= 2)
+        {
+            break;
+        }
     }
+    loading_ = false;
+
+    if(scene == SCENE_GAME)
+        ParseGame(message);
 }
 
 
@@ -194,4 +223,42 @@ void SceneMngr::ParseGame(const std::string& message)
     game->AddCamera(new Camera(player->GetPos(),
                                Vector2(game->GetMapMngr()->GetMap()->GetWidth(),
                                        game->GetMapMngr()->GetMap()->GetHeight())));
+}
+
+void SceneMngr::CaptureScreen()
+{
+    // Assuming you have a valid ID3D11DeviceContext* named deviceContext
+    // and a valid ID3D11RenderTargetView* named renderTargetView
+    ID3D11DeviceContext* deviceContext = Graphical::GetDevice().GetContext();
+    ID3D11RenderTargetView* renderTargetView = Graphical::GetRenderer().GetRTV();
+
+    ID3D11Resource* backBufferResource;
+    renderTargetView->GetResource(&backBufferResource);
+
+    ID3D11Texture2D* backBufferTexture;
+    backBufferResource->QueryInterface(__uuidof(ID3D11Texture2D), (void**)&backBufferTexture);
+
+    D3D11_TEXTURE2D_DESC textureDesc;
+    backBufferTexture->GetDesc(&textureDesc);
+
+    // Create a new texture with the same description
+    if(savedFrameTexture_ != nullptr)
+        savedFrameTexture_->Release();
+    
+    Graphical::GetDevice().Get()->CreateTexture2D(&textureDesc, nullptr, &savedFrameTexture_);
+
+    // Copy the back buffer to the new texture
+    deviceContext->CopyResource(savedFrameTexture_, backBufferTexture);
+
+    // Now you can use savedFrameTexture later as needed
+    DirectX::ScratchImage image;
+    HRESULT hr = DirectX::CaptureTexture(Graphical::GetDevice().Get(),Graphical::GetDevice().GetContext(),savedFrameTexture_,image);
+    if (SUCCEEDED(hr)) {
+        const DirectX::Image* img = image.GetImage(0, 0, 0);
+        DirectX::SaveToTGAFile(*img, L"screen.tga");
+    }
+
+    // Don't forget to release COM objects when you're done with them
+    backBufferResource->Release();
+    backBufferTexture->Release();
 }

@@ -37,5 +37,5 @@ public:
     FireAttack() = delete;
     FireAttack(Fire* parent);
     ~FireAttack() override = default;
-    void Update() override{};
+    void Update() override;
 };

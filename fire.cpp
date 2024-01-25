@@ -79,8 +79,39 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
                                            Vector2(
                                                parent->GetPlayer()->GetPos().x + parent->GetPlayer()->GetScale().x / 2 +
                                                1.5 * GameObject::SIZE_, parent->GetPlayer()->GetPos().y), 0.0f,
-                                           LoadTexture(Asset::GetAsset(fire_attack)), Vector2::Zero),PlayerAttack(10000)
+                                           LoadTexture(Asset::GetAsset(fire_attack)), Vector2::Zero),
+                                       PlayerAttack(10000)
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);
+    SetMaxTick(1.0f / 3.0f);
+    //SetDamage(50);
+}
+
+void FireAttack::Update()
+{
+    UpdateTick();
+    std::list<Collider*> collisions = GetCollider()->GetCollision();
+    for (auto collision : collisions)
+    {
+        OBJECT_TYPE type = collision->GetParent()->GetType();
+        switch (type)
+        {
+        case OBJ_ENEMY:
+            {
+                Enemy* enemy = dynamic_cast<Enemy*>(collision->GetParent());
+                if (enemy != nullptr)
+                {
+                    if (GetTick() > GetMaxTick())
+                    {
+                        SetTick(0.0f);
+                        enemy->SetHp(enemy->GetHp() - GetDamage());
+                    }
+                }
+            }
+            break;
+        default:
+            break;
+        }
+    }
 }

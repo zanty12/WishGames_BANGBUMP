@@ -130,6 +130,34 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
     SetType(OBJ_ATTACK);
 }
 
+void DarkAttack::Update()
+{
+    UpdateTick();
+    std::list<Collider*> collisions = GetCollider()->GetCollision();
+    for (auto collision : collisions)
+    {
+        OBJECT_TYPE type = collision->GetParent()->GetType();
+        switch (type)
+        {
+        case OBJ_ENEMY:
+            {
+                Enemy* enemy = dynamic_cast<Enemy*>(collision->GetParent());
+                if (enemy != nullptr)
+                {
+                    if (GetTick() > GetMaxTick())
+                    {
+                        SetTick(0.0f);
+                        enemy->SetHp(enemy->GetHp() - GetDamage());
+                    }
+                }
+            }
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 DarkIndicator::DarkIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(player)), Vector2::Zero)
 {
     SetScale(Vector2(2 * GameObject::SIZE_, 2 * GameObject::SIZE_));

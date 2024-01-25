@@ -12,6 +12,11 @@
 Game::Game(SceneMngr* scene_mngr)
     : GameBase(scene_mngr)
 {
+    renderer_ = new Renderer();
+    coll_mngr_ = new CollMngr();
+    projectile_mngr_ = new ProjectileMngr();
+    orb_mngr_ = new SkillOrbMngr();
+    players_ = std::list<Player *>();
     mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_1).c_str(), this);
     text_format_ = Text::MakeTextFormat(L"ワープロ明朝", 50, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL);
     brush_ = Text::MakeBrush(Color(1.0f, 1.0f, 1.0f, 1.0f));
@@ -26,66 +31,18 @@ Game::Game(SceneMngr* scene_mngr)
 
 void Game::Update()
 {
-    coll_mngr_->Update();
-    std::thread map(&MapMngr::Update, mapmngr_);
-    //mapmngr_->Update();
-    std::thread enemy(&EnemyMngr::Update, mapmngr_->GetEnemyMngr());
-    std::thread player(&Player::Update, GetPlayer());
-    //GetPlayer()->Update();
-    std::thread projectile(&ProjectileMngr::Update, projectile_mngr_);
-    //projectile_mngr_->Update();
-    //std::thread orb(&SkillOrbMngr::Update, orb_mngr_);
-    //orb_mngr_->Update();
-    //projectile.join();
-    //orb.join();
-    std::thread camera(&Camera::Update, camera_, GetPlayer()->GetPos(), GetPlayer()->GetVel(),
-                       GetPlayer()->GetPlayerState());
-    //camera_->Update(GetPlayer()->GetPos(),GetPlayer()->GetVel(),GetPlayer()->GetPlayerState());
-    std::thread renderer(&Renderer::Update, renderer_);
-    //renderer_->Update();
-    map.join();
-    enemy.join();
-    player.join();
-    projectile.join();
-    camera.join();
-    renderer.join();
-    if (GetPlayer()->GetChangeSceneFlag())
-    {
-        scene_mngr_->ChangeScene(SCENE_RESULT);
-    }
-    if (GetChangeScene() == 1)
-    {
-        scene_mngr_->ChangeScene(SCENE_RESULT);
-    }
-
-
-    timer_ -= Time::GetDeltaTime();
-    if (timer_ <= 0.0f)
-    {
-        delete mapmngr_;
-        coll_mngr_->CheckDiscard();
-        renderer_->CheckDiscard();
-        mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_2).c_str(), this);
-        timer_ = 120.0f;
-        GetPlayer()->SetPos(mapmngr_->GetPlayerSpawn());
-        GetPlayer()->SetMapMngr(mapmngr_);
-        delete camera_;
-        camera_ = new Camera(GetPlayer()->GetPos(),
-                             Vector2(mapmngr_->GetMap()->GetWidth(), mapmngr_->GetMap()->GetHeight()));
-    }
+    if (!GetChangeScene())
+        UpdateNormal();
+    else
+        UpdateResult();
 }
 
 void Game::Draw()
 {
-    camera_->Draw();
-    renderer_->Draw(camera_);
-
-    //UI
-    DrawSpriteLeftTop(timer_tex_, Vector2(Graphical::GetWidth() / 2, 50), 0.0f, Vector2(250, 100),
-                      Color(1.0f, 1.0f, 1.0f, 1.0f));
-    int itimeer = static_cast<int>(timer_);
-    std::wstring time = std::to_wstring(itimeer);
-    Text::WriteText(time.c_str(), text_format_, brush_, Graphical::GetWidth() / 2 - 45, 25, 180, 50);
+    if (!GetChangeScene())
+        DrawNormal();
+    else
+        DrawResult();
 }
 
 Player* Game::GetPlayer()
@@ -96,7 +53,7 @@ Player* Game::GetPlayer()
 void Game::DebugMenu()
 {
     auto player_ = GetPlayer();
-
+    player_->DebugMenu();
     ImGui::Begin("Game");
     ImGui::Text(u8"プレイヤー座標");
     ImGui::Text("x:%f, y: %f", player_->GetPos().x, player_->GetPos().y);
@@ -170,7 +127,111 @@ void Game::DebugMenu()
         renderer_->CheckDiscard();
         mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
     }
+    if (ImGui::Button("clear"))
+        SetChangeScene(1);
+    if (ImGui::Button("over"))
+        SetChangeScene(2);
+    if(ImGui::Button("title"))
+    {
+        scene_mngr_->ChangeScene(SCENE_TITLE);
+
+    }
     ImGui::End();
-    player_->DebugMenu();
+
 }
 
+void Game::UpdateNormal()
+{
+    coll_mngr_->Update();
+    std::thread map(&MapMngr::Update, mapmngr_);
+    //mapmngr_->Update();
+    std::thread enemy(&EnemyMngr::Update, mapmngr_->GetEnemyMngr());
+    std::thread player(&Player::Update, GetPlayer());
+    //GetPlayer()->Update();
+    std::thread projectile(&ProjectileMngr::Update, projectile_mngr_);
+    //projectile_mngr_->Update();
+    //std::thread orb(&SkillOrbMngr::Update, orb_mngr_);
+    //orb_mngr_->Update();
+    //projectile.join();
+    //orb.join();
+    std::thread camera(&Camera::Update, camera_, GetPlayer()->GetPos(), GetPlayer()->GetVel(),
+                       GetPlayer()->GetPlayerState());
+    //camera_->Update(GetPlayer()->GetPos(),GetPlayer()->GetVel(),GetPlayer()->GetPlayerState());
+    std::thread renderer(&Renderer::Update, renderer_);
+    //renderer_->Update();
+    map.join();
+    enemy.join();
+    player.join();
+    projectile.join();
+    camera.join();
+    renderer.join();
+    if (GetPlayer()->GetChangeSceneFlag())
+    {
+        scene_mngr_->ChangeScene(SCENE_RESULT);
+    }
+    if (GetChangeScene() == 1)
+    {
+        scene_mngr_->ChangeScene(SCENE_RESULT);
+    }
+
+
+    timer_ -= Time::GetDeltaTime();
+    if (timer_ <= 0.0f)
+    {
+        delete mapmngr_;
+        coll_mngr_->CheckDiscard();
+        renderer_->CheckDiscard();
+        mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_2).c_str(), this);
+        timer_ = 120.0f;
+        GetPlayer()->SetPos(mapmngr_->GetPlayerSpawn());
+        GetPlayer()->SetMapMngr(mapmngr_);
+        delete camera_;
+        camera_ = new Camera(GetPlayer()->GetPos(),
+                             Vector2(mapmngr_->GetMap()->GetWidth(), mapmngr_->GetMap()->GetHeight()));
+    }
+}
+
+void Game::DrawNormal()
+{
+    camera_->Draw();
+    renderer_->Draw(camera_);
+
+    //UI
+    DrawSpriteLeftTop(timer_tex_, Vector2(Graphical::GetWidth() / 2, 50), 0.0f, Vector2(250, 100),
+                      Color(1.0f, 1.0f, 1.0f, 1.0f));
+    int itimeer = static_cast<int>(timer_);
+    std::wstring time = std::to_wstring(itimeer);
+    Text::WriteText(time.c_str(), text_format_, brush_, Graphical::GetWidth() / 2 - 45, 25, 180, 50);
+}
+
+void Game::UpdateResult()
+{
+    static bool changed = false;
+    if (GetChangeScene() == 1 && !changed)
+    {
+        result_tex_ = LoadTexture("data/texture/UI/clear.png");
+    }
+    else if (GetChangeScene() == 2 && !changed)
+    {
+        result_tex_ = LoadTexture("data/texture/UI/over.png");
+    }
+    if (!changed)
+    {
+        changed = true;
+        button_title_ = LoadTexture("data/texture/UI/button_title.png");
+        button_restart_ = LoadTexture("data/texture/UI/button_restart.png");
+    }
+
+}
+
+void Game::DrawResult()
+{
+    camera_->Draw();
+    renderer_->Draw(camera_);
+    DrawSprite(result_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2 + 200), 0.0f, Vector2(327, 100),
+               Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(button_title_, Vector2(Graphical::GetWidth() / 2 - 200, Graphical::GetHeight() / 2 - 200), 0.0f,
+               Vector2(120, 68), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(button_restart_, Vector2(Graphical::GetWidth() / 2 + 200, Graphical::GetHeight() / 2 - 200), 0.0f,
+               Vector2(120, 68), Color(1.0f, 1.0f, 1.0f, 1.0f));
+}

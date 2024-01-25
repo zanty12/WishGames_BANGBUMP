@@ -80,9 +80,6 @@ void ColliderRect::CollisionInteract()
         case OBJ_ITEM:
             break;
         case OBJ_ATTACK:
-            //”½Ë‚·‚é‚à‚Ì‚É‚¾‚¯Õ“Ëˆ—
-            if (dynamic_cast<Boss_Wind*>(other->GetParent()) != nullptr)
-                CollisionSolid(other);
             break;
         default:
             CollisionSolid(other);
@@ -178,7 +175,12 @@ void ColliderRect::CollisionSolid(Collider* other)
                         parent->SetVel(vel);
                     }
                 }
-                SetPos(GetPos() + move_amount);
+                //if other is heavier or not movable, move self
+                if(GetWeight() > other->GetWeight() || !other->GetIsMovable())
+                    SetPos(GetPos() + move_amount);
+                else
+                    //if other is lighter, move other
+                    other->SetPos(other->GetPos() - move_amount);
             }
         }
         break;

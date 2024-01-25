@@ -29,7 +29,7 @@ protected:
 	IDWriteTextFormat* text_format_;
 	ID2D1SolidColorBrush* brush_;
 
-	int change_scene_;		//シーン遷移フラグ
+	int change_scene_;		//繧ｷ繝ｼ繝ｳ驕ｷ遘ｻ繝輔Λ繧ｰ
 
 
 private:
@@ -57,6 +57,6 @@ public:
 	static bool UpdateLoD(const Vector2 pos);
 	SceneMngr* GetSceneMngr(void) { return scene_mngr_; }
 	void SetChangeScene(int change_scene) { change_scene_ = change_scene; }
-	int GetChangeScene(void) const { return change_scene_; }	//シーンチェンジのフラグ
+	int GetChangeScene(void) const { return change_scene_; }	//繧ｷ繝ｼ繝ｳ繝√ぉ繝ｳ繧ｸ縺ｮ繝輔Λ繧ｰ
 
 };

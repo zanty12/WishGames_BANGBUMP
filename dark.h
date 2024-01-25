@@ -44,7 +44,7 @@ public:
 	DarkAttack() = delete;
 	DarkAttack(Dark* parent);
 	~DarkAttack() override = default;
-	void Update() override{};
+	void Update() override;
 };
 
 class DarkIndicator : public MovableObj
