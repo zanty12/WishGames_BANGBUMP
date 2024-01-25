@@ -3,6 +3,7 @@
 #include "xinput.h"
 #include "time.h"
 #include "multi_skillorb.h"
+#include "ini.h"
 #include <windows.h>
 #include <thread>
 
@@ -413,11 +414,7 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	recvTmpBuff = new char[MAX_BUFF];
 
 	// IPV4アドレスの登録
-	wchar_t addr_w[128] = {};
-	char addr[256] = {};
-	GetPrivateProfileString(L"System", L"Addr", L"0.0.0.0", addr_w, 128, L"data/multiplay.ini");
-	wcstombs(addr, addr_w, 128);
-	SERVER_ADDRESS = addr;
+	SERVER_ADDRESS = ini::GetString(L"data/multiplay.ini", L"System", L"Addr");
 }
 
 int MultiPlayClient::Register() {

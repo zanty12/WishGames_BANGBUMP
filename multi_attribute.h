@@ -6,6 +6,7 @@
 #include "multi_object.h"
 #include "multi_attack.h"
 #include "attribute_type.h"
+#include "ini.h"
 
 /*******************************************************
   属性
@@ -17,12 +18,42 @@ protected:
 	ServerPlayer *player = nullptr;
 
 public:
-	ServerAttribute(ServerPlayer* player) : player(player) { }
+	float power = 0.0f;				// パワー
+
+	float minPower = 0.0f;			// パワーの最小値
+	float maxPower = 10.0f;			// パワーの最大値
+	float addPower = 00.0f;			// パワーの加算値
+	float friction = 0.98f;			// 摩擦係数
+	float powerFriction = 1.00f;	// パワーの摩擦係数
+	float minInputDistance = 0.50f;	// 入力の判定値
+	float minInputSpeed = 0.50f;	// 入力の加速の判定値
+	float inputPowerRate = 1.0f;	// 入力値がパワーに与える係数
+
+
+
+public:
+	ServerAttribute(ServerPlayer* player, std::wstring attributeName) : player(player) {
+		minPower = ini::GetFloat(L"data/property/player.ini", attributeName, L"minPower");
+		maxPower = ini::GetFloat(L"data/property/player.ini", attributeName, L"maxPower");
+		addPower = ini::GetFloat(L"data/property/player.ini", attributeName, L"addPower");
+		friction = ini::GetFloat(L"data/property/player.ini", attributeName, L"friction");
+		powerFriction = ini::GetFloat(L"data/property/player.ini", attributeName, L"powerFriction");
+		minInputDistance = ini::GetFloat(L"data/property/player.ini", attributeName, L"minInputDistance");
+		minInputSpeed = ini::GetFloat(L"data/property/player.ini", attributeName, L"minInputSpeed");
+		inputPowerRate = ini::GetFloat(L"data/property/player.ini", attributeName, L"inputPowerRate");
+	}
 	virtual bool StickTrigger(Vector2 stick, Vector2 previousStick) = 0;
 	virtual void Move(void) = 0;
 	virtual void Attack(void) = 0;
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	static ServerAttribute *Create(ServerPlayer *player, ATTRIBUTE_TYPE type);
+
+	void AddPower(void);
+	void AddPower(float scaler);
+	void AddPower(Vector2 stick);
+	void Friction(void);
+	Vector2 CalcVector(Vector2 stick);
+	
 };
 class ClientAttribute {
 protected:
@@ -45,17 +76,14 @@ public:
 ********************************************************/
 class ServerFire : public ServerAttribute {
 private:
-	float friction = 0.99f;				// 摩擦係数
 	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
-	float maxSpeed = 5.0f;				// 加速の最大値
-	float judgeScale = 0.2f;			// スティックの傾けたときに判定する最小値
 	Vector2 velocity;					// 向き
 
 	AttackServerSide *attack_ = nullptr;
 
 public:
-	ServerFire(ServerPlayer *player) : ServerAttribute(player) { }
-	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
+	ServerFire(ServerPlayer *player) : ServerAttribute(player, L"Fire") { }
+	bool StickTrigger(Vector2 stick, Vector2 previousStick = Vector2::Zero) override;
 	void Move(void) override;
 	void Attack(void) override;
 	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
@@ -114,15 +142,10 @@ public:
 ********************************************************/
 class ServerWater : public ServerAttribute {
 private:
-	float charge = 50.0f;				// スピード
-	float warpDistance = 0.0f;			// ワープ距離
-	float maxDistance = 500.0f;			// ワープの最大距離
-	float judgeScale = 0.2f;			// スティックの傾けたときに判定する最小値
-
 	AttackServerSide *attack_ = nullptr;
 
 public:
-	ServerWater(ServerPlayer *player) : ServerAttribute(player) { }
+	ServerWater(ServerPlayer *player) : ServerAttribute(player, L"Water") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;
@@ -168,15 +191,12 @@ public:
 ********************************************************/
 class ServerThunder : public ServerAttribute {
 private:
-	float friction = 0.99f;				// 摩擦係数
 	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
-	float maxSpeed = 5.0f;				// 加速の最大値
-	float judgeScale = 0.2f;			// スティックの傾けたときに判定する最小値
 
 	AttackServerSide *attack_ = nullptr;
 
 public:
-	ServerThunder(ServerPlayer *player) : ServerAttribute(player) { }
+	ServerThunder(ServerPlayer *player) : ServerAttribute(player, L"Thunder") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;
@@ -224,19 +244,14 @@ public:
 ********************************************************/
 class ServerWind : public ServerAttribute {
 private:
-	float power_ = 0.0f;
-	const float rotInputFriction = 0.5f; // まわす加速度の摩擦定数
-	const float rotInputJudgeMin = 0.1f; // まわすを判定する
 
 	float prev_y_ = 0.0f;
 	float previous_time_ = 0.0f;
 
-	float maxPower_ = 10;
-	float friction_ = 0.8f;
 	AttackServerSide *attack_ = nullptr;
 
 public:
-	ServerWind(ServerPlayer *player) : ServerAttribute(player) { }
+	ServerWind(ServerPlayer *player) : ServerAttribute(player, L"Wind") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;

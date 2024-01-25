@@ -6,10 +6,6 @@
 #include "time.h"
 
 
-
-
-
-
 ServerAttribute *ServerAttribute::Create(ServerPlayer *player, ATTRIBUTE_TYPE type) {
 	switch (type) {
 	case ATTRIBUTE_TYPE_FIRE: return new ServerFire(player);
@@ -19,7 +15,6 @@ ServerAttribute *ServerAttribute::Create(ServerPlayer *player, ATTRIBUTE_TYPE ty
 	}
 	return nullptr;
 }
-
 ClientAttribute *ClientAttribute::Create(ClientPlayer*player, ATTRIBUTE_TYPE type) {
 	switch (type) {
 	case ATTRIBUTE_TYPE_FIRE: return new ClientFire(player);
@@ -29,46 +24,83 @@ ClientAttribute *ClientAttribute::Create(ClientPlayer*player, ATTRIBUTE_TYPE typ
 	}
 	return nullptr;
 }
+void ServerAttribute::AddPower(void) {
+	power += addPower;
+	if (maxPower < power) power = maxPower;
+	else if (power < minPower) power = minPower;
+}
+void ServerAttribute::AddPower(float scaler) {
+	power += scaler * inputPowerRate;
+	if (maxPower < power) power = maxPower;
+	else if (power < minPower) power = minPower;
+}
+void ServerAttribute::AddPower(Vector2 vector) {
+	power += addPower + vector.Distance() * inputPowerRate;
+	if (maxPower < power) power = maxPower;
+	else if (power < minPower) power = minPower;
+}
+void ServerAttribute::Friction(void) {
+	player->velocity.x *= friction;
+	player->velocity.y *= friction;
+}
+Vector2 ServerAttribute::CalcVector(Vector2 stick) {
+	return stick * power;
+}
+
+
+
+
+
+
+
+
+
 
 /*******************************************************
   Fire
 ********************************************************/
 bool ServerFire::StickTrigger(Vector2 stick, Vector2 previousStick) {
-	return false;
+	return stick.DistanceSq() > minInputDistance * minInputDistance;
 }
 
 void ServerFire::Move(void) {
 	Vector2 stick = Input::GetStickLeft(0);
 
+
 	// 移動中
-	if (stick.Distance() > judgeScale) {
+	if (StickTrigger(stick)) {
 		// アニメーションの指定
 		player->animType = ANIMATION_TYPE_MOVE;
 
-		velocity += stick;
-		if (velocity.Distance() > maxSpeed) velocity = velocity.Normalize() * maxSpeed;
+		// パワー加算
+		AddPower(stick);
+
+		// ベクトル計算
+		velocity += CalcVector(stick);
+
+		// ベクトルの最大値
+		if (maxPower * maxPower < velocity.DistanceSq()) velocity = velocity.Normalize() * maxPower;
 	}
 	// 停止中
 	else {
 		player->animType = ANIMATION_TYPE_IDEL;
 	}
-	velocity.x *= friction;
-	velocity.y *= friction;
 	player->velocity = velocity;
+
+	// 摩擦
+	Friction();
 }
 void ServerFire::Attack(void) {
 	Vector2 stick = Input::GetStickRight(0);
 
+
 	// 移動中
-	if (stick.DistanceSq() > judgeScale * judgeScale) {
+	if (StickTrigger(stick)) {
 		// アニメーションの指定
 		player->animType = ANIMATION_TYPE_ATTACK;
 
 		player->attackVelocity = stick;
 	}
-	velocity.x *= friction;
-	velocity.y *= friction;
-	player->velocity = velocity;
 }
 
 void ClientFire::Move(void) {
@@ -96,8 +128,7 @@ void ClientFire::Move(void) {
 		direction += direction.Normal() * MATH::Rand(-0.25f, 0.25f);
 
 		// アニメーション生成
-		float distance = 50.0f;
-		Vector2 pos = player->transform.position + -direction.Normalize() * distance;
+		Vector2 pos = player->transform.position + -direction.Normalize();
 		float rot = atan2f(direction.y, -direction.x);
 		Vector2 scl = Vector2::One * localScale;
 		Color col = Color::White;
@@ -161,6 +192,9 @@ bool ServerWater::StickTrigger(Vector2 stick, Vector2 previousStick) {
 	return false;
 }
 void ServerWater::Move(void) {
+	Vector2 stick = Input::GetStickLeft(0);
+
+
 	// アニメーションの指定
 	player->animType = ANIMATION_TYPE_IDEL;
 
@@ -169,41 +203,43 @@ void ServerWater::Move(void) {
 		// アニメーションの指定
 		player->animType = ANIMATION_TYPE_MOVE_CHARGE;
 
-		warpDistance += charge;
-
-		// ワープ距離を最大距離にする
-		if (maxDistance < warpDistance) warpDistance = maxDistance;
+		// パワー加算
+		AddPower(stick);
 
 		// ワープベクトルの指定
-		player->warpVelocity = player->transform.position + Input::GetStickLeft(0) * warpDistance;
+		player->warpVelocity = player->transform.position + CalcVector(stick);
 	}
 	// ワープ
 	else if(Input::GetKeyUp(0, Input::LThumb)) {
 		// アニメーションの指定
 		player->animType = ANIMATION_TYPE_MOVE;
 
+		// 移動
 		player->transform.position = player->warpVelocity;
+
+		// 初期化
+		power = 0.0f;
 	}
 }
 void ServerWater::Attack(void) {
+	Vector2 stick = Input::GetStickLeft(0);
+
+
 	// ワープ距離のチャージ
 	if (Input::GetKey(0, Input::RThumb)) {
-		warpDistance += charge;
-
-		// ワープ距離を最大距離にする
-		if (maxDistance < warpDistance) warpDistance = maxDistance;
+		// パワー加算
+		AddPower();
 
 		// ワープベクトルの指定
-		player->warpVelocity = Input::GetStickLeft(0) * warpDistance;
+		player->warpVelocity = CalcVector(stick);
 
 		// 移動チャージアニメーション
 		player->animType = ANIMATION_TYPE_MOVE_CHARGE;
 	}
 	// ワープ
 	else if (Input::GetKeyUp(0, Input::RThumb)) {
-		player->warpVelocity = player->transform.position + player->warpVelocity;
-
-		warpDistance = 0.0f;
+		// 初期化
+		power = 0.0f;
 	}
 }
 
@@ -248,10 +284,36 @@ void ClientWater::Attack(void) {
   Thunder
 ********************************************************/
 bool ServerThunder::StickTrigger(Vector2 stick, Vector2 previousStick) {
+	float distance = stick.Distance();
+	float previousDistance = previousStick.Distance();
+
+	//Charge
+	if (minInputDistance <= distance) {
+		// アニメーションの指定
+		player->animType = ANIMATION_TYPE_MOVE_CHARGE;
+
+		// パワー加算
+		AddPower(stick);
+	}
+
+	//Release
+	if (distance < minInputDistance && minInputDistance < previousDistance &&
+		minInputSpeed < (stick - previousStick).Distance()) {
+		// 初期化
+		power = 0.0f;
+		return true;
+	}
 	return false;
 }
 void ServerThunder::Move(void) {
+	Vector2 stick = Input::GetStickLeft(0);
+	Vector2 previousStick = Input::GetPreviousStickLeft(0);
 
+	if (StickTrigger(stick, previousStick)) {
+		player->velocity = (stick - previousStick).Normalize() * power;
+	}
+
+	Friction();
 }
 void ServerThunder::Attack(void) {
 
@@ -277,15 +339,14 @@ bool ServerWind::StickTrigger(Vector2 stick, Vector2 previousStick)
 	float stickDistance = stick.Distance();
 	float preStickDistance = previousStick.Distance();
 
-	if (rotInputJudgeMin < MATH::Abs(Vector2::Cross(stick, previousStick)) &&
-		0.8f < stickDistance * preStickDistance)
+	if (minInputSpeed < MATH::Abs(Vector2::Cross(stick, previousStick)) &&
+		minInputDistance < stickDistance && minInputDistance < preStickDistance)
 	{
 		return true;
 	}
 	return false;
 }
 void ServerWind::Move(void) {
-	Vector2 &vel = player->velocity;
 	Vector2 stick = Input::GetStickLeft(0);
 	Vector2 previousStick = Input::GetPreviousStickLeft(0);
 
@@ -296,27 +357,29 @@ void ServerWind::Move(void) {
 	if (StickTrigger(stick, previousStick))
 	{
 		player->animType = ANIMATION_TYPE_MOVE;
-		power_ += rotSpeed * rotSpeed * rotInputFriction / Time::GetDeltaTime();
-		if (maxPower_ < power_) power_ = maxPower_;
 
-		vel = Vector2::Up * power_ * Time::GetDeltaTime();
+		// パワー加算
+		AddPower(rotSpeed);
+
+		// 移動
+		player->velocity = CalcVector(Vector2::Up);
 		previous_time_ = Time::GetCurrentTime();
 	}
 	// 落下処理
-	else if (0 < Vector2::Dot(Vector2::Down, vel) || prev_y_ > vel.y || Time::GetDeltaTime(previous_time_) > 0.04f)
+	else if (0 > player->velocity.y || prev_y_ > player->velocity.y || Time::GetDeltaTime(previous_time_) > 0.04f)
 	{
-		power_ *= friction_;
+		power *= powerFriction;
 
-		vel.x = stick.x * 6 * Time::GetDeltaTime();
+		player->velocity.x = stick.x * 6 * Time::GetDeltaTime();
 		//上移動の慣性残っている場合
-		if (vel.y > 0)
-			vel.y -= vel.y * 2 * Time::GetDeltaTime();
+		if (player->velocity.y > 0)
+			player->velocity.y -= player->velocity.y * 2 * Time::GetDeltaTime();
 	}
-	else if (stick.Distance() < rotInputJudgeMin)
+	else if (stick.Distance() < minInputSpeed)
 	{
-		power_ *= friction_;
+		power *= powerFriction;
 	}
-	prev_y_ = vel.y;
+	prev_y_ = player->velocity.y;
 }
 void ServerWind::Attack(void) {
 	using namespace PHYSICS;

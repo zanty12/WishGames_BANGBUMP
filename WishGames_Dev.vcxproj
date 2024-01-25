@@ -159,6 +159,7 @@
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="enemy1.cpp" />
     <ClCompile Include="id.cpp" />
+    <ClCompile Include="ini.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
     <ClCompile Include="lib\imgui\imgui_draw.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="graphical.h" />
     <ClInclude Include="enemy1.h" />
     <ClInclude Include="id.h" />
+    <ClInclude Include="ini.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />
     <ClInclude Include="lib\imgui\imgui_impl_dx11.h" />
@@ -292,6 +294,7 @@
     <ClInclude Include="sprite.h" />
     <ClInclude Include="storage.h" />
     <ClInclude Include="storage_lock.h" />
+    <ClInclude Include="string.h" />
     <ClInclude Include="text.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="time.h" />
