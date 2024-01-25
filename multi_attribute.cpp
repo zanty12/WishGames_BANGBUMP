@@ -114,9 +114,9 @@ void ClientFire::Attack(void) {
 	float localScale = 100;
 
 	// 描画する
-	float denominator = moveAnims.size();
+	float denominator = attackAnims.size();
 	float numerator = denominator * 0.5f;
-	for (Animator &anim : moveAnims) {
+	for (Animator &anim : attackAnims) {
 		anim.anim.Draw(anim.pos - MultiPlayClient::offset, anim.rot, anim.scl, Color(1.0f, 1.0f, 1.0f, 1.0f - numerator / denominator));
 		numerator += 0.5f;
 	}
@@ -135,8 +135,8 @@ void ClientFire::Attack(void) {
 
 		// アニメーション生成
 		float distance = 50.0f;
-		Vector2 pos = player->transform.position + -direction.Normalize() * distance;
-		float rot = atan2f(direction.x, -direction.y);
+		Vector2 pos = player->transform.position + direction.Normalize() * distance;
+		float rot = atan2f(direction.x, direction.y/*direction.y, -direction.x*/);
 		Vector2 scl = Vector2::One * localScale;
 		Color col = Color::White;
 		attackAnims.push_front({ pos, rot, scl, attackAnim });
