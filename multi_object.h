@@ -26,6 +26,7 @@ public:
 	int texNo = -1;
 	int id = 0;
 	bool isShow = true;
+	bool isPrevShow = true;
 
 
 	ClientGameObject() = default;

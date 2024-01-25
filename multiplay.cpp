@@ -478,15 +478,35 @@ void MultiPlayClient::PlayerUpdate(void) {
 	// ゲームモードの描画
 	gameMode->Draw(res_, offset);
 
+	std::cout << objects.size() << std::endl;
+
 	// オブジェクトの描画
-	std::list<bool> aaa;
-	for (auto &object : objects) {
-		aaa.push_back(object.second->isShow);
+	for (auto iterator = objects.begin(); iterator != objects.end();) {
+		// オブジェクト
+		auto &object = iterator->second;
+
+		// オブジェクトが表示されていないなら
+		if (object->isPrevShow == false && object->isShow == false) {
+			// 削除するイテレータを保存
+			auto delIterator = iterator;
+
+			// イテレータを一つ前に戻す
+			iterator++;
+
+			// データの削除
+			delete object;
+
+			// イテレータの削除
+			objects.erase(delIterator);
+			continue;
+		}
+
+		// ループ処理
+		object->Loop();
+		object->isPrevShow = object->isShow;
+		iterator++;
 	}
 
-	for (auto &object : objects) {
-		object.second->Loop();
-	}
 	// プレイヤーの描画
 	for (auto &player : clients) player.second->Loop();
 
@@ -631,7 +651,7 @@ void MultiPlayClient::Update() {
 			isFinish = true;
 			break;
 		}
-		//Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
+		Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
 		Time::Update();
 		RecvUpdate(1);
 		PlayerUpdate();

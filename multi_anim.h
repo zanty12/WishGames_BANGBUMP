@@ -19,6 +19,7 @@ public:
 	int end = 1;
 	int loopBegin = 0;
 	int loopEnd = 1;
+	bool isAnimation = true;
 
 
 
@@ -37,11 +38,12 @@ public:
 
 	void Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool isReverseX = false, bool isReverseY = false);
 
+	void SetActive(bool active) { isAnimation = active; }
 	void MoveBegin(void) { idx = begin; }
 	void MoveEnd(void) { idx = end + 1; }
 	void MoveLoopBegin(void) { idx = loopBegin; }
 	void MoveLoopEnd(void) { idx = loopEnd + 1; }
-	bool IsEnd(void) { return idx + 1 <= end; }
+	bool IsEnd(void) { return end <= idx; }
 
 	// プレイヤーのアニメーションデータ
 	static MultiAnimator GetPlayerInitialize(int playerIdx, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack);

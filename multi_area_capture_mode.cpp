@@ -89,8 +89,11 @@ MultiPlayAreaCaptureModeServerSide::MultiPlayAreaCaptureModeServerSide()
 
 // ゲームアップデート
 void MultiPlayAreaCaptureModeServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
+	std::cout << "ACTIVE" << std::endl;
 	ActiveUpdate();
+	std::cout << "CAPTURE" << std::endl;
 	CaptureUpdate(clients);
+	std::cout << "DESTROY" << std::endl;
 	DestroyUpdate();
 }
 
@@ -122,7 +125,7 @@ void MultiPlayAreaCaptureModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 
 		Vector2 scl = Vector2(area.radius, area.radius);
 		Color col = Color::White;
 		anim.Draw(pos, rot, scl, col);
-		return;
+		anim.SetActive(false);
 	}
 }
 

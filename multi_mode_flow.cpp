@@ -40,7 +40,7 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 		if (gameMode_) {
 			// 現在のモードのリリース関数を呼び出す
 			gameMode_->Release(clients);
-			
+
 			delete gameMode_;
 		}
 

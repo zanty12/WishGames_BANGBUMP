@@ -13,6 +13,8 @@
 ServerAttribute *ServerAttribute::Create(ServerPlayer *player, ATTRIBUTE_TYPE type) {
 	switch (type) {
 	case ATTRIBUTE_TYPE_FIRE: return new ServerFire(player);
+	case ATTRIBUTE_TYPE_DARK: return new ServerWater(player);
+	case ATTRIBUTE_TYPE_THUNDER: return new ServerThunder(player);
 	case ATTRIBUTE_TYPE_WIND: return new ServerWind(player);
 	}
 	return nullptr;
@@ -21,6 +23,8 @@ ServerAttribute *ServerAttribute::Create(ServerPlayer *player, ATTRIBUTE_TYPE ty
 ClientAttribute *ClientAttribute::Create(ClientPlayer*player, ATTRIBUTE_TYPE type) {
 	switch (type) {
 	case ATTRIBUTE_TYPE_FIRE: return new ClientFire(player);
+	case ATTRIBUTE_TYPE_DARK: return new ClientWater(player);
+	case ATTRIBUTE_TYPE_THUNDER: return new ClientThunder(player);
 	case ATTRIBUTE_TYPE_WIND: return new ClientWind(player);
 	}
 	return nullptr;
@@ -53,31 +57,18 @@ void ServerFire::Move(void) {
 	player->velocity = velocity;
 }
 void ServerFire::Attack(void) {
-	using namespace PHYSICS;
 	Vector2 stick = Input::GetStickRight(0);
 
-	// 攻撃
-	if (stick.Distance() > judgeScale && player->animType != ANIMATION_TYPE_MOVE) {
+	// 移動中
+	if (stick.DistanceSq() > judgeScale * judgeScale) {
+		// アニメーションの指定
 		player->animType = ANIMATION_TYPE_ATTACK;
 
-		// 角度を調べる
-		float angle = atan2(stick.y, stick.x);
-		// 攻撃オブジェクトの生成
-		if (attack_ == nullptr)
-			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
-
-		// 座標の指定
-		Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player->transform.scale.x / 2 + attack_->transform.scale.x / 2);
-		pos += player->transform.position;
-		attack_->transform.position = pos;
-		attack_->transform.rotation = angle;
+		player->attackVelocity = stick;
 	}
-	else {
-		attack_->Destroy();
-		attack_ = nullptr;
-	}
-
-	player->attackVelocity = stick;
+	velocity.x *= friction;
+	velocity.y *= friction;
+	player->velocity = velocity;
 }
 
 void ClientFire::Move(void) {
@@ -119,6 +110,42 @@ void ClientFire::Move(void) {
 	}
 }
 void ClientFire::Attack(void) {
+	Vector2 direction = player->attackVelocity;
+	float localScale = 100;
+
+	// 描画する
+	float denominator = moveAnims.size();
+	float numerator = denominator * 0.5f;
+	for (Animator &anim : moveAnims) {
+		anim.anim.Draw(anim.pos - MultiPlayClient::offset, anim.rot, anim.scl, Color(1.0f, 1.0f, 1.0f, 1.0f - numerator / denominator));
+		numerator += 0.5f;
+	}
+
+	// 時間を計測する
+	DWORD currentTime = timeGetTime();
+	DWORD deltaTime = currentTime - startTime;
+
+	// アニメーションを作成する
+	if (25 < deltaTime) {
+		// 計測をリセットする
+		startTime = currentTime;
+
+		// 炎の位置をずらす
+		direction += direction.Normal() * MATH::Rand(-0.25f, 0.25f);
+
+		// アニメーション生成
+		float distance = 50.0f;
+		Vector2 pos = player->transform.position + -direction.Normalize() * distance;
+		float rot = atan2f(direction.x, -direction.y);
+		Vector2 scl = Vector2::One * localScale;
+		Color col = Color::White;
+		attackAnims.push_front({ pos, rot, scl, attackAnim });
+
+		// 要素が多いなら削除
+		if (10 < attackAnims.size()) {
+			attackAnims.pop_back();
+		}
+	}
 }
 
 

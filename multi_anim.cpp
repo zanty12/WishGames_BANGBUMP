@@ -7,15 +7,17 @@
 void MultiAnimator::Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool isReverseX, bool isReverseY) {
 	DWORD deltaTime = timeGetTime() - startTime;
 	// アニメーションさせる
-	if (frameTime <= deltaTime) {
-		idx++;
+	if (isAnimation) {
+		if (frameTime <= deltaTime) {
+			idx++;
 
-		startTime = timeGetTime();
+			startTime = timeGetTime();
 
-		// 終点なら始点にする
-		if (isLoop) { if (loopEnd < idx) idx = loopBegin; }
-		// ループしないなら終了
-		else if (end < idx) return;
+			// 終点なら始点にする
+			if (isLoop) { if (loopEnd < idx) idx = loopBegin; }
+			// ループしないなら終了
+			else if (end < idx) return;
+		}
 	}
 
 	// UV値の計算
