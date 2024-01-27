@@ -31,12 +31,14 @@ bool ColliderRect::Collide(Collider* other)
         return Collider2D::Touch(rect_, dynamic_cast<ColliderCir*>(other)->GetCircle());
     case RECTANGLE:
         //return Collider2D::Touch(rect_, dynamic_cast<ColliderRect*>(other)->GetRect());
-        {
+        /*{
             //bounding box
             Vertex4 other_rect = dynamic_cast<ColliderRect*>(other)->GetRect();
             return (rect_.a.x < other_rect.b.x && rect_.b.x > other_rect.a.x &&
                 rect_.a.y > other_rect.c.y && rect_.c.y < other_rect.a.y);
-        }
+        }*/
+        //SAT
+            return CheckIntersect(rect_, dynamic_cast<ColliderRect*>(other)->GetRect());
     default:
         return false;
     }
@@ -275,4 +277,48 @@ void ColliderRect::CollisionPen(Collider* other)
         }
         break;
     }
+}
+
+bool ColliderRect::CheckIntersect(Vertex4 rect, Vertex4 other)
+{
+    // Calculate axes (normals of the edges)
+    Vector2 axes[4] = {
+        (rect.b - rect.a).Normalize(),
+        (rect.b - rect.c).Normalize(),
+        (other.b - other.a).Normalize(),
+        (other.b - other.c).Normalize()
+    };
+
+    // For each axis
+    for (int i = 0; i < 4; i++)
+    {
+        // Project the rectangles onto the axis
+        float min_rect = Vector2::Dot(rect.a, axes[i]);
+        float max_rect = min_rect;
+        for (int j = 1; j < 4; j++)
+        {
+            float projection = Vector2::Dot(rect.v[j], axes[i]);
+            min_rect = min(min_rect, projection);
+            max_rect = max(max_rect, projection);
+        }
+
+        float min_other_rect = Vector2::Dot(other.a, axes[i]);
+        float max_other_rect = min_other_rect;
+        for (int j = 1; j < 4; j++)
+        {
+            float projection = Vector2::Dot(other.v[j], axes[i]);
+            min_other_rect = min(min_other_rect, projection);
+            max_other_rect = max(max_other_rect, projection);
+        }
+
+        // Check for overlap
+        if (max_rect < min_other_rect || max_other_rect < min_rect)
+        {
+            // No overlap
+            return false;
+        }
+    }
+
+    // Overlap on all axes, the rectangles intersect
+    return true;
 }

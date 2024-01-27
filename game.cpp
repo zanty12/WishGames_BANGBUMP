@@ -134,7 +134,6 @@ void Game::DebugMenu()
     if(ImGui::Button("title"))
     {
         scene_mngr_->ChangeScene(SCENE_TITLE);
-
     }
     ImGui::End();
 
@@ -142,6 +141,12 @@ void Game::DebugMenu()
 
 void Game::UpdateNormal()
 {
+    if(first_update_)
+    {
+        //処理落ち回避のため一回目の更新をスキップする
+        first_update_ = false;
+        return;
+    }
     coll_mngr_->Update();
     std::thread map(&MapMngr::Update, mapmngr_);
     //mapmngr_->Update();
@@ -165,16 +170,18 @@ void Game::UpdateNormal()
     projectile.join();
     camera.join();
     renderer.join();
+
+    //check scene change
     if (GetPlayer()->GetChangeSceneFlag())
     {
-        scene_mngr_->ChangeScene(SCENE_RESULT);
+        change_scene_ = 2;
     }
-    if (GetChangeScene() == 1)
+    /*if (GetChangeScene() == 1)
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
-    }
+    }*/
 
-
+    //timer
     timer_ -= Time::GetDeltaTime();
     if (timer_ <= 0.0f)
     {
@@ -189,6 +196,7 @@ void Game::UpdateNormal()
         camera_ = new Camera(GetPlayer()->GetPos(),
                              Vector2(mapmngr_->GetMap()->GetWidth(), mapmngr_->GetMap()->GetHeight()));
     }
+
 }
 
 void Game::DrawNormal()

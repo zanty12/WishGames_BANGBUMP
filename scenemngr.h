@@ -26,7 +26,8 @@ public:
 
     void Update() const
     {
-        scene_->Update();
+        if(!loading_)
+            scene_->Update();
     }
 
     void Draw() const
