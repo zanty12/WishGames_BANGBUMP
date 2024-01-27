@@ -23,7 +23,7 @@ private:
     static ID2D1SolidColorBrush* pSolidBrush_;
     static IDXGISurface* pBackBuffer_;
 
-    //text formats
+    //default text formats
     static std::wstring font_;
     static float font_size_;
     static DWRITE_FONT_WEIGHT font_weight_;
@@ -38,6 +38,7 @@ public:
 
     //左上原点
     static void WriteText(const WCHAR* text, float X, float Y, float Width, float Height);
+    //Separate WriteText for writing non-standard text, so we don't need to change the format every time
     static void WriteText(const WCHAR* text, IDWriteTextFormat* text_format, ID2D1SolidColorBrush* brush, float X,
                           float Y, float Width,
                           float Height);
@@ -58,6 +59,7 @@ public:
                                              DWRITE_FONT_WEIGHT font_weight = font_weight_,
                                              DWRITE_FONT_STYLE font_style = font_style_);
     static ID2D1SolidColorBrush* MakeBrush(Color color);
+
     //getter for format
     static std::wstring GetFont() { return font_; }
     static float GetFontSize() { return font_size_; }
