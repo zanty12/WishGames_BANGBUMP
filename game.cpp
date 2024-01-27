@@ -195,6 +195,7 @@ void Game::UpdateNormal()
         delete camera_;
         camera_ = new Camera(GetPlayer()->GetPos(),
                              Vector2(mapmngr_->GetMap()->GetWidth(), mapmngr_->GetMap()->GetHeight()));
+        first_update_ = true;
     }
 
 }

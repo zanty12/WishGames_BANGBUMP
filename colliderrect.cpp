@@ -283,10 +283,10 @@ bool ColliderRect::CheckIntersect(Vertex4 rect, Vertex4 other)
 {
     // Calculate axes (normals of the edges)
     Vector2 axes[4] = {
-        (rect.b - rect.a).Normalize(),
-        (rect.b - rect.c).Normalize(),
-        (other.b - other.a).Normalize(),
-        (other.b - other.c).Normalize()
+        (rect.b - rect.a).Normal(),
+        (rect.b - rect.c).Normal(),
+        (other.b - other.a).Normal(),
+        (other.b - other.c).Normal()
     };
 
     // For each axis
