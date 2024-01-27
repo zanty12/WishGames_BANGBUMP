@@ -147,6 +147,14 @@ void Game::UpdateNormal()
         first_update_ = false;
         return;
     }
+    if(start_timer_ > 0.0f)
+    {
+        coll_mngr_->Update();
+        camera_->Update(GetPlayer()->GetPos(), GetPlayer()->GetVel(), GetPlayer()->GetPlayerState());
+        renderer_->Update();
+        start_timer_ -= Time::GetDeltaTime();
+        return;
+    }
     coll_mngr_->Update();
     std::thread map(&MapMngr::Update, mapmngr_);
     //mapmngr_->Update();
@@ -202,6 +210,16 @@ void Game::UpdateNormal()
 
 void Game::DrawNormal()
 {
+    if(start_timer_ > 0.0f)
+    {
+        int itimeer = static_cast<int>(start_timer_);
+        std::wstring time = std::to_wstring(itimeer);
+        if(itimeer == 0)
+        {
+            time = L"GO!";
+        }
+        Text::WriteText(time.c_str(), text_format_, brush_, Graphical::GetWidth() / 2 - 45, Graphical::GetHeight() / 2, 180, 50);
+    }
     camera_->Draw();
     renderer_->Draw(camera_);
 

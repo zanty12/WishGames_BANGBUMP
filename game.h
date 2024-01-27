@@ -37,6 +37,7 @@ private:
 
 	//start
 	bool started_ = false;
+	float start_timer_ = 3.5f;
 
 	//Result
 	int result_tex_ = 0;
