@@ -1,4 +1,5 @@
 #include "multi_area_capture_mode.h"
+#include "ini.h"
 
 /***********************************************************
 	Server
@@ -7,6 +8,11 @@ void MultiPlayAreaCaptureModeServerSide::ActiveArea(void) {
 	if (areas.size() == 0) return;		// アクティブにするエリアがないなら終了
 
 	auto iterator = areas.begin();
+
+	// 更新する
+	iterator->captureMaxTime = areaGetTime;
+	iterator->radius = radius;
+
 	activeAreas.push_back(*iterator);	// エリアをアクティブにする
 	areas.erase(iterator);				// エリアからは削除する
 }
@@ -49,7 +55,7 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 
 		// 占領し続けているならゲージの更新
 		if (area.id == pTouchClient->header.id) {
-			area.captureNowTime += Time::GetDeltaTime();
+			area.captureNowTime += (curTime - preTime) * 0.001f;
 		}
 		// 別のプレイヤーに占領されたなら初期化
 		else {
@@ -78,23 +84,25 @@ void MultiPlayAreaCaptureModeServerSide::DestroyUpdate(void) {
 }
 
 MultiPlayAreaCaptureModeServerSide::MultiPlayAreaCaptureModeServerSide()
-	: MultiPlayModeServerSide(new MultiMap("data/map/MultiPlay_Map1.csv")) {
+	: MultiPlayModeServerSide(new MultiMap("data/map/MultiPlay_Map1.csv"), L"AreaCapture") {
 	// 占領データを取得
 	for (auto &areaPosition : GetMap()->GetAreaCaptures()) {
 		areas.push_back(Area(areaPosition));
 	}
 
-	maxTime_ = 1000.0f;
+	maxTime_ = 30.0f;
+	radius = ini::GetFloat(L"data/property/mode.ini", L"AreaCapture", L"radius");
+	areaGetTime = ini::GetFloat(L"data/property/mode.ini", L"AreaCapture", L"areaGetTime");
+	curTime = preTime = timeGetTime();
 }
 
 // ゲームアップデート
 void MultiPlayAreaCaptureModeServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
-	std::cout << "ACTIVE" << std::endl;
+	curTime = timeGetTime();
 	ActiveUpdate();
-	std::cout << "CAPTURE" << std::endl;
 	CaptureUpdate(clients);
-	std::cout << "DESTROY" << std::endl;
 	DestroyUpdate();
+	preTime = curTime;
 }
 
 void MultiPlayAreaCaptureModeServerSide::CreateResponse(Storage &out) {
@@ -118,13 +126,17 @@ void MultiPlayAreaCaptureModeServerSide::CreateResponse(Storage &out) {
 	Client
 ************************************************************/
 void MultiPlayAreaCaptureModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {
+	// クライアントの記録をする
+	if (beforeClients.size() == 0) beforeClients = players.clients;
+
 	// エリアの描画
 	for (auto &area : res.areas) {
 		Vector2 pos = area.position - offset;
 		float rot = 0.0f;
 		Vector2 scl = Vector2(area.radius, area.radius);
-		Color col = Color::White;
+		Color col = Color::White * 0.5f;
 		anim.Draw(pos, rot, scl, col);
+		DrawSpriteCircleEffect(anim.texNo, pos, rot, scl, col, Vector2::Zero, Vector2::One, area.captureRatio);
 		anim.SetActive(false);
 	}
 }

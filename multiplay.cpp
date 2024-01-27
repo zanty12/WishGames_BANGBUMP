@@ -15,6 +15,7 @@ std::string SERVER_ADDRESS;
 std::map<int, CLIENT_DATA_SERVER_SIDE> MultiPlayServer::clients_;
 
 
+MultiPlayFlowServerSide *MultiPlayServer::gameMode = nullptr;
 /*******************************************************
   Server
 ********************************************************/
@@ -146,7 +147,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 		gameMode->GetMap()->GetAttacks()->AllLoop();
 
 		// 攻撃判定の更新
-		gameMode->GetMap()->AttakUpdate();
+		gameMode->GetMap()->AttackUpdate();
 	}
 	// ゲームモードの更新
 	gameMode->Update(clients_);
@@ -397,7 +398,7 @@ void MultiPlayServer::OpenTerminal(void) {
   Client
 ********************************************************/
 Vector2 MultiPlayClient::offset;
-MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"))/*, anim(Animator(&playerObject, 2, true, 1, 1, 1))*/ {
+MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png")) {
 	WSAData data;
 	Startup(v2_2, data);
 
@@ -474,8 +475,6 @@ void MultiPlayClient::PlayerUpdate(void) {
 
 	// ゲームモードの描画
 	gameMode->Draw(res_, offset);
-
-	std::cout << objects.size() << std::endl;
 
 	// オブジェクトの描画
 	for (auto iterator = objects.begin(); iterator != objects.end();) {

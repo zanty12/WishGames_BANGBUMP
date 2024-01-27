@@ -23,11 +23,11 @@ using namespace Network;
 ********************************************************/
 class MultiPlayServer {
 private:
+	static MultiPlayFlowServerSide *gameMode;				// ゲームモード
 	int maxID = 0;											// IDの最大値				
 	Socket sockfd_;											// ソケット
 	Storage sendBuff = Storage(1024);						// 送信バッファ
 	Storage recvBuff = Storage(1024);						// 受信バッファ
-	MultiPlayFlowServerSide *gameMode = nullptr;			// ゲームモード
 	StorageLock	lock_;										// リストロック
 	bool isFinish = false;									// 終了状態
 
@@ -69,6 +69,8 @@ public:
 public:
 
 	void OpenTerminal(void);
+
+	static MultiPlayFlowServerSide *GetGameMode(void) { return gameMode; }
 
 	std::map<int, CLIENT_DATA_SERVER_SIDE> &GetClients(void) { return clients_; }
 };

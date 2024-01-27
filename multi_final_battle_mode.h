@@ -9,7 +9,7 @@
 ********************************************************/
 class MultiPlayFinalBattleModeServerSide : public MultiPlayModeServerSide {
 public:
-	MultiPlayFinalBattleModeServerSide() : MultiPlayModeServerSide(new MultiMap("data/map/MultiPlay_Map4.csv")) { maxTime_ = 500; }
+	MultiPlayFinalBattleModeServerSide() : MultiPlayModeServerSide(new MultiMap("data/map/MultiPlay_Map4.csv"), L"FinalBattle") { maxTime_ = 500; }
 
 	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override {
 
@@ -37,6 +37,8 @@ public:
 
 
 	void Draw(RESPONSE_PLAYER &players, Vector2 offset) override {
+		// クライアントの記録をする
+		if (beforeClients.size() == 0) beforeClients = players.clients;
 
 	}
 

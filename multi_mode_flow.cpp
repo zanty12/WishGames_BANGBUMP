@@ -134,8 +134,17 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		// マップの描画
 		gameMode_->map_->Draw(offset);
 
+
+
+		// ゲームのリザルトの描画
+		if (0.0f < res.time - gameMode_->resultTime_) {
+			gameMode_->DrawResult(res, offset);
+		}
 		// ゲームモードの描画
-		gameMode_->Draw(res, offset);
+		else {
+			gameMode_->Draw(res, offset);
+		}
+
 
 		// 時間制限の描画
 		Number(Vector2(100, 100), Vector2(100, 100), res.maxTime - res.time);

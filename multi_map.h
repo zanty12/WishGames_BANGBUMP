@@ -38,7 +38,7 @@ public:
 	Vector2Int ToIndex(Vector2 pos) { return Vector2Int(pos.x / cellSize, pos.y / cellSize); }
 	Vector2 ToPosition(Vector2Int idx) { return Vector2(idx.x * cellSize, idx.y * cellSize); }
 	void Draw(Vector2 offset);
-	void AttakUpdate(void);
+	void AttackUpdate(void);
 	int Collision(Vector2 &position, float radius);
 	int &GetMap(int x, int y) { return map[x + y * width]; }
 	int &GetColliderMap(int x, int y) { return collMap[x + y * width]; }
@@ -46,6 +46,7 @@ public:
 	MultiBehavior *GetEnemies(void) { return enemies; }
 	MultiBehavior *GetAttacks(void) { return attacks; }
 	std::list<Vector2> GetAreaCaptures(void) { return areaCaptures; }
+	void DropSkillOrb(unsigned int drop, Vector2 position, float magnitude);
 
 private:
 };

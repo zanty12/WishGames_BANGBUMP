@@ -24,35 +24,13 @@ void ServerPlayer::SkillOrbDrop(int drop) {
 	// マップがないなら終了
 	if (!map) return;
 
-	while (0 < drop) {
-		// ドロップする値
-		int tmpDrop = 0;
+	// ドロップする最大値を計算する
+	int maxDrop = skillPoint < drop ? skillPoint : drop;
 
-		// スキルポイントをドロップ（大）
-		if (skillPoint >= ServerSkillOrbBig::AddPoint) {
-			map->GetSkillOrbs()->Add<ServerSkillOrbBig>(Transform(transform.position));
-			tmpDrop = ServerSkillOrbBig::AddPoint;
-		}
-		// スキルポイントをドロップ（中）
-		else if (skillPoint >= ServerSkillOrbMidium::AddPoint) {
-			map->GetSkillOrbs()->Add<ServerSkillOrbMidium>(Transform(transform.position));
-			tmpDrop = ServerSkillOrbMidium::AddPoint;
-		}
-		// スキルポイントをドロップ（小）
-		else if (skillPoint >= ServerSkillOrbSmall::AddPoint) {
-			map->GetSkillOrbs()->Add<ServerSkillOrbSmall>(Transform(transform.position));
-			tmpDrop = ServerSkillOrbSmall::AddPoint;
-		}
-		else return;
+	// スキルオーブをドロップさせる
+	map->DropSkillOrb(maxDrop, transform.position, 10.0f);
 
-		// スキルポイントを減らす
-		skillPoint -= tmpDrop;
-		drop -= tmpDrop;
-
-		// 最低値0にする
-		if (skillPoint < 0) skillPoint = 0;
-	}
-
+	skillPoint -= maxDrop;
 }
 
 

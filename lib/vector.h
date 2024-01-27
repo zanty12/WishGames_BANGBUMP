@@ -80,8 +80,8 @@ public:
 
 	Vector2 operator+= (Vector2 v);
 	Vector2 operator-= (Vector2 v);
-	friend Vector2 operator*= (Vector2 v, float scaler) { return Vector2(v.x *= scaler, v.y *= scaler); }
-	friend Vector2 operator/= (Vector2 v, float scaler) { return Vector2(v.x /= scaler, v.y /= scaler); }
+	friend Vector2 operator*= (Vector2 &v, float scaler) { return Vector2(v.x *= scaler, v.y *= scaler); }
+	friend Vector2 operator/= (Vector2 &v, float scaler) { return Vector2(v.x /= scaler, v.y /= scaler); }
 	friend Vector2 operator*= (float scaler, Vector2 v) { return Vector2(scaler *= v.x, scaler *= v.y); }
 	friend Vector2 operator/= (float scaler, Vector2 v) { return Vector2(scaler /= v.x, scaler /= v.y); }
 

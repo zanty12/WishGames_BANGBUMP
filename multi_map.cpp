@@ -113,7 +113,7 @@ void MultiMap::Load(std::string path)
 				}
 				// エリアキャプチャの登録
 				else if (id == MAP_READ_MULTI_AREA_CAPTURE) {
-					areaCaptures.push_back(position);
+					areaCaptures.push_front(position);
 				}
 				// 登録
 				else {
@@ -215,7 +215,42 @@ int MultiMap::Collision(Vector2 &position, float radius) {
 	return id;
 }
 
-void MultiMap::AttakUpdate(void) {
+void MultiMap::DropSkillOrb(unsigned int drop, Vector2 position, float magnitude) {
+	// ドロップする
+	while (0 < drop) {
+		// ドロップする値
+		int tmpDrop = 0;
+
+		// ドロップするスキルオーブ
+		ServerSkillOrb *skillorb = nullptr;
+
+		// スキルポイントをドロップ（大）
+		if (drop >= ServerSkillOrbBig::AddPoint) {
+			skillorb = GetSkillOrbs()->Add<ServerSkillOrbBig>(Transform(position));
+			tmpDrop = ServerSkillOrbBig::AddPoint;
+		}
+		// スキルポイントをドロップ（中）
+		else if (drop >= ServerSkillOrbMidium::AddPoint) {
+			skillorb = GetSkillOrbs()->Add<ServerSkillOrbMidium>(Transform(position));
+			tmpDrop = ServerSkillOrbMidium::AddPoint;
+		}
+		// スキルポイントをドロップ（小）
+		else if (drop >= ServerSkillOrbSmall::AddPoint) {
+			skillorb = GetSkillOrbs()->Add<ServerSkillOrbSmall>(Transform(position));
+			tmpDrop = ServerSkillOrbSmall::AddPoint;
+		}
+		else return;
+
+		// 吹き飛ばす
+		float rad = MATH::Rand(0.0f, MATH::PI);
+		skillorb->velocity = Vector2(std::cos(rad), std::sinf(rad)) * magnitude;
+
+		// スキルポイントを減らす
+		drop -= tmpDrop;
+	}
+}
+
+void MultiMap::AttackUpdate(void) {
 	for (auto &attackObject : *GetAttacks()) {
 		auto attack = attackObject.Cast<AttackServerSide>();
 

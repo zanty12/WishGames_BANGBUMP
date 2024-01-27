@@ -180,6 +180,7 @@
     <ClCompile Include="multi_behavior.cpp" />
     <ClCompile Include="multi_character_select_mode.cpp" />
     <ClCompile Include="multi_map.cpp" />
+    <ClCompile Include="multi_mode.cpp" />
     <ClCompile Include="multi_mode_flow.cpp" />
     <ClCompile Include="multi_object.cpp" />
     <ClCompile Include="multi_player.cpp" />
@@ -339,6 +340,8 @@
     <Content Include="data\texture\wapuro-mincho.otf" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\property\mode.ini" />
+    <None Include="data\property\player.ini" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

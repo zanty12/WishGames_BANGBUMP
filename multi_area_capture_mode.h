@@ -18,6 +18,10 @@ public:
 private:
 	std::list<Area> areas;
 	std::list<Area> activeAreas;
+	float radius = 5.0f;							// ”¼Œa
+	float areaGetTime = 5.0f;						// è—Ì‚ÌÅ‘åŠÔ
+	DWORD preTime = 0ul;
+	DWORD curTime = 0ul;
 
 
 

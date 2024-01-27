@@ -31,7 +31,7 @@ private:
 
 public:
 	MultiPlayCharacterSelectModeServerSide(MultiPlayServer *game)
-		: MultiPlayModeServerSide(new MultiMap("data/map/MultiPlay_Map0.csv")), game_(game) {
+		: MultiPlayModeServerSide(new MultiMap("data/map/MultiPlay_Map0.csv"), L"CharacterSelect"), game_(game) {
 	}
 
 	void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override;

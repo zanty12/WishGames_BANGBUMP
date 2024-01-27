@@ -8,15 +8,20 @@ class MultiPlayModeServerSide {
 protected:
 	float maxTime_ = 60.0f;
 	float time_ = 0.0f;
+	float resultTime_ = 15.0f;			// 中間リザルトの時間
 	bool isSkip = false;
 	MultiMap *map_ = nullptr;
 	friend MultiPlayFlowServerSide;
 
 
 public:
-	MultiPlayModeServerSide(MultiMap *map) : map_(map) {  }
+	MultiPlayModeServerSide(MultiMap *map, std::wstring modeName) : map_(map) { 
+		maxTime_ = ini::GetFloat(L"data/property/mode.ini", modeName.c_str(), L"timeLimit");
+
+	}
 	~MultiPlayModeServerSide() { if (map_) delete map_; }
 	virtual void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
+	virtual void UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
 	virtual void CreateResponse(Storage& out) { };
 	virtual void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
 
@@ -33,14 +38,42 @@ public:
 class MultiPlayFlowClientSide;
 class MultiPlayModeClientSide {
 protected:
+	float resultTime_ = 15.0f;							// 中間リザルトの時間
+	std::list<CLIENT_DATA_CLIENT_SIDE> beforeClients;	// ゲーム開始直後のクライアントデータ
 	MultiMap *map_;
 	friend MultiPlayFlowClientSide;
+
+
+
+protected:
+	void sort(std::list<CLIENT_DATA_CLIENT_SIDE> &ranking) {
+		// ランキングでソート
+		ranking.sort(
+			[&](CLIENT_DATA_CLIENT_SIDE &a, CLIENT_DATA_CLIENT_SIDE &b) {
+				if (a.skillPoint == b.skillPoint) return a.id < b.id;
+				else return a.skillPoint < b.skillPoint;
+			}
+		);
+	}
+
+	int get_rank(std::list<CLIENT_DATA_CLIENT_SIDE> &ranking, int id) {
+		int rank = 0;
+
+		// ランクを調べる
+		for (auto &c : ranking) {
+			if (id == c.id) return rank;
+			else rank++;
+		}
+
+		return -1;
+	}
 
 public:
 	MultiPlayModeClientSide(MultiMap* map) : map_(map) { };
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 
 	virtual void Draw(RESPONSE_PLAYER &players, Vector2 offset) { };
+	virtual void DrawResult(RESPONSE_PLAYER &players, Vector2 offset);
 	virtual void ParseResponse(Storage& in) { };
 	virtual void Release(RESPONSE_PLAYER &players) { };
 
