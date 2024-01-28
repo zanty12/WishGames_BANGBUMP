@@ -107,7 +107,9 @@ void MultiMap::Load(std::string path)
 				else if (id == MAP_READ_ORB_MID) skillOrbs->Add<ServerSkillOrbMidium>(Transform(position));
 				else if (id == MAP_READ_ORB_BIG) skillOrbs->Add<ServerSkillOrbBig>(Transform(position));
 				// エネミーの登録
-				else if (id == MAP_READ_KOOPA) enemies->Add<Enemy1ServerSide>(this);
+				else if (id == MAP_READ_KOOPA) {
+					enemies->Add<Enemy1ServerSide>(Transform(position), this);
+				}
 				else if(id == MAP_READ_HAMMERBRO ||
 					id == MAP_READ_PHANTOM) {
 					//skillOrbs->Add<ServerSkillOrb>(Transform(Vector2(x, y) * cellSize));
@@ -251,6 +253,7 @@ void MultiMap::DropSkillOrb(unsigned int drop, Vector2 position, float magnitude
 }
 
 void MultiMap::AttackUpdate(void) {
+	// 攻撃オブジェクトのダメージ処理
 	for (auto &attackObject : *GetAttacks()) {
 		auto attack = attackObject.Cast<AttackServerSide>();
 
@@ -276,8 +279,7 @@ void MultiMap::AttackUpdate(void) {
 			}
 
 			// ダメージ
-			if (maxRadiusSq >= Vector2::DistanceSq(attack->transform.position, player->transform.position)) {
-				
+			if (maxRadiusSq >= Vector2::DistanceSq(attack->transform.position, player->transform.position)) {				
 				player->Damage(attack);
 			}
 		}
@@ -285,7 +287,7 @@ void MultiMap::AttackUpdate(void) {
 
 		// エネミーと判定
 		for (auto &instance : *enemies) {
-			auto enemy = instance.Cast<GameObjectServerSide>();
+			auto enemy = instance.Cast<EnemyServerSide>();
 			float maxRadius = attack->radius + enemy->radius;
 			float maxRadiusSq = maxRadius * maxRadius;
 
@@ -304,8 +306,8 @@ void MultiMap::AttackUpdate(void) {
 
 			// ダメージ
 			if (maxRadiusSq >= Vector2::DistanceSq(attack->transform.position, enemy->transform.position)) {
-				// ダメージ
-
+				enemy->hp -= attack->atk;
+				if (enemy->hp <= 0) enemy->Destroy();
 			}
 		}
 	}

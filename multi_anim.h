@@ -29,6 +29,8 @@ public:
 		: texNo(texNo), width(1), height(1), begin(0), end(0), isLoop(false), loopBegin(0), loopEnd(0), startTime(timeGetTime()), idx(0) { };
 	MultiAnimator(int texNo, int width, int height, int begin, int end)
 		: texNo(texNo), width(width), height(height), begin(begin), end(end), isLoop(false), loopBegin(0), loopEnd(0), startTime(timeGetTime()), idx(begin) { };
+	MultiAnimator(int texNo, int width, int height, int begin, int end, bool isLoop)
+		: texNo(texNo), width(width), height(height), begin(begin), end(end), isLoop(isLoop), loopBegin(begin), loopEnd(end), startTime(timeGetTime()), idx(begin) { };
 	MultiAnimator(int texNo, int width, int height, int begin, int end, bool isLoop, int loopBegin, int loopEnd)
 		: texNo(texNo), width(width), height(height), begin(begin), end(end), isLoop(isLoop), loopBegin(loopBegin), loopEnd(loopEnd), startTime(timeGetTime()), idx(begin) { };
 

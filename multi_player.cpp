@@ -9,15 +9,19 @@ void ServerPlayer::Loop(void) {
 	if (attackAttribute) attackAttribute->Attack();
 
 
+	// ˆÚ“®‚³‚¹‚é
+	transform.position += velocity + blownVelocity;
 
-	transform.position += velocity;
+	// ‚«”ò‚Î‚µ‚Ì‘¬“x‚ğŒ¸‘¬‚³‚¹‚é
+	blownVelocity *= blownFriction;
+	if (blownVelocity.DistanceSq() < 1.0f) blownVelocity = Vector2::Zero;
 }
 
 void ServerPlayer::Damage(AttackServerSide *attack) {
 	// UŒ‚Ò‚ª©•ª‚È‚çI—¹
 	if (attack->GetSelf() == this) return;
 
-	SkillOrbDrop(attack->drop);
+	SkillOrbDrop(attack->atkDrop);
 }
 
 void ServerPlayer::SkillOrbDrop(int drop) {

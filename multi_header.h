@@ -85,6 +85,7 @@ struct OBJECT_DATA_CLIENT_SIDE {
 	int tag = NONE;
 	int anim = NONE;
 	Vector2 position;
+	Vector2 velocity;
 };
 
 
@@ -173,11 +174,13 @@ struct RESPONSE_PLAYER {
 			auto gameObject = instance.Cast<GameObjectServerSide>();
 			int id = gameObject->id;
 			Vector2 position = gameObject->transform.position;
+			Vector2 velocity = gameObject->velocity;
 			objects.push_back({
 				id,										// ID
 				gameObject->GetType(),					// tag
 				0,										// animation
-				position								// pos
+				position,								// pos
+				velocity								// vel
 				}
 			);
 		}

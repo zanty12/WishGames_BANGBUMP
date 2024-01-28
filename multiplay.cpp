@@ -144,6 +144,9 @@ void MultiPlayServer::PlayerUpdate(void) {
 		// スキルオーブの更新
 		gameMode->GetMap()->GetSkillOrbs()->AllLoop();
 
+		// エネミーの更新
+		gameMode->GetMap()->GetEnemies()->AllLoop();
+
 		// 攻撃オブジェクトの更新
 		gameMode->GetMap()->GetAttacks()->AllLoop();
 
@@ -623,6 +626,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				auto &obj = iterator->second;
 				obj->isShow = true;
 				obj->transform.position = object.position;
+				obj->velocity = object.velocity;
 			}
 		}
 

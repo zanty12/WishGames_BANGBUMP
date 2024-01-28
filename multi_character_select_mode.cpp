@@ -238,13 +238,15 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 		idx++;
 	}
 
-
-	DebugUI::BeginDraw();
-	Text::TextStart();
-	video->Update();
-	video->Draw();
-	Text::TextEnd();
-	DebugUI::EndDraw();
+	// “®‰æ‚Ì•`‰æ
+	if (0.75f < Input::GetTriggerLeft(0) && 0.75f < Input::GetTriggerRight(0)) {
+		DebugUI::BeginDraw();
+		Text::TextStart();
+		video->Update();
+		video->Draw();
+		Text::TextEnd();
+		DebugUI::EndDraw();
+	}
 }
 
 void MultiPlayCharacterSelectModeClientSide::ParseResponse(Storage &in) {

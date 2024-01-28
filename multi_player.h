@@ -25,6 +25,8 @@ public:
 	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;// アニメーション
 	Vector2 attackVelocity;								// 攻撃のベロシティ
 	Vector2 warpVelocity;								// ワープベロシティ
+	Vector2 blownVelocity;								// ダメージ時吹き飛ばされたベロシティ
+	float blownFriction = 0.85f;						// ダメージ時吹き飛ばされた際の減速度
 	
 public:
 	~ServerPlayer() {

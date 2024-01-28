@@ -1,6 +1,8 @@
 #pragma once
 #include "multi_object.h"
+#include "multiplay.h"
 #include "multi_map.h"
+#include "multi_anim.h"
 
 class MultiMap;
 class EnemyServerSide : public GameObjectServerSide {
@@ -10,14 +12,17 @@ protected:
 
 public:
 	int hp = 5;
+	int atkDrop = 5;
 
 
 
 public:
-	EnemyServerSide(MultiMap* map) : map(map) { }
+	EnemyServerSide(Transform transform, MultiMap* map) : map(map), GameObjectServerSide(transform) { }
+	void BlownPlayers(void);
 };
 class EnemyClientSide : public GameObjectClientSide {
 protected:
+	MultiAnimator anim;
 
 
 
@@ -29,8 +34,8 @@ public:
 
 class Enemy1ServerSide : public EnemyServerSide {
 public:
-	Enemy1ServerSide(MultiMap *map) : EnemyServerSide(map) {
-		velocity = Vector2::Right * speed;
+	Enemy1ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) {
+		velocity = Vector2::Left * speed;
 	}
 
 	void Loop(void) override;
@@ -39,7 +44,7 @@ public:
 
 class Enemy2ServerSide : public EnemyServerSide {
 public:
-	Enemy2ServerSide(MultiMap *map) : EnemyServerSide(map) { }
+	Enemy2ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) { }
 
 	void Loop(void) override;
 	MULTI_OBJECT_TYPE GetType(void) { return MULTI_OBJECT_TYPE::MULTI_ENEMY2; }
@@ -48,7 +53,7 @@ public:
 class Enemy3ServerSide : public EnemyServerSide {
 public:
 	float activeRadius = 50.0f;		// ŒŸ’m”ÍˆÍ
-	Enemy3ServerSide(MultiMap *map) : EnemyServerSide(map) { }
+	Enemy3ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) { }
 
 	void Loop(void) override;
 	MULTI_OBJECT_TYPE GetType(void) { return MULTI_OBJECT_TYPE::MULTI_ENEMY3; }
@@ -63,6 +68,9 @@ public:
 
 public:
 	Enemy1ClientSide() {
-		//texNo = LoadTexture(Asset::textures_.at())
+		texNo = LoadTexture("data/texture/Enemy/enemy1_anim.png");
+		anim = MultiAnimator(texNo, 5, 4, 0, 17, true);
 	}
+
+	void Loop(void) override;
 };

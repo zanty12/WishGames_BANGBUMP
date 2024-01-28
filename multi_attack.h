@@ -10,15 +10,15 @@ private:
 	GameObjectServerSide *self = nullptr;
 
 public:
-	int damage = 0;
-	int drop = 0;
+	int atk = 0;
+	int atkDrop = 0;
 	float spanTime = 1.0f;
 	std::map<GameObjectServerSide*, WIN::Time> touchGameObjects;
 
 
 
 public:
-	AttackServerSide(int damage, int drop, float radius, GameObjectServerSide *self) : self(self), damage(damage), drop(drop) { this->radius = radius; }
+	AttackServerSide(int atk, int atkDrop, float radius, GameObjectServerSide *self) : self(self), atk(atk), atkDrop(atkDrop) { this->radius = radius; }
 
 	const GameObjectServerSide *GetSelf(void) { return self; }
 	virtual MULTI_OBJECT_TYPE GetType(void) = 0;

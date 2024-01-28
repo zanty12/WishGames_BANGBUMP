@@ -1,14 +1,43 @@
 #include "multi_enemy.h"
 #include "multiplay.h"
 
-void Enemy1ServerSide::Loop(void) {
-	if (map->Collision(transform.position, radius)) {
-		velocity *= -1.0f;
+void EnemyServerSide::BlownPlayers(void) {
+	// エネミーに対するダメージ処理
+	for (auto &kvp : MultiPlayServer::clients_) {
+		auto &player = kvp.second.player_;
+
+		float maxRadius = radius + player->radius;
+		float maxRadiusSq = maxRadius * maxRadius;
+
+		// ダメージ
+		if (maxRadiusSq >= Vector2::DistanceSq(transform.position, player->transform.position)) {
+			player->SkillOrbDrop(atkDrop);
+			// 吹き飛ばす
+			Vector2 direction = player->transform.position - transform.position;
+			player->blownVelocity = direction.Normalize() * 30.0f;
+		}
 	}
 }
 
-void Enemy2ServerSide::Loop(void)
-{
+
+
+
+
+
+void Enemy1ServerSide::Loop(void) {
+	if (map->Collision(transform.position, radius) != -1) {
+		velocity *= -1.0f;
+	}
+	transform.position += velocity;
+
+	// プレイヤーに触れたら吹き飛ばす
+	BlownPlayers();
+}
+
+
+void Enemy2ServerSide::Loop(void) {
+	// プレイヤーに触れたら吹き飛ばす
+	BlownPlayers();
 }
 
 void Enemy3ServerSide::Loop(void) {
@@ -37,6 +66,15 @@ void Enemy3ServerSide::Loop(void) {
 		velocity = velocity.Normalize() * speed;
 		this->velocity = velocity;
 	}
+
+	// プレイヤーに触れたら吹き飛ばす
+	BlownPlayers();
+}
+
+void Enemy1ClientSide::Loop(void) {
+	if (!isShow) return;
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White, velocity.x > 0.0f);
+	isShow = true;
 }
 
 
