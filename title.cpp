@@ -29,7 +29,9 @@ void Title::Update()
 
 void Title::Draw()
 {
-	DrawSprite(g_TextureNo, Vector2(960.0f, 540.0f), 0.0f, Vector2(1920.0f, 1080.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+	const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
+	const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
+	DrawSprite(g_TextureNo, Vector2(Graphical::GetWidth()/2, Graphical::GetHeight()/2), 0.0f, Vector2(1920.0f*scale_x, 1080.0f*scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 void Title::DebugMenu()

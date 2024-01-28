@@ -51,7 +51,8 @@ void SceneMngr::ChangeScene(SCENE scene)
         delete scene_;
         scene_ = nullptr;
     }
-    Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+    LoadScene(scene);
+    /*Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
     DrawSprite(loading_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2),
                        0.0f, Vector2(1920.0f, 1080.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
     Graphical::Present();
@@ -68,14 +69,14 @@ void SceneMngr::ChangeScene(SCENE scene)
             break;
         }
     }
-    loading_ = false;
+    loading_ = false;*/
 }
 
 void SceneMngr::DebugMenu()
 {
     scene_->DebugMenu();
     ImGui::Begin("screen capture");
-    if(ImGui::Button("capture"))
+    if (ImGui::Button("capture"))
     {
         CaptureScreen();
         captured_ = true;
@@ -116,23 +117,26 @@ void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
     }
     std::future<void> loadSceneFuture = std::async(std::launch::async, &SceneMngr::LoadScene, this, scene);
     Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+    const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
+    const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
     DrawSprite(loading_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2),
-                       0.0f, Vector2(1920.0f, 1080.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+               0.0f, Vector2(1920.0f * scale_x, 1080.0f * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
     Graphical::Present();
     auto start = std::chrono::high_resolution_clock::now();
     loading_ = true;
-    while(true)
+    while (true)
     {
         auto now = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - start);
-        if(loadSceneFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready && duration.count() >= 2)
+        if (loadSceneFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready && duration.count() >=
+            2)
         {
             break;
         }
     }
     loading_ = false;
 
-    if(scene == SCENE_GAME)
+    if (scene == SCENE_GAME)
         ParseGame(message);
 }
 
@@ -242,9 +246,9 @@ void SceneMngr::CaptureScreen()
     backBufferTexture->GetDesc(&textureDesc);
 
     // Create a new texture with the same description
-    if(savedFrameTexture_ != nullptr)
+    if (savedFrameTexture_ != nullptr)
         savedFrameTexture_->Release();
-    
+
     Graphical::GetDevice().Get()->CreateTexture2D(&textureDesc, nullptr, &savedFrameTexture_);
 
     // Copy the back buffer to the new texture
@@ -252,8 +256,10 @@ void SceneMngr::CaptureScreen()
 
     // Now you can use savedFrameTexture later as needed
     DirectX::ScratchImage image;
-    HRESULT hr = DirectX::CaptureTexture(Graphical::GetDevice().Get(),Graphical::GetDevice().GetContext(),savedFrameTexture_,image);
-    if (SUCCEEDED(hr)) {
+    HRESULT hr = DirectX::CaptureTexture(Graphical::GetDevice().Get(), Graphical::GetDevice().GetContext(),
+                                         savedFrameTexture_, image);
+    if (SUCCEEDED(hr))
+    {
         const DirectX::Image* img = image.GetImage(0, 0, 0);
         DirectX::SaveToTGAFile(*img, L"screen.tga");
     }

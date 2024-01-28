@@ -134,7 +134,6 @@ void Game::DebugMenu()
     if(ImGui::Button("title"))
     {
         scene_mngr_->ChangeScene(SCENE_TITLE);
-
     }
     ImGui::End();
 
@@ -142,6 +141,20 @@ void Game::DebugMenu()
 
 void Game::UpdateNormal()
 {
+    if(first_update_)
+    {
+        //処理落ち回避のため一回目の更新をスキップする
+        first_update_ = false;
+        return;
+    }
+    if(start_timer_ > 0.0f)
+    {
+        coll_mngr_->Update();
+        camera_->Update(GetPlayer()->GetPos(), GetPlayer()->GetVel(), GetPlayer()->GetPlayerState());
+        renderer_->Update();
+        start_timer_ -= Time::GetDeltaTime();
+        return;
+    }
     coll_mngr_->Update();
     std::thread map(&MapMngr::Update, mapmngr_);
     //mapmngr_->Update();
@@ -165,16 +178,18 @@ void Game::UpdateNormal()
     projectile.join();
     camera.join();
     renderer.join();
+
+    //check scene change
     if (GetPlayer()->GetChangeSceneFlag())
     {
-        scene_mngr_->ChangeScene(SCENE_RESULT);
+        change_scene_ = 2;
     }
-    if (GetChangeScene() == 1)
+    /*if (GetChangeScene() == 1)
     {
         scene_mngr_->ChangeScene(SCENE_RESULT);
-    }
+    }*/
 
-
+    //timer
     timer_ -= Time::GetDeltaTime();
     if (timer_ <= 0.0f)
     {
@@ -188,11 +203,23 @@ void Game::UpdateNormal()
         delete camera_;
         camera_ = new Camera(GetPlayer()->GetPos(),
                              Vector2(mapmngr_->GetMap()->GetWidth(), mapmngr_->GetMap()->GetHeight()));
+        first_update_ = true;
     }
+
 }
 
 void Game::DrawNormal()
 {
+    if(start_timer_ > 0.0f)
+    {
+        int itimeer = static_cast<int>(start_timer_);
+        std::wstring time = std::to_wstring(itimeer);
+        if(itimeer == 0)
+        {
+            time = L"GO!";
+        }
+        Text::WriteText(time.c_str(), text_format_, brush_, Graphical::GetWidth() / 2 - 45, Graphical::GetHeight() / 2, 180, 50);
+    }
     camera_->Draw();
     renderer_->Draw(camera_);
 

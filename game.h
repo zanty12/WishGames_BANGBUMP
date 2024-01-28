@@ -32,6 +32,12 @@ private:
 	//static SkillOrbMngr *orb_mngr_;
 	float timer_ = 120.0f;
 	int timer_tex_ = -1;
+	//skip first time collider update
+	bool first_update_ = true;
+
+	//start
+	bool started_ = false;
+	float start_timer_ = 3.5f;
 
 	//Result
 	int result_tex_ = 0;

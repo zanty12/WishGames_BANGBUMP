@@ -177,6 +177,7 @@ public:
         //ImGui::Text("time: %.2f, pts: %.2f", time_, pts_);
         ImGui::Image((void*)texture_view_, ImVec2(size_.x * scale_, size_.y * scale_));
         ImGui::End();
+
     }
 
     void SetScale(float scale)
