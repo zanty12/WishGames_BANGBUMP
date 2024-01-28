@@ -48,7 +48,7 @@ public:
 /*******************************************************
   Client
 ********************************************************/
-class ClientSkillOrb : public ClientGameObject {
+class ClientSkillOrb : public GameObjectClientSide {
 public:
 	ClientSkillOrb(Vector2 scale);
 

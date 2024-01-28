@@ -59,7 +59,7 @@ class MultiPlayAreaCaptureModeClientSide : public MultiPlayModeClientSide {
 private:
 	RESPONSE_AREA_CAPTURE res;
 	int areaTexNo = -1;
-	ClientGameObject playerObject;
+	GameObjectClientSide playerObject;
 	MultiAnimator anim;
 
 

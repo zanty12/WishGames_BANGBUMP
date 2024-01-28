@@ -18,7 +18,7 @@ public:
 	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
 };
 
-class ClientGameObject : public MultiBehavior {
+class GameObjectClientSide : public MultiBehavior {
 public:
 	Transform transform;
 	Vector2 velocity;
@@ -29,6 +29,6 @@ public:
 	bool isPrevShow = true;
 
 
-	ClientGameObject() = default;
-	ClientGameObject(Transform transform) : transform(transform) { };
+	GameObjectClientSide() = default;
+	GameObjectClientSide(Transform transform) : transform(transform) { };
 };

@@ -3,6 +3,7 @@
 #include "xinput.h"
 #include "time.h"
 #include "multi_skillorb.h"
+#include "multi_enemy.h"
 #include "ini.h"
 #include <windows.h>
 #include <thread>
@@ -576,9 +577,6 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 	if (0 < buffLen) {
 		RESPONSE_PLAYER res;
 
-		// 受信する
-		//int	buffLen = Recv(sockfd_, recvTmpBuff, MAX_BUFF, 0);
-
 		// データを取り込む
 		recvBuff.Push(recvTmpBuff, buffLen);
 
@@ -612,11 +610,12 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 
 			// オブジェクトが作成されていないなら作成する
 			if (iterator == objects.end()) {
-				ClientGameObject *pObject = nullptr;
+				GameObjectClientSide *pObject = nullptr;
 				switch (object.tag) {
-				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_SMALL: pObject = new ClientSkillOrbSmall();
-				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: pObject = new ClientSkillOrbMidium();
-				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: pObject = new ClientSkillOrbBig();
+				case MULTI_OBJECT_TYPE::MULTI_ENEMY1: pObject = new Enemy1ClientSide(); break;
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_SMALL: pObject = new ClientSkillOrbSmall(); break;
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: pObject = new ClientSkillOrbMidium(); break;
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: pObject = new ClientSkillOrbBig(); break;
 				}
 				if (pObject) objects[object.id] = pObject;
 			}

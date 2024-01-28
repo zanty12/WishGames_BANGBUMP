@@ -105,7 +105,7 @@ public:
 	ATTRIBUTE_TYPE move_ = ATTRIBUTE_TYPE_FIRE;
 	ATTRIBUTE_TYPE action_ = ATTRIBUTE_TYPE_FIRE;
 	std::unordered_map<int, ClientPlayer *> clients;		// 描画用クライアント
-	std::unordered_map<int, ClientGameObject *> objects;	// 描画用オブジェクト
+	std::unordered_map<int, GameObjectClientSide *> objects;	// 描画用オブジェクト
 
 	MultiPlayClient();
 

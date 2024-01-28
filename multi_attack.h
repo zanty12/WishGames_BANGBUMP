@@ -31,9 +31,9 @@ public:
 /***********************************************************
 	Client
 ************************************************************/
-class ClientAttack : public ClientGameObject {
+class ClientAttack : public GameObjectClientSide {
 public:
-	ClientAttack(Transform transform) : ClientGameObject(transform) { }
+	ClientAttack(Transform transform) : GameObjectClientSide(transform) { }
 
 	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
 };

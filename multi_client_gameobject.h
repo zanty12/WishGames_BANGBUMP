@@ -1,7 +1,7 @@
 #pragma once
 #include "gameobject.h"
 
-class ClientGameObject : public GameObject {
+class GameObjectClientSide : public GameObject {
 public:
 	void Update(void) override {};
 };

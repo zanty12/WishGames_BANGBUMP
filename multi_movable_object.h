@@ -14,8 +14,8 @@ public:
 
 
 class ClientAttack;
-class ClientMovableGameObject : public ClientGameObject {
+class ClientMovableGameObject : public GameObjectClientSide {
 public:
 	ClientMovableGameObject() = default;
-	ClientMovableGameObject(Transform transform) : ClientGameObject(transform) { };
+	ClientMovableGameObject(Transform transform) : GameObjectClientSide(transform) { };
 };

@@ -8,6 +8,7 @@
 #include "multiplay.h"
 #include "multi_skillorb.h"
 #include "multi_attack.h"
+#include "multi_enemy.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -106,8 +107,8 @@ void MultiMap::Load(std::string path)
 				else if (id == MAP_READ_ORB_MID) skillOrbs->Add<ServerSkillOrbMidium>(Transform(position));
 				else if (id == MAP_READ_ORB_BIG) skillOrbs->Add<ServerSkillOrbBig>(Transform(position));
 				// ƒGƒlƒ~[‚Ì“o˜^
-				else if (id == MAP_READ_KOOPA ||
-					id == MAP_READ_HAMMERBRO ||
+				else if (id == MAP_READ_KOOPA) enemies->Add<Enemy1ServerSide>(this);
+				else if(id == MAP_READ_HAMMERBRO ||
 					id == MAP_READ_PHANTOM) {
 					//skillOrbs->Add<ServerSkillOrb>(Transform(Vector2(x, y) * cellSize));
 				}
@@ -123,7 +124,6 @@ void MultiMap::Load(std::string path)
 			}
 			x++;
 		}
-		std::cout << std::endl;
 		y--;
 	}
 	file.close();
