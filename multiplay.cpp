@@ -475,7 +475,7 @@ void MultiPlayClient::Unregister(void) {
 
 void MultiPlayClient::PlayerUpdate(void) {
 	// カメラ座標の計算
-	if (res_.clients.size()) offset = Vector2(0.0f, res_.clients.begin()->position.y - Graphical::GetHeight() * 0.25f);
+	if (res_.clients.size()) offset = Vector2(0.0f, res_.clients.begin()->position.y - Graphical::GetHeight() * 0.25f) + Vector2::Up * res_.clients.begin()->moveVelocity.y;
 
 	// ゲームモードの描画
 	gameMode->Draw(res_, offset);
