@@ -8,6 +8,12 @@ void ServerPlayer::Loop(void) {
 	if (moveAttribute) moveAttribute->Move();
 	if (attackAttribute) attackAttribute->Attack();
 
+	// ‚ª‚Á‚¿‚á‚ñ‚±ƒVƒXƒeƒ€
+	if (0.75f < Input::GetTriggerLeft(0) && 0.75f < Input::GetTriggerRight(0)) {
+		ServerAttribute *tmp = attackAttribute;
+		attackAttribute = moveAttribute;
+		moveAttribute = tmp;
+	}
 
 	// ˆÚ“®‚³‚¹‚é
 	transform.position += velocity + blownVelocity;
