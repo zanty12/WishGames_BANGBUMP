@@ -261,9 +261,11 @@ void ServerWater::Attack(void) {
 		// ‰Šú‰»
 		power = 0.0f;
 
-		// UŒ‚íœ
-		attack_->Destroy();
-		attack_ = nullptr;
+		if (attack_) {
+			// UŒ‚íœ
+			attack_->Destroy();
+			attack_ = nullptr;
+		}
 	}
 }
 
