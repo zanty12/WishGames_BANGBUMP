@@ -239,30 +239,25 @@ void ServerWater::Attack(void) {
 
 
 	// 攻撃
-	//if (Input::GetKeyDown(0, Input::RThumb)) {
+	if (Input::GetKeyDown(0, Input::RThumb)) {
 
-	//	// ワープベクトルの指定
-	//	player->attackVelocity = CalcVector(stick);
+		// ワープベクトルの指定
+		player->attackVelocity = stick;
 
-	//	// 攻撃オブジェクトの生成
-	//	if (attack_ == nullptr)
-	//		attack_ = player->map->GetAttacks()->Add<ServerWaterAttack>(player);
-	//	attack_->direction = stick * 100.0f;
-	//}
-	if (Input::GetKey(0, Input::RThumb)) {
-	// ワープベクトルの指定
-	player->attackVelocity = CalcVector(stick);
+		// 攻撃オブジェクトの生成
+		if (attack_ == nullptr)
+			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
 
-	// 攻撃オブジェクトの生成
-	if (attack_ == nullptr)
-		attack_ = player->map->GetAttacks()->Add<ServerWaterAttack>(player);
+		attack_->direction = player->attackVelocity * 10000.0f;
+	}
+	else if (Input::GetKey(0, Input::RThumb)) {
+
+		// アタック移動
+		if (attack_) attack_->transform.position = player->transform.position;
 
 		// 移動チャージアニメーション
 		player->animType = ANIMATION_TYPE_ATTACK;
 
-		// 攻撃場所の更新
-		attack_->transform.position = player->transform.position;
-		attack_->direction = stick * 100.0f;
 	}
 	// 攻撃終了
 	else if (Input::GetKeyUp(0, Input::RThumb)) {
