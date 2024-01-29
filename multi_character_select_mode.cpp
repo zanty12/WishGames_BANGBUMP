@@ -72,32 +72,22 @@ ServerAttribute *MultiPlayCharacterSelectModeServerSide::CreateAttribute(ATTRIBU
 }
 
 void MultiPlayCharacterSelectModeServerSide::Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
-	std::cout << "RELEASE" << std::endl;
 	for (auto &kvp : clients) {
-		std::cout << "LOOP - START" << std::endl;
 		// プレイヤーの検索
 		auto &client = kvp.second;
 		auto &player = client.player_;
 
 		// 移動属性更新
 		{
-			std::cout << "CREATE" << std::endl;
 			ServerAttribute *moveAttribute = CreateAttribute(client.moveAttributeType, player);
-			std::cout << "DELETE" << std::endl;
 			if (player->GetMoveAttribute()) delete player->GetMoveAttribute();
-			std::cout << "SET" << std::endl;
 			player->SetMoveAttribute(moveAttribute);
-			std::cout << "RST" << std::endl;
 		}
 		// 攻撃属性更新
 		{
-			std::cout << "CREATE" << std::endl;
 			ServerAttribute *attackAttribute = CreateAttribute(client.attackAttributeType, player);
-			std::cout << "DELETE" << std::endl;
 			if (player->GetAttackAttribute()) delete player->GetAttackAttribute();
-			std::cout << "SET" << std::endl;
 			player->SetAttackAttribute(attackAttribute);
-			std::cout << "RST" << std::endl;
 		}
 	}
 }

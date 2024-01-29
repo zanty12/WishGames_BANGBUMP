@@ -176,6 +176,7 @@
     <ClCompile Include="multiplay.cpp" />
     <ClCompile Include="multi_anim.cpp" />
     <ClCompile Include="multi_area_capture_mode.cpp" />
+    <ClCompile Include="multi_attack.cpp" />
     <ClCompile Include="multi_attribute.cpp" />
     <ClCompile Include="multi_behavior.cpp" />
     <ClCompile Include="multi_character_select_mode.cpp" />

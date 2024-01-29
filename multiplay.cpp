@@ -120,7 +120,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 	std::cout << "UPD LOCK";
 #endif
 
-
+	std::cout << "UPD" << std::endl;
 	if (gameMode->GetGame()->IsPlayerMove()) {
 		// プレイヤーの更新
 		for (auto &kvp : clients_) {
@@ -140,18 +140,23 @@ void MultiPlayServer::PlayerUpdate(void) {
 			std::cout << player->transform.position.x << ", " << player->transform.position.y << std::endl;
 #endif
 		}
+		std::cout << "UPD - PLAYER" << std::endl;
 
 		// スキルオーブの更新
 		gameMode->GetMap()->GetSkillOrbs()->AllLoop();
+		std::cout << "UPD - SKILLORB" << std::endl;
 
 		// エネミーの更新
 		gameMode->GetMap()->GetEnemies()->AllLoop();
+		std::cout << "UPD - ENEMY" << std::endl;
 
 		// 攻撃オブジェクトの更新
 		gameMode->GetMap()->GetAttacks()->AllLoop();
+		std::cout << "UPD - ATTACK" << std::endl;
 
 		// 攻撃判定の更新
 		gameMode->GetMap()->AttackUpdate();
+		std::cout << "UPD - ATTACK2" << std::endl;
 	}
 	// ゲームモードの更新
 	gameMode->Update(clients_);
