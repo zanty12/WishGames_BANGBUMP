@@ -5,61 +5,89 @@
 #include "lib/vector.h"
 #include "graphical.h"
 #include "sprite.h"
+#include "asset.h"
+#include "attribute_type.h"
 
 struct ANIM_DATA
 {
-    int texNo;
-    int matrix_num_x, matrix_num_y;
+    textures texture_enum;
 
     int loop_start_x, loop_start_y;
     int loop_end_x, loop_end_y;
 
-    ANIM_DATA() {}
+    ANIM_DATA() {
+        loop_start_x = loop_start_y = loop_end_x = loop_end_y = -1; //設定しないときは-1にして例外処理に通す
+    };
     //----------------------------------------
-    // int tex_number   テクスチャナンバー
-    // int x_num        よこ方向の画像の数
-    // int y_num        たて方向の画像の数
     // int start_x      ループアニメのスタート画像[よこ]（右端 = 0）
     // int start_y      ループアニメのスタート画像[たて]（上端 = 0）
     // int end_x        ループアニメの終端画像[よこ]
     // int end_y        ループアニメの終端画像[たて]
+    // textures texture_enum   テクスチャenum
     //----------------------------------------
-    ANIM_DATA(int tex_number, int x_num, int y_num, int start_x, int start_y, int end_x, int end_y)
+    ANIM_DATA(int start_x, int start_y, int end_x, int end_y, textures texture = texture_none)
     {
-        texNo = tex_number;
-        matrix_num_x = x_num;
-        matrix_num_y = y_num;
+        texture_enum = texture;
+
         loop_start_x = start_x;
         loop_start_y = start_y;
         loop_end_x = end_x;
         loop_end_y = end_y;
     }
     //----------------------------------------
-// int tex_number   テクスチャナンバー
-// int x_num        よこ方向の画像の数
-// int y_num        たて方向の画像の数
-//----------------------------------------
-    ANIM_DATA(int tex_number, int x_num, int y_num)
-    {
-        texNo = tex_number;
-        matrix_num_x = x_num;
-        matrix_num_y = y_num;
-        loop_start_x = 0;
-        loop_start_y = 0;
-        loop_end_x = x_num - 1;
-        loop_end_y = y_num - 1;
-    }
+    // textures texture_enum   テクスチャenum
+    //----------------------------------------
+    ANIM_DATA(textures texture);
 };
 
 //ここに全てのアニメーションの名前を書く
 enum LOOP_ANIM
 {
-    NONE = -1,
+    ANIM_NONE = -1,
 
-    PLAYER,
-    ENEMY_1,
-    ENEMY_2,
-    ENEMY_3,
+    //player
+    PLAYER_IDOL_ANIM,    //待機
+    PLAYER_ATTACK_ANIM,  //攻撃
+    PLAYER_FD_MOVE_ANIM,    //fire,dark移動
+    PLAYER_TW_MOVE_ANIM,    //thunder,wind移動
+    PLAYER_TM_CHARGE_ANIM,  //thunder移動チャージ
+    PLAYER_TA_CHARGE_ANIM,  //thunderアタックチャージ
+
+    //attibute_move
+    FIRE_MOVE_ANIM,
+    DARK_IDLE_ANIM,
+    DARK_MOVE_ANIM,
+    THUNDER_MOVE_ANIM,
+    WIND_MOVE_ANIM,
+    DARK_MOVE_CHARGE_ANIM,
+    THUNDER_MOVE_CHARGE_ANIM,
+
+    //attibute_attack
+    FIRE_ATTACK_ANIM,
+    DARK_ATTACK_ANIM,
+    THUNDER_ATTACK_ANIM,
+    WIND_ATTACK_ANIM,
+
+
+    //enemy
+    ENEMY_1_ANIM,
+    ENEMY_2_ANIM,
+    ENEMY_3_ANIM,
+    ENEMY_2_ATTACK,
+
+    //boss
+    BOSS_IDLE_ANIM,
+
+    //effect
+    EFFECT_DEAD_ANIM,
+    EFFECT_ENEMYDEAD_ANIM,
+    EFFECT_SPAWN_ANIM,
+    EFFECT_HIT_ANIM,
+    EFFECT_HIT_FIRE_ANIM,
+    EFFECT_HIT_DARK_ANIM,
+    EFFECT_HIT_THUNDER_ANIM,
+    EFFECT_HIT_WIND_ANIM,
+
 
 };
 
@@ -68,7 +96,7 @@ class GameObject;
 class Animator
 {
 private:
-    std::map<LOOP_ANIM, ANIM_DATA> DICTIONARY_;
+    static std::map<LOOP_ANIM, ANIM_DATA> DICTIONARY_;
 
     GameObject* parent_;  //アニメーション対象のゲームオブジェクト
 
@@ -87,7 +115,7 @@ private:
     int loop_start_x_, loop_start_y_;   //ループする初めの場所
     int loop_end_x_, loop_end_y_;       //ループする終わりの場所
     bool is_loop_ = false;              //ループ判定（treu=ループ）
-    float img_change_time_ = 0.0f;          //画像を切り替える時間の間隔
+    float img_change_time_ = 0.031f;          //画像を切り替える時間の間隔（1/30秒ピッタリではシビアすぎるので少し早めに）
     float now_time_ = 0.0f;
 
     int now_matrix_number_ = 0;   //現在の行列の位置
@@ -96,8 +124,12 @@ private:
 
     int invert_ = 1;              //反転
 
+    textures texture_enum_;       //そのオブジェクトが持つテクスチャのenum textures
+
+    int draw_priority_ = 0;
+
 public:
-    Animator() = delete;
+    Animator();
 
     Animator(GameObject* game_object);
     //--------------------------------------------------------------------------------
@@ -138,7 +170,7 @@ public:
         const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
         if (isAnim_)
         {
-            DrawSpriteLeftTop(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
+            DrawSprite(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
                 Vector2(scale_.x * scale_x, scale_.y * scale_y), color_, Vector2(GetU(), GetV()), Vector2(UWidth(), VHeight()));
         }
         else
@@ -160,15 +192,21 @@ public:
     float GetRot(void) const { return rot_; }
     bool GetIsAnim(void) const { return isAnim_; }
     void SetIsAnim(bool isAnim) {
-            isAnim_ = isAnim;
+        isAnim_ = isAnim;
     }
     bool GetIsMovable(void) const { return isMovable_; }
     void SetIsMovable(bool isMovable) { isMovable_ = isMovable; }
+    void SetTexenum(textures texture_enum) { texture_enum_ = texture_enum; } //enum texturesセット
+    textures GetTexenum() { return texture_enum_; } //enum texturesゲット
+    void SetDrawPriority(int priority) { draw_priority_ = priority; }    //表示する優先順位設定（数値が高い画像が低い画像の上に表示）
+    int GetDrawPriority(void) { return draw_priority_; }        //表示する優先順位ゲット
 
     void SetIsLoop(bool is_loop) { is_loop_ = is_loop; }    //ループの設定（treu=ループ）
     void SetImgChangeTime(float img_change_time) { img_change_time_ = img_change_time; }    //次の画像に切り替える間隔 [1.0f=１秒]
 
-    void SetLoopImg(LOOP_ANIM loop_anim) { loop_anim_next_ = loop_anim; }    //ループするイメージの設定
+    void SetLoopAnim(LOOP_ANIM loop_anim) { loop_anim_next_ = loop_anim; }    //ループするアニメーションの設定
+    LOOP_ANIM GetLoopAnim(void) const { return loop_anim_; }                  //今ループしているアニメーション
+    LOOP_ANIM GetLoopAnimNext(void) const { return loop_anim_next_; }         //次にループするアニメーション
 
     float UWidth(void) const { return (1.0f / x_matrix_num_) * invert_; }    //UV(U)の幅を取得
     float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)の高さを取得
@@ -191,8 +229,12 @@ public:
 
     void RendererRegister(void);    //レンダラーに登録
 
+    void PlayerAnim(ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack);
+
+
+    static void InitDictionary(void);  //辞書登録
 private:
-    void InitDictionary(void);
     void LoopAnimation(void);
     void Reset(void);
+
 };

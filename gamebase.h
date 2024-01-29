@@ -37,7 +37,7 @@ private:
 
 public:
 	GameBase() = delete;
-	GameBase(SceneMngr *scene_mngr) : scene_mngr_(scene_mngr) {	}
+	GameBase(SceneMngr *scene_mngr) : scene_mngr_(scene_mngr) { renderer_->InitRenderer(); }
 	virtual ~GameBase();
 
 	virtual void Update(void) {}

@@ -1,9 +1,22 @@
 #include "renderer.h"
 #include "camera.h"
 
+
+void Renderer::InitRenderer()
+{
+    ImageDataDictionary::InitDictionary();  //ImageDataDictionary‚ÌŽ«‘“o˜^‚ð‚µ‚Ä‚©‚ç
+    Animator::InitDictionary();             //Animator‚ÌŽ«‘“o˜^‚ðs‚¤iImageDataDictionary‚ÌŽ«‘‚ðŽg‚¤‚½‚ßj
+}
+
 void Renderer::Update()
 {
     CheckDiscard();
+
+    animators_.sort(
+        [](Animator* a, Animator* b) {
+            return a->GetDrawPriority() < b->GetDrawPriority();
+        }
+    );
 
     for (auto it = animators_.begin(); it != animators_.end();)
     {

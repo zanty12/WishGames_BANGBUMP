@@ -80,6 +80,9 @@ public:
 		SetTexNo(tex);
 		GetAnimator()->SetTexNo(tex);
 		SetType(OBJ_PLAYER);
+
+		//表示優先度設定
+		GetAnimator()->SetDrawPriority(50);
 	}
 
 	~Player() { delete move_attribute_; delete attack_attribute_; }

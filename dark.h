@@ -13,6 +13,7 @@
 
 class DarkAttack;
 class DarkIndicator;
+class DarkEffect;
 class Dark : public Attribute
 {
 	Vector2 warpPosition;
@@ -23,14 +24,20 @@ class Dark : public Attribute
 	DarkAttack* attack_ = nullptr;
 	DarkIndicator* move_indicator_ = nullptr;
 	ThunderIndicator* attack_indicator_ = nullptr;
+	DarkEffect* move_effect_ = nullptr;
 	//ここからは調整用のためconst抜き
 	float maxSpeedFalling = -0.5f;
 	float warpDistance_ = 20*GameObject::SIZE_;
 
 public:
 
-	Dark(Player* player) : Attribute(player, ATTRIBUTE_TYPE_DARK) {}
-	~Dark() override = default;
+	Dark(Player* player);
+	~Dark() override {
+		if (attack_) delete attack_;
+		if (move_indicator_) delete move_indicator_;
+		if (attack_indicator_) delete attack_indicator_;
+		if (move_effect_) delete move_effect_;
+	}
 	Vector2 Move() override;
 	void Action() override;
 	void DebugMenu() override;
@@ -39,7 +46,7 @@ public:
 class DarkAttack : public MovableObj,public PlayerAttack
 {
 	Dark* parent_;
-	Vector2 size_ = Vector2(5* GameObject::SIZE_, 2*GameObject::SIZE_);
+	Vector2 size_ = Vector2(2* GameObject::SIZE_, 5*GameObject::SIZE_);
 public:
 	DarkAttack() = delete;
 	DarkAttack(Dark* parent);
@@ -56,4 +63,21 @@ public:
 	~DarkIndicator() override = default;
 	void Update() override;
 	void SetTargetPos(Vector2 pos) { target_pos_ = pos; }
+};
+
+class DarkEffect : public MovableObj
+{
+	Dark* parent_;
+	float move_time_;
+	bool teleport_;	//テレポート
+	bool charge_;	//チャージ
+
+public:
+	DarkEffect() = delete;
+	DarkEffect(Dark* parent);
+	~DarkEffect() override = default;
+	void Update() override;
+	void Idle();
+	void Move();
+	void Charge();
 };

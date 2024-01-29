@@ -14,6 +14,11 @@
 #include"lib/collider2d.h"
 
 
+Dark::Dark(Player* player)
+    : Attribute(player, ATTRIBUTE_TYPE_DARK),move_effect_(new DarkEffect(this))
+{
+}
+
 Vector2 Dark::Move()
 {
     Vector2 velocity = player_->GetVel();
@@ -40,6 +45,8 @@ Vector2 Dark::Move()
     }
     if (Input::GetKey(0, Input::LThumb))
     {
+        move_effect_->Charge();
+
         if (velocity.y <= -maxSpeedFalling)
         {
             velocity.y = maxSpeedFalling;
@@ -48,6 +55,8 @@ Vector2 Dark::Move()
     }
     if (Input::GetKeyUp(0, Input::LThumb))
     {
+        move_effect_->Move();
+
         Vector2 stick = Input::GetStickLeft(0);
         stick = stick.Normalize();
         stick.y *= -1;
@@ -59,6 +68,8 @@ Vector2 Dark::Move()
         move_indicator_ = nullptr;
     }
     else warpPosition = Vector2::Zero;
+
+    move_effect_->Update();
 
     return player_->GetVel();
 };
@@ -99,7 +110,7 @@ void Dark::Action()
         Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2);
         pos = player_->GetPos() + pos;
         attack_->SetPos(pos);
-        attack_->SetRot(angle);
+        attack_->SetRot(angle + (3.14f / 2));
     }
     else
     {
@@ -124,10 +135,14 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
                                            Vector2(
                                                parent->GetPlayer()->GetPos().x + parent->GetPlayer()->GetScale().x / 2 +
                                                5 * GameObject::SIZE_, parent->GetPlayer()->GetPos().y), 0.0f,
-                                           LoadTexture(Asset::GetAsset(water_attack)), Vector2::Zero),PlayerAttack(10000)
+                                           LoadTexture(Asset::GetAsset(dark_attack)), Vector2::Zero),PlayerAttack(10000)
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);
+
+    //アニメーション設定
+    GetAnimator()->SetTexenum(dark_attack);
+    GetAnimator()->SetLoopAnim(DARK_ATTACK_ANIM);
 }
 
 void DarkAttack::Update()
@@ -214,4 +229,81 @@ void DarkIndicator::Update()
         }
     }
     SetPos(GetCollider()->GetPos());
+}
+
+
+
+DarkEffect::DarkEffect(Dark* parent)
+    :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(dark_move_charge)), Vector2::Zero),
+    parent_(parent), move_time_(0.0f), teleport_(false), charge_(false)
+{
+    SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
+    SetType(OBJ_VOID);
+    SetColor(Color(0, 0, 0, 0));
+    GetAnimator()->SetDrawPriority(25);
+}
+
+void DarkEffect::Update()
+{
+    //moveに遷移したタイミングではポジションがまだ決まっていないためポジションが決まった後にセットする
+    if (move_time_ < 0.1f)
+    {
+        Vector2 pos = parent_->GetPlayer()->GetPos();
+        SetPos(pos);
+    }
+
+    if (teleport_)
+    {
+        move_time_ += Time::GetDeltaTime();
+        if (move_time_ > 1.0f / 2)
+        {
+            SetColor(Color(0, 0, 0, 0));
+            GetAnimator()->SetIsAnim(false);
+
+            teleport_ = false;
+            move_time_ = 0.0f;
+        }
+    }
+
+    if (!charge_ && !teleport_)
+    {
+        Idle();
+    }
+}
+
+void DarkEffect::Idle()
+{
+    SetTexNo(LoadTexture(Asset::GetAsset(dark_idle)));
+    SetColor(Color(1, 1, 1, 1));
+    GetAnimator()->SetTexenum(dark_idle);
+    GetAnimator()->SetLoopAnim(DARK_IDLE_ANIM);
+    GetAnimator()->SetDrawPriority(25);
+
+    Vector2 pos = parent_->GetPlayer()->GetPos();
+    pos.y = pos.y - parent_->GetPlayer()->GetScale().y / 2;
+    SetPos(pos);
+}
+
+void DarkEffect::Move()
+{
+    SetTexNo(LoadTexture(Asset::GetAsset(dark_move)));
+    SetColor(Color(1, 1, 1, 1));
+    GetAnimator()->SetTexenum(dark_move);
+    GetAnimator()->SetLoopAnim(DARK_MOVE_ANIM);
+    GetAnimator()->SetDrawPriority(75);
+    charge_ = false;
+    teleport_ = true;
+}
+
+void DarkEffect::Charge()
+{
+    SetTexNo(LoadTexture(Asset::GetAsset(dark_move_charge)));
+    SetColor(Color(1, 1, 1, 1));
+    GetAnimator()->SetTexenum(dark_move_charge);
+    GetAnimator()->SetLoopAnim(DARK_MOVE_CHARGE_ANIM);
+    GetAnimator()->SetDrawPriority(75);
+    charge_ = true;
+
+    Vector2 pos = parent_->GetPlayer()->GetPos();
+    SetPos(pos);
 }

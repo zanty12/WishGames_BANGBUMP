@@ -4,6 +4,11 @@
 #include "xinput.h"
 #include "lib/collider2d.h"
 
+Wind::Wind(Player* player)
+    : Attribute(player, ATTRIBUTE_TYPE_WIND),move_effect_(new WindEffect(this))
+{
+}
+
 bool Wind::StickTrigger(Vector2 stick, Vector2 previousStick)
 {
     //TODO: rewrite triggering to give a more stable output
@@ -53,6 +58,17 @@ Vector2 Wind::Move(void)
         power_ *= friction_;
         player_->SetGravityState(GRAVITY_HALF);
     }
+
+    if (prev_power_ < 0.0001f && power_ > 0.0001f)
+    {
+        //エフェクト表示
+        move_effect_->SetPos(GetPlayer()->GetPos());
+        move_effect_->DrawEffect();
+    }
+
+    prev_power_ = power_;
+    move_effect_->Update();
+
     prev_y_ = vel.y;
     return vel;
 }
@@ -98,6 +114,10 @@ WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPl
 {
     SetScale(size_);
     SetType(OBJ_VOID);
+
+    //アニメーション設定
+    GetAnimator()->SetTexenum(wind_attack);
+    GetAnimator()->SetLoopAnim(WIND_ATTACK_ANIM);
 }
 
 void WindAttack::Update()
@@ -125,5 +145,46 @@ void WindAttack::Update()
         default:
             break;
         }
+    }
+}
+
+
+WindEffect::WindEffect(Wind* parent)
+    :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(wind_move)), Vector2::Zero),
+    parent_(parent)
+{
+    SetType(OBJ_VOID);
+
+    //アニメーション設定
+    SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
+    GetAnimator()->SetTexenum(wind_move);
+    GetAnimator()->SetLoopAnim(WIND_MOVE_ANIM);
+    GetAnimator()->SetDrawPriority(75);
+    SetColor(Color(0, 0, 0, 0));
+}
+
+void WindEffect::Update()
+{
+    if (draw_)
+    {
+        SetColor(Color(1, 1, 1, 1));
+        GetAnimator()->SetColor(GetColor());
+        GetAnimator()->SetIsAnim(true);
+        GetAnimator()->SetTexenum(wind_move);
+        GetAnimator()->SetLoopAnim(WIND_MOVE_ANIM);
+
+        draw_time_ += Time::GetDeltaTime();
+        if (draw_time_ > 1.0f)
+        {
+            draw_ = false;
+            draw_time_ = 0.0f;
+        }
+    }
+    else
+    {
+        SetColor(Color(1, 1, 1, 0));
+        GetAnimator()->SetColor(GetColor());
+        GetAnimator()->SetIsAnim(false);
+        GetAnimator()->SetLoopAnim(ANIM_NONE);
     }
 }
