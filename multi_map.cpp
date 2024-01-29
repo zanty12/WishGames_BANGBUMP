@@ -212,7 +212,7 @@ int MultiMap::Collision(Vector2 &position, float radius) {
 	}
 
 	if (id != -1) {
-		position = hit.position -hit.tilt.Normal() * cellSize * 0.25f;
+		position = hit.position - hit.tilt.Normal() * radius;
 	}
 	return id;
 }

@@ -8,7 +8,7 @@ namespace ini {
 
 	float GetFloat(std::wstring filePath, std::wstring appName, std::wstring keyName) {
 		auto str = GetString(filePath, appName, keyName);
-		return std::stof(str);
+		return str.size() ? std::stof(str) : 0.0f;
 	}
 
 	bool GetBool(std::wstring filePath, std::wstring appName, std::wstring keyName) {

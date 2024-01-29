@@ -36,6 +36,7 @@ class Enemy1ServerSide : public EnemyServerSide {
 public:
 	Enemy1ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) {
 		velocity = Vector2::Left * speed;
+		radius = 50.0f;
 	}
 
 	void Loop(void) override;

@@ -8,6 +8,7 @@ class MultiPlayModeServerSide {
 protected:
 	float maxTime_ = 60.0f;
 	float time_ = 0.0f;
+	float startTime_ = 15.0f;			// 開始までの時間
 	float resultTime_ = 15.0f;			// 中間リザルトの時間
 	bool isSkip = false;
 	MultiMap *map_ = nullptr;
@@ -16,7 +17,9 @@ protected:
 
 public:
 	MultiPlayModeServerSide(MultiMap *map, std::wstring modeName) : map_(map) { 
-		maxTime_ = ini::GetFloat(L"data/property/mode.ini", modeName.c_str(), L"timeLimit");
+		startTime_ = ini::GetFloat(L"data/property/mode.ini", modeName.c_str(), L"startTime");
+		resultTime_ = ini::GetFloat(L"data/property/mode.ini", modeName.c_str(), L"resultTime");
+		maxTime_ = ini::GetFloat(L"data/property/mode.ini", modeName.c_str(), L"timeLimit") + startTime_ + resultTime_;
 
 	}
 	~MultiPlayModeServerSide() { if (map_) delete map_; }

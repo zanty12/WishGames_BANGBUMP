@@ -65,7 +65,11 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 		area.captureRatio = area.captureNowTime / area.captureMaxTime;		// 割合計算
 
 		// 占領完了したなら得点
-		if (1.0f <= area.captureRatio) pTouchClient->player_->score++;
+		if (1.0f <= area.captureRatio) {
+			pTouchClient->player_->score++;
+			// スキルオーブをドロップさせる
+			map_->DropSkillOrb(15, area.position, 10.0f);
+		}
 	}
 }
 // 占領削除
@@ -90,7 +94,6 @@ MultiPlayAreaCaptureModeServerSide::MultiPlayAreaCaptureModeServerSide()
 		areas.push_back(Area(areaPosition));
 	}
 
-	maxTime_ = 30.0f;
 	radius = ini::GetFloat(L"data/property/mode.ini", L"AreaCapture", L"radius");
 	areaGetTime = ini::GetFloat(L"data/property/mode.ini", L"AreaCapture", L"areaGetTime");
 	curTime = preTime = timeGetTime();

@@ -100,6 +100,15 @@ void ServerFire::Attack(void) {
 		player->animType = ANIMATION_TYPE_ATTACK;
 
 		player->attackVelocity = stick;
+
+		// 攻撃オブジェクトの生成
+		if (attack_ == nullptr)
+			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
+		attack_->transform.position = player->transform.position + stick.Normalize() * 10.0f;
+	}
+	else if (attack_ != nullptr) {
+		attack_->Destroy();
+		attack_ = nullptr;
 	}
 }
 
@@ -391,15 +400,13 @@ void ServerWind::Attack(void) {
 	float rotSpeed = Vector2::Cross(stick, previousStick);
 
 	// 攻撃中
-	if (StickTrigger(stick, previousStick))
-	{
+	if (StickTrigger(stick, previousStick)) {
 		player->animType = ANIMATION_TYPE_ATTACK;
 		if (attack_ == nullptr)
 			attack_ = player->map->GetAttacks()->Add<ServerWindAttack>(player);
 		attack_->transform.position = player->transform.position;
 	}
-	else if (attack_ != nullptr)
-	{
+	else if (attack_ != nullptr) {
 		attack_->Destroy();
 		attack_ = nullptr;
 	}

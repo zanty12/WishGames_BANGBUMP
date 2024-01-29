@@ -25,10 +25,10 @@ void EnemyServerSide::BlownPlayers(void) {
 
 
 void Enemy1ServerSide::Loop(void) {
+	transform.position += velocity;
 	if (map->Collision(transform.position, radius) != -1) {
 		velocity *= -1.0f;
 	}
-	transform.position += velocity;
 
 	// ƒvƒŒƒCƒ„[‚ÉG‚ê‚½‚ç‚«”ò‚Î‚·
 	BlownPlayers();
