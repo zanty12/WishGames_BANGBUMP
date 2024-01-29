@@ -83,7 +83,7 @@ private:
 	void CharacterDraw(int idx, int maxIdx, float protrude, float gap, float showAttribute, float showRateMin, float showRateMax);
 
 public:
-	MultiPlayCharacterSelectModeClientSide(MultiPlayClient * game) : MultiPlayModeClientSide(new MultiMap("data/map/MultiPlay_Map0.csv")), game_(game) {
+	MultiPlayCharacterSelectModeClientSide(MultiPlayClient * game) : MultiPlayModeClientSide(new MultiMap("data/map/MultiPlay_Map0.csv"), L"CharacterSelect"), game_(game) {
 		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
 		video = new Video("./data/video/fire_move.mp4");

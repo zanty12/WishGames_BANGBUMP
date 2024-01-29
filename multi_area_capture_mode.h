@@ -66,7 +66,7 @@ private:
 public:
 	MultiPlayAreaCaptureModeClientSide() : 
 		areaTexNo(LoadTexture("data/texture/area_capture.png")),
-		MultiPlayModeClientSide(new MultiMap("data/map/MultiPlay_Map1.csv")) {
+		MultiPlayModeClientSide(new MultiMap("data/map/MultiPlay_Map1.csv"), L"AreaCapture") {
 		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_front));
 		anim = MultiAnimator(areaTexNo, 1, 1, 0, 0);

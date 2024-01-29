@@ -137,6 +137,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 
 
 		// ƒQ[ƒ€‚ÌƒŠƒUƒ‹ƒg‚Ì•`‰æ
+		std::cout << res.time << " - " << gameMode_->resultTime_ << " = " << res.time - gameMode_->resultTime_ << std::endl;
 		if (0.0f < res.time - gameMode_->resultTime_) {
 			gameMode_->DrawResult(res, offset);
 		}

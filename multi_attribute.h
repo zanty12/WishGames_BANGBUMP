@@ -126,7 +126,7 @@ private:
 	GameObjectServerSide *self = nullptr;
 
 public:
-	ServerFireAttack(GameObjectServerSide *self) : AttackServerSide(1, 1, 50, self) { }
+	ServerFireAttack(GameObjectServerSide *self) : AttackServerSide(1, 10, 50, self) { }
 
 	const GameObjectServerSide *GetSelf(void) { return self; }
 

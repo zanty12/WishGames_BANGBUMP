@@ -30,7 +30,7 @@ public:
 ********************************************************/
 class MultiPlayFinalBattleModeClientSide : public MultiPlayModeClientSide {
 public:
-	MultiPlayFinalBattleModeClientSide() : MultiPlayModeClientSide(new MultiMap("data/map/MultiPlay_Map1.csv")) {
+	MultiPlayFinalBattleModeClientSide() : MultiPlayModeClientSide(new MultiMap("data/map/MultiPlay_Map1.csv"), L"FinalBattle") {
 		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_back));
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_front));
 	}
