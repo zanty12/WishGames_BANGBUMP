@@ -308,8 +308,7 @@ void MultiMap::AttackUpdate(void) {
 
 			// ƒ_ƒ[ƒW
 			if (maxRadiusSq >= Vector2::DistanceSq(attack->transform.position, enemy->transform.position)) {
-				enemy->hp -= attack->atk;
-				if (enemy->hp <= 0) enemy->Destroy();
+				enemy->Damage(attack);
 			}
 		}
 	}

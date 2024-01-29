@@ -3,11 +3,12 @@
 #include "lib/win_time.h"
 #include "multi_object.h"
 
+class ServerMovableGameObject;
 /***********************************************************
 	Server
 ************************************************************/
 class AttackServerSide : public GameObjectServerSide {
-private:
+protected:
 	GameObjectServerSide *self = nullptr;
 
 public:
@@ -25,6 +26,7 @@ public:
 
 	const GameObjectServerSide *GetSelf(void) { return self; }
 	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
+	virtual void KnockBack(ServerMovableGameObject *object) {};
 };
 
 

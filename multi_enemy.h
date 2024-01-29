@@ -1,11 +1,11 @@
 #pragma once
-#include "multi_object.h"
+#include "multi_movable_object.h"
 #include "multiplay.h"
 #include "multi_map.h"
 #include "multi_anim.h"
 
 class MultiMap;
-class EnemyServerSide : public GameObjectServerSide {
+class EnemyServerSide : public ServerMovableGameObject {
 protected:
 	MultiMap *map = nullptr;
 	float speed = 10.0f;
@@ -17,10 +17,11 @@ public:
 
 
 public:
-	EnemyServerSide(Transform transform, MultiMap* map) : map(map), GameObjectServerSide(transform) { }
+	EnemyServerSide(Transform transform, MultiMap* map) : map(map), ServerMovableGameObject(transform) { }
+	void Damage(AttackServerSide *attack) override;
 	void BlownPlayers(void);
 };
-class EnemyClientSide : public GameObjectClientSide {
+class EnemyClientSide : public ClientMovableGameObject {
 protected:
 	MultiAnimator anim;
 

@@ -194,6 +194,9 @@ void ClientFire::Attack(void) {
 void ServerFireAttack::Loop(void) {
 
 }
+void ServerFireAttack::KnockBack(ServerMovableGameObject *object) {
+	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * 2.0f;
+}
 
 
 
@@ -331,6 +334,9 @@ void ClientWater::Attack(void) {
 void ServerWaterAttack::Loop(void) {
 
 }
+void ServerWaterAttack::KnockBack(ServerMovableGameObject *object) {
+	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * 2.0f;
+}
 
 
 
@@ -381,6 +387,9 @@ void ClientThunder::Attack(void) {
 
 }
 
+void ServerThunderAttack::KnockBack(ServerMovableGameObject *object) {
+	object->blownVelocity = (object->transform.position - transform.position) * 2.0f;
+}
 
 
 
@@ -477,4 +486,8 @@ void ClientWind::Attack(void) {
 	Vector2 scl = Vector2::One * localScale;
 	Color col = Color::White;
 	attackAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
+}
+
+void ServerWindAttack::KnockBack(ServerMovableGameObject *object) {
+	object->blownVelocity = (object->transform.position - transform.position).Normalize() * 10.0f;
 }

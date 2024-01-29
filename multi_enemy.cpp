@@ -1,6 +1,11 @@
 #include "multi_enemy.h"
 #include "multiplay.h"
 
+void EnemyServerSide::Damage(AttackServerSide *attack) {
+	hp -= attack->atk;
+	if (hp <= 0) Destroy();
+}
+
 void EnemyServerSide::BlownPlayers(void) {
 	// エネミーに対するダメージ処理
 	for (auto &kvp : MultiPlayServer::clients_) {

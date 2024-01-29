@@ -3,6 +3,7 @@
 #include "lib/vector.h"
 #include "multi_anim.h"
 #include "multi_player.h"
+#include "multi_movable_object.h"
 #include "multi_object.h"
 #include "multi_attack.h"
 #include "lib/collider2d.h"
@@ -15,6 +16,8 @@
 ********************************************************/
 class ServerPlayer;
 class ClientPlayer;
+class ServerMovableGameObject;
+class ClientMovableGameObject;
 class ServerAttribute {
 protected:
 	ServerPlayer *player = nullptr;
@@ -30,6 +33,8 @@ public:
 	float minInputDistance = 0.50f;	// 入力の判定値
 	float minInputSpeed = 0.50f;	// 入力の加速の判定値
 	float inputPowerRate = 1.0f;	// 入力値がパワーに与える係数
+
+
 
 
 
@@ -124,15 +129,14 @@ public:
 
 class ServerFireAttack : public AttackServerSide {
 private:
-	GameObjectServerSide *self = nullptr;
 
 public:
 	ServerFireAttack(GameObjectServerSide *self) : AttackServerSide(1, 10, 50, self) { }
 
 	void Loop(void) override;
 
-	const GameObjectServerSide *GetSelf(void) { return self; }
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_FIRE; }
+	void KnockBack(ServerMovableGameObject *object) override;
 };
 
 
@@ -173,16 +177,13 @@ public:
 };
 
 class ServerWaterAttack : public AttackServerSide {
-private:
-	GameObjectServerSide *self = nullptr;
-
 public:
 	ServerWaterAttack(GameObjectServerSide *self) : AttackServerSide(1, 1, 50, self) { }
 
 	void Loop(void) override;
 
-	const GameObjectServerSide *GetSelf(void) { return self; }
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WATER; }
+	void KnockBack(ServerMovableGameObject *object) override;
 };
 
 
@@ -227,15 +228,11 @@ public:
 };
 
 class ServerThunderAttack : public AttackServerSide {
-private:
-	GameObjectServerSide *self = nullptr;
-
 public:
 	ServerThunderAttack(GameObjectServerSide *self) : AttackServerSide(1, 1, 50, self) { }
 
-	const GameObjectServerSide *GetSelf(void) { return self; }
-
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER; }
+	void KnockBack(ServerMovableGameObject *object) override;
 };
 
 
@@ -273,15 +270,11 @@ public:
 };
 
 class ServerWindAttack : public AttackServerSide {
-private:
-	GameObjectServerSide *self = nullptr;
-
 public:
 	ServerWindAttack(GameObjectServerSide * self) : AttackServerSide(1, 1, 100, self) { }
 
-	const GameObjectServerSide *GetSelf(void) { return self; }
-
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
+	void KnockBack(ServerMovableGameObject *object) override;
 };
 class ClientWindAttack : public ClientAttack {
 public:

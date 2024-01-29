@@ -32,6 +32,9 @@ void ServerPlayer::Damage(AttackServerSide *attack) {
 	if (attack->GetSelf() == this) return;
 
 	SkillOrbDrop(attack->atkDrop);
+
+	// ノックバックを与える
+	attack->KnockBack(this);
 }
 
 void ServerPlayer::SkillOrbDrop(int drop) {
