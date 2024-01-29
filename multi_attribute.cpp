@@ -235,7 +235,7 @@ void ServerWater::Move(void) {
 	}
 }
 void ServerWater::Attack(void) {
-	Vector2 stick = Input::GetStickLeft(0);
+	Vector2 stick = Input::GetStickRight(0);
 
 
 	// ワープ距離のチャージ
