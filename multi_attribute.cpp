@@ -247,13 +247,15 @@ void ServerWater::Attack(void) {
 		// 攻撃オブジェクトの生成
 		if (attack_ == nullptr)
 			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
-		attack_->transform.position = player->transform.position;
-		attack_->direction = player->attackVelocity;
+		attack_->direction = stick * 100.0f;
 	}
 	if (Input::GetKey(0, Input::RThumb)) {
 
 		// 移動チャージアニメーション
 		player->animType = ANIMATION_TYPE_ATTACK;
+
+		// 攻撃場所の更新
+		attack_->transform.position = player->transform.position;
 
 	}
 	// 攻撃終了
