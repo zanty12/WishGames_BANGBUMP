@@ -24,6 +24,11 @@ public:
         SetAtk(10);
         SetHp(30);
         atk_time_ = 0;
+
+        //アニメーター設定
+        SetTexNo(LoadTexture(Asset::GetAsset(enemy2_anim)));
+        GetAnimator()->SetTexenum(enemy2_anim);
+        GetAnimator()->SetLoopAnim(ENEMY_2_ANIM);
     }
 
 

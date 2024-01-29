@@ -171,6 +171,22 @@ void Animator::Update(void)
         u_ = (now_matrix_number_ % x_matrix_num_) * UWidth();
         v_ = (now_matrix_number_ / x_matrix_num_) * VHeight();
 
+        //反転は右端に行くとおかしくなるのでそれの修正
+        if (invert_ == -1)
+        {
+            if ((now_matrix_number_) % x_matrix_num_ == 0)
+            {
+                v_ -= VHeight();
+            }
+            if (now_matrix_number_ == 0)
+            {
+                int draw_matrix = (x_matrix_num_ * loop_end_y_) - loop_end_x_;
+                u_ = (draw_matrix % x_matrix_num_) * UWidth();
+                v_ = (draw_matrix / x_matrix_num_) * VHeight();
+                v_ += VHeight();
+            }
+        }
+
         if (is_loop_) {
             LoopAnimation();
         }

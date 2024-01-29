@@ -171,7 +171,7 @@ public:
         if (isAnim_)
         {
             DrawSprite(texNo_, Vector2((GetPos().x - offset.x) * scale_x, (GetPos().y - offset.y) * scale_y), rot_,
-                Vector2(scale_.x * scale_x, scale_.y * scale_y), color_, Vector2(GetU(), GetV()), Vector2(UWidth(), VHeight()));
+                Vector2(scale_.x * scale_x, scale_.y * scale_y), color_, Vector2(GetU(), GetV()), Vector2(UWidth() * invert_, VHeight()));
         }
         else
         {
@@ -208,7 +208,7 @@ public:
     LOOP_ANIM GetLoopAnim(void) const { return loop_anim_; }                  //今ループしているアニメーション
     LOOP_ANIM GetLoopAnimNext(void) const { return loop_anim_next_; }         //次にループするアニメーション
 
-    float UWidth(void) const { return (1.0f / x_matrix_num_) * invert_; }    //UV(U)の幅を取得
+    float UWidth(void) const { return (1.0f / x_matrix_num_); }    //UV(U)の幅を取得
     float VHeight(void) const { return 1.0f / y_matrix_num_; }  //UV(V)の高さを取得
     float GetU(void) const { return u_; }   //UV(U)の値を取得
     float GetV(void) const { return v_; }   //UV(V)の値を取得

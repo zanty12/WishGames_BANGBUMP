@@ -17,6 +17,11 @@ Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
     atk_time_ = 0;
     atk_now = false;
     srand((unsigned int)time(NULL));
+
+    //アニメーター設定
+    SetTexNo(LoadTexture(Asset::GetAsset(boss_idle)));
+    GetAnimator()->SetTexenum(boss_idle);
+    GetAnimator()->SetLoopAnim(BOSS_IDLE_ANIM);
 }
 
 void Boss::Update()

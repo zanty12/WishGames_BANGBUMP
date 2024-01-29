@@ -207,7 +207,7 @@ ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range
     start_pos_ = parent_->GetPlayer()->GetPos();
     SetPos(parent_->GetPlayer()->GetPos());
     SetScale(size_);
-    SetType(OBJ_VOID);
+    SetType(OBJ_ATTACK);
 
     float rot = GetRot();
     SetRot(rot + (3.14f / 2));
@@ -216,6 +216,7 @@ ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range
     SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
     GetAnimator()->SetTexenum(thunder_attack);
     GetAnimator()->SetLoopAnim(THUNDER_ATTACK_ANIM);
+    GetAnimator()->SetDrawPriority(75);
 }
 
 void ThunderAttack::Update()

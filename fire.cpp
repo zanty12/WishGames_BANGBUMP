@@ -50,7 +50,6 @@ Vector2 Fire::Move()
         if (move_effect_)   //操作をやめたら非表示
         {
             move_effect_->SetColor(Color(1, 1, 1, 0));
-            move_effect_->GetAnimator()->SetIsAnim(false);
         }
 
         player_->SetGravityState(GRAVITY_FULL);
@@ -111,6 +110,7 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
     //アニメーション設定
     GetAnimator()->SetTexenum(fire_attack);
     GetAnimator()->SetLoopAnim(FIRE_ATTACK_ANIM);
+    GetAnimator()->SetDrawPriority(75);
 }
 
 void FireAttack::Update()

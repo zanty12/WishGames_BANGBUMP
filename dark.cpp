@@ -143,6 +143,7 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
     //アニメーション設定
     GetAnimator()->SetTexenum(dark_attack);
     GetAnimator()->SetLoopAnim(DARK_ATTACK_ANIM);
+    GetAnimator()->SetDrawPriority(75);
 }
 
 void DarkAttack::Update()

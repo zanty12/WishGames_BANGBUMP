@@ -113,11 +113,12 @@ WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPl
                                            LoadTexture(Asset::GetAsset(wind_attack)), Vector2::Zero),PlayerAttack(10000)
 {
     SetScale(size_);
-    SetType(OBJ_VOID);
+    SetType(OBJ_ATTACK);
 
     //アニメーション設定
     GetAnimator()->SetTexenum(wind_attack);
     GetAnimator()->SetLoopAnim(WIND_ATTACK_ANIM);
+    GetAnimator()->SetDrawPriority(25);
 }
 
 void WindAttack::Update()

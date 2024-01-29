@@ -20,6 +20,11 @@ Bullet::Bullet(Vector2 pos)
     SetType(OBJ_BULLET);
     SetAtk(10);
     startPosition = GetPos();
+
+    //アニメーター設定
+    SetTexNo(LoadTexture(Asset::GetAsset(enemy2_attack)));
+    GetAnimator()->SetTexenum(enemy2_attack);
+    GetAnimator()->SetLoopAnim(ENEMY_2_ATTACK);
 }
 
 void Bullet::Update()

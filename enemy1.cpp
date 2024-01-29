@@ -26,7 +26,7 @@ void Enemy1::Update()
         startPosition = GetPos();
         SetVel(Vector2(GetVel().x * -1, GetVel().y));
         dir_ *= -1;
-		SetScale(Vector2(GetScale().x * -1, GetScale().y));
+        GetAnimator()->Invert();    //反転
     }
 
     this->AddVel(GetVel());
