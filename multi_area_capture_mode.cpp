@@ -30,6 +30,8 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 	for (auto &area : activeAreas) {
 		Vertex1 areaCollider = Vertex1(area.position, area.radius);			// エリアのコライダー
 		CLIENT_DATA_SERVER_SIDE *pTouchClient = nullptr;					// エリアに触れているプレイヤー
+		int inPlayerNum = 0;												// 領域に入っているプレイヤーの数
+
 
 		// プレイヤー
 		for (auto &kvp : clients) {
@@ -40,6 +42,7 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 			// 衝突判定
 			if (Collider2D::Touch(areaCollider, clientCollider)) {
 				int id = client.header.id;									// プレイヤーのID
+				inPlayerNum++;
 
 				if (area.id == id ||	// 自分のエリアなら
 					area.id == -1 ||	// だれのエリアでもないなら
@@ -54,7 +57,7 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 		if (pTouchClient == nullptr) continue;
 
 		// 占領し続けているならゲージの更新
-		if (area.id == pTouchClient->header.id) {
+		if (inPlayerNum == 1 && area.id == pTouchClient->header.id) {
 			area.captureNowTime += (curTime - preTime) * 0.001f;
 		}
 		// 別のプレイヤーに占領されたなら初期化
