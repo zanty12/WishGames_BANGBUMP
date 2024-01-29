@@ -238,8 +238,21 @@ void ServerWater::Attack(void) {
 	Vector2 stick = Input::GetStickRight(0);
 
 
-	// 攻撃
-	if (Input::GetKeyDown(0, Input::RThumb)) {
+	//// 攻撃
+	//if (Input::GetKeyDown(0, Input::RThumb)) {
+
+	//	// ワープベクトルの指定
+	//	player->attackVelocity = stick;
+
+	//	// 攻撃オブジェクトの生成
+	//	if (attack_ == nullptr)
+	//		attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
+
+	//	attack_->direction = player->attackVelocity * 10000.0f;
+	//}
+	if (Input::GetKey(0, Input::RThumb)) {
+		// 攻撃アニメーション
+		player->animType = ANIMATION_TYPE_ATTACK;
 
 		// ワープベクトルの指定
 		player->attackVelocity = stick;
@@ -248,15 +261,9 @@ void ServerWater::Attack(void) {
 		if (attack_ == nullptr)
 			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
 
-		attack_->direction = player->attackVelocity * 10000.0f;
-	}
-	else if (Input::GetKey(0, Input::RThumb)) {
-
 		// アタック移動
-		if (attack_) attack_->transform.position = player->transform.position;
-
-		// 移動チャージアニメーション
-		player->animType = ANIMATION_TYPE_ATTACK;
+		attack_->transform.position = player->transform.position;
+		attack_->direction = player->attackVelocity * 10000.0f;
 
 	}
 	// 攻撃終了
