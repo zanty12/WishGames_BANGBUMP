@@ -9,7 +9,7 @@
 ********************************************************/
 class MultiPlayFinalBattleModeServerSide : public MultiPlayModeServerSide {
 public:
-	MultiPlayFinalBattleModeServerSide() : MultiPlayModeServerSide(new MultiMap("data/map/MultiPlay_Map4.csv"), L"FinalBattle") { maxTime_ = 500; }
+	MultiPlayFinalBattleModeServerSide() : MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map4.csv"), L"FinalBattle") { maxTime_ = 500; }
 
 	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override {
 
@@ -30,7 +30,7 @@ public:
 ********************************************************/
 class MultiPlayFinalBattleModeClientSide : public MultiPlayModeClientSide {
 public:
-	MultiPlayFinalBattleModeClientSide() : MultiPlayModeClientSide(new MultiMap("data/map/MultiPlay_Map1.csv"), L"FinalBattle") {
+	MultiPlayFinalBattleModeClientSide() : MultiPlayModeClientSide(new MultiMap(MAP_PATH + "MultiPlay_Map4.csv"), L"FinalBattle") {
 		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_back));
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_front));
 	}
