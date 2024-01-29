@@ -23,7 +23,7 @@ bool AttackServerSide::Touch(GameObjectServerSide *object) {
 	}
 	// I“_
 	else {
-		Vector2 directionFromEnd = object->transform.position + (transform.position + this->direction);
+		Vector2 directionFromEnd = object->transform.position - (transform.position + this->direction);
 		return directionFromEnd.DistanceSq() <= maxRadiusSq;
 	}
 }
