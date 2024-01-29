@@ -221,6 +221,8 @@ void ServerWater::Move(void) {
 
 		// ワープベクトルの指定
 		player->warpVelocity = player->transform.position + CalcVector(stick);
+
+		player->velocity *= 0.55f;
 	}
 	// ワープ
 	else if(Input::GetKeyUp(0, Input::LThumb)) {
@@ -265,6 +267,7 @@ void ServerWater::Attack(void) {
 		attack_->transform.position = player->transform.position;
 		attack_->direction = player->attackVelocity * 10000.0f;
 
+		player->velocity *= 0.55f;
 	}
 	// 攻撃終了
 	else if (Input::GetKeyUp(0, Input::RThumb)) {
