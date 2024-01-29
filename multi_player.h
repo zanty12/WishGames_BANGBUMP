@@ -29,6 +29,7 @@ public:
 	float blownFriction = 0.85f;						// ダメージ時吹き飛ばされた際の減速度
 	
 public:
+	ServerPlayer() { gravity = 0.5f; }
 	~ServerPlayer() {
 		if (moveAttribute) delete moveAttribute;
 		if (attackAttribute) delete attackAttribute;
@@ -62,15 +63,18 @@ class ClientPlayer : public ClientMovableGameObject {
 private:
 	ClientAttribute *moveAttribute = nullptr;			// 移動属性
 	ClientAttribute *attackAttribute = nullptr;			// 攻撃属性
-	MULTI_ANIMATION_TYPE preAnimType = ANIMATION_TYPE_IDEL;	// アニメーション（1フレーム前）
+	MultiAnimator reverseAnim;							// 反転アニメーション
 
 public:
 	int skillPoint = 0;										// スキルポイント
 	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;	// アニメーションタイプ
+	MULTI_ANIMATION_TYPE preAnimType = ANIMATION_TYPE_IDEL;	// アニメーション（1フレーム前）
+	ATTRIBUTE_TYPE moveAttributeType;					// 移動属性タイプ
+	ATTRIBUTE_TYPE attackAttributeType;					// 攻撃属性タイプ
 	MultiAnimator anim;										// アニメーション
 	bool isReverseX = false;								// 横軸の向き
 	Vector2 attackVelocity;									// 攻撃のベロシティ
-	Vector2 warpVelocity;								// ワープベロシティ
+	Vector2 warpVelocity;									// ワープベロシティ
 
 
 	
@@ -79,9 +83,13 @@ public:
 
 	void Loop(void) override;
 
-	void SetMoveAttribute(ClientAttribute *moveAttribute) { this->moveAttribute = moveAttribute; }
-	void SetAttackAttribute(ClientAttribute *attackAttribute) { this->attackAttribute = attackAttribute; }
-	void SetAttribute(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute) { this->moveAttribute = moveAttribute, this->attackAttribute = attackAttribute; }
+	void Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim);
+	void SetMoveAttribute(ClientAttribute *moveAttribute);
+	void SetAttackAttribute(ClientAttribute *attackAttribute);
+	void SetAttribute(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute) {
+		SetMoveAttribute(moveAttribute);
+		SetAttackAttribute(attackAttribute);
+	}
 	ClientAttribute *GetMoveAttribute(void) { return moveAttribute; }
 	ClientAttribute *GetAttackAttribute(void) { return attackAttribute; }
 };

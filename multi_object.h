@@ -10,6 +10,7 @@ public:
 
 	Transform transform;
 	Vector2 velocity;
+	float gravity = 0.0f;
 	float radius = 10.0f;
 	int id = MAX_ID++;
 

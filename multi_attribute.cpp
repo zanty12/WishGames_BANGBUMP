@@ -84,6 +84,8 @@ void ServerFire::Move(void) {
 	// 停止中
 	else {
 		player->animType = ANIMATION_TYPE_IDEL;
+
+		velocity *= friction;
 	}
 	player->velocity = velocity;
 
@@ -235,6 +237,8 @@ void ServerWater::Move(void) {
 		// 初期化
 		power = 0.0f;
 	}
+
+	player->velocity *= friction;
 }
 void ServerWater::Attack(void) {
 	Vector2 stick = Input::GetStickRight(0);
@@ -402,7 +406,7 @@ void ServerWind::Move(void) {
 	Vector2 previousStick = Input::GetPreviousStickLeft(0);
 
 	// 回転のスピードを取得
-	float rotSpeed = Vector2::Cross(stick, previousStick);
+	float rotSpeed = MATH::Abs(Vector2::Cross(stick, previousStick));
 
 	// 移動中
 	if (StickTrigger(stick, previousStick))
@@ -439,7 +443,7 @@ void ServerWind::Attack(void) {
 
 
 	// 回転のスピードを取得
-	float rotSpeed = Vector2::Cross(stick, previousStick);
+	float rotSpeed = MATH::Abs(Vector2::Cross(stick, previousStick));
 
 	// 攻撃中
 	if (StickTrigger(stick, previousStick)) {

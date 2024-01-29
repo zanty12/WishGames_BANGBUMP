@@ -80,13 +80,11 @@ void MultiPlayCharacterSelectModeServerSide::Release(std::map<int, CLIENT_DATA_S
 		// 移動属性更新
 		{
 			ServerAttribute *moveAttribute = CreateAttribute(client.moveAttributeType, player);
-			if (player->GetMoveAttribute()) delete player->GetMoveAttribute();
 			player->SetMoveAttribute(moveAttribute);
 		}
 		// 攻撃属性更新
 		{
 			ServerAttribute *attackAttribute = CreateAttribute(client.attackAttributeType, player);
-			if (player->GetAttackAttribute()) delete player->GetAttackAttribute();
 			player->SetAttackAttribute(attackAttribute);
 		}
 	}
