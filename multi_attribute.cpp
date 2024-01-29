@@ -252,10 +252,8 @@ void ServerWater::Attack(void) {
 		// 攻撃オブジェクトの生成
 		if (attack_ == nullptr)
 			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
-		attack_->transform.position = player->transform.position + stick.Normalize() * 50.0f;
-		attack_->transform.rotation = std::atan2(stick.y, stick.x);
-		attack_->direction = stick * 100.0f;
-		std::cout << attack_->direction.x << ", " << attack_->direction.y << std::endl;
+		attack_->transform.position = player->transform.position;
+		attack_->direction = stick * 10000.0f;
 	}
 	// 攻撃終了
 	else if (Input::GetKeyUp(0, Input::RThumb)) {
