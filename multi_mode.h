@@ -17,9 +17,9 @@ protected:
 
 public:
 	MultiPlayModeServerSide(MultiMap *map, std::wstring modeName) : map_(map) {
-		startTime_ = ini::GetFloat(L"data/property/mode.ini", modeName.c_str(), L"startTime");
-		resultTime_ = ini::GetFloat(L"data/property/mode.ini", modeName.c_str(), L"resultTime");
-		maxTime_ = ini::GetFloat(L"data/property/mode.ini", modeName.c_str(), L"timeLimit") + startTime_ + resultTime_;
+		startTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"startTime");
+		resultTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"resultTime");
+		maxTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"timeLimit") + startTime_ + resultTime_;
 
 	}
 	~MultiPlayModeServerSide() { if (map_) delete map_; }
@@ -74,8 +74,8 @@ protected:
 
 public:
 	MultiPlayModeClientSide(MultiMap* map, std::wstring modeName) : map_(map) {
-		startTime_ = ini::GetFloat(L"data/property/mode.ini", modeName.c_str(), L"startTime");
-		resultTime_ = ini::GetFloat(L"data/property/mode.ini", modeName.c_str(), L"resultTime");
+		startTime_ = ini::GetFloat(L"mode.ini", modeName.c_str(), L"startTime");
+		resultTime_ = ini::GetFloat(L"mode.ini", modeName.c_str(), L"resultTime");
 	};
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 

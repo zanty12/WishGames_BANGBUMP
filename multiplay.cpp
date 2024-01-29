@@ -13,6 +13,7 @@
 //#define DEBUG_LOCKED
 //#define DEBUG_SENDLEN
 std::string SERVER_ADDRESS;
+std::wstring ParamPath;
 std::map<int, CLIENT_DATA_SERVER_SIDE> MultiPlayServer::clients_;
 
 

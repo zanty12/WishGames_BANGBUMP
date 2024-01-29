@@ -238,22 +238,23 @@ void ServerWater::Attack(void) {
 	Vector2 stick = Input::GetStickRight(0);
 
 
-	// ワープ距離のチャージ
-	if (Input::GetKey(0, Input::RThumb)) {
-		// パワー加算
-		AddPower();
+	// 攻撃
+	if (Input::GetKeyDown(0, Input::RThumb)) {
 
 		// ワープベクトルの指定
 		player->attackVelocity = CalcVector(stick);
-
-		// 移動チャージアニメーション
-		player->animType = ANIMATION_TYPE_ATTACK;
 
 		// 攻撃オブジェクトの生成
 		if (attack_ == nullptr)
 			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
 		attack_->transform.position = player->transform.position;
-		attack_->direction = stick * 10000.0f;
+		attack_->direction = player->attackVelocity;
+	}
+	if (Input::GetKey(0, Input::RThumb)) {
+
+		// 移動チャージアニメーション
+		player->animType = ANIMATION_TYPE_ATTACK;
+
 	}
 	// 攻撃終了
 	else if (Input::GetKeyUp(0, Input::RThumb)) {

@@ -546,6 +546,9 @@
     <ClInclude Include="multi_attack.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
+    <ClInclude Include="multi_path.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h">

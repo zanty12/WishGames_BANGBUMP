@@ -7,6 +7,7 @@
 #include "multi_attack.h"
 #include "lib/collider2d.h"
 #include "attribute_type.h"
+#include "multi_path.h"
 #include "ini.h"
 
 /*******************************************************
@@ -34,14 +35,14 @@ public:
 
 public:
 	ServerAttribute(ServerPlayer* player, std::wstring attributeName) : player(player) {
-		minPower = ini::GetFloat(L"data/property/player.ini", attributeName, L"minPower");
-		maxPower = ini::GetFloat(L"data/property/player.ini", attributeName, L"maxPower");
-		addPower = ini::GetFloat(L"data/property/player.ini", attributeName, L"addPower");
-		friction = ini::GetFloat(L"data/property/player.ini", attributeName, L"friction");
-		powerFriction = ini::GetFloat(L"data/property/player.ini", attributeName, L"powerFriction");
-		minInputDistance = ini::GetFloat(L"data/property/player.ini", attributeName, L"minInputDistance");
-		minInputSpeed = ini::GetFloat(L"data/property/player.ini", attributeName, L"minInputSpeed");
-		inputPowerRate = ini::GetFloat(L"data/property/player.ini", attributeName, L"inputPowerRate");
+		minPower = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"minPower");
+		maxPower = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"maxPower");
+		addPower = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"addPower");
+		friction = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"friction");
+		powerFriction = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"powerFriction");
+		minInputDistance = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"minInputDistance");
+		minInputSpeed = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"minInputSpeed");
+		inputPowerRate = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"inputPowerRate");
 	}
 	virtual bool StickTrigger(Vector2 stick, Vector2 previousStick) = 0;
 	virtual void Move(void) = 0;

@@ -97,8 +97,8 @@ MultiPlayAreaCaptureModeServerSide::MultiPlayAreaCaptureModeServerSide()
 		areas.push_back(Area(areaPosition));
 	}
 
-	radius = ini::GetFloat(L"data/property/mode.ini", L"AreaCapture", L"radius");
-	areaGetTime = ini::GetFloat(L"data/property/mode.ini", L"AreaCapture", L"areaGetTime");
+	radius = ini::GetFloat(PARAM_PATH + L"mode.ini", L"AreaCapture", L"radius");
+	areaGetTime = ini::GetFloat(PARAM_PATH + L"mode.ini", L"AreaCapture", L"areaGetTime");
 	curTime = preTime = timeGetTime();
 }
 
