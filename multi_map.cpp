@@ -253,6 +253,8 @@ void MultiMap::DropSkillOrb(unsigned int drop, Vector2 position, float magnitude
 }
 
 void MultiMap::AttackUpdate(void) {
+	using namespace PHYSICS;
+
 	// 攻撃オブジェクトのダメージ処理
 	for (auto &attackObject : *GetAttacks()) {
 		auto attack = attackObject.Cast<AttackServerSide>();
@@ -279,7 +281,8 @@ void MultiMap::AttackUpdate(void) {
 			}
 
 			// ダメージ
-			if (maxRadiusSq >= Vector2::DistanceSq(attack->transform.position, player->transform.position)) {				
+			// maxRadiusSq >= Vector2::DistanceSq(attack->transform.position, player->transform.position)
+			if (Collider2D::Touch(Vertex1(player->transform.position, player->radius), attack->collider)) {
 				player->Damage(attack);
 			}
 		}

@@ -105,6 +105,7 @@ void ServerFire::Attack(void) {
 		if (attack_ == nullptr)
 			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
 		attack_->transform.position = player->transform.position + stick.Normalize() * 10.0f;
+		attack_->transform.rotation = std::atan2(stick.y, stick.x);
 	}
 	else if (attack_ != nullptr) {
 		attack_->Destroy();
@@ -433,4 +434,8 @@ void ClientWind::Attack(void) {
 	Vector2 scl = Vector2::One * localScale;
 	Color col = Color::White;
 	attackAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
+}
+
+void ServerFireAttack::Loop(void) {
+	collider = PHYSICS::Vertex4(transform.position, transform.rotation, Vector2(10, 20));
 }

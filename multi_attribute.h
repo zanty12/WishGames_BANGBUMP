@@ -5,6 +5,7 @@
 #include "multi_player.h"
 #include "multi_object.h"
 #include "multi_attack.h"
+#include "lib/collider2d.h"
 #include "attribute_type.h"
 #include "ini.h"
 
@@ -128,8 +129,9 @@ private:
 public:
 	ServerFireAttack(GameObjectServerSide *self) : AttackServerSide(1, 10, 50, self) { }
 
-	const GameObjectServerSide *GetSelf(void) { return self; }
+	void Loop(void) override;
 
+	const GameObjectServerSide *GetSelf(void) { return self; }
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_FIRE; }
 };
 

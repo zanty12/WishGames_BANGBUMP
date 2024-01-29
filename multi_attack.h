@@ -14,6 +14,7 @@ public:
 	int atkDrop = 0;
 	float spanTime = 1.0f;
 	std::map<GameObjectServerSide*, WIN::Time> touchGameObjects;
+	PHYSICS::Vertex4 collider;	// コライダー処理
 
 
 
