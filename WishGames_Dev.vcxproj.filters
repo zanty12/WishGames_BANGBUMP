@@ -507,9 +507,6 @@
     <ClInclude Include="multi_anim.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
-    <ClInclude Include="multi_attack.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="multi_movable_object.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -541,6 +538,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="multi_enemy.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_attack.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
   </ItemGroup>

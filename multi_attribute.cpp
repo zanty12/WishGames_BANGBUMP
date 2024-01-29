@@ -104,9 +104,8 @@ void ServerFire::Attack(void) {
 		// 攻撃オブジェクトの生成
 		if (attack_ == nullptr)
 			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
-		attack_->transform.position = player->transform.position + stick.Normalize() * 10.0f;
+		attack_->transform.position = player->transform.position;
 		attack_->transform.rotation = std::atan2(stick.y, stick.x);
-		attack_->transform.scale = Vector2(10.0f, 20.0f);
 	}
 	else if (attack_ != nullptr) {
 		attack_->Destroy();
@@ -191,7 +190,7 @@ void ClientFire::Attack(void) {
 }
 
 void ServerFireAttack::Loop(void) {
-	collider = PHYSICS::Vertex4(transform.position, transform.rotation, transform.scale);
+
 }
 
 
@@ -255,7 +254,7 @@ void ServerWater::Attack(void) {
 			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
 		attack_->transform.position = player->transform.position + stick.Normalize() * 50.0f;
 		attack_->transform.rotation = std::atan2(stick.y, stick.x);
-		attack_->transform.scale = Vector2(10.0f, 100.0f);
+		attack_->direction = CalcVector(stick);
 	}
 	// 攻撃終了
 	else if (Input::GetKeyUp(0, Input::RThumb)) {
@@ -311,7 +310,7 @@ void ClientWater::Attack(void) {
 }
 
 void ServerWaterAttack::Loop(void) {
-	collider = PHYSICS::Vertex4(transform.position, transform.rotation, transform.scale);
+
 }
 
 
