@@ -137,8 +137,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 
 
 		// ゲームのリザルトの描画
-		std::cout << res.time << " - " << gameMode_->resultTime_ << " = " << res.time - gameMode_->resultTime_ << std::endl;
-		if (0.0f < res.time - gameMode_->resultTime_) {
+		if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {
 			gameMode_->DrawResult(res, offset);
 		}
 		// ゲームモードの描画

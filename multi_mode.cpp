@@ -12,7 +12,7 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 
 void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offset) {
 	// 中間リザルトの経過時間を計算
-	float time = players.time - resultTime_;
+	float time = players.time - players.maxTime + resultTime_;
 
 	// 時間がマイナスなら終了（まだ中間リザルトではない）
 	if (time < 0.0f) return;
