@@ -248,7 +248,7 @@ void ServerWater::Attack(void) {
 		player->attackVelocity = CalcVector(stick);
 
 		// 移動チャージアニメーション
-		player->animType = ANIMATION_TYPE_MOVE_CHARGE;
+		player->animType = ANIMATION_TYPE_ATTACK;
 
 		// 攻撃オブジェクトの生成
 		if (attack_ == nullptr)
