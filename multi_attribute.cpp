@@ -257,10 +257,14 @@ void ServerWater::Attack(void) {
 		attack_->transform.rotation = std::atan2(stick.y, stick.x);
 		attack_->transform.scale = Vector2(10.0f, 100.0f);
 	}
-	// ƒ[ƒv
+	// UŒ‚I—¹
 	else if (Input::GetKeyUp(0, Input::RThumb)) {
 		// ‰Šú‰»
 		power = 0.0f;
+
+		// UŒ‚íœ
+		attack_->Destroy();
+		attack_ = nullptr;
 	}
 }
 
