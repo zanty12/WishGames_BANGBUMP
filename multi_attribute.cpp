@@ -246,7 +246,7 @@ void ServerWater::Attack(void) {
 
 		// 攻撃オブジェクトの生成
 		if (attack_ == nullptr)
-			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
+			attack_ = player->map->GetAttacks()->Add<ServerWaterAttack>(player);
 		attack_->direction = stick * 100.0f;
 	}
 	if (Input::GetKey(0, Input::RThumb)) {
