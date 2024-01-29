@@ -9,5 +9,5 @@
 #ifdef _DEBUG
 #define MAP_PATH std::string("data/map/")
 #else
-#define PARAM_PATH std::string("../../data/map/")
+#define MAP_PATH std::string("../../data/map/")
 #endif
