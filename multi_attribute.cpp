@@ -106,6 +106,7 @@ void ServerFire::Attack(void) {
 			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
 		attack_->transform.position = player->transform.position + stick.Normalize() * 10.0f;
 		attack_->transform.rotation = std::atan2(stick.y, stick.x);
+		attack_->transform.scale = Vector2(10.0f, 20.0f);
 	}
 	else if (attack_ != nullptr) {
 		attack_->Destroy();
@@ -189,6 +190,9 @@ void ClientFire::Attack(void) {
 	}
 }
 
+void ServerFireAttack::Loop(void) {
+	collider = PHYSICS::Vertex4(transform.position, transform.rotation, transform.scale);
+}
 
 
 
@@ -241,10 +245,17 @@ void ServerWater::Attack(void) {
 		AddPower();
 
 		// ワープベクトルの指定
-		player->warpVelocity = CalcVector(stick);
+		player->attackVelocity = CalcVector(stick);
 
 		// 移動チャージアニメーション
 		player->animType = ANIMATION_TYPE_MOVE_CHARGE;
+
+		// 攻撃オブジェクトの生成
+		if (attack_ == nullptr)
+			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
+		attack_->transform.position = player->transform.position + stick.Normalize() * 50.0f;
+		attack_->transform.rotation = std::atan2(stick.y, stick.x);
+		attack_->transform.scale = Vector2(10.0f, 100.0f);
 	}
 	// ワープ
 	else if (Input::GetKeyUp(0, Input::RThumb)) {
@@ -283,9 +294,21 @@ void ClientWater::Move(void) {
 	moveAnim.Draw(prevPosition - MultiPlayClient::offset, rot, scl, col);
 }
 void ClientWater::Attack(void) {
+	Vector2 direction = player->attackVelocity;
+	float localScale = 100;
 
+	// アニメーション生成
+	float distance = 50.0f;
+	Vector2 pos = player->transform.position + direction.Normalize() * distance;
+	float rot = atan2f(direction.x, direction.y);
+	Vector2 scl = Vector2::One * localScale;
+	Color col = Color::White;
+	attackAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 }
 
+void ServerWaterAttack::Loop(void) {
+	collider = PHYSICS::Vertex4(transform.position, transform.rotation, transform.scale);
+}
 
 
 
@@ -436,6 +459,3 @@ void ClientWind::Attack(void) {
 	attackAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 }
 
-void ServerFireAttack::Loop(void) {
-	collider = PHYSICS::Vertex4(transform.position, transform.rotation, Vector2(10, 20));
-}

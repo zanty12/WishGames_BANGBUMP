@@ -179,8 +179,9 @@ private:
 public:
 	ServerWaterAttack(GameObjectServerSide *self) : AttackServerSide(1, 1, 50, self) { }
 
-	const GameObjectServerSide *GetSelf(void) { return self; }
+	void Loop(void) override;
 
+	const GameObjectServerSide *GetSelf(void) { return self; }
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WATER; }
 };
 
