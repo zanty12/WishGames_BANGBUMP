@@ -389,14 +389,12 @@ void ClientThunder::Attack(void) {
 /*******************************************************
   Wind
 ********************************************************/
-bool ServerWind::StickTrigger(Vector2 stick, Vector2 previousStick)
-{
+bool ServerWind::StickTrigger(Vector2 stick, Vector2 previousStick) {
 	float stickDistance = stick.Distance();
 	float preStickDistance = previousStick.Distance();
 
 	if (minInputSpeed < MATH::Abs(Vector2::Cross(stick, previousStick)) &&
-		minInputDistance < stickDistance && minInputDistance < preStickDistance)
-	{
+		minInputDistance < stickDistance && minInputDistance < preStickDistance) {
 		return true;
 	}
 	return false;
@@ -480,4 +478,3 @@ void ClientWind::Attack(void) {
 	Color col = Color::White;
 	attackAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 }
-

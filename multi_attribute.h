@@ -80,7 +80,6 @@ class ServerFire : public ServerAttribute {
 private:
 	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
 	Vector2 velocity;					// 向き
-
 	AttackServerSide *attack_ = nullptr;
 
 public:
