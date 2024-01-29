@@ -254,7 +254,8 @@ void ServerWater::Attack(void) {
 			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
 		attack_->transform.position = player->transform.position + stick.Normalize() * 50.0f;
 		attack_->transform.rotation = std::atan2(stick.y, stick.x);
-		attack_->direction = CalcVector(stick);
+		attack_->direction = stick * 100.0f;
+		std::cout << attack_->direction.x << ", " << attack_->direction.y << std::endl;
 	}
 	// UŒ‚I—¹
 	else if (Input::GetKeyUp(0, Input::RThumb)) {
