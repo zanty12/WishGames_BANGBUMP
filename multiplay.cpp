@@ -10,7 +10,7 @@
 
 //#define DEBUG_LINK
 //#define DEBUG_INPUT
-//#define DEBUG_LOCKED
+//#define DEBUG_LOCKED;
 //#define DEBUG_SENDLEN
 std::string SERVER_ADDRESS;
 std::wstring ParamPath;
