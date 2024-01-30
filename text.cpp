@@ -188,7 +188,6 @@ HRESULT Text::SetTextFormat(IDWriteTextFormat* text_format, std::wstring font, f
 
 HRESULT Text::SetFontColor(ID2D1SolidColorBrush* brush, Color color)
 {
-    font_color_ = color;
     //release brush
     if (brush) brush->Release();
     //create new brush

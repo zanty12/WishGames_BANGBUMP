@@ -32,7 +32,17 @@ private:
 	//static SkillOrbMngr *orb_mngr_;
 	float timer_ = 120.0f;
 	int timer_tex_ = -1;
+	//skip first time collider update
+	bool first_update_ = true;
 
+	//start
+	bool started_ = false;
+	float start_timer_ = 3.5f;
+
+	//Result
+	int result_tex_ = 0;
+	int button_restart_ = 0;
+	int button_title_ = 0;
 
 public:
 	Game() = delete;
@@ -54,4 +64,10 @@ public:
 	//static CollMngr* GetCollMngr() {return coll_mngr_;}
 	//static ProjectileMngr* GetProjectileMngr(){return projectile_mngr_;}
 	//static SkillOrbMngr* GetSkillOrbMngr(){return orb_mngr_;}
+
+private:
+	void UpdateNormal();
+	void DrawNormal();
+	void UpdateResult();
+	void DrawResult();
 };

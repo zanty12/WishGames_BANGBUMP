@@ -32,8 +32,11 @@ Vector2 Wind::Move(void)
     // 回転のスピードを取得
     float rotSpeed = Vector2::Cross(stick, previousStick);
 
+    move_filter_.PassSignal(StickTrigger(stick, previousStick));
+    int move = move_filter_.PredictNext();
+    std::cout<<move<<std::endl;
     // 移動中
-    if (StickTrigger(stick, previousStick))
+    if (move)
     {
         power_ += rotSpeed * rotSpeed * rotInputFriction / Time::GetDeltaTime();
         if (maxPower_ < power_) power_ = maxPower_;
@@ -43,7 +46,7 @@ Vector2 Wind::Move(void)
         previous_time_ = Time::GetCurrentTime();
     }
     // 落下処理
-    else if (0 < Vector2::Dot(Vector2::Down, vel) || prev_y_ > vel.y || Time::GetDeltaTime(previous_time_) > 0.04f)
+    else if (/*0 < Vector2::Dot(Vector2::Down, vel) || prev_y_ > vel.y*/!move)
     {
         power_ *= friction_;
 
