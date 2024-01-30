@@ -6,6 +6,9 @@ class ServerMovableGameObject : public GameObjectServerSide {
 public:
 	Vector2 blownVelocity;								// ダメージ時吹き飛ばされたベロシティ
 	float blownFriction = 0.85f;						// ダメージ時吹き飛ばされた際の減速度
+	Vector2 gravityVelocity;							// 重力ベクトル
+	float gravity = 0.0f;
+	float maxGravity = 5.0f;
 
 
 

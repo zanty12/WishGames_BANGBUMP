@@ -39,7 +39,7 @@ public:
 	Vector2 ToPosition(Vector2Int idx) { return Vector2(idx.x * cellSize, idx.y * cellSize); }
 	void Draw(Vector2 offset);
 	void AttackUpdate(void);
-	int Collision(Vector2 &position, float radius);
+	int Collision(Vector2 &position, float radius, Vector2 *velocity = nullptr);
 	int &GetMap(int x, int y) { return map[x + y * width]; }
 	int &GetColliderMap(int x, int y) { return collMap[x + y * width]; }
 	MultiBehavior *GetSkillOrbs(void) { return skillOrbs; }

@@ -163,7 +163,7 @@ void MultiMap::Draw(Vector2 offset) {
 	}
 }
 
-int MultiMap::Collision(Vector2 &position, float radius) {
+int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());						// 画面のサイズ
 	Vector2Int leftBottomIdx = ToIndex(position - Vector2(radius, radius));							// 左下のインデックス
 	Vector2Int rightTopIdx = ToIndex(position + Vector2(radius, radius));							// 右上のインデックス
@@ -213,6 +213,9 @@ int MultiMap::Collision(Vector2 &position, float radius) {
 
 	if (id != -1) {
 		position = hit.position - hit.tilt.Normal() * radius;
+		if (0.0f < Vector2::Dot(Vector2::Up, hit.tilt.Normal())) {
+			if (velocity) velocity->y = 0.0f;
+		}
 	}
 	return id;
 }

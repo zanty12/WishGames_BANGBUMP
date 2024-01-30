@@ -132,7 +132,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 			Input::SetPreviousState(0, client.previousInput);
 			player->map = gameMode->GetMap();
 			player->Loop();
-			gameMode->GetMap()->Collision(player->transform.position, player->radius);
+			gameMode->GetMap()->Collision(player->transform.position, player->radius, &player->gravityVelocity);
 
 #ifdef DEBUG_INPUT
 			std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;

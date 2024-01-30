@@ -5,6 +5,11 @@
 #include "multi_skillorb.h"
 
 void ServerPlayer::Loop(void) {
+
+	// —‰º‚³‚¹‚é
+	gravityVelocity += Vector2::Down * gravity;
+	if (maxGravity >= gravityVelocity.y) gravityVelocity.y = maxGravity;
+
 	if (moveAttribute) moveAttribute->Move();
 	if (attackAttribute) attackAttribute->Attack();
 
@@ -15,11 +20,8 @@ void ServerPlayer::Loop(void) {
 		moveAttribute = tmp;
 	}
 
-	// —‰º‚³‚¹‚é
-	velocity += Vector2::Down * gravity;
-
 	// ˆÚ“®‚³‚¹‚é
-	transform.position += velocity + blownVelocity;
+	transform.position += velocity + blownVelocity + gravityVelocity;
 
 	// ‚«”ò‚Î‚µ‚Ì‘¬“x‚ğŒ¸‘¬‚³‚¹‚é
 	blownVelocity *= blownFriction;

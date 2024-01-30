@@ -23,11 +23,11 @@ public:
 	int score = 0;										// スコア
 	MultiMap *map = nullptr;							// マップ
 	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;// アニメーション
-	Vector2 attackVelocity;								// 攻撃のベロシティ
-	Vector2 warpVelocity;								// ワープベロシティ
+	Vector2 attackVelocity;								// 攻撃のベクトル
+	Vector2 warpVelocity;								// ワープベクトル
 	
 public:
-	ServerPlayer() { gravity = 0.5f; }
+	ServerPlayer() { gravity = 0.1f; }
 	~ServerPlayer() {
 		if (moveAttribute) delete moveAttribute;
 		if (attackAttribute) delete attackAttribute;
