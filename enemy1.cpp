@@ -12,9 +12,30 @@ void Enemy1::Update()
     //HPが0になったら消す
     if (GetHp() <= 0)
     {
-        GameObject::Discard();
-		Discard();
+        SetColor(Color(0, 0, 0, 0));    //透明にする
+        SetType(OBJ_VOID);  //当たり判定を消す
+        GetAnimator()->SetIsAnim(false);    //アニメーションをしない
+        if (dead_effect_ == nullptr)
+        {
+            dead_effect_ = new EnemyDeadEffect(GetPos());   //エフェクト生成
+        }
+
 		DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_SMALL);
+    }
+
+    //消滅エフェクト
+    if (dead_effect_)
+    {
+        //エフェクトが終了したらDiscard
+        if (dead_effect_->EffectEnd())
+        {
+            delete dead_effect_;
+            dead_effect_ = nullptr;
+            Discard();
+        }
+
+        //エネミーには何もさせない
+        return;
     }
 
 	CollisionAction();

@@ -25,6 +25,9 @@ public:
         }
         animators_.clear();
     }
+
+    void InitRenderer();
+
     void Update();
     void Draw();
     void Draw(Camera* camera);

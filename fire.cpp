@@ -105,7 +105,7 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
     SetScale(size_);
     SetType(OBJ_ATTACK);
     SetMaxTick(1.0f / 3.0f);
-    //SetDamage(50);
+    SetDamage(50);
 
     //アニメーション設定
     GetAnimator()->SetTexenum(fire_attack);

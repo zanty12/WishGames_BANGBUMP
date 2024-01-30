@@ -3,6 +3,8 @@
 #include "mapmngr.h"
 #include "skillorb.h"
 
+#include "time.h"
+
 class EnemyMngr;
 
 
@@ -14,6 +16,7 @@ enum ENEMY_TYPE
     TYPE__PHANTOM,
 };
 
+class EnemyDeadEffect;
 
 class Enemy : public MovableObj
 {
@@ -25,6 +28,9 @@ private:
     float blinking_time_;	//“_–Å‚ÌŒo‰ßŠÔ
     int atk_;
     int hp_;
+protected:
+    EnemyDeadEffect* dead_effect_ = nullptr;
+
 public:
     Enemy() = delete;
     Enemy(int x, int y,int texNo,EnemyMngr* enemy_mngr) : MovableObj(Vector2((x + 0.5f) * SIZE_, (y + 0.5f) * SIZE_),0.0f,texNo,Vector2(0.0f,0.0f))
@@ -49,4 +55,28 @@ public:
 
     void blinking(GameObject* obj);
 
+};
+
+class EnemyDeadEffect : public GameObject
+{
+private:
+    float time_;
+
+public:
+    EnemyDeadEffect(Vector2 pos)
+        :GameObject(pos, 0.0f, LoadTexture(Asset::GetAsset(effect_enemydead))), time_(0.0f) {
+        SetType(OBJ_VOID);
+        GetAnimator()->SetTexenum(effect_enemydead);
+        GetAnimator()->SetLoopAnim(EFFECT_ENEMYDEAD_ANIM);
+    }
+
+    bool EffectEnd(void) {
+        time_ += Time::GetDeltaTime();
+        if (time_ > 1.3f) {
+            return true;
+        }
+        return false;
+    }
+
+    void Update(void) override {}
 };
