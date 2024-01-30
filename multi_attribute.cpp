@@ -105,7 +105,7 @@ void ServerFire::Attack(void) {
 
 		// 攻撃オブジェクトの生成
 		if (attack_ == nullptr)
-			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
+			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player, this);
 		attack_->transform.position = player->transform.position;
 		attack_->direction = stick.Normalize() * atkDistance;
 		attack_->transform.rotation = std::atan2(stick.y, stick.x);
@@ -269,7 +269,7 @@ void ServerWater::Attack(void) {
 
 		// 攻撃オブジェクトの生成
 		if (attack_ == nullptr)
-			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
+			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player, this);
 
 		// アタック移動
 		attack_->transform.position = player->transform.position;
@@ -457,7 +457,7 @@ void ServerWind::Attack(void) {
 	if (StickTrigger(stick, previousStick)) {
 		player->animType = ANIMATION_TYPE_ATTACK;
 		if (attack_ == nullptr)
-			attack_ = player->map->GetAttacks()->Add<ServerWindAttack>(player);
+			attack_ = player->map->GetAttacks()->Add<ServerWindAttack>(player, this);
 		attack_->transform.position = player->transform.position;
 	}
 	else if (attack_ != nullptr) {
