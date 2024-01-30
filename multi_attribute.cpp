@@ -217,21 +217,8 @@ void ServerWater::Move(void) {
 	// アニメーションの指定
 	player->animType = ANIMATION_TYPE_IDEL;
 
-	// ワープ距離のチャージ
-	if (Input::GetKey(0, Input::LThumb)) {
-		// アニメーションの指定
-		player->animType = ANIMATION_TYPE_MOVE_CHARGE;
-
-		// パワー加算
-		AddPower(stick);
-
-		// ワープベクトルの指定
-		player->warpVelocity = player->transform.position + CalcVector(stick);
-
-		player->velocity *= 0.55f;
-	}
 	// ワープ
-	else if(Input::GetKeyUp(0, Input::LThumb)) {
+	if (Input::GetKeyDown(0, Input::LThumb)) {
 		// アニメーションの指定
 		player->animType = ANIMATION_TYPE_MOVE;
 
@@ -241,6 +228,19 @@ void ServerWater::Move(void) {
 		// 初期化
 		power = 0.0f;
 	}
+	// ワープ距離のチャージ
+	else if (stick != Vector2::Zero) {
+		// アニメーションの指定
+		player->animType = ANIMATION_TYPE_MOVE_CHARGE;
+
+		// パワー加算
+		AddPower(stick);
+
+		// ワープベクトルの指定
+		player->warpVelocity = player->transform.position + CalcVector(stick);
+
+		player->velocity *= friction;
+	}
 
 	player->velocity *= friction;
 }
@@ -248,24 +248,10 @@ void ServerWater::Attack(void) {
 	Vector2 stick = Input::GetStickRight(0);
 
 
-	//// 攻撃
-	//if (Input::GetKeyDown(0, Input::RThumb)) {
-
-	//	// ワープベクトルの指定
-	//	player->attackVelocity = stick;
-
-	//	// 攻撃オブジェクトの生成
-	//	if (attack_ == nullptr)
-	//		attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
-
-	//	attack_->direction = player->attackVelocity * 10000.0f;
-	//}
+	// 攻撃
 	if (Input::GetKey(0, Input::RThumb)) {
 		// 攻撃アニメーション
 		player->animType = ANIMATION_TYPE_ATTACK;
-
-		// ワープベクトルの指定
-		player->attackVelocity = stick;
 
 		// 攻撃オブジェクトの生成
 		if (attack_ == nullptr)
@@ -275,10 +261,16 @@ void ServerWater::Attack(void) {
 		attack_->transform.position = player->transform.position;
 		attack_->direction = player->attackVelocity * atkDistance;
 
-		player->velocity *= 0.55f;
+		player->velocity *= friction;
 	}
-	// 攻撃終了
-	else if (Input::GetKeyUp(0, Input::RThumb)) {
+	else if (stick != Vector2::Zero) {
+		// ワープベクトルの指定
+		player->attackVelocity = stick.Normalize();
+
+		// パワー加算
+		AddPower(stick);
+	}
+	else {
 		// 初期化
 		power = 0.0f;
 
@@ -324,7 +316,7 @@ void ClientWater::Attack(void) {
 	float localScale = 100;
 
 	// アニメーション生成
-	float distance = 50.0f;
+	float distance = 10000.0f;
 	Vector2 pos = player->transform.position + direction.Normalize() * distance;
 	float rot = atan2f(direction.x, direction.y);
 	Vector2 scl = Vector2::One * localScale;
