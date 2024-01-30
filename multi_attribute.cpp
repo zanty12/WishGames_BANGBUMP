@@ -107,6 +107,7 @@ void ServerFire::Attack(void) {
 		if (attack_ == nullptr)
 			attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player);
 		attack_->transform.position = player->transform.position;
+		attack_->direction = stick.Normalize() * atkDistance;
 		attack_->transform.rotation = std::atan2(stick.y, stick.x);
 	}
 	else if (attack_ != nullptr) {
@@ -195,7 +196,7 @@ void ServerFireAttack::Loop(void) {
 
 }
 void ServerFireAttack::KnockBack(ServerMovableGameObject *object) {
-	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * 2.0f;
+	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * knockbackRate;
 }
 
 
@@ -272,7 +273,7 @@ void ServerWater::Attack(void) {
 
 		// アタック移動
 		attack_->transform.position = player->transform.position;
-		attack_->direction = player->attackVelocity * 10000.0f;
+		attack_->direction = player->attackVelocity * atkDistance;
 
 		player->velocity *= 0.55f;
 	}
@@ -335,7 +336,7 @@ void ServerWaterAttack::Loop(void) {
 
 }
 void ServerWaterAttack::KnockBack(ServerMovableGameObject *object) {
-	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * 2.0f;
+	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * knockbackRate;
 }
 
 
@@ -388,7 +389,7 @@ void ClientThunder::Attack(void) {
 }
 
 void ServerThunderAttack::KnockBack(ServerMovableGameObject *object) {
-	object->blownVelocity = (object->transform.position - transform.position) * 2.0f;
+	object->blownVelocity = (object->transform.position - transform.position) * knockbackRate;
 }
 
 
@@ -489,5 +490,5 @@ void ClientWind::Attack(void) {
 }
 
 void ServerWindAttack::KnockBack(ServerMovableGameObject *object) {
-	object->blownVelocity = (object->transform.position - transform.position).Normalize() * 10.0f;
+	object->blownVelocity = (object->transform.position - transform.position).Normalize() * knockbackRate;
 }

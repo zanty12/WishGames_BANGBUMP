@@ -34,7 +34,12 @@ public:
 	float minInputSpeed = 0.50f;	// 入力の加速の判定値
 	float inputPowerRate = 1.0f;	// 入力値がパワーに与える係数
 
-
+	float atkRange = 1.0f;			// 攻撃範囲
+	float atkDistance = 10.0f;		// 攻撃長さ
+	int atk = 0;					// 攻撃力	
+	int atkDrop = 0;				// ドロップ量
+	float atkCoolTime = 1.0f;		// 攻撃クールタイム
+	float knockbackRate = 10.0f;	// ノックバック量
 
 
 
@@ -48,6 +53,14 @@ public:
 		minInputDistance = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"minInputDistance");
 		minInputSpeed = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"minInputSpeed");
 		inputPowerRate = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"inputPowerRate");
+
+
+		atk = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atk");
+		atkDrop = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkDrop");
+		atkCoolTime = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkCoolTime");
+		atkRange = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkRange");
+		atkDistance = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkDistance");
+		knockbackRate = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"knockbackRate");
 	}
 	virtual bool StickTrigger(Vector2 stick, Vector2 previousStick) = 0;
 	virtual void Move(void) = 0;
@@ -131,7 +144,8 @@ class ServerFireAttack : public AttackServerSide {
 private:
 
 public:
-	ServerFireAttack(GameObjectServerSide *self) : AttackServerSide(1, 10, 50, self) { }
+	ServerFireAttack(GameObjectServerSide *self, ServerAttribute *attribute) :		
+		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) { }
 
 	void Loop(void) override;
 
@@ -178,7 +192,9 @@ public:
 
 class ServerWaterAttack : public AttackServerSide {
 public:
-	ServerWaterAttack(GameObjectServerSide *self) : AttackServerSide(1, 1, 50, self) { }
+	ServerWaterAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
+		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) { }
+
 
 	void Loop(void) override;
 
@@ -229,7 +245,9 @@ public:
 
 class ServerThunderAttack : public AttackServerSide {
 public:
-	ServerThunderAttack(GameObjectServerSide *self) : AttackServerSide(1, 1, 50, self) { }
+	ServerThunderAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
+		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) { }
+
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER; }
 	void KnockBack(ServerMovableGameObject *object) override;
@@ -271,7 +289,8 @@ public:
 
 class ServerWindAttack : public AttackServerSide {
 public:
-	ServerWindAttack(GameObjectServerSide * self) : AttackServerSide(1, 1, 100, self) { }
+	ServerWindAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
+		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) { }
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
 	void KnockBack(ServerMovableGameObject *object) override;

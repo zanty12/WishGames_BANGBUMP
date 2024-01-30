@@ -15,13 +15,14 @@ public:
 	int atk = 0;
 	int atkDrop = 0;
 	float spanTime = 1.0f;
+	float knockbackRate = 10.0f;
 	std::map<GameObjectServerSide*, WIN::Time> touchGameObjects;
 	Vector2 direction;
 
 
 
 public:
-	AttackServerSide(int atk, int atkDrop, float radius, GameObjectServerSide *self) : self(self), atk(atk), atkDrop(atkDrop) { this->radius = radius; }
+	AttackServerSide(int atk, int atkDrop, float spanTime, float knockbackRate, float radius, GameObjectServerSide *self) : self(self), atk(atk), atkDrop(atkDrop), spanTime(spanTime), knockbackRate(knockbackRate) { this->radius = radius; }
 	bool Touch(GameObjectServerSide *object);
 
 	const GameObjectServerSide *GetSelf(void) { return self; }
