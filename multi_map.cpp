@@ -106,13 +106,9 @@ void MultiMap::Load(std::string path)
 				else if (id == MAP_READ_ORB_MID) skillOrbs->Add<ServerSkillOrbMidium>(Transform(position));
 				else if (id == MAP_READ_ORB_BIG) skillOrbs->Add<ServerSkillOrbBig>(Transform(position));
 				// エネミーの登録
-				else if (id == MAP_READ_KOOPA) {
-					enemies->Add<Enemy1ServerSide>(Transform(position), this);
-				}
-				else if(id == MAP_READ_HAMMERBRO ||
-					id == MAP_READ_PHANTOM) {
-					//skillOrbs->Add<ServerSkillOrb>(Transform(Vector2(x, y) * cellSize));
-				}
+				else if (id == MAP_READ_KOOPA) enemies->Add<Enemy1ServerSide>(Transform(position), this);
+				else if (id == MAP_READ_HAMMERBRO) enemies->Add<Enemy2ServerSide>(Transform(position), this);
+				else if (id == MAP_READ_PHANTOM) enemies->Add<Enemy3ServerSide>(Transform(position), this);
 				// エリアキャプチャの登録
 				else if (id == MAP_READ_MULTI_AREA_CAPTURE) {
 					areaCaptures.push_front(position);

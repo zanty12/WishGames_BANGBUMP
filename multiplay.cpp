@@ -620,7 +620,10 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 			if (iterator == objects.end()) {
 				GameObjectClientSide *pObject = nullptr;
 				switch (object.tag) {
-				case MULTI_OBJECT_TYPE::MULTI_ENEMY1: pObject = new Enemy1ClientSide(); break;
+				case MULTI_OBJECT_TYPE::MULTI_ENEMY1: pObject = new Enemy1ClientSide(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ENEMY2: pObject = new Enemy2ClientSide(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ENEMY3: pObject = new Enemy3ClientSide(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ATTACK_ENEMY2: pObject = new AttackEnemy2ClientSide(Transform(object.position)); break;
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_SMALL: pObject = new ClientSkillOrbSmall(); break;
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: pObject = new ClientSkillOrbMidium(); break;
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: pObject = new ClientSkillOrbBig(); break;

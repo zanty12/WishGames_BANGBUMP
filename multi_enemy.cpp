@@ -5,7 +5,6 @@ void EnemyServerSide::Damage(AttackServerSide *attack) {
 	hp -= attack->atk;
 	if (hp <= 0) Destroy();
 }
-
 void EnemyServerSide::BlownPlayers(void) {
 	// エネミーに対するダメージ処理
 	for (auto &kvp : MultiPlayServer::clients_) {
@@ -30,6 +29,7 @@ void EnemyServerSide::BlownPlayers(void) {
 
 
 void Enemy1ServerSide::Loop(void) {
+	// 移動
 	transform.position += velocity;
 	if (map->Collision(transform.position, radius) != -1) {
 		velocity *= -1.0f;
@@ -38,12 +38,69 @@ void Enemy1ServerSide::Loop(void) {
 	// プレイヤーに触れたら吹き飛ばす
 	BlownPlayers();
 }
+void Enemy1ClientSide::Loop(void) {
+	if (!isShow) return;
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White, velocity.x > 0.0f);
+	isShow = false;
+}
+
+
 
 
 void Enemy2ServerSide::Loop(void) {
+	// 攻撃する
+	if (coolTime < spawnTimer.GetNowTime() * 0.001f) {
+		map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
+		spawnTimer.Start();
+	}
+
 	// プレイヤーに触れたら吹き飛ばす
 	BlownPlayers();
 }
+void Enemy2ClientSide::Loop(void) {
+	if (!isShow) return;
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White);
+	isShow = false;
+}
+void AttackEnemy2ServerSide::Loop(void) {
+	float minDistanceSq = -1.0f;
+	Vector2 targetPosition;
+
+	// 最も近いプレイヤーを調べる
+	for (auto &client : MultiPlayServer::clients_) {
+		auto &player = client.second.player_;
+		// 距離の計算
+		float distanceSq = Vector2::DistanceSq(transform.position, player->transform.position);
+		float maxRadiusSq = radius + player->radius;
+		maxRadiusSq = maxRadiusSq * maxRadiusSq;
+
+		if (minDistanceSq < 0.0f || distanceSq < minDistanceSq) {
+			targetPosition = player->transform.position;
+		}
+
+		if (distanceSq <= maxRadiusSq) {
+			Destroy();
+			return;
+		}
+	}
+
+	// 方向を決める
+	velocity = (targetPosition - transform.position).Normalize() * 10.0f;
+	// 移動
+	transform.position += velocity;
+}
+void AttackEnemy2ServerSide::KnockBack(ServerMovableGameObject *object) {
+	object->blownVelocity = (object->transform.position - transform.position) * knockbackRate;
+}
+void AttackEnemy2ClientSide::Loop(void) {
+	if (!isShow) return;
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White);
+	isShow = false;
+}
+
+
+
+
 
 void Enemy3ServerSide::Loop(void) {
 	ServerPlayer *targetPlayer = nullptr;
@@ -72,14 +129,16 @@ void Enemy3ServerSide::Loop(void) {
 		this->velocity = velocity;
 	}
 
+	// 移動
+	transform.position += velocity;
+
+	map->Collision(transform.position, radius, &velocity);
 	// プレイヤーに触れたら吹き飛ばす
 	BlownPlayers();
 }
-
-void Enemy1ClientSide::Loop(void) {
+void Enemy3ClientSide::Loop(void) {
 	if (!isShow) return;
 	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White, velocity.x > 0.0f);
-	isShow = true;
+	isShow = false;
 }
-
 

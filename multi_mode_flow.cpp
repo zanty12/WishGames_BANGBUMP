@@ -146,11 +146,15 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		}
 
 
+		float centerX = Graphical::GetWidth() * 0.5f;		// 画面の中央（X座標）
+
 		// 時間制限の描画
-		Number(Vector2(100, 100), Vector2(100, 100), res.maxTime - res.time);
+		Number(Vector2(centerX, 100), Vector2(100, 100), res.maxTime - res.time);
 
 		// スコアの描画
-		int i = 0;
+		int idx = 0;										// インデックス
+		int maxMembers = res.clients.size();				// プレイヤー人数
+		int width = 300;									// アイコンの幅
 		for (auto &client : res.clients) {
 			int moveAttribute = client.moveAttributeType;
 			int attackAttribute = client.attackAttributeType;
@@ -158,15 +162,19 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 			if (moveAttribute < attackAttribute) attackAttribute--;
 			float u = moveAttribute / 4.0f;
 			float v = attackAttribute / 12.0f;
-			Vector2 uv = Vector2(u, v + i * 0.25f);
+			Vector2 uv = Vector2(u, v + idx * 0.25f);
+
+			float center = (float)maxMembers * 0.5f - 0.5f;	// 中心のIdxを計算
+			float x = center - idx;							// X座標を計算
 
 			DrawSprite(icon,
-				Vector2(100 + i * 100, 100), 0.0f, Vector2(100, 100),
+				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
 				Color::White,
 				uv, Vector2(0.25f, 1.0f / 12.0f)
 				);
-			Number(Vector2(200 * (i + 1), 200), Vector2(100, 100), client.skillPoint + 1);
-			i++;
+
+			Number(Vector2(centerX + x * width, 200), Vector2(100, 100), client.skillPoint);
+			idx++;
 		}
 	}
 }
