@@ -316,10 +316,10 @@ void ClientWater::Attack(void) {
 	float localScale = 100;
 
 	// アニメーション生成
-	float distance = 10000.0f;
+	float distance = 1000.0f;
 	Vector2 pos = player->transform.position + direction.Normalize() * distance * 0.5f;
 	float rot = atan2f(direction.x, direction.y);
-	Vector2 scl = Vector2::One * distance;
+	Vector2 scl = Vector2(localScale, distance);
 	Color col = Color::White;
 	attackAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 }
@@ -353,8 +353,6 @@ bool ServerThunder::StickTrigger(Vector2 stick, Vector2 previousStick) {
 	//Release
 	if (distance < minInputDistance && minInputDistance < previousDistance &&
 		minInputSpeed < (stick - previousStick).Distance()) {
-		// 初期化
-		power = 0.0f;
 		return true;
 	}
 	return false;
@@ -364,7 +362,11 @@ void ServerThunder::Move(void) {
 	Vector2 previousStick = Input::GetPreviousStickLeft(0);
 
 	if (StickTrigger(stick, previousStick)) {
-		player->velocity = (stick - previousStick).Normalize() * power;
+		Vector2 direction = (stick - previousStick).Normalize();
+		player->velocity = CalcVector(direction);
+
+		// 初期化
+		power = 0.0f;
 	}
 
 	Friction();
