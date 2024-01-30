@@ -317,9 +317,9 @@ void ClientWater::Attack(void) {
 
 	// アニメーション生成
 	float distance = 10000.0f;
-	Vector2 pos = player->transform.position + direction.Normalize() * distance;
+	Vector2 pos = player->transform.position + direction.Normalize() * distance * 0.5f;
 	float rot = atan2f(direction.x, direction.y);
-	Vector2 scl = Vector2::One * localScale;
+	Vector2 scl = Vector2::One * distance;
 	Color col = Color::White;
 	attackAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 }
