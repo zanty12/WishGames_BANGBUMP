@@ -214,6 +214,7 @@
     <ClInclude Include="animator.h" />
     <ClInclude Include="area_capture.h" />
     <ClInclude Include="asset.h" />
+    <ClInclude Include="attribute_state.h" />
     <ClInclude Include="attribute_type.h" />
     <ClInclude Include="boss.h" />
     <ClInclude Include="bossatk.h" />
@@ -237,6 +238,7 @@
     <ClInclude Include="debugUI.h" />
     <ClInclude Include="graphical.h" />
     <ClInclude Include="enemy1.h" />
+    <ClInclude Include="gset.h" />
     <ClInclude Include="id.h" />
     <ClInclude Include="ini.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
@@ -344,8 +346,8 @@
     <Content Include="data\texture\wapuro-mincho.otf" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\property\attribute_lv1.ini" />
     <None Include="data\property\mode.ini" />
-    <None Include="data\property\player.ini" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -549,6 +549,12 @@
     <ClInclude Include="multi_path.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
+    <ClInclude Include="attribute_state.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="gset.h">
+      <Filter>A1\ヘッダーファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h">
@@ -572,10 +578,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="data\property\player.ini">
+    <None Include="data\property\mode.ini">
       <Filter>リソース ファイル</Filter>
     </None>
-    <None Include="data\property\mode.ini">
+    <None Include="data\property\attribute_lv1.ini">
       <Filter>リソース ファイル</Filter>
     </None>
   </ItemGroup>

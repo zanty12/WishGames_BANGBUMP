@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include "lib/vector.h"
+#include "lib/get_set.h"
 #include "multi_anim.h"
 #include "multi_player.h"
 #include "multi_movable_object.h"
@@ -8,8 +9,7 @@
 #include "multi_attack.h"
 #include "lib/collider2d.h"
 #include "attribute_type.h"
-#include "multi_path.h"
-#include "ini.h"
+#include "attribute_state.h"
 
 /*******************************************************
   属性
@@ -27,48 +27,22 @@ protected:
 	AttackServerSide *attack_ = nullptr;
 
 public:
-	float power = 0.0f;				// パワー
+	float power = 0.0f;					// パワー
 
-	float minPower = 0.0f;			// パワーの最小値
-	float maxPower = 10.0f;			// パワーの最大値
-	float addPower = 00.0f;			// パワーの加算値
-	float friction = 0.98f;			// 摩擦係数
-	float powerFriction = 1.00f;	// パワーの摩擦係数
-	float minInputDistance = 0.50f;	// 入力の判定値
-	float minInputSpeed = 0.50f;	// 入力の加速の判定値
-	float inputPowerRate = 1.0f;	// 入力値がパワーに与える係数
-
-	float atkRange = 1.0f;			// 攻撃範囲
-	float atkDistance = 10.0f;		// 攻撃長さ
-	int atk = 0;					// 攻撃力	
-	int atkDrop = 0;				// ドロップ量
-	float coolTime = 0.0f;			// クールタイム
-	float atkCoolTime = 1.0f;		// 攻撃クールタイム
-	float atkAfterTime = 0.0f;		// 攻撃の残り火
-	float knockbackRate = 10.0f;	// ノックバック量
-
+	AttributeState *state = nullptr;	// 現在のステータス
+	AttributeState state_lv[10] = {};	// ステータス
 
 
 public:
 	ServerAttribute(ServerPlayer* player, std::wstring attributeName) : player(player) {
-		minPower = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"minPower");
-		maxPower = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"maxPower");
-		addPower = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"addPower");
-		friction = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"friction");
-		powerFriction = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"powerFriction");
-		minInputDistance = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"minInputDistance");
-		minInputSpeed = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"minInputSpeed");
-		inputPowerRate = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"inputPowerRate");
-
-
-		atk = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atk");
-		atkDrop = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkDrop");
-		atkCoolTime = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkCoolTime");
-		atkAfterTime = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkAfterTime");
-		coolTime = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"coolTime");
-		atkRange = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkRange");
-		atkDistance = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkDistance");
-		knockbackRate = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"knockbackRate");
+		// ステータスを読み込む
+		int lv = 1;
+		for (auto &state : state_lv) {
+			state = AttributeState(attributeName, lv);
+			lv++;
+		}
+		// レベル1のステータスにする
+		state = state_lv;
 
 		coolTimer.Start();
 	}
@@ -83,6 +57,7 @@ public:
 	void AddPower(void);
 	void AddPower(float scaler);
 	void AddPower(Vector2 stick);
+	void FrictionPower(void);
 	void Friction(void);
 	Vector2 CalcVector(Vector2 stick);
 };
@@ -92,8 +67,20 @@ protected:
 	MultiAnimator attackAnim;
 	MultiAnimator moveAnim;
 
+	AttributeState *state = nullptr;	// 現在のステータス
+	AttributeState state_lv[10] = {};	// ステータス
+
 public:
-	ClientAttribute(ClientPlayer *player) : player(player) { }
+	ClientAttribute(ClientPlayer *player, std::wstring attributeName) : player(player) {
+		// ステータスを読み込む
+		int lv = 1;
+		for (auto &state : state_lv) {
+			state = AttributeState(attributeName, lv);
+			lv++;
+		}
+		// レベル1のステータスにする
+		state = state_lv;
+	}
 	virtual void Move(void) = 0;
 	virtual void Attack(void) = 0;
 	virtual void Idle(void) { }
@@ -138,7 +125,7 @@ private:
 public:
 
 
-	ClientFire(ClientPlayer *player) : ClientAttribute(player) {
+	ClientFire(ClientPlayer *player) : ClientAttribute(player, L"Fire") {
 		moveTexNo = LoadTexture("data/texture/Effect/effect_fire_move.png");
 		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
 
@@ -155,7 +142,7 @@ public:
 class ServerFireAttack : public AttackServerSide {
 public:
 	ServerFireAttack(GameObjectServerSide *self, ServerAttribute *attribute) :		
-		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) { }
+		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) { }
 
 	void Loop(void) override;
 	void KnockBack(ServerMovableGameObject *object) override;
@@ -187,7 +174,7 @@ public:
 	Vector2 prevPosition;			// ワープ前の座標
 
 
-	ClientWater(ClientPlayer *player) : ClientAttribute(player) {
+	ClientWater(ClientPlayer *player) : ClientAttribute(player, L"Water") {
 		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_move.png"), 5, 3, 0, 14, false);
 		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_attack.png"), 5, 6, 0, 29, true);
 		moveChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_charge.png"), 5, 10, 0, 47, true);
@@ -206,7 +193,7 @@ public:
 class ServerWaterAttack : public AttackServerSide {
 public:
 	ServerWaterAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
-		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) { }
+		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) { }
 
 	void Loop(void) override;
 	void KnockBack(ServerMovableGameObject *object) override;
@@ -241,7 +228,7 @@ private:
 public:
 
 
-	ClientThunder(ClientPlayer *player) : ClientAttribute(player) {
+	ClientThunder(ClientPlayer *player) : ClientAttribute(player, L"Thunder") {
 		moveTexNo = LoadTexture("data/texture/Effect/effect_fire_move.png");
 		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
 
@@ -259,7 +246,7 @@ public:
 	float gravity = 0.1f;
 
 	ServerThunderAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
-		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) {
+		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) {
 		transform.position = self->transform.position;
 	}
 
@@ -291,10 +278,6 @@ public:
   Wind
 ********************************************************/
 class ServerWind : public ServerAttribute {
-private:
-	float prev_y_ = 0.0f;
-	float previous_time_ = 0.0f;
-
 public:
 	ServerWind(ServerPlayer *player) : ServerAttribute(player, L"Wind") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
@@ -308,7 +291,7 @@ public:
 	MultiAnimator idle;
 
 
-	ClientWind(ClientPlayer *player) : ClientAttribute(player) {
+	ClientWind(ClientPlayer *player) : ClientAttribute(player, L"Wind") {
 		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 29, true);
 		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 25, true);
 		idle = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_idle.png"), 5, 6, 0, 29, true);
@@ -323,11 +306,10 @@ public:
 class ServerWindAttack : public AttackServerSide {
 public:
 	ServerWindAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
-		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) { }
+		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) { }
 
 	void Loop(void) override; 
 	void KnockBack(ServerMovableGameObject *object) override;
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
 };
-
