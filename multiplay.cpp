@@ -121,7 +121,6 @@ void MultiPlayServer::PlayerUpdate(void) {
 	std::cout << "UPD LOCK";
 #endif
 
-	std::cout << "UPD" << std::endl;
 	if (gameMode->GetGame()->IsPlayerMove()) {
 		// プレイヤーの更新
 		for (auto &kvp : clients_) {
@@ -141,23 +140,18 @@ void MultiPlayServer::PlayerUpdate(void) {
 			std::cout << player->transform.position.x << ", " << player->transform.position.y << std::endl;
 #endif
 		}
-		std::cout << "UPD - PLAYER" << std::endl;
 
 		// スキルオーブの更新
 		gameMode->GetMap()->GetSkillOrbs()->AllLoop();
-		std::cout << "UPD - SKILLORB" << std::endl;
 
 		// エネミーの更新
 		gameMode->GetMap()->GetEnemies()->AllLoop();
-		std::cout << "UPD - ENEMY" << std::endl;
 
 		// 攻撃オブジェクトの更新
 		gameMode->GetMap()->GetAttacks()->AllLoop();
-		std::cout << "UPD - ATTACK" << std::endl;
 
 		// 攻撃判定の更新
 		gameMode->GetMap()->AttackUpdate();
-		std::cout << "UPD - ATTACK2" << std::endl;
 	}
 	// ゲームモードの更新
 	gameMode->Update(clients_);
@@ -404,6 +398,7 @@ void MultiPlayServer::OpenTerminal(void) {
 
 
 
+int MultiPlayClient::id = -1;
 /*******************************************************
   Client
 ********************************************************/
@@ -599,7 +594,9 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 
 			// オブジェクトが作成されていないなら作成する
 			if (iterator == clients.end()) {
-				clients[client.id] = new ClientPlayer(client.moveAttributeType, client.attackAttributeType, Transform(client.position));
+				auto player = new ClientPlayer(client.moveAttributeType, client.attackAttributeType, Transform(client.position));
+				player->id = client.id;
+				clients[client.id] = player;
 			}
 			else {
 				auto &player = iterator->second;
@@ -627,6 +624,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_SMALL: pObject = new ClientSkillOrbSmall(); break;
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: pObject = new ClientSkillOrbMidium(); break;
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: pObject = new ClientSkillOrbBig(); break;
+				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER: pObject = new ClientThunderAttack(Transform(object.position)); break;
 				}
 				if (pObject) objects[object.id] = pObject;
 			}

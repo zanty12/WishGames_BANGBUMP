@@ -86,7 +86,7 @@ public:
 
 class MultiPlayClient {
 private:
-	int id = -1;										// ID
+	static int id;										// ID
 	Socket sockfd_;										// ソケット
 	Address serverAddr;									// アドレス
 	FD readfd_;											// ファイルディスクリプタ
@@ -154,5 +154,5 @@ public:
 		);
 	}
 
-	int GetID(void) const { return id; }
+	static int GetID(void) { return id; }
 };

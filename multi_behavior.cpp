@@ -187,7 +187,6 @@ void MultiBehavior::AllLoop(void) {
 	// XV
 	Loop();
 	for (MultiBehavior *current = head; current; current = current->next) {
-		current->Loop();
 		current->AllLoop();
 	}
 

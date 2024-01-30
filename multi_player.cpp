@@ -8,16 +8,23 @@ void ServerPlayer::Loop(void) {
 
 	// 落下させる
 	gravityVelocity += Vector2::Down * gravity;
-	if (maxGravity >= gravityVelocity.y) gravityVelocity.y = maxGravity;
+	if (-maxGravity >= gravityVelocity.y) gravityVelocity.y = -maxGravity;
 
+	// 属性
 	if (moveAttribute) moveAttribute->Move();
 	if (attackAttribute) attackAttribute->Attack();
 
-	// がっちゃんこシステム
+	// 属性切り替えがっちゃんこ！！
 	if (0.75f < Input::GetTriggerLeft(0) && 0.75f < Input::GetTriggerRight(0)) {
-		ServerAttribute *tmp = attackAttribute;
-		attackAttribute = moveAttribute;
-		moveAttribute = tmp;
+		if (attributeChange == false) {
+			ServerAttribute *tmp = attackAttribute;
+			attackAttribute = moveAttribute;
+			moveAttribute = tmp;
+			attributeChange = true;
+		}
+	}
+	else {
+		attributeChange = false;
 	}
 
 	// 移動させる
@@ -26,7 +33,6 @@ void ServerPlayer::Loop(void) {
 	// 吹き飛ばしの速度を減速させる
 	blownVelocity *= blownFriction;
 	if (blownVelocity.DistanceSq() < 1.0f) blownVelocity = Vector2::Zero;
-
 }
 
 void ServerPlayer::Damage(AttackServerSide *attack) {
@@ -82,24 +88,67 @@ void ClientPlayer::Loop(void) {
 }
 
 void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim) {
-	// 移動アニメーション
-	if (animType == ANIMATION_TYPE_MOVE || animType == ANIMATION_TYPE_MOVE_CHARGE) {
-		moveAttribute->Move();
+	// 待機アニメーション
+	if (moveAttribute) {
+		moveAttribute->Idle();
 	}
-	// 攻撃アニメーション
-	if (animType == ANIMATION_TYPE_ATTACK || animType == ANIMATION_TYPE_ATTACK_CHARGE) {
-		attackAttribute->Attack();
+
+
+	// ゴメン、メンドクサクナッタ
+	// 移動アニメーション（奥表示）
+	if (moveAttribute) {
+		if (moveAttribute->GetAttribute() == ATTRIBUTE_TYPE_FIRE) {
+			// 移動アニメーション
+			moveAttribute->Move();
+		}
 	}
+	// 攻撃アニメーション（奥前表示）
+	if (attackAttribute) {
+		if (attackAttribute->GetAttribute() == ATTRIBUTE_TYPE_WIND) {
+			// 移動アニメーション
+			attackAttribute->Attack();
+		}
+	}
+
 
 	// アニメーションが切り替わった瞬間、アニメーションする位置を更新する
 	if (preAnimType != animType) MultiAnimator::GetPlayer(animType, moveAttribute->GetAttribute(), attackAttribute->GetAttribute(), anim);
 
+	// プレイヤー反転
 	if (0.0 < velocity.x) isReverseX = true;
 	else if (velocity.x < 0.0f) isReverseX = false;
 
-
 	// 描画する
 	anim->Draw(transform.position - MultiPlayClient::offset, transform.rotation, transform.scale, Color::White, isReverseX);
+
+
+	// ゴメン、メンドクサクナッタ　パート２
+	// 移動アニメーション（手前表示）
+	if (moveAttribute) {
+		if (moveAttribute->GetAttribute() == ATTRIBUTE_TYPE_DARK ||
+			moveAttribute->GetAttribute() == ATTRIBUTE_TYPE_THUNDER ||
+			moveAttribute->GetAttribute() == ATTRIBUTE_TYPE_WIND) {
+			// 移動アニメーション
+			moveAttribute->Move();
+		}
+	}
+	// 攻撃アニメーション（手前表示）
+	if (attackAttribute) {
+		if (attackAttribute->GetAttribute() == ATTRIBUTE_TYPE_FIRE ||
+			attackAttribute->GetAttribute() == ATTRIBUTE_TYPE_DARK ||
+			attackAttribute->GetAttribute() == ATTRIBUTE_TYPE_THUNDER) {
+			// 移動アニメーション
+			attackAttribute->Attack();
+		}
+	}
+
+
+
+
+
+
+
+
 }
 
 void ClientPlayer::SetMoveAttribute(ClientAttribute *moveAttribute) {

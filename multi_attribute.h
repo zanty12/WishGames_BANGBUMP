@@ -21,6 +21,10 @@ class ClientMovableGameObject;
 class ServerAttribute {
 protected:
 	ServerPlayer *player = nullptr;
+	WIN::Time coolTimer;
+	WIN::Time atkCoolTimer;
+	WIN::Time atkAfterTimer;
+	AttackServerSide *attack_ = nullptr;
 
 public:
 	float power = 0.0f;				// パワー
@@ -38,7 +42,9 @@ public:
 	float atkDistance = 10.0f;		// 攻撃長さ
 	int atk = 0;					// 攻撃力	
 	int atkDrop = 0;				// ドロップ量
+	float coolTime = 0.0f;			// クールタイム
 	float atkCoolTime = 1.0f;		// 攻撃クールタイム
+	float atkAfterTime = 0.0f;		// 攻撃の残り火
 	float knockbackRate = 10.0f;	// ノックバック量
 
 
@@ -58,13 +64,19 @@ public:
 		atk = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atk");
 		atkDrop = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkDrop");
 		atkCoolTime = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkCoolTime");
+		atkAfterTime = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkAfterTime");
+		coolTime = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"coolTime");
 		atkRange = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkRange");
 		atkDistance = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"atkDistance");
 		knockbackRate = ini::GetFloat(PARAM_PATH + L"player.ini", attributeName, L"knockbackRate");
+
+		coolTimer.Start();
 	}
 	virtual bool StickTrigger(Vector2 stick, Vector2 previousStick) = 0;
 	virtual void Move(void) = 0;
 	virtual void Attack(void) = 0;
+	virtual AttackServerSide *CreateAttack(void);
+	virtual void DestroyAttack(void);
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	static ServerAttribute *Create(ServerPlayer *player, ATTRIBUTE_TYPE type);
 
@@ -73,7 +85,6 @@ public:
 	void AddPower(Vector2 stick);
 	void Friction(void);
 	Vector2 CalcVector(Vector2 stick);
-	
 };
 class ClientAttribute {
 protected:
@@ -85,6 +96,7 @@ public:
 	ClientAttribute(ClientPlayer *player) : player(player) { }
 	virtual void Move(void) = 0;
 	virtual void Attack(void) = 0;
+	virtual void Idle(void) { }
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	static ClientAttribute *Create(ClientPlayer *player, ATTRIBUTE_TYPE type);
 };
@@ -98,13 +110,13 @@ class ServerFire : public ServerAttribute {
 private:
 	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
 	Vector2 velocity;					// 向き
-	AttackServerSide *attack_ = nullptr;
 
 public:
 	ServerFire(ServerPlayer *player) : ServerAttribute(player, L"Fire") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick = Vector2::Zero) override;
 	void Move(void) override;
 	void Attack(void) override;
+	AttackServerSide *CreateAttack(void) override;
 	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
 };
 class ClientFire : public ClientAttribute {
@@ -130,7 +142,7 @@ public:
 		moveTexNo = LoadTexture("data/texture/Effect/effect_fire_move.png");
 		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
 
-		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true, 0, 25);
+		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true);
 		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true, 0, 25);
 		startTime = timeGetTime();
 	}
@@ -141,16 +153,14 @@ public:
 };
 
 class ServerFireAttack : public AttackServerSide {
-private:
-
 public:
 	ServerFireAttack(GameObjectServerSide *self, ServerAttribute *attribute) :		
 		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) { }
 
 	void Loop(void) override;
+	void KnockBack(ServerMovableGameObject *object) override;
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_FIRE; }
-	void KnockBack(ServerMovableGameObject *object) override;
 };
 
 
@@ -161,32 +171,35 @@ public:
   Water
 ********************************************************/
 class ServerWater : public ServerAttribute {
-private:
-	AttackServerSide *attack_ = nullptr;
-
 public:
 	ServerWater(ServerPlayer *player) : ServerAttribute(player, L"Water") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;
+	AttackServerSide *CreateAttack(void) override;
 	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_DARK; };
 };
 class ClientWater : public ClientAttribute {
 public:
 	MultiAnimator moveChargeAnim;
+	MultiAnimator idle;
+	MultiAnimator indicator;
 	Vector2 prevPosition;			// ワープ前の座標
 
 
 	ClientWater(ClientPlayer *player) : ClientAttribute(player) {
-		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_move.png"), 5, 3, 0, 14);
-		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_attack.png"), 5, 6, 0, 29, true, 0, 29);
-		moveChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_charge.png"), 5, 10, 0, 47, true, 0, 47);
+		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_move.png"), 5, 3, 0, 14, false);
+		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_attack.png"), 5, 6, 0, 29, true);
+		moveChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_charge.png"), 5, 10, 0, 47, true);
+		idle = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_idle.png"), 5, 6, 0, 29, true);
+		indicator = MultiAnimator(LoadTexture("data/texture/Effect/UI_water_indicator.png"), 5, 4, 0, 18, true);
 
 		moveAnim.MoveEnd();
 	}
 
 	void Move(void) override;
 	void Attack(void) override;
+	void Idle(void) override;
 	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_DARK; };
 };
 
@@ -195,11 +208,10 @@ public:
 	ServerWaterAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
 		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) { }
 
-
 	void Loop(void) override;
+	void KnockBack(ServerMovableGameObject *object) override;
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WATER; }
-	void KnockBack(ServerMovableGameObject *object) override;
 };
 
 
@@ -213,13 +225,12 @@ class ServerThunder : public ServerAttribute {
 private:
 	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
 
-	AttackServerSide *attack_ = nullptr;
-
 public:
 	ServerThunder(ServerPlayer *player) : ServerAttribute(player, L"Thunder") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;
+	AttackServerSide *CreateAttack(void) override;
 	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_THUNDER; };
 };
 class ClientThunder : public ClientAttribute {
@@ -234,8 +245,8 @@ public:
 		moveTexNo = LoadTexture("data/texture/Effect/effect_fire_move.png");
 		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
 
-		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true, 0, 25);
-		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true, 0, 25);
+		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true);
+		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true);
 	}
 
 	void Move(void) override;
@@ -245,12 +256,31 @@ public:
 
 class ServerThunderAttack : public AttackServerSide {
 public:
-	ServerThunderAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
-		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) { }
+	float gravity = 0.1f;
 
+	ServerThunderAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
+		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) {
+		transform.position = self->transform.position;
+	}
+
+	void Loop(void) override;
+	void KnockBack(ServerMovableGameObject *object) override;
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER; }
-	void KnockBack(ServerMovableGameObject *object) override;
+};
+class ClientThunderAttack : public AttackClientSide {
+public:
+	float gravity = 0.1f;
+	MultiAnimator anim;
+
+	ClientThunderAttack(Transform transform) : AttackClientSide(transform) {
+		texNo = LoadTexture("data/texture/Effect/effect_thunder_arrow.png");
+		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
+	}
+
+	void Loop(void) override;
+
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER; }
 };
 
 
@@ -262,28 +292,31 @@ public:
 ********************************************************/
 class ServerWind : public ServerAttribute {
 private:
-
 	float prev_y_ = 0.0f;
 	float previous_time_ = 0.0f;
-
-	AttackServerSide *attack_ = nullptr;
 
 public:
 	ServerWind(ServerPlayer *player) : ServerAttribute(player, L"Wind") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;
+	AttackServerSide *CreateAttack(void) override;
 	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_WIND; };
 };
 class ClientWind : public ClientAttribute {
 public:
+	MultiAnimator idle;
+
+
 	ClientWind(ClientPlayer *player) : ClientAttribute(player) {
-		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 29);
-		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 25);
+		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 29, true);
+		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 25, true);
+		idle = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_idle.png"), 5, 6, 0, 29, true);
 	}
 
 	void Move(void) override;
 	void Attack(void) override;
+	void Idle(void) override;
 	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_WIND; };
 };
 
@@ -292,12 +325,9 @@ public:
 	ServerWindAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
 		AttackServerSide(attribute->atk, attribute->atkDrop, attribute->atkCoolTime, attribute->knockbackRate, attribute->atkRange, self) { }
 
-	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
+	void Loop(void) override; 
 	void KnockBack(ServerMovableGameObject *object) override;
-};
-class ClientWindAttack : public ClientAttack {
-public:
-	void Loop(void) override;
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_WIND; }
 };
+

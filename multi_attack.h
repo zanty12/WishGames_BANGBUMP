@@ -37,9 +37,9 @@ public:
 /***********************************************************
 	Client
 ************************************************************/
-class ClientAttack : public GameObjectClientSide {
+class AttackClientSide : public GameObjectClientSide {
 public:
-	ClientAttack(Transform transform) : GameObjectClientSide(transform) { }
+	AttackClientSide(Transform transform) : GameObjectClientSide(transform) { }
 
 	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
 };

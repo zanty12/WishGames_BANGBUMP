@@ -12,12 +12,12 @@ void MultiAnimator::Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool is
 			idx++;
 
 			startTime = timeGetTime();
-
-			// 終点なら始点にする
-			if (isLoop) { if (loopEnd < idx) idx = loopBegin; }
-			// ループしないなら終了
-			else if (end < idx) return;
 		}
+
+		// 終点なら始点にする
+		if (isLoop) { if (loopEnd < idx) idx = loopBegin; }
+		// ループしないなら終了
+		else if (end < idx) return;
 	}
 
 	// UV値の計算
@@ -91,7 +91,7 @@ MultiAnimator MultiAnimator::GetPlayerInitialize(int playerIdx, ATTRIBUTE_TYPE m
 void MultiAnimator::GetPlayer(MULTI_ANIMATION_TYPE animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack, MultiAnimator* anim) {
 	if (anim == nullptr) return;
 	// IDLE
-	if (animType == ANIMATION_TYPE_IDEL) {
+	if (animType == ANIMATION_TYPE_IDLE) {
 		anim->begin = 0;
 		anim->end = 29;
 		anim->loopBegin = 0;

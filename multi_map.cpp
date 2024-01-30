@@ -51,7 +51,6 @@ void MultiMap::Release(void) {
 	areaCaptures.clear();
 }
 
-
 void MultiMap::Load(std::string path)
 {
 	Release();

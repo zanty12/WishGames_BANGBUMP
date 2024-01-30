@@ -22,12 +22,13 @@ public:
 	int skillPoint = 0;									// スキルポイント
 	int score = 0;										// スコア
 	MultiMap *map = nullptr;							// マップ
-	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;// アニメーション
+	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDLE;// アニメーション
 	Vector2 attackVelocity;								// 攻撃のベクトル
 	Vector2 warpVelocity;								// ワープベクトル
+	bool attributeChange = false;						// 属性チェンジ
 	
 public:
-	ServerPlayer() { gravity = 0.1f; }
+	ServerPlayer() { gravity = 0.01f; }
 	~ServerPlayer() {
 		if (moveAttribute) delete moveAttribute;
 		if (attackAttribute) delete attackAttribute;
@@ -56,7 +57,7 @@ public:
   Client
 ********************************************************/
 class ClientAttribute;
-class ClientAttack;
+class AttackClientSide;
 class ClientPlayer : public ClientMovableGameObject {
 private:
 	ClientAttribute *moveAttribute = nullptr;			// 移動属性
@@ -65,10 +66,10 @@ private:
 
 public:
 	int skillPoint = 0;										// スキルポイント
-	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDEL;	// アニメーションタイプ
-	MULTI_ANIMATION_TYPE preAnimType = ANIMATION_TYPE_IDEL;	// アニメーション（1フレーム前）
-	ATTRIBUTE_TYPE moveAttributeType;					// 移動属性タイプ
-	ATTRIBUTE_TYPE attackAttributeType;					// 攻撃属性タイプ
+	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDLE;	// アニメーションタイプ
+	MULTI_ANIMATION_TYPE preAnimType = ANIMATION_TYPE_IDLE;	// アニメーション（1フレーム前）
+	ATTRIBUTE_TYPE moveAttributeType;						// 移動属性タイプ
+	ATTRIBUTE_TYPE attackAttributeType;						// 攻撃属性タイプ
 	MultiAnimator anim;										// アニメーション
 	bool isReverseX = false;								// 横軸の向き
 	Vector2 attackVelocity;									// 攻撃のベロシティ
