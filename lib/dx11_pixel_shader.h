@@ -20,7 +20,7 @@
 * includeéŒ¾
 ------------------------------------------------------------------------------*/
 #include <d3d11.h>
-#include "dx11_shader.h"
+#include "dx_shader.h"
 
 /*------------------------------------------------------------------------------
 * defineéŒ¾
@@ -43,7 +43,7 @@
 namespace DX {
 	namespace DX11 {
 		namespace CORE {
-			class PIXEL_SHADER : public Shader<ID3D11PixelShader> {
+			class PIXEL_SHADER : public Shader<ID3D11PixelShader, ID3D11Device> {
 			public:
 
 				/// <summary>

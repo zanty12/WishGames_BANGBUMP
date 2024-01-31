@@ -1,39 +1,37 @@
-ï»¿#include "graphical.h"
+#include "graphical.h"
 #include "sprite.h"
 #include <iostream>
 #include <thread>
-#include "lib/collider2d.h"
 
 #include "DebugUI.h"
 #include "xinput.h"
-#include "mapmngr.h"
-#include "scenemngr.h"
-#include "text.h"
+#include "multiplay.h"
 #include "time.h"
-#include "video.h"
 #include "sound.h"
 
 bool debug_mode = true;
+//#define SERVER
 
 int main()
 {
+    Time::Initialize();
+    srand(time(NULL));
+
+#ifdef SERVER
+    MultiPlayServer server;
+    server.OpenTerminal();
+#else
+    MSG msg;
     Graphical::Initialize(1600, 900);
     DebugUI::Initialize();
-    MSG msg;
-    Time::Initialize();
+    Text::CreateResources();
     WIN::Window window = Graphical::GetHwnd();
     const HWND hWnd = window.GetHwnd();
     InitSound(hWnd);
-    HRESULT result = Text::CreateResources();
-    if (FAILED(result))
-    {
-        return 0;
-    }
     SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
-    srand(time(NULL));
     while (true)
     {
-        // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+        // ƒƒbƒZ[ƒW
         if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
             if (msg.message == WM_QUIT)
@@ -46,17 +44,19 @@ int main()
                 DispatchMessage(&msg);
             }
         }
-        else{
+        else
+        {
             //WTF?
-            //Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+            Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
 
+            //update
             Input::Update();
-
             Time::Update();
-
             scene_mngr->Update();
+
+            //draw
             DebugUI::BeginDraw();
-            //ãƒ‡ãƒãƒƒã‚°ãƒ¢ãƒ¼ãƒ‰
+            //ƒfƒoƒbƒOƒ‚[ƒh
             { if (GetKeyState(VK_F1) & 0x8000)
                 debug_mode = !debug_mode;
 
@@ -70,7 +70,7 @@ int main()
 
 
                     //test controller
-                    ImGui::Text(u8"ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼");
+                    ImGui::Text(u8"ƒRƒ“ƒgƒ[ƒ‰[");
                     ImGui::Text("Left Stick");
                     ImGui::Text("X:%.2f, Y:%.2f", Input::GetStickLeft(0).x,Input::GetStickLeft(0).y);
                     ImGui::Text("Right Stick");
@@ -87,33 +87,16 @@ int main()
             scene_mngr->Draw();
             Text::TextEnd();
             DebugUI::EndDraw();
-
-            /*using namespace PHYSICS;
-            static float x = 100.0f;
-            static float y = 100.0f;
-            static float r = 0.0f;
-            x += Input::GetStickLeft(0).x;
-            y += Input::GetStickLeft(0).y;
-            x += Input::GetKey(0, Input::Right) - Input::GetKey(0, Input::Left);
-            y += Input::GetKey(0, Input::Up) - Input::GetKey(0, Input::Down);
-            r += Input::GetKey(0, Input::R) * 0.01f;
-            r -= Input::GetKey(0, Input::L) * 0.01f;
-
-            Vertex1 v1(Vector2(100, 100), 100);
-            Vertex4 v4(Vector2(x,y), r, Vector2(100,100));
-            Color color = Collider2D::TouchNew(v1, VertexN(v4.v, 4)) ? Color::Red : Color::Green;
-            DrawCollider(v1, color, Vector2::Zero);
-            DrawCollider(v4, color, Vector2::Zero);*/
-
             Graphical::Present();
         }
     }
-
-    Graphical::Release();
-    DebugUI::Release();
-    Time::Release();
-    Text::DiscardResources();
     UninitSound();
+    delete scene_mngr;
+    Text::DiscardResources();
+    DebugUI::Release();
+    Graphical::Release();
+#endif
 
-    std::cout << "Hello World!\n"; //åŸºæœ¬
+    Time::Release();
+    std::cout << "END\n"; //Šî–{
 }
