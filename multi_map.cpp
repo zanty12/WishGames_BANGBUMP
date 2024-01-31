@@ -59,8 +59,7 @@ void MultiMap::Load(std::string path) {
 	attacks = new MultiBehavior("AttackMngr");
 
 	std::ifstream file(path);
-	if (!file)
-	{
+	if (!file) {
 		std::cout << "error loading map";
 		return;
 	}
