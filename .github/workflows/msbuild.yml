@@ -62,7 +62,6 @@ jobs:
         name: Build artifacts
         path: artifacts/
 
-    - uses: actions/checkout@v3
     - name: Create Release
       id: create_release
       uses: elgohr/Github-Release-Action@v5
@@ -70,7 +69,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
         title: Release ${{ github.ref }}
-        workdir: artifacts/
+        workdir: ${{env.GITHUB_WORKSPACE}}/artifacts/
 
     - name: Upload Release Asset
       id: upload_release_asset
