@@ -192,7 +192,7 @@ void ClientFire::Move(void) {
 		moveAnims.push_front({ pos, rot, scl, moveAnim });
 
 		// —v‘f‚ª‘½‚¢‚È‚çíœ
-		if (10 < moveAnims.size()) {
+		if (5 < moveAnims.size()) {
 			moveAnims.pop_back();
 		}
 	}

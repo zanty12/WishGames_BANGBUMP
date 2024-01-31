@@ -257,7 +257,7 @@ public:
 };
 class ClientThunderAttack : public AttackClientSide {
 public:
-	float gravity = 0.1f;
+	float gravity = 0.0f;
 	MultiAnimator anim;
 
 	ClientThunderAttack(Transform transform) : AttackClientSide(transform) {
