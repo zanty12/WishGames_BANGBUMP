@@ -40,11 +40,12 @@
 /*------------------------------------------------------------------------------
 * class宣言
 ------------------------------------------------------------------------------*/
-namespace SYSTEM {
-	class TIME {
+namespace WIN {
+	class Time {
 	private:
-		static int isTimeBeginFunc;	// TimeBeginPeriod関数を実行したか否か
-		DWORD startTime = 0;		// 計測開始時間
+		DWORD startTime = 0ul;		// 計測開始時間
+		DWORD nowTime = 0ul;		// 現在の計測時間
+		bool isActive = false;		// 計測しているか
 
 	public:
 
@@ -59,9 +60,9 @@ namespace SYSTEM {
 		void Stop(void);
 
 		/// <summary>
-		/// 初期化
+		/// 再測定開始
 		/// </summary>
-		void Reset(void);
+		void Restart(void);
 
 		/// <summary>
 		/// 現在の時間

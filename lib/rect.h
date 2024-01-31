@@ -48,7 +48,7 @@ public:
     int left = 0;
 
     Rect (RECT rect) : top(rect.top), bottom(rect.bottom), right(rect.right), left(rect.left) { }
-    Rect operator = (RECT rect) { top = rect.top, bottom = rect.bottom, right = rect.right, left = rect.left; }
+    Rect operator= (RECT rect) { top = rect.top, bottom = rect.bottom, right = rect.right, left = rect.left; }
 
     int GetWidth(void) { return right - left; }
     int GetHeight(void) { return bottom - top; }

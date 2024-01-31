@@ -20,7 +20,7 @@
 * includeêÈåæ
 ------------------------------------------------------------------------------*/
 #include <d3d11.h>
-#include "dx11_shader.h"
+#include "dx_shader.h"
 
 /*------------------------------------------------------------------------------
 * defineêÈåæ
@@ -43,7 +43,7 @@
 namespace DX {
 	namespace DX11 {
 		namespace CORE {
-			class VERTEX_SHADER : public Shader<ID3D11VertexShader> {
+			class VERTEX_SHADER : public Shader<ID3D11VertexShader, ID3D11Device> {
 			public:
 
 				/// <summary>

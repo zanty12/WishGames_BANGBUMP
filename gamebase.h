@@ -36,12 +36,13 @@ private:
 	constexpr static float LoD_threshold_ = 2500.0f;
 
 public:
-	GameBase() = delete;
+	GameBase() = default;
 	GameBase(SceneMngr *scene_mngr) : scene_mngr_(scene_mngr) {	}
 	virtual ~GameBase();
 
 	virtual void Update(void) {}
 	virtual void Draw(void) {}
+	virtual void DebugMenu(void) {}
 
 	static Renderer *GetRenderer() { return renderer_; }
 	static CollMngr *GetCollMngr() { return coll_mngr_; }

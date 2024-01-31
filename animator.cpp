@@ -15,7 +15,7 @@ void Animator::InitDictionary(void)
 }
 
 Animator::Animator(GameObject* game_object)
-    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), loop_anim_(NONE), loop_anim_next_(NONE),
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), loop_anim_(MULTI_NONE), loop_anim_next_(MULTI_NONE),
     now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false),invert_(1)//初期化
 {
     InitDictionary();
@@ -25,7 +25,7 @@ Animator::Animator(GameObject* game_object)
 }
 
 Animator::Animator(GameObject* game_object, int fps, bool isAnim, int x_matrix_num, int y_matrix_num, float img_change_time)
-    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), loop_anim_(NONE), loop_anim_next_(NONE),
+    : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), loop_anim_(MULTI_NONE), loop_anim_next_(MULTI_NONE),
     img_change_time_(img_change_time), fps_(fps), isAnim_(isAnim),
     x_matrix_num_(x_matrix_num), y_matrix_num_(y_matrix_num), now_time_(0.0f), is_loop_(false),
     now_matrix_number_(0), u_(0.0f), v_(0.0f), invert_(1)//初期化
@@ -86,7 +86,7 @@ void Animator::Update(void)
         Reset();
     }
     //アニメーションができない状態なら抜ける
-    if (loop_anim_ == NONE && x_matrix_num_ == 0 && y_matrix_num_ == 0)
+    if (loop_anim_ == MULTI_NONE && x_matrix_num_ == 0 && y_matrix_num_ == 0)
     {
         isAnim_ = false;
         return;
@@ -128,7 +128,7 @@ void Animator::Reset(void)
 {
     loop_anim_ = loop_anim_next_;
 
-    if (loop_anim_next_ == NONE)
+    if (loop_anim_next_ == MULTI_NONE)
     {
         now_matrix_number_ = 0;
         return;

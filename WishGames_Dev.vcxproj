@@ -159,6 +159,7 @@
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="enemy1.cpp" />
     <ClCompile Include="id.cpp" />
+    <ClCompile Include="ini.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
     <ClCompile Include="lib\imgui\imgui_draw.cpp" />
@@ -172,6 +173,21 @@
     <ClCompile Include="mapmngr.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="movableobj.cpp" />
+    <ClCompile Include="multiplay.cpp" />
+    <ClCompile Include="multi_anim.cpp" />
+    <ClCompile Include="multi_area_capture_mode.cpp" />
+    <ClCompile Include="multi_attack.cpp" />
+    <ClCompile Include="multi_attribute.cpp" />
+    <ClCompile Include="multi_behavior.cpp" />
+    <ClCompile Include="multi_character_select_mode.cpp" />
+    <ClCompile Include="multi_enemy.cpp" />
+    <ClCompile Include="multi_map.cpp" />
+    <ClCompile Include="multi_mode.cpp" />
+    <ClCompile Include="multi_mode_flow.cpp" />
+    <ClCompile Include="multi_object.cpp" />
+    <ClCompile Include="multi_player.cpp" />
+    <ClCompile Include="multi_skillorb.cpp" />
+    <ClCompile Include="number.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="colliderrect.cpp" />
@@ -185,6 +201,7 @@
     <ClCompile Include="skillorbmngr.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="storage.cpp" />
     <ClCompile Include="text.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="thunder.cpp" />
@@ -197,6 +214,7 @@
     <ClInclude Include="animator.h" />
     <ClInclude Include="area_capture.h" />
     <ClInclude Include="asset.h" />
+    <ClInclude Include="attribute_state.h" />
     <ClInclude Include="attribute_type.h" />
     <ClInclude Include="boss.h" />
     <ClInclude Include="bossatk.h" />
@@ -220,7 +238,9 @@
     <ClInclude Include="debugUI.h" />
     <ClInclude Include="graphical.h" />
     <ClInclude Include="enemy1.h" />
+    <ClInclude Include="gset.h" />
     <ClInclude Include="id.h" />
+    <ClInclude Include="ini.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />
     <ClInclude Include="lib\imgui\imgui_impl_dx11.h" />
@@ -234,6 +254,33 @@
     <ClInclude Include="menu.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="mapmngr.h" />
+    <ClInclude Include="multiplay.h" />
+    <ClInclude Include="multi_anim.h" />
+    <ClInclude Include="multi_animenum.h" />
+    <ClInclude Include="multi_area_capture_mode.h" />
+    <ClInclude Include="multi_attack.h" />
+    <ClInclude Include="multi_attribute.h" />
+    <ClInclude Include="multi_behavior.h" />
+    <ClInclude Include="multi_character_select_mode.h" />
+    <ClInclude Include="multi_client_gameobject.h" />
+    <ClInclude Include="multi_connect_renderer.h" />
+    <ClInclude Include="multi_enemy.h" />
+    <ClInclude Include="multi_enemy_rush_mode.h" />
+    <ClInclude Include="multi_final_battle_mode.h" />
+    <ClInclude Include="multi_header.h" />
+    <ClInclude Include="multi_intermediate_result_mode.h" />
+    <ClInclude Include="multi_map.h" />
+    <ClInclude Include="multi_mode.h" />
+    <ClInclude Include="multi_mode_flow.h" />
+    <ClInclude Include="multi_movable_object.h" />
+    <ClInclude Include="multi_object.h" />
+    <ClInclude Include="multi_objenum.h" />
+    <ClInclude Include="multi_obstacle_race_mode.h" />
+    <ClInclude Include="multi_path.h" />
+    <ClInclude Include="multi_player.h" />
+    <ClInclude Include="multi_skillorb.h" />
+    <ClInclude Include="multi_transform.h" />
+    <ClInclude Include="number.h" />
     <ClInclude Include="original_window.h" />
     <ClInclude Include="movableobj.h" />
     <ClInclude Include="player.h" />
@@ -252,6 +299,9 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="spike.h" />
     <ClInclude Include="sprite.h" />
+    <ClInclude Include="storage.h" />
+    <ClInclude Include="storage_lock.h" />
+    <ClInclude Include="string.h" />
     <ClInclude Include="text.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="time.h" />
@@ -296,16 +346,18 @@
     <Content Include="data\texture\wapuro-mincho.otf" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\property\attribute_lv1.ini" />
+    <None Include="data\property\mode.ini" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="packages\directxtex_desktop_win10.2023.10.31.1\build\native\directxtex_desktop_win10.targets" Condition="Exists('packages\directxtex_desktop_win10.2023.10.31.1\build\native\directxtex_desktop_win10.targets')" />
+    <Import Project="packages\directxtex_desktop_win10.2024.1.1.1\build\native\directxtex_desktop_win10.targets" Condition="Exists('packages\directxtex_desktop_win10.2024.1.1.1\build\native\directxtex_desktop_win10.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\directxtex_desktop_win10.2023.10.31.1\build\native\directxtex_desktop_win10.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\directxtex_desktop_win10.2023.10.31.1\build\native\directxtex_desktop_win10.targets'))" />
+    <Error Condition="!Exists('packages\directxtex_desktop_win10.2024.1.1.1\build\native\directxtex_desktop_win10.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\directxtex_desktop_win10.2024.1.1.1\build\native\directxtex_desktop_win10.targets'))" />
   </Target>
 </Project>

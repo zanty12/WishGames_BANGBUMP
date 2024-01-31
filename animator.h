@@ -54,7 +54,7 @@ struct ANIM_DATA
 //ここに全てのアニメーションの名前を書く
 enum LOOP_ANIM
 {
-    NONE = -1,
+    MULTI_NONE = -1,
 
     PLAYER,
     ENEMY_1,

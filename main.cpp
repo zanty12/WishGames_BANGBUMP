@@ -2,118 +2,90 @@
 #include "sprite.h"
 #include <iostream>
 #include <thread>
-#include "lib/collider2d.h"
 
-#include "DebugUI.h"
+//#include "DebugUI.h"
 #include "xinput.h"
-#include "mapmngr.h"
-#include "scenemngr.h"
-#include "text.h"
+#include "multiplay.h"
+#include "asset.h"
+//#include "mapmngr.h"
+//#include "scenemngr.h"
+//#include "text.h"
 #include "time.h"
-#include "video.h"
-#include "sound.h"
+//#include "video.h"
+#include "multi_map.h"
 
 bool debug_mode = true;
 
-int main()
-{
+
+int main() {
+    int mode = 0;
+    std::cin >> mode;
+
+    MSG msg;
     Graphical::Initialize(1600, 900);
     DebugUI::Initialize();
-    MSG msg;
     Time::Initialize();
-    WIN::Window window = Graphical::GetHwnd();
-    const HWND hWnd = window.GetHwnd();
-    InitSound(hWnd);
-    HRESULT result = Text::CreateResources();
-    if (FAILED(result))
-    {
-        return 0;
-    }
-    SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
+    Text::CreateResources();
     srand(time(NULL));
-    while (true)
-    {
-        // メッセージ
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-        {
-            if (msg.message == WM_QUIT)
+
+    //MultiMap map;
+    //ServerPlayer player;
+    //map.Initialize();
+    //map.Load("data/map/MultiPlay_Map1.csv");
+    //player.transform.position = *map.startPosition.begin() * map.cellSize;
+
+    if (mode == 0) {
+        MultiPlayServer server;
+        server.OpenTerminal();
+    }
+    else {
+        MultiPlayClient client;
+        client.Register();
+        //int texNo = LoadTexture(Asset::textures_.at(textures::player));
+        while (!client.isFinish) {
+            // メッセージ
+            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
             {
-                break;
-            }
-            else
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
-        }
-        else{
-            //WTF?
-            //Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
-
-            Input::Update();
-
-            Time::Update();
-
-            scene_mngr->Update();
-            DebugUI::BeginDraw();
-            //デバッグモード
-            { if (GetKeyState(VK_F1) & 0x8000)
-                debug_mode = !debug_mode;
-
-                if (debug_mode)
+                if (msg.message == WM_QUIT)
                 {
-                    //bool show_demo_window = true;
-                    //ImGui::ShowDemoWindow(&show_demo_window);
-                    ImGuiIO& io = ImGui::GetIO();
-                    ImGui::Begin("Main System");
-                    ImGui::Text("FPS:%.1f", io.Framerate);
-
-
-                    //test controller
-                    ImGui::Text(u8"コントローラー");
-                    ImGui::Text("Left Stick");
-                    ImGui::Text("X:%.2f, Y:%.2f", Input::GetStickLeft(0).x,Input::GetStickLeft(0).y);
-                    ImGui::Text("Right Stick");
-                    ImGui::Text("X:%.2f, Y:%.2f", Input::GetStickRight(0).x, Input::GetStickRight(0).y);
-
-                    //Time
-                    ImGui::Text("DeltaTime:%.4f", Time::GetDeltaTime());
-                    ImGui::End();
-
-                    scene_mngr->DebugMenu();
+                    break;
+                }
+                else
+                {
+                    TranslateMessage(&msg);
+                    DispatchMessage(&msg);
                 }
             }
-            Text::TextStart();
-            scene_mngr->Draw();
-            Text::TextEnd();
-            DebugUI::EndDraw();
 
-            /*using namespace PHYSICS;
-            static float x = 100.0f;
-            static float y = 100.0f;
-            static float r = 0.0f;
-            x += Input::GetStickLeft(0).x;
-            y += Input::GetStickLeft(0).y;
-            x += Input::GetKey(0, Input::Right) - Input::GetKey(0, Input::Left);
-            y += Input::GetKey(0, Input::Up) - Input::GetKey(0, Input::Down);
-            r += Input::GetKey(0, Input::R) * 0.01f;
-            r -= Input::GetKey(0, Input::L) * 0.01f;
 
-            Vertex1 v1(Vector2(100, 100), 100);
-            Vertex4 v4(Vector2(x,y), r, Vector2(100,100));
-            Color color = Collider2D::TouchNew(v1, VertexN(v4.v, 4)) ? Color::Red : Color::Green;
-            DrawCollider(v1, color, Vector2::Zero);
-            DrawCollider(v4, color, Vector2::Zero);*/
+            //Input::Update();
+            //Graphical::Clear(Color::White);
 
-            Graphical::Present();
+            //map.Draw(Vector2::Zero);
+            //player.velocity = Input::GetStickLeft(0) * 10;
+            //Vector2 normal;
+            //int id = map.Collision(player.transform.position, 10, &normal);
+            //player.transform.position += player.velocity;
+            //DrawSprite(texNo, player.transform.position, 0.0, player.transform.scale * 100, Color::White);
+
+            //
+            //Graphical::Present();
+            //static float x = 0;
+            //static float y = 0;
+            //x += (GetAsyncKeyState('A') - GetAsyncKeyState('D')) * 0.001f;
+            //y += (GetAsyncKeyState('S') - GetAsyncKeyState('W')) * 0.001f;
+
+            //Graphical::Clear(Color::White);
+            //map.Draw(Vector2(x, y));
+            //Graphical::Present();
         }
+        client.Unregister();
     }
 
-    Graphical::Release();
-    DebugUI::Release();
     Time::Release();
     Text::DiscardResources();
-    UninitSound();
+    DebugUI::Release();
+    Graphical::Release();
 
     std::cout << "Hello World!\n"; //基本
 }
