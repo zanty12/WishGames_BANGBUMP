@@ -4,32 +4,33 @@
 #include "texture.h"
 #include "lib/ImGui/imgui.h"
 
-class Multi_Server_Select
+class Multi_Server_Select : public Scene
 {
 private:
     int bg_tex_;
-    char* ip_ = nullptr;
+    char ip_[16] = "";
     bool connect_ = false;
+    bool start_ = false;
+    SceneMngr* scene_mngr_;
 
 public:
-    Multi_Server_Select()
+    Multi_Server_Select(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
     {
         bg_tex_ = LoadTexture("data/texture/UI/multi_server_select.png");
-        ip_ = new char[16];
     }
 
-    ~Multi_Server_Select() = default;
+    ~Multi_Server_Select() override = default;
 
-    void Update()
+    void Update() override
     {
-        if(connect_)
+        if(connect_ && !start_)
         {
             //stop scenemngr and go to multiplay client
             MultiPlayClient client;
             std::string ip = ip_;
             client.Register(ip);
             MSG msg;
-            while(!client.isFinish())
+            while(!client.isFinish)
             {
                 // メッセージ
                 if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -46,19 +47,24 @@ public:
                 }
             }
             client.Unregister();
+            start_ = true;
         }
+        if(start_)
+            scene_mngr_->ChangeScene(SCENE_MENU);
     }
 
-    void Draw()
+    void Draw() override
     {
         DrawSprite(bg_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2), 0,
                    Vector2(Graphical::GetWidth(), Graphical::GetHeight()), Color::White);
-        ImGui::Begin("鯖接続");
+        ImGui::Begin(u8"接続");
         ImGui::InputText("IP", ip_, 16);
         if (ImGui::Button("Link Start"))
         {
             //stop scenemngr and go to multiplay client
+            connect_ = true;
         }
         ImGui::End();
     }
+    void DebugMenu() override{}
 };

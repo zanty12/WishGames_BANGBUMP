@@ -8,6 +8,7 @@
 #include "prep.h"
 #include "title.h"
 #include "menu.h"
+#include "multi_server_select.h"
 #include "result.h"
 #include "thunder.h"
 #include "wind.h"
@@ -28,6 +29,9 @@ SceneMngr::SceneMngr(SCENE scene)
         break;
     case SCENE_MENU:
         scene_ = new Menu(this);
+        break;
+    case SCENE_MULTI_SERVER_SELECT:
+        scene_ = new Multi_Server_Select(this);
         break;
     case SCENE_PREP:
         scene_ = new Prep(this);
@@ -93,6 +97,9 @@ void SceneMngr::LoadScene(SCENE scene)
         break;
     case SCENE_MENU:
         scene_ = new Menu(this);
+        break;
+    case SCENE_MULTI_SERVER_SELECT:
+        scene_ = new Multi_Server_Select(this);
         break;
     case SCENE_PREP:
         scene_ = new Prep(this);
