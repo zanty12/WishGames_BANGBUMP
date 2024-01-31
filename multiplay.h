@@ -9,9 +9,9 @@
 #include "multi_connect_renderer.h"
 #include "multi_player.h"
 #include "storage_lock.h"
+#include "light_effect.h"
 #include <fstream>
 
-extern std::string SERVER_ADDRESS;
 extern std::wstring ParamPath;
 #define MAX_MEMBER (4)
 #define PORT (8080)
@@ -95,7 +95,7 @@ private:
 	MultiPlayFlowClientSide *gameMode = nullptr;		// ゲームモード
 	RESPONSE_PLAYER res_;								// レスポンス
 	char *recvTmpBuff = nullptr;						// 受信バッファ（仮格納用）
-	MultiMap map;										// マップ
+	LightEffect lightEffect;
 
 	std::thread sendUpdateFunc;							// 送信関数
 	std::thread recvUpdateFunc;							// 受信関数
@@ -117,8 +117,6 @@ public:
 		sendUpdateFunc.join();
 		recvUpdateFunc.join();
 
-		// 解放
-		map.Release();
 		//delete gameMode;
 		delete recvTmpBuff;
 		sendBuff.Release();
@@ -132,7 +130,7 @@ public:
 	}
 
 	// 登録
-	int Register(void);
+	int Register(std::string serverAddress = "");
 	// 解除
 	void Unregister(void);
 	// 更新
