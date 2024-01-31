@@ -17,7 +17,7 @@ private:
 private:
 	int texNo;
 	std::list<Light> lights;
-	float spawnTime = 2.0f;
+	float spawnTime = 10.0f;
 	float lifeTime = 5.0f;
 	WIN::Time timer;
 

@@ -130,7 +130,7 @@ public:
 	}
 
 	// “o˜^
-	int Register(std::string serverAddress);
+	int Register(std::string serverAddress = "");
 	// ‰ğœ
 	void Unregister(void);
 	// XV

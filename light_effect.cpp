@@ -16,10 +16,12 @@ void LightEffect::Draw(Vector2 offset) {
 		light.rad = MATH::Rand(0.0f, MATH::PI * 2.0f);
 		light.timer.Start();
 		lights.push_back(light);
+		timer.Start();
 	}
 
 	for (auto iterator = lights.begin(); iterator != lights.end();) {
 		auto &light = *iterator;
+		float nowTime = light.timer.GetNowTime() * 0.001f;
 		// íœ‚È‚ç
 		if (lifeTime <= light.timer.GetNowTime() * 0.001f) {
 			auto delIterator = iterator;
@@ -35,8 +37,11 @@ void LightEffect::Draw(Vector2 offset) {
 		Vector2 velocity = Vector2(std::cos(light.rad), std::sin(light.rad));
 		// ˆÚ“®
 		light.position += velocity;
+
+		float t = nowTime / lifeTime;
+		float a = MATH::Leap(MATH::Leap(0.0f, 1.0f, t), MATH::Leap(1.0f, 0.0f, t), t);
 		// •`‰æ
-		DrawSprite(texNo, light.position - offset, 0.0f, light.scale, Color::White);
+		DrawSprite(texNo, light.position - offset, 0.0f, light.scale, Color(1.0f, 1.0f, 1.0f, a));
 
 
 
