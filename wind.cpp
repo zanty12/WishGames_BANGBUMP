@@ -142,6 +142,11 @@ void WindAttack::Update()
                     {
                         SetTick(0.0f);
                         enemy->SetHp(enemy->GetHp() - GetDamage());
+
+                        //エフェクトの生成
+                        Vector2 pos = enemy->GetPos();
+                        Vector2 scale = enemy->GetScale();
+                        AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_wind, EFFECT_HIT_WIND_ANIM));
                     }
                 }
             }
@@ -150,6 +155,8 @@ void WindAttack::Update()
             break;
         }
     }
+
+    HitEffectUpdate();  //エフェクトのアップデート
 }
 
 

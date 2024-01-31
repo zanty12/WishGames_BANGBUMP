@@ -48,7 +48,7 @@ int main()
         }
         else{
             //WTF?
-            //Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+            Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
 
             Input::Update();
 

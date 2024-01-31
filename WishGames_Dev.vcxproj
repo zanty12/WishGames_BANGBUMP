@@ -176,6 +176,7 @@
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="colliderrect.cpp" />
+    <ClCompile Include="playerattack.cpp" />
     <ClCompile Include="prep.cpp" />
     <ClCompile Include="projectilemngr.cpp" />
     <ClCompile Include="renderer.cpp" />

@@ -233,6 +233,11 @@ void ThunderAttack::Update()
                 if (enemy != nullptr)
                 {
                     enemy->SetHp(enemy->GetHp() - GetDamage());
+
+                    //エフェクトの生成
+                    Vector2 pos = enemy->GetPos();
+                    Vector2 scale = enemy->GetScale();
+                    AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_thunder, EFFECT_HIT_THUNDER_ANIM));
                 }
             }
             break;
@@ -243,6 +248,8 @@ void ThunderAttack::Update()
     if ((GetPos() - start_pos_).Distance() > range_)
         Discard();
     AddVel(GetVel());
+
+    HitEffectUpdate();  //エフェクトのアップデート
 }
 
 ThunderIndicator::ThunderIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(thunder_indicator)), Vector2::Zero)

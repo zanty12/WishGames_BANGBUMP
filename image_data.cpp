@@ -87,7 +87,7 @@ void ImageDataDictionary::InitDictionary()
 	img_data_[boss_idle] = IMAGE_DATA(LoadTexture(Asset::GetAsset(boss_idle)), 5, 9);
 
 	//effect
-	img_data_[effect_dead] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_dead)), 5, 14);
+	img_data_[effect_dead] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_dead)), 5, 15);
 	img_data_[effect_enemydead] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_enemydead)), 5, 8);
 	img_data_[effect_spawn] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_spawn)), 5, 3);
 	img_data_[effect_hit] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_hit)), 5, 2);

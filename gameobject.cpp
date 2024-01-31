@@ -27,6 +27,14 @@ GameObject::GameObject(Vector2 pos, float rot, int tex_number,bool movable)
 
 void GameObject::Discard() { is_discard_ = true; animator_->Discard(); collider_->Discard(); }
 
+void GameObject::DispUninit(void)
+{
+    color_ = Color(0, 0, 0, 0);
+    animator_->SetIsAnim(false);
+    animator_->SetColor(GetColor());
+    SetType(OBJ_VOID);
+}
+
 Vector2 GameObject::GetWorldCoord(Vector2 pos)
 {
     const int idx = std::floor((pos.x - GameObject::SIZE_ / 2) / GameObject::SIZE_);

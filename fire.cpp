@@ -104,7 +104,7 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);
-    SetMaxTick(1.0f / 3.0f);
+    SetMaxTick(0.01);
     SetDamage(50);
 
     //アニメーション設定
@@ -131,6 +131,11 @@ void FireAttack::Update()
                     {
                         SetTick(0.0f);
                         enemy->SetHp(enemy->GetHp() - GetDamage());
+
+                        //エフェクトの生成
+                        Vector2 pos = enemy->GetPos();
+                        Vector2 scale = enemy->GetScale();
+                        AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_fire, EFFECT_HIT_FIRE_ANIM));
                     }
                 }
             }
@@ -139,6 +144,8 @@ void FireAttack::Update()
             break;
         }
     }
+
+    HitEffectUpdate();  //エフェクトのアップデート
 }
 
 FireEffect::FireEffect(Fire* parent)

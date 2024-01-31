@@ -164,6 +164,11 @@ void DarkAttack::Update()
                     {
                         SetTick(0.0f);
                         enemy->SetHp(enemy->GetHp() - GetDamage());
+
+                        //エフェクトの生成
+                        Vector2 pos = enemy->GetPos();
+                        Vector2 scale = enemy->GetScale();
+                        AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_dark, EFFECT_HIT_DARK_ANIM));
                     }
                 }
             }
@@ -172,6 +177,8 @@ void DarkAttack::Update()
             break;
         }
     }
+
+    HitEffectUpdate();  //エフェクトのアップデート
 }
 
 DarkIndicator::DarkIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(player)), Vector2::Zero)

@@ -43,6 +43,11 @@ void Game::Draw()
         DrawNormal();
     else
         DrawResult();
+
+#ifdef _DEBUG
+    coll_mngr_->Draw(camera_);
+#endif // DEBUG
+
 }
 
 Player* Game::GetPlayer()

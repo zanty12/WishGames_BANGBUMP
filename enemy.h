@@ -28,12 +28,14 @@ private:
     float blinking_time_;	//点滅の経過時間
     int atk_;
     int hp_;
+
+    bool flashing_; //点滅
 protected:
     EnemyDeadEffect* dead_effect_ = nullptr;
 
 public:
     Enemy() = delete;
-    Enemy(int x, int y,int texNo,EnemyMngr* enemy_mngr) : MovableObj(Vector2((x + 0.5f) * SIZE_, (y + 0.5f) * SIZE_),0.0f,texNo,Vector2(0.0f,0.0f))
+    Enemy(int x, int y,int texNo,EnemyMngr* enemy_mngr) : MovableObj(Vector2((x + 0.5f) * SIZE_, (y + 0.5f) * SIZE_),0.0f,texNo,Vector2(0.0f,0.0f)),flashing_(false)
     {
         enemy_mngr_ = enemy_mngr;
     }
@@ -53,18 +55,19 @@ public:
     //HPの減少（ダメージが現在のHPを超える場合、HPは0になる）
     void HpDown(int damage) { damage <= hp_ ? hp_ -= damage : hp_ = 0; }
 
-    void blinking(GameObject* obj);
-
+    void blinking(void);
+    void Flashing(void) { flashing_ = true; }
+    bool GetFlashing(void) { return flashing_; }
 };
 
-class EnemyDeadEffect : public GameObject
+class EnemyDeadEffect : public MovableObj
 {
 private:
     float time_;
 
 public:
     EnemyDeadEffect(Vector2 pos)
-        :GameObject(pos, 0.0f, LoadTexture(Asset::GetAsset(effect_enemydead))), time_(0.0f) {
+        :MovableObj(pos, 0.0f, LoadTexture(Asset::GetAsset(effect_enemydead)),Vector2::Zero), time_(0.0f) {
         SetType(OBJ_VOID);
         GetAnimator()->SetTexenum(effect_enemydead);
         GetAnimator()->SetLoopAnim(EFFECT_ENEMYDEAD_ANIM);
