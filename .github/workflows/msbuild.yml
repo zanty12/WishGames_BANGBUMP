@@ -49,4 +49,10 @@ jobs:
         name: Build artifacts
         path: |
            **/x64/${{env.BUILD_CONFIGURATION}}/*
+          **/data/*
+          **/avcodec-60.dll
+          **/avdevice-60.dll
+          **/avfilter-9.dll
+          **/avformat-60.dll
+          **/avutil-58.dll
 
