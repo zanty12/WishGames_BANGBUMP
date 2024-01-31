@@ -37,48 +37,27 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
+    - name: Cache build artifacts
+      id: cache-build
+      uses: actions/cache@v2
+      with:
+        path: |
+          **/x64/${{env.BUILD_CONFIGURATION}}/*
+          **/data/*
+          **/avcodec-60.dll
+          **/avdevice-60.dll
+          **/avfilter-9.dll
+          **/avformat-60.dll
+          **/avutil-58.dll
+        key: ${{ runner.os }}-build-${{ hashFiles('**/msbuild.yml') }}
+
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: Build artifacts
-        path: |
-           **/x64/${{env.BUILD_CONFIGURATION}}/*
-           **/data/*
-           **/avcodec-60.dll
-           **/avdevice-60.dll
-           **/avfilter-9.dll
-           **/avformat-60.dll
-           **/avutil-58.dll
 
-    - name: Download build artifacts
-      uses: actions/download-artifact@v2
-      with:
-        name: Build artifacts
-        path: artifacts/
 
-    - name: Create Release
-      id: create_release
-      uses: elgohr/Github-Release-Action@v5
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      with:
-        title: Release ${{ github.ref }}
-        workdir: ${{env.SOLUTION_FILE_PATH}}/artifacts/
 
-    - name: Upload Release Asset
-      id: upload_release_asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-        asset_path: ${{env.SOLUTION_FILE_PATH}}/artifacts/
-        asset_name: build_artifacts.zip
-        asset_content_type: application/zip
 
