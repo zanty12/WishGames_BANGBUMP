@@ -14,18 +14,17 @@ bool debug_mode = true;
 
 int main()
 {
-    MSG msg;
-    Graphical::Initialize(1600, 900);
-    DebugUI::Initialize();
     Time::Initialize();
-    Text::CreateResources();
     srand(time(NULL));
 
 #ifdef SERVER
     MultiPlayServer server;
     server.OpenTerminal();
-
 #else
+    MSG msg;
+    Graphical::Initialize(1600, 900);
+    DebugUI::Initialize();
+    Text::CreateResources();
     WIN::Window window = Graphical::GetHwnd();
     const HWND hWnd = window.GetHwnd();
     InitSound(hWnd);
@@ -50,11 +49,12 @@ int main()
             //WTF?
             Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
 
+            //update
             Input::Update();
-
             Time::Update();
-
             scene_mngr->Update();
+
+            //draw
             DebugUI::BeginDraw();
             //デバッグモード
             { if (GetKeyState(VK_F1) & 0x8000)
@@ -90,15 +90,13 @@ int main()
             Graphical::Present();
         }
     }
-    //client.Unregister();
     UninitSound();
     delete scene_mngr;
-#endif
-
-    Time::Release();
     Text::DiscardResources();
     DebugUI::Release();
     Graphical::Release();
+#endif
 
+    Time::Release();
     std::cout << "END\n"; //基本
 }
