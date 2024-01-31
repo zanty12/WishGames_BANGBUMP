@@ -7,12 +7,12 @@ void LightEffect::Draw(Vector2 offset) {
 	float curTime = timer.GetNowTime() * 0.001f;
 
 	// エフェクトを生成
-	if (curTime <= spawnTime) {
-		float halfWidth = Graphical::GetWidth() * 0.5f;
-		float halfHeight = Graphical::GetHeight() * 0.5f;
+	if (spawnTime <= curTime) {
+		float width = Graphical::GetWidth() + offset.x;
+		float height = Graphical::GetHeight() + offset.y;
 		Light light;
-		light.position.x = MATH::Rand(-halfWidth, halfWidth);
-		light.position.y = MATH::Rand(-halfHeight, halfHeight);
+		light.position.x = MATH::Rand(0.0f, width);
+		light.position.y = MATH::Rand(0.0f, height);
 		light.rad = MATH::Rand(0.0f, MATH::PI * 2.0f);
 		light.timer.Start();
 		lights.push_back(light);

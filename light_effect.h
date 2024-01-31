@@ -17,13 +17,13 @@ private:
 private:
 	int texNo;
 	std::list<Light> lights;
-	float spawnTime = 10.0f;
+	float spawnTime = 0.5f;
 	float lifeTime = 5.0f;
 	WIN::Time timer;
 
 public:
 	LightEffect() {
-		texNo = LoadTexture("data/texture/Light/light_effect_01.png");
+		texNo = LoadTexture("data/texture/Light/light_effect_02.png");
 		timer.Start();
 	}
 
