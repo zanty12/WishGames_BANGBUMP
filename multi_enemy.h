@@ -14,11 +14,19 @@ protected:
 public:
 	int hp = 5;
 	int atkDrop = 5;
+	int deathDrop = 5;
+	float knockbackRate = 5.0f;
 
 
 
 public:
-	EnemyServerSide(Transform transform, MultiMap* map) : map(map), ServerMovableGameObject(transform) { }
+	EnemyServerSide(Transform transform, MultiMap* map, std::wstring enemyName) : map(map), ServerMovableGameObject(transform) {
+		hp = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"hp");
+		radius = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"radius");;
+		atkDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"atkDrop");;
+		deathDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"drop");;
+		knockbackRate = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"knockbackRate");;
+	}
 	void Damage(AttackServerSide *attack) override;
 	void BlownPlayers(void);
 };
@@ -35,9 +43,9 @@ public:
 
 class Enemy1ServerSide : public EnemyServerSide {
 public:
-	Enemy1ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) {
+	Enemy1ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map, L"Enemy1") {
 		velocity = Vector2::Left * speed;
-		radius = 100.0f;
+		radius = 50.0f;
 	}
 
 	void Loop(void) override;
@@ -60,9 +68,9 @@ class Enemy2ServerSide : public EnemyServerSide {
 	WIN::Time spawnTimer;
 
 public:
-	Enemy2ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) {
-		radius = 100.0f; 
+	Enemy2ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map, L"Enemy2") {
 		spawnTimer.Start();
+		radius = 50.0f;
 	}
 
 	void Loop(void) override;
@@ -103,8 +111,8 @@ public:
 class Enemy3ServerSide : public EnemyServerSide {
 public:
 	float activeRadius = 1000.0f;		// ŒŸ’m”ÍˆÍ
-	Enemy3ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) {
-		radius = 100.0f;
+	Enemy3ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map, L"Enemy3") {
+		radius = 50.0f;
 	}
 
 	void Loop(void) override;

@@ -349,6 +349,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="data\property\attribute_lv1.ini" />
+    <None Include="data\property\enemy.ini" />
     <None Include="data\property\mode.ini" />
     <None Include="packages.config" />
   </ItemGroup>

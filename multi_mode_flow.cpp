@@ -14,7 +14,7 @@ MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 	//case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeServerSide();
 	//case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeServerSide(game_);
 	//case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResult2ModeServerSide();
-	//case ENEMY_RUSH: return new MultiPlayEnemyRushModeServerSide(game_);
+	case ENEMY_RUSH: return new MultiPlayEnemyRushModeServerSide();
 	//case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResult3ModeServerSide();
 	case FINAL_BATTLE: rstMode = new MultiPlayFinalBattleModeServerSide(); break;
 	}

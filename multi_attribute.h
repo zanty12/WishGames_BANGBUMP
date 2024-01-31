@@ -130,7 +130,7 @@ public:
 		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
 
 		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true);
-		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true, 0, 25);
+		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true);
 		startTime = timeGetTime();
 	}
 

@@ -211,7 +211,7 @@ void ClientFire::Attack(void) {
 	float denominator = attackAnims.size();
 	float numerator = denominator * 0.5f;
 	for (Animator &anim : attackAnims) {
-		anim.anim.Draw(anim.pos - MultiPlayClient::offset, anim.rot, anim.scl, Color(1.0f, 1.0f, 1.0f, 1.0f - numerator / denominator));
+		anim.anim.Draw(anim.pos - MultiPlayClient::offset, anim.rot, anim.scl, Color::White/*Color(1.0f, 1.0f, 1.0f, 1.0f - numerator / denominator)*/);
 		numerator += 0.5f;
 	}
 
@@ -225,7 +225,7 @@ void ClientFire::Attack(void) {
 		startTime = currentTime;
 
 		// 炎の位置をずらす
-		direction += direction.Normal() * MATH::Rand(-0.25f, 0.25f);
+		//direction += direction.Normal() * MATH::Rand(-0.25f, 0.25f);
 
 		// アニメーション生成
 		float distance = 50.0f;
@@ -236,7 +236,7 @@ void ClientFire::Attack(void) {
 		attackAnims.push_front({ pos, rot, scl, attackAnim });
 
 		// 要素が多いなら削除
-		if (10 < attackAnims.size()) {
+		if (1 < attackAnims.size()) {
 			attackAnims.pop_back();
 		}
 	}

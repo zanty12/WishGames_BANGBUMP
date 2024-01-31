@@ -15,10 +15,11 @@ void EnemyServerSide::BlownPlayers(void) {
 
 		// ダメージ
 		if (maxRadiusSq >= Vector2::DistanceSq(transform.position, player->transform.position)) {
+			// ドロップ
 			player->SkillOrbDrop(atkDrop);
 			// 吹き飛ばす
 			Vector2 direction = player->transform.position - transform.position;
-			player->blownVelocity = direction.Normalize() * 30.0f;
+			player->blownVelocity = direction.Normalize() * knockbackRate;
 		}
 	}
 }

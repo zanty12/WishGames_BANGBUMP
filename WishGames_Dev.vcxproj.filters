@@ -450,9 +450,6 @@
     <ClInclude Include="multi_connect_renderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="multi_enemy_rush_mode.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="multi_intermediate_result_mode.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -561,6 +558,9 @@
     <ClInclude Include="light_effect.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
+    <ClInclude Include="multi_enemy_rush_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h">
@@ -588,6 +588,9 @@
       <Filter>リソース ファイル</Filter>
     </None>
     <None Include="data\property\attribute_lv1.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\enemy.ini">
       <Filter>リソース ファイル</Filter>
     </None>
   </ItemGroup>
