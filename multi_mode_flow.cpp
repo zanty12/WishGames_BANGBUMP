@@ -166,6 +166,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 
 			float center = (float)maxMembers * 0.5f - 0.5f;	// 中心のIdxを計算
 			float x = center - idx;							// X座標を計算
+			x *= -1;
 
 			DrawSprite(icon,
 				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),

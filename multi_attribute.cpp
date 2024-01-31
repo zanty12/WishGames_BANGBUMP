@@ -420,7 +420,7 @@ void ClientWater::Idle(void) {
 
 	// ‘Ò‹@
 	if (player->animType == ANIMATION_TYPE_IDLE) {
-		idle.Draw(pos + Vector2(0.0f, -60.0f), rot, scl, col);
+		idle.Draw(pos + Vector2(0.0f, -73.0f), rot, scl, col);
 	}
 }
 
@@ -681,7 +681,7 @@ void ClientWind::Idle(void) {
 
 	// ‘Ò‹@
 	if (player->animType == ANIMATION_TYPE_IDLE) {
-		idle.Draw(pos + Vector2(0.0f, -60.0f), rot, scl, col);
+		idle.Draw(pos + Vector2(0.0f, -70.0f), rot, scl, col);
 	}
 }
 

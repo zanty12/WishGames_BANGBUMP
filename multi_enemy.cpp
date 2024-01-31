@@ -128,6 +128,7 @@ void Enemy3ServerSide::Loop(void) {
 		velocity = velocity.Normalize() * speed;
 		this->velocity = velocity;
 	}
+	else velocity = Vector2::Zero;
 
 	// ˆÚ“®
 	transform.position += velocity;

@@ -37,7 +37,7 @@ class Enemy1ServerSide : public EnemyServerSide {
 public:
 	Enemy1ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) {
 		velocity = Vector2::Left * speed;
-		radius = 50.0f;
+		radius = 100.0f;
 	}
 
 	void Loop(void) override;
@@ -61,6 +61,7 @@ class Enemy2ServerSide : public EnemyServerSide {
 
 public:
 	Enemy2ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) {
+		radius = 100.0f; 
 		spawnTimer.Start();
 	}
 
@@ -102,7 +103,9 @@ public:
 class Enemy3ServerSide : public EnemyServerSide {
 public:
 	float activeRadius = 1000.0f;		// ŒŸ’m”ÍˆÍ
-	Enemy3ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) { }
+	Enemy3ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) {
+		radius = 100.0f;
+	}
 
 	void Loop(void) override;
 	MULTI_OBJECT_TYPE GetType(void) { return MULTI_OBJECT_TYPE::MULTI_ENEMY3; }
