@@ -4,6 +4,7 @@
 #include "multiplay.h"
 #include "multi_skillorb.h"
 
+
 void ServerPlayer::Loop(void) {
 
 	// —Ž‰º‚³‚¹‚é

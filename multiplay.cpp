@@ -12,7 +12,6 @@
 //#define DEBUG_INPUT
 //#define DEBUG_LOCKED;
 //#define DEBUG_SENDLEN
-std::string SERVER_ADDRESS;
 std::wstring ParamPath;
 std::map<int, CLIENT_DATA_SERVER_SIDE> MultiPlayServer::clients_;
 
@@ -409,28 +408,27 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	gameMode = new MultiPlayFlowClientSide(this);
 
-	map.Initialize();
-	map.Load("data/map/MultiPlay_Map1.csv");
-
 	// スレッドを立てる
 	sendUpdateFunc = std::thread(&MultiPlayClient::SendUpdate, this);
 	recvUpdateFunc = std::thread(&MultiPlayClient::Update, this);
 
 	// 受信用領域を確保する
 	recvTmpBuff = new char[MAX_BUFF];
-
-	// IPV4アドレスの登録
-	SERVER_ADDRESS = ini::GetString(L"data/multiplay.ini", L"System", L"Addr");
 }
 
-int MultiPlayClient::Register() {
+int MultiPlayClient::Register(std::string serverAddress) {
 	HEADER header;
+
+	// IPV4アドレスの登録
+	if (serverAddress == "") {
+		serverAddress = ini::GetString(L"data/multiplay.ini", L"System", L"Addr");
+	}
 
 	// ソケット作成
 	sockfd_ = Socket(AddressFamily::IPV4, Type::UDP, 0);
 
 	// アドレス作成
-	serverAddr = Address(AddressFamily::IPV4, SERVER_ADDRESS.c_str(), PORT);
+	serverAddr = Address(AddressFamily::IPV4, serverAddress.c_str(), PORT);
 
 	// コマンド設定
 	header.command = HEADER::COMMAND::REQUEST_LOGIN;
@@ -510,6 +508,9 @@ void MultiPlayClient::PlayerUpdate(void) {
 
 	// プレイヤーの描画
 	for (auto &player : clients) player.second->Loop();
+
+	// エフェクト
+	lightEffect.Draw(offset);
 
 #ifdef DEBUG_LINK
 	if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
