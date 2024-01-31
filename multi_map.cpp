@@ -51,8 +51,7 @@ void MultiMap::Release(void) {
 	areaCaptures.clear();
 }
 
-void MultiMap::Load(std::string path)
-{
+void MultiMap::Load(std::string path) {
 	Release();
 
 	skillOrbs = new MultiBehavior("SkillOrbMngr");
@@ -130,6 +129,7 @@ void MultiMap::Draw(Vector2 offset) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());                        // 画面のサイズ
 	Vector2Int leftBottomIdx = ToIndex(offset);                                                     // 左下のインデックス
 	Vector2Int rightTopIdx = ToIndex(offset + screen);                                              // 右上のインデックス
+	rightTopIdx.y++;
 
 	if (leftBottomIdx.x < 0) leftBottomIdx.x = 0;
 	if (rightTopIdx.x >= width) rightTopIdx.x = width;
