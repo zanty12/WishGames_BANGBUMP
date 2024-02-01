@@ -178,7 +178,7 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 	// 判定
 	using namespace PHYSICS;
 	NearHit hit;
-	float minDistance = -1;
+	float minDistanceSq = -1;
 	int id = -1;
 	
 	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
@@ -198,10 +198,10 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 
 				if (Collider2D::Touch(playerCollision, cellCollision, &tmpHit)) {
 
-					float distance = (position - cellPos).Distance();
-					if (minDistance < 0.0f || distance < minDistance) {
+					float distanceSq = (position - tmpHit.position).DistanceSq();
+					if (minDistanceSq < 0.0f || distanceSq < minDistanceSq) {
 						hit = tmpHit;
-						minDistance = distance;
+						minDistanceSq = distanceSq;
 						id = tmpId;
 					}
 				}
@@ -218,7 +218,7 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 	return id;
 }
 
-int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity) {
+int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vector2 *gravityVelocity) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());						// 画面のサイズ
 	Vector2Int leftBottomIdx = ToIndex(position - scale);											// 左下のインデックス
 	Vector2Int rightTopIdx = ToIndex(position + scale);												// 右上のインデックス
@@ -234,7 +234,7 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity) {
 
 	// 判定
 	using namespace PHYSICS;
-	NearHit hit;
+	Vector2 collPos;
 	float minDistance = -1;
 	int id = -1;
 	float radius = scale.x < scale.y ? scale.y : scale.x;
@@ -248,21 +248,17 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity) {
 			int tmpId = GetColliderMap(x, y);
 			// 判定できるなら
 			if (tmpId != -1) {
-				Vector2 cellPos = ToPosition({ x, y });							// セルの座標
+				Vector2 tempCellPos = ToPosition({ x, y });							// セルの座標
 				Vertex1 playerCollision(position, radius);
 				Vertex4 playerBoxCollision(position, 0.0f, scale);
-				Vertex4 cellCollision(cellPos, 0.0f, Vector2(cellSize, cellSize));
-				NearHit tmpHit;
+				Vertex4 cellCollision(tempCellPos, 0.0f, Vector2(cellSize, cellSize));
 
 				if (Collider2D::Touch(playerBoxCollision, cellCollision)) {
-					if (Collider2D::Touch(playerCollision, cellCollision, &tmpHit)) {
-
-						float distance = (position - cellPos).Distance();
-						if (minDistance < 0.0f || distance < minDistance) {
-							hit = tmpHit;
-							minDistance = distance;
-							id = tmpId;
-						}
+					float distance = (position - tempCellPos).DistanceSq();
+					if (minDistance < 0.0f || distance < minDistance) {
+						collPos = tempCellPos;
+						minDistance = distance;
+						id = tmpId;
 					}
 				}
 			}
@@ -270,18 +266,42 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity) {
 	}
 
 	if (id != -1) {
-		float verticalTilt = Vector2::Dot(Vector2::Up, hit.tilt.Normal());
-		// 上下の線分
-		if (verticalTilt != 0.0f) {
-			position = hit.position - hit.tilt.Normal() * scale.y;
-			if (0.0f < Vector2::Dot(Vector2::Up, hit.tilt.Normal())) {
-				if (velocity) velocity->y = 0.0f;
-			}
+		Vector2 direction = collPos - position;
+		int x = 0, y = 0;
+		if (0.5f <= MATH::Abs(direction.x)) {
+			if (0.0f < direction.x) x = 1;
+			else x = -1;
 		}
-		// 左右の線分
-		else {
-			position = hit.position - hit.tilt.Normal() * scale.x;
+		if (0.5f <= MATH::Abs(direction.y)) {
+			if (0.0f < direction.y) y = 1;
+			else y = -1;
 		}
+
+		if (x != 0) {
+			position.x += -x * scale.x * 0.5f;
+			if (velocity->x < 0.0f && x < 0 ||
+				velocity->x > 0.0f && x > 0) velocity->x = 0.0f;
+		}
+		if (y != 0) {
+			position.y += -y * scale.y * 0.5f;
+			if (velocity->y < 0.0f && y < 0 || 
+				velocity->y > 0.0f && y > 0) velocity->y = 0.0f;
+		}
+		if (y < 0) {
+			if (gravityVelocity) gravityVelocity->y = 0.0f;
+		}
+		//float verticalTilt = Vector2::Dot(Vector2::Up, hit.tilt.Normal());
+		//// 上下の線分
+		//if (verticalTilt != 0.0f) {
+		//	position = hit.position - hit.tilt.Normal() * scale.y;
+		//	if (0.0f < Vector2::Dot(Vector2::Up, hit.tilt.Normal())) {
+		//		if (velocity) velocity->y = 0.0f;
+		//	}
+		//}
+		//// 左右の線分
+		//else {
+		//	position = hit.position - hit.tilt.Normal() * scale.x;
+		//}
 
 	}
 	return id;
