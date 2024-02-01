@@ -30,7 +30,6 @@ MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
 	// ゲームモードがないなら終了
 	if (gameMode_ == nullptr) return;
-
 	// 制限時間が来たなら、次のモードへ移行
 	if (gameMode_->maxTime_ < gameMode_->time_ || gameMode_->isSkip) {
 		// 現在のモードの取得
@@ -108,7 +107,6 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 }
 
 void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
-
 	// モードが切り替わったなら、次のモードへ移行
 	if (currentMode_ != res.mode) {
 		// 現在のモードの取得
@@ -135,9 +133,12 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		gameMode_->map_->Draw(offset);
 
 
-
+		// ゲームのスタートの画面
+		if (res.time < gameMode_->startTime_) {
+			gameMode_->DrawStart(res, offset);
+		}
 		// ゲームのリザルトの描画
-		if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {
+		else if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {
 			gameMode_->DrawResult(res, offset);
 		}
 		// ゲームモードの描画
@@ -172,7 +173,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
 				Color::White,
 				uv, Vector2(0.25f, 1.0f / 12.0f)
-				);
+			);
 
 			Number(Vector2(centerX + x * width, 200), Vector2(100, 100), client.skillPoint);
 			idx++;

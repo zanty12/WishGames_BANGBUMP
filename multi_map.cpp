@@ -137,7 +137,11 @@ void MultiMap::Draw(Vector2 offset) {
 
 
 	// 描画（背景）
-	DrawSprite(backBGTexNo, screen * 0.5f, 0.0f, screen, Color::White);
+	float aspectRatio = 3600.0f / 1280.0f;
+	float maxY = height * cellSize;
+	float t = offset.y / maxY;
+	float y = MATH::Leap(maxY, 0.0f, t) - maxY * 0.5f;
+	DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
 
 	// 描画（ブロック）
 	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
@@ -214,6 +218,75 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 	return id;
 }
 
+int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity) {
+	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());						// 画面のサイズ
+	Vector2Int leftBottomIdx = ToIndex(position - scale);											// 左下のインデックス
+	Vector2Int rightTopIdx = ToIndex(position + scale);												// 右上のインデックス
+	leftBottomIdx.x--;
+	leftBottomIdx.y--;
+	rightTopIdx.x++;
+	rightTopIdx.y++;
+
+	if (leftBottomIdx.x < 0) leftBottomIdx.x = 0;
+	if (rightTopIdx.x >= width) rightTopIdx.x = width;
+	if (leftBottomIdx.y < 0) leftBottomIdx.y = 0;
+	if (rightTopIdx.y >= height) rightTopIdx.y = height;
+
+	// 判定
+	using namespace PHYSICS;
+	NearHit hit;
+	float minDistance = -1;
+	int id = -1;
+	float radius = scale.x < scale.y ? scale.y : scale.x;
+
+	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
+		for (int y = leftBottomIdx.y; y <= rightTopIdx.y; y++) {
+			// 範囲外なら処理をしない
+			if (x < 0 || y < 0 || x >= width || y >= height) continue;
+
+			// ブロックのIDを取得
+			int tmpId = GetColliderMap(x, y);
+			// 判定できるなら
+			if (tmpId != -1) {
+				Vector2 cellPos = ToPosition({ x, y });							// セルの座標
+				Vertex1 playerCollision(position, radius);
+				Vertex4 playerBoxCollision(position, 0.0f, scale);
+				Vertex4 cellCollision(cellPos, 0.0f, Vector2(cellSize, cellSize));
+				NearHit tmpHit;
+
+				if (Collider2D::Touch(playerBoxCollision, cellCollision)) {
+					if (Collider2D::Touch(playerCollision, cellCollision, &tmpHit)) {
+
+						float distance = (position - cellPos).Distance();
+						if (minDistance < 0.0f || distance < minDistance) {
+							hit = tmpHit;
+							minDistance = distance;
+							id = tmpId;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (id != -1) {
+		float verticalTilt = Vector2::Dot(Vector2::Up, hit.tilt.Normal());
+		// 上下の線分
+		if (verticalTilt != 0.0f) {
+			position = hit.position - hit.tilt.Normal() * scale.y;
+			if (0.0f < Vector2::Dot(Vector2::Up, hit.tilt.Normal())) {
+				if (velocity) velocity->y = 0.0f;
+			}
+		}
+		// 左右の線分
+		else {
+			position = hit.position - hit.tilt.Normal() * scale.x;
+		}
+
+	}
+	return id;
+}
+
 void MultiMap::DropSkillOrb(unsigned int drop, Vector2 position, float magnitude) {
 	// ドロップする
 	while (0 < drop) {
@@ -260,8 +333,6 @@ void MultiMap::AttackUpdate(void) {
 		for (auto &kvp : MultiPlayServer::clients_) {
 
 			auto &player = kvp.second.player_;
-			float maxRadius = attack->radius + player->radius;
-			float maxRadiusSq = maxRadius * maxRadius;
 
 			// イテレータの取得
 			auto iterator = attack->touchGameObjects.find(player);

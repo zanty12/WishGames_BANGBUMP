@@ -1,5 +1,6 @@
 #pragma once
 #include <sstream>
+#include "lib/win_time.h"
 #include "multi_movable_object.h"
 #include "multi_attribute.h"
 #include "multi_anim.h"
@@ -26,7 +27,8 @@ public:
 	Vector2 attackVelocity;								// 攻撃のベクトル
 	Vector2 warpVelocity;								// ワープベクトル
 	bool attributeChange = false;						// 属性チェンジ
-	
+
+
 public:
 	ServerPlayer() { gravity = 0.01f; }
 	~ServerPlayer() {
@@ -60,9 +62,19 @@ class ClientAttribute;
 class AttackClientSide;
 class ClientPlayer : public ClientMovableGameObject {
 private:
-	ClientAttribute *moveAttribute = nullptr;			// 移動属性
-	ClientAttribute *attackAttribute = nullptr;			// 攻撃属性
-	MultiAnimator reverseAnim;							// 反転アニメーション
+	enum ENTRY_TYPE {
+		NONE,
+		ENTRY,
+		SHOW,
+		EXIT
+	};
+
+private:
+	ClientAttribute *moveAttribute = nullptr;				// 移動属性
+	ClientAttribute *attackAttribute = nullptr;				// 攻撃属性
+	MultiAnimator reverseAnim;								// 反転アニメーション
+	WIN::Time timer;										// スポーン開始時からの時間計測
+	ENTRY_TYPE entryType = NONE;							// 入場演出
 
 public:
 	int skillPoint = 0;										// スキルポイント
@@ -81,6 +93,8 @@ public:
 	ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform);
 
 	void Loop(void) override;
+	void ShowEntry();
+	void ShowExit();
 
 	void Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim);
 	void SetMoveAttribute(ClientAttribute *moveAttribute);

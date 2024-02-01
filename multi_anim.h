@@ -45,7 +45,7 @@ public:
 	void MoveEnd(void) { idx = end + 1; }
 	void MoveLoopBegin(void) { idx = loopBegin; }
 	void MoveLoopEnd(void) { idx = loopEnd + 1; }
-	bool IsEnd(void) { return end <= idx; }
+	bool IsEnd(void) { return end < idx; }
 	int GetIndex(void) { return idx; }
 
 	// プレイヤーのアニメーションデータ

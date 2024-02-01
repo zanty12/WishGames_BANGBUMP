@@ -266,6 +266,7 @@
     <ClInclude Include="multi_character_select_mode.h" />
     <ClInclude Include="multi_client_gameobject.h" />
     <ClInclude Include="multi_connect_renderer.h" />
+    <ClInclude Include="multi_effect.h" />
     <ClInclude Include="multi_enemy.h" />
     <ClInclude Include="multi_enemy_rush_mode.h" />
     <ClInclude Include="multi_final_battle_mode.h" />

@@ -33,6 +33,7 @@ void ServerPlayer::Loop(void) {
 
 	// 吹き飛ばしの速度を減速させる
 	blownVelocity *= blownFriction;
+	velocity *= friction;
 	if (blownVelocity.DistanceSq() < 1.0f) blownVelocity = Vector2::Zero;
 }
 
@@ -88,7 +89,26 @@ void ClientPlayer::Loop(void) {
 	preAnimType = animType;
 }
 
+void ClientPlayer::ShowEntry() {
+	if (entryType == ENTRY) return;
+
+	timer.Start();
+	entryType = ENTRY;
+
+	// アニメーション
+	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_spawn.png"), 5, 3, 0, 9, false);
+	// 落雷を降らす
+	float height = 1000.0f;
+	Vector2 localPos = Vector2(0.0f, height * 0.15f);
+	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
+}
+void ClientPlayer::ShowExit() {
+	entryType = EXIT;
+}
+
 void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim) {
+	if (timer.GetNowTime() < 500ul && entryType == ENTRY || entryType == NONE) return;
+
 	// 待機アニメーション
 	if (moveAttribute) {
 		moveAttribute->Idle();

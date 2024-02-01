@@ -45,6 +45,7 @@ protected:
 	float resultTime_ = 15.0f;							// 中間リザルトの時間
 	std::list<CLIENT_DATA_CLIENT_SIDE> beforeClients;	// ゲーム開始直後のクライアントデータ
 	MultiMap *map_;
+	int clientSpawnCount = 0;							// クライアントのスポーンカウント
 	friend MultiPlayFlowClientSide;
 
 
@@ -74,12 +75,13 @@ protected:
 
 public:
 	MultiPlayModeClientSide(MultiMap* map, std::wstring modeName) : map_(map) {
-		startTime_ = ini::GetFloat(L"mode.ini", modeName.c_str(), L"startTime");
-		resultTime_ = ini::GetFloat(L"mode.ini", modeName.c_str(), L"resultTime");
+		startTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"startTime");
+		resultTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"resultTime");
 	};
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 
 	virtual void Draw(RESPONSE_PLAYER &players, Vector2 offset) { };
+	virtual void DrawStart(RESPONSE_PLAYER &players, Vector2 offset);
 	virtual void DrawResult(RESPONSE_PLAYER &players, Vector2 offset);
 	virtual void ParseResponse(Storage& in) { };
 	virtual void Release(RESPONSE_PLAYER &players) { };

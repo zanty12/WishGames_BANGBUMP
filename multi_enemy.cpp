@@ -144,3 +144,5 @@ void Enemy3ClientSide::Loop(void) {
 	isShow = false;
 }
 
+
+

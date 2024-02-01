@@ -561,6 +561,9 @@
     <ClInclude Include="multi_enemy_rush_mode.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
+    <ClInclude Include="multi_effect.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h">
