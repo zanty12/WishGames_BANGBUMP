@@ -35,7 +35,7 @@ Vector2 Wind::Move(void)
     {
         if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
             player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
-            player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
     }
 
     // 回転のスピードを取得
@@ -203,6 +203,17 @@ void WindEffect::Update()
             draw_ = false;
             draw_time_ = 0.0f;
         }
+    }
+    else if(parent_->GetPlayer()->GetAnimator()->GetLoopAnim() == PLAYER_IDLE_ANIM)
+    {
+        SetColor(Color(1, 1, 1, 1));
+        GetAnimator()->SetColor(GetColor());
+        GetAnimator()->SetIsAnim(true);
+        GetAnimator()->SetTexenum(wind_idle);
+        GetAnimator()->SetLoopAnim(WIND_IDLE_ANIM);
+        Vector2 pos = parent_->GetPlayer()->GetPos();
+        pos.y -= parent_->GetPlayer()->GetScale().y / 2;
+        SetPos(pos);
     }
     else
     {

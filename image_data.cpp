@@ -69,6 +69,7 @@ void ImageDataDictionary::InitDictionary()
 	img_data_[dark_idle] = IMAGE_DATA(LoadTexture(Asset::GetAsset(dark_idle)), 5, 6);
 	img_data_[dark_move] = IMAGE_DATA(LoadTexture(Asset::GetAsset(dark_move)), 5, 3);
 	img_data_[thunder_move] = IMAGE_DATA(LoadTexture(Asset::GetAsset(thunder_move)), 5, 3);
+	img_data_[wind_idle] = IMAGE_DATA(LoadTexture(Asset::GetAsset(wind_idle)), 5, 6);
 	img_data_[wind_move] = IMAGE_DATA(LoadTexture(Asset::GetAsset(wind_move)), 5, 6);
 	img_data_[dark_move_charge] = IMAGE_DATA(LoadTexture(Asset::GetAsset(dark_move_charge)), 5, 10);
 	img_data_[thunder_move_charge] = IMAGE_DATA(LoadTexture(Asset::GetAsset(thunder_move_charge)), 5, 3);
@@ -87,6 +88,7 @@ void ImageDataDictionary::InitDictionary()
 
 	//boss
 	img_data_[boss_idle] = IMAGE_DATA(LoadTexture(Asset::GetAsset(boss_idle)), 5, 9);
+	img_data_[boss_attack_fire] = IMAGE_DATA(LoadTexture(Asset::GetAsset(boss_attack_fire)), 5, 6);
 	img_data_[boss_attack_thunder] = IMAGE_DATA(LoadTexture(Asset::GetAsset(boss_attack_thunder)), 5, 6);
 	img_data_[boss_attack_water] = IMAGE_DATA(LoadTexture(Asset::GetAsset(boss_attack_water)), 5, 6);
 	img_data_[boss_attack_wind] = IMAGE_DATA(LoadTexture(Asset::GetAsset(boss_attack_wind)), 5, 1);

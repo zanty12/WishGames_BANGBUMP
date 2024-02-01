@@ -63,6 +63,7 @@ const std::map<textures, std::string> Asset::textures_ = {
      {textures::dark_idle, "data/texture/Move/effect_water_idle.png"},
      {textures::dark_move, "data/texture/Move/effect_water_move.png"},
      {textures::thunder_move, "data/texture/Move/effect_thunder_move.png"},
+     {textures::wind_idle, "data/texture/Move/effect_wind_idle.png"},
      {textures::wind_move, "data/texture/Move/effect_wind_move.png"},
      {textures::dark_move_charge, "data/texture/Move/effect_water_charge.png"},
      {textures::thunder_move_charge, "data/texture/Move/effect_thunder_charge.png"},
@@ -81,6 +82,7 @@ const std::map<textures, std::string> Asset::textures_ = {
 
      //boss
      {textures::boss_idle,"data/texture/Boss/boss_idle.png"},
+     {textures::boss_attack_fire,"data/texture/Boss/effect_boss_fire.png"},
      {textures::boss_attack_thunder,"data/texture/Boss/effect_boss_thunder.png"},
      {textures::boss_attack_water,"data/texture/Boss/effect_boss_water.png"},
      {textures::boss_attack_wind,"data/texture/Boss/effect_boss_wind.png"},

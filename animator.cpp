@@ -28,7 +28,7 @@ void Animator::InitDictionary(void)
     //DICTIONARY_[PLAYER] = ANIM_DATA(LoadTexture(Asset::GetAsset(player)), 5, 6);
 
     //player
-    DICTIONARY_[PLAYER_IDOL_ANIM] = ANIM_DATA(0, 0, 4, 5);
+    DICTIONARY_[PLAYER_IDLE_ANIM] = ANIM_DATA(0, 0, 4, 5);
     DICTIONARY_[PLAYER_ATTACK_ANIM] = ANIM_DATA(0, 6, 3, 7);
     DICTIONARY_[PLAYER_FD_MOVE_ANIM] = ANIM_DATA(4, 7, 3, 13);
     DICTIONARY_[PLAYER_TW_MOVE_ANIM] = ANIM_DATA(4, 7, 4, 7);
@@ -40,6 +40,7 @@ void Animator::InitDictionary(void)
     DICTIONARY_[DARK_IDLE_ANIM] = ANIM_DATA(dark_idle);
     DICTIONARY_[DARK_MOVE_ANIM] = ANIM_DATA(dark_move);
     DICTIONARY_[THUNDER_MOVE_ANIM] = ANIM_DATA(thunder_move);
+    DICTIONARY_[WIND_IDLE_ANIM] = ANIM_DATA(wind_idle);
     DICTIONARY_[WIND_MOVE_ANIM] = ANIM_DATA(wind_move);
     DICTIONARY_[DARK_MOVE_CHARGE_ANIM] = ANIM_DATA(0, 0, 2, 9, dark_move_charge);
     DICTIONARY_[THUNDER_MOVE_CHARGE_ANIM] = ANIM_DATA(thunder_move_charge);
@@ -58,6 +59,7 @@ void Animator::InitDictionary(void)
 
     //boss
     DICTIONARY_[BOSS_IDLE_ANIM] = ANIM_DATA(0, 0, 3, 8, boss_idle);
+    DICTIONARY_[BOSS_FIRE_ANIM] = ANIM_DATA(boss_attack_fire);
     DICTIONARY_[BOSS_THUNDER_ANIM] = ANIM_DATA(boss_attack_thunder);
     DICTIONARY_[BOSS_WATER_ANIM] = ANIM_DATA(boss_attack_water);
     DICTIONARY_[BOSS_WIND_ANIM] = ANIM_DATA(boss_attack_wind);

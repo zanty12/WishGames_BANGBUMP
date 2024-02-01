@@ -72,6 +72,7 @@ enum textures
     dark_idle,
     dark_move,
     thunder_move,
+    wind_idle,
     wind_move,
     dark_move_charge,
     thunder_move_charge,
@@ -90,6 +91,7 @@ enum textures
 
     //boss
     boss_idle,
+    boss_attack_fire,
     boss_attack_thunder,
     boss_attack_water,
     boss_attack_wind,

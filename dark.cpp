@@ -30,7 +30,7 @@ Vector2 Dark::Move()
     {
         if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
             player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
-            player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
     }
 
     if (stick != Vector2::Zero)
@@ -127,7 +127,7 @@ void Dark::Action()
     {
         if (attack_ != nullptr)
         {
-            player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
 
             delete attack_;
             attack_ = nullptr;

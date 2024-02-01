@@ -47,7 +47,7 @@ enum LOOP_ANIM
     ANIM_NONE = -1,
 
     //player
-    PLAYER_IDOL_ANIM,    //待機
+    PLAYER_IDLE_ANIM,    //待機
     PLAYER_ATTACK_ANIM,  //攻撃
     PLAYER_FD_MOVE_ANIM,    //fire,dark移動
     PLAYER_TW_MOVE_ANIM,    //thunder,wind移動
@@ -59,6 +59,7 @@ enum LOOP_ANIM
     DARK_IDLE_ANIM,
     DARK_MOVE_ANIM,
     THUNDER_MOVE_ANIM,
+    WIND_IDLE_ANIM,
     WIND_MOVE_ANIM,
     DARK_MOVE_CHARGE_ANIM,
     THUNDER_MOVE_CHARGE_ANIM,
@@ -78,6 +79,7 @@ enum LOOP_ANIM
 
     //boss
     BOSS_IDLE_ANIM,
+    BOSS_FIRE_ANIM,
     BOSS_THUNDER_ANIM,
     BOSS_WATER_ANIM,
     BOSS_WIND_ANIM,

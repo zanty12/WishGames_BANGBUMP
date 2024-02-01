@@ -73,7 +73,7 @@ Vector2 Thunder::Move()
             player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
         {
             if(!moving_)
-            player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
         }
     }
 
@@ -210,7 +210,7 @@ void Thunder::Action()
     }
     if (atk_time_ > 0.5f && player_->GetAnimator()->GetLoopAnim() == PLAYER_ATTACK_ANIM)
     {
-        player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
+        player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
     }
 }
 

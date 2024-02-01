@@ -23,7 +23,7 @@ Vector2 Fire::Move()
     {
         if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
             player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
-            player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
     }
 
     if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() < speed * Time::GetDeltaTime())
