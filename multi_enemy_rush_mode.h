@@ -8,7 +8,7 @@ class MultiPlayEnemyRushModeServerSide : public MultiPlayModeServerSide {
 
 public:
 	MultiPlayEnemyRushModeServerSide()
-		: MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map3.csv"), L"EnemyRush") {
+		: MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map3.csv", MULTIPLAY_RUN_TYPE_SERVER), L"EnemyRush") {
 	}
 	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override {
 	}
@@ -26,7 +26,7 @@ class MultiPlayEnemyRushModeClientSide : public MultiPlayModeClientSide {
 
 public:
 	MultiPlayEnemyRushModeClientSide() :
-		MultiPlayModeClientSide(new MultiMap(MAP_PATH + "MultiPlay_Map3.csv"), L"EnemyRush") {
+		MultiPlayModeClientSide(new MultiMap(MAP_PATH + "MultiPlay_Map3.csv", MULTIPLAY_RUN_TYPE_CLIENT), L"EnemyRush") {
 	};
 
 

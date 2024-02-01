@@ -51,7 +51,7 @@ void MultiMap::Release(void) {
 	areaCaptures.clear();
 }
 
-void MultiMap::Load(std::string path) {
+void MultiMap::Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType) {
 	Release();
 
 	skillOrbs = new MultiBehavior("SkillOrbMngr");
@@ -113,8 +113,8 @@ void MultiMap::Load(std::string path) {
 				}
 				// “o˜^
 				else {
-					GetColliderMap(x, y) = id;
-					GetMap(x, y) = id;
+					if (multiplayType == MULTIPLAY_RUN_TYPE_SERVER) GetColliderMap(x, y) = id;
+					if (multiplayType == MULTIPLAY_RUN_TYPE_CLIENT) GetMap(x, y) = id;
 				}
 			}
 			x++;

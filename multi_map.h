@@ -5,6 +5,7 @@
 #include "lib/vector.h"
 #include "multi_object.h"
 #include "multi_effect.h"
+#include "multi_runenum.h"
 
 class MultiGameObject;
 class MultiMap {
@@ -32,11 +33,11 @@ public:
 
 public:
 	MultiMap() = default;
-	MultiMap(std::string path) { Initialize(); Load(path); };
+	MultiMap(std::string path, MULTIPLAY_RUN_TYPE multiplayType) { Initialize(); Load(path, multiplayType); };
 
 	void Initialize(void);
 	void Release(void);
-	void Load(std::string path);
+	void Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType);
 	Vector2Int ToIndex(Vector2 pos) { return Vector2Int(pos.x / cellSize, pos.y / cellSize); }
 	Vector2 ToPosition(Vector2Int idx) { return Vector2(idx.x * cellSize, idx.y * cellSize); }
 	void Draw(Vector2 offset);

@@ -1,5 +1,6 @@
 #pragma once
 #include "multi_header.h"
+#include "multi_runenum.h"
 #include "multi_map.h"
 #include "time.h"
 
