@@ -58,6 +58,9 @@ void Animator::InitDictionary(void)
 
     //boss
     DICTIONARY_[BOSS_IDLE_ANIM] = ANIM_DATA(0, 0, 3, 8, boss_idle);
+    DICTIONARY_[BOSS_THUNDER_ANIM] = ANIM_DATA(boss_attack_thunder);
+    DICTIONARY_[BOSS_WATER_ANIM] = ANIM_DATA(boss_attack_water);
+    DICTIONARY_[BOSS_WIND_ANIM] = ANIM_DATA(boss_attack_wind);
 
     //effect
     DICTIONARY_[EFFECT_DEAD_ANIM] = ANIM_DATA(effect_dead);
@@ -256,7 +259,7 @@ void Animator::Reset(void)
         }
     }
 
-    now_matrix_number_ = x_matrix_num_ * DICTIONARY_[loop_anim_].loop_start_y + DICTIONARY_[loop_anim_].loop_start_x - 1;//この後インクリメントするので1引いておく
+    now_matrix_number_ = x_matrix_num_ * loop_start_y_ + loop_start_x_ - 1;//この後インクリメントするので1引いておく
 }
 
 void Animator::PlayerAnim(ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack)
@@ -272,7 +275,7 @@ void Animator::PlayerAnim(ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack)
         }
         else
         {
-            loop_start_x_ = 0;
+            loop_start_x_ = 4;
             loop_start_y_ = 13;
             loop_end_x_ = 3;
             loop_end_y_ = 14;

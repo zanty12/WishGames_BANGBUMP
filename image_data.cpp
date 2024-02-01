@@ -23,6 +23,7 @@ void ImageDataDictionary::InitDictionary()
 	img_data_[player1_42] = IMAGE_DATA(LoadTexture(Asset::GetAsset(player1_42)), 5, 14);
 	img_data_[player1_43] = IMAGE_DATA(LoadTexture(Asset::GetAsset(player1_43)), 5, 9);
 
+	/*
 	img_data_[player2_12] = IMAGE_DATA(LoadTexture(Asset::GetAsset(player2_12)), 5, 14);
 	img_data_[player2_13] = IMAGE_DATA(LoadTexture(Asset::GetAsset(player2_13)), 5, 9);
 	img_data_[player2_14] = IMAGE_DATA(LoadTexture(Asset::GetAsset(player2_14)), 5, 8);
@@ -61,6 +62,7 @@ void ImageDataDictionary::InitDictionary()
 	img_data_[player4_41] = IMAGE_DATA(LoadTexture(Asset::GetAsset(player4_41)), 5, 14);
 	img_data_[player4_42] = IMAGE_DATA(LoadTexture(Asset::GetAsset(player4_42)), 5, 14);
 	img_data_[player4_43] = IMAGE_DATA(LoadTexture(Asset::GetAsset(player4_43)), 5, 9);
+	*/
 
 	//attibute_move
 	img_data_[fire_move] = IMAGE_DATA(LoadTexture(Asset::GetAsset(fire_move)), 5, 6);
@@ -85,6 +87,9 @@ void ImageDataDictionary::InitDictionary()
 
 	//boss
 	img_data_[boss_idle] = IMAGE_DATA(LoadTexture(Asset::GetAsset(boss_idle)), 5, 9);
+	img_data_[boss_attack_thunder] = IMAGE_DATA(LoadTexture(Asset::GetAsset(boss_attack_thunder)), 5, 6);
+	img_data_[boss_attack_water] = IMAGE_DATA(LoadTexture(Asset::GetAsset(boss_attack_water)), 5, 6);
+	img_data_[boss_attack_wind] = IMAGE_DATA(LoadTexture(Asset::GetAsset(boss_attack_wind)), 5, 1);
 
 	//effect
 	img_data_[effect_dead] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_dead)), 5, 15);

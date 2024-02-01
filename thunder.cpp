@@ -65,6 +65,18 @@ Vector2 Thunder::Move()
 
     move_effect_->Update();
 
+    Vector2 stickR = Input::GetStickRight(0);
+    if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
+        abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
+    {
+        if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
+            player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
+        {
+            if(!moving_)
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
+        }
+    }
+
     //charge up
     if (stick_distance >= responseMinStickDistance)
     {
@@ -91,7 +103,7 @@ Vector2 Thunder::Move()
     if (move_charge_ > move_trigger_min_ && stick_distance < responseMinStickDistance && move_cd_ <= 0.0f)
     {
         move_dir_ = -previousStick.Normalize();
-        move_charge_ = 0.0f;
+        //move_charge_ = 0.0f;
         move_cd_ = 1.0f;
         delete move_indicator_;
         move_indicator_ = nullptr;
@@ -151,6 +163,8 @@ void Thunder::Action()
     //charge up
     if (stick_distance >= responseMinStickDistance)
     {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_TA_CHARGE_ANIM);
+
         attack_charge_ += Time::GetDeltaTime();
         if (attack_charge_ >= attack_charge_max_)
         {
@@ -180,11 +194,23 @@ void Thunder::Action()
                                                17 * GameObject::SIZE_ * Time::GetDeltaTime(),range);
                 attack_charge_ = 0.0f;
                 attack_cd_ = 1.0f;
+
+                atk_time_ = 0.0f;
                 break;
             }
         }
         delete attack_indicator_;
         attack_indicator_ = nullptr;
+    }
+
+    atk_time_ += Time::GetDeltaTime();
+    if (attack_charge_ == 0.0f && player_->GetAnimator()->GetLoopAnim() == PLAYER_TA_CHARGE_ANIM)
+    {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_ATTACK_ANIM);
+    }
+    if (atk_time_ > 0.5f && player_->GetAnimator()->GetLoopAnim() == PLAYER_ATTACK_ANIM)
+    {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
     }
 }
 
@@ -299,6 +325,8 @@ void ThunderEffect::Move()
     SetColor(Color(1, 1, 1, 1));
     GetAnimator()->SetTexenum(thunder_move);
     GetAnimator()->SetLoopAnim(THUNDER_MOVE_ANIM);
+
+    parent_->GetPlayer()->GetAnimator()->SetLoopAnim(PLAYER_TW_MOVE_ANIM);
 }
 
 void ThunderEffect::Charge()
@@ -312,4 +340,6 @@ void ThunderEffect::Charge()
 
     Vector2 pos = parent_->GetPlayer()->GetPos();
     SetPos(pos);
+
+    parent_->GetPlayer()->GetAnimator()->SetLoopAnim(PLAYER_TM_CHARGE_ANIM);
 }

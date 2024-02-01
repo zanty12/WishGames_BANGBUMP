@@ -90,6 +90,9 @@ enum textures
 
     //boss
     boss_idle,
+    boss_attack_thunder,
+    boss_attack_water,
+    boss_attack_wind,
 
     //effect
     effect_dead,
@@ -131,6 +134,7 @@ enum sounds
 enum maps
 {
     test,
+    test2,
     single_stage_1,
     single_stage_2,
 };

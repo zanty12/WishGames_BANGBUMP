@@ -78,15 +78,22 @@ Boss_Thunder::Boss_Thunder(Vector2 pos)
 	SetType(OBJ_ATTACK);
 	float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //初期化時のエラーを回避する
 	SetVel(Vector2(-speed_ * dt, -speed_ * dt));
+
+	//アニメーター設定
+	SetTexNo(LoadTexture(Asset::GetAsset(boss_attack_thunder)));
+	GetAnimator()->SetTexenum(boss_attack_thunder);
+	GetAnimator()->SetLoopAnim(BOSS_THUNDER_ANIM);
 }
 void Boss_Thunder::Update()
 {
 	time_ += Time::GetDeltaTime();
 
 	if (time_ > 1.0f)
-		Discard();	
+		atk_end_ = true;
 
 	this->AddVel(GetVel());
+	float rot = atan2f(GetVel().y, -GetVel().x);
+	SetRot(rot);
 }
 
 //--------------風------------------------------------//
@@ -101,6 +108,11 @@ Boss_Wind::Boss_Wind(Vector2 pos)
 	//GetCollider()->SetBounciness(0.3f);
 	float dt = Time::GetDeltaTime() < 1 ? Time::GetDeltaTime() : 0.0f; //初期化時のエラーを回避する
 	SetVel(Vector2(-speed_ * dt, -speed_ * dt));
+
+	//アニメーター設定
+	SetTexNo(LoadTexture(Asset::GetAsset(boss_attack_wind)));
+	GetAnimator()->SetTexenum(boss_attack_wind);
+	GetAnimator()->SetLoopAnim(BOSS_WIND_ANIM);
 	
 }
 void Boss_Wind::Update()
@@ -224,6 +236,10 @@ Boss_Water::Boss_Water(Vector2 pos)
 	time_ = 0;
 	SetType(OBJ_ATTACK);
 
+	//アニメーター設定
+	SetTexNo(LoadTexture(Asset::GetAsset(boss_attack_water)));
+	GetAnimator()->SetTexenum(boss_attack_water);
+	GetAnimator()->SetLoopAnim(BOSS_WATER_ANIM);
 }
 
 void Boss_Water::Update()

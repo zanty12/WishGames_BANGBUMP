@@ -80,7 +80,10 @@ const std::map<textures, std::string> Asset::textures_ = {
      {textures::enemy2_attack,"data/texture/Enemy/effect_enemy2_attack.png"},
 
      //boss
-     {textures::boss_idle,"data/texture/boss_idle.png"},
+     {textures::boss_idle,"data/texture/Boss/boss_idle.png"},
+     {textures::boss_attack_thunder,"data/texture/Boss/effect_boss_thunder.png"},
+     {textures::boss_attack_water,"data/texture/Boss/effect_boss_water.png"},
+     {textures::boss_attack_wind,"data/texture/Boss/effect_boss_wind.png"},
 
      //effect
      {textures::effect_dead,"data/texture/Effect/effect_dead.png"},
@@ -115,6 +118,7 @@ const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::strin
 
 const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{
     {maps::test, "data/map/1.csv"},
+    {maps::test2, "data/map/2.csv"},
     {maps::single_stage_1, "data/map/SoloPlay_map.csv"},
     {maps::single_stage_2, "data/map/Boss_Map.csv"},
 };

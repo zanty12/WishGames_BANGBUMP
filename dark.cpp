@@ -24,6 +24,15 @@ Vector2 Dark::Move()
     Vector2 velocity = player_->GetVel();
     Vector2 stick = Input::GetStickLeft(0);
 
+    Vector2 stickR = Input::GetStickRight(0);
+    if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
+        abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
+    {
+        if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
+            player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
+    }
+
     if (stick != Vector2::Zero)
     {
         if (move_indicator_ == nullptr)
@@ -104,6 +113,8 @@ void Dark::Action()
     // 攻撃
     else if (Input::GetKey(0, Input::RThumb))
     {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_ATTACK_ANIM);
+
         if (attack_ == nullptr)
             attack_ = new DarkAttack(this);
         float angle = atan2(attackDirection_.y, attackDirection_.x);
@@ -116,6 +127,8 @@ void Dark::Action()
     {
         if (attack_ != nullptr)
         {
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
+
             delete attack_;
             attack_ = nullptr;
         }
@@ -314,4 +327,6 @@ void DarkEffect::Charge()
 
     Vector2 pos = parent_->GetPlayer()->GetPos();
     SetPos(pos);
+
+    parent_->GetPlayer()->GetAnimator()->SetLoopAnim(PLAYER_FD_MOVE_ANIM);
 }

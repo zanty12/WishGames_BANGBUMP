@@ -29,6 +29,15 @@ Vector2 Wind::Move(void)
     Vector2 stick = Input::GetStickLeft(0);
     Vector2 previousStick = Input::GetPreviousStickLeft(0);
 
+    Vector2 stickR = Input::GetStickRight(0);
+    if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
+        abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
+    {
+        if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
+            player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
+    }
+
     // 回転のスピードを取得
     float rotSpeed = Vector2::Cross(stick, previousStick);
 
@@ -38,6 +47,8 @@ Vector2 Wind::Move(void)
     // 移動中
     if (move)
     {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_TW_MOVE_ANIM);
+
         power_ += rotSpeed * rotSpeed * rotInputFriction / Time::GetDeltaTime();
         if (maxPower_ < power_) power_ = maxPower_;
 
@@ -92,6 +103,8 @@ void Wind::Action(void)
     // 攻撃中
     if (attack)
     {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_ATTACK_ANIM);
+
         if (attack_ == nullptr)
             attack_ = new WindAttack(this);
         attack_->SetPos(GetPlayer()->GetPos());

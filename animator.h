@@ -17,6 +17,7 @@ struct ANIM_DATA
 
     ANIM_DATA() {
         loop_start_x = loop_start_y = loop_end_x = loop_end_y = -1; //設定しないときは-1にして例外処理に通す
+        texture_enum = texture_none;
     };
     //----------------------------------------
     // int start_x      ループアニメのスタート画像[よこ]（右端 = 0）
@@ -77,6 +78,9 @@ enum LOOP_ANIM
 
     //boss
     BOSS_IDLE_ANIM,
+    BOSS_THUNDER_ANIM,
+    BOSS_WATER_ANIM,
+    BOSS_WIND_ANIM,
 
     //effect
     EFFECT_DEAD_ANIM,

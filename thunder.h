@@ -39,6 +39,8 @@ class Thunder : public Attribute
     ThunderAttack* attack_[5] = {nullptr};
     ThunderIndicator* attack_indicator_ = nullptr;
     ThunderEffect* move_effect_ = nullptr;
+
+    float atk_time_ = 1.0f;
     //‚±‚±‚©‚ç‚Í’²®—p‚Ì‚½‚ßconst”²‚«
     float movePower = 11 * GameObject::SIZE_;
 

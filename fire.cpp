@@ -16,6 +16,16 @@ Vector2 Fire::Move()
 {
     Vector2 stick = Input::GetStickLeft(0);
     stick.y *= -1;
+
+    Vector2 stickR = Input::GetStickRight(0);
+    if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
+        abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
+    {
+        if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
+            player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDOL_ANIM);
+    }
+
     if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() < speed * Time::GetDeltaTime())
     {
         //エフェクト表示
@@ -67,6 +77,8 @@ void Fire::Action()
 
     if (responseMinStickDistance < stick.Distance())
     {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_ATTACK_ANIM);
+
         //get angle from stick
         float angle = atan2(stick.y, stick.x);
         if (attack_ == nullptr)
@@ -171,4 +183,6 @@ void FireEffect::Update()
 
     Vector2 pos = parent_->GetPlayer()->GetPos();
     SetPos(pos);
+
+    parent_->GetPlayer()->GetAnimator()->SetLoopAnim(PLAYER_FD_MOVE_ANIM);
 }

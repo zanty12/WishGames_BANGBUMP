@@ -4,6 +4,8 @@
 #include "animator.h"
 #include "time.h"
 
+class Boss_Thunder;
+
 class Boss : public Enemy
 {
 private:
@@ -15,7 +17,11 @@ private:
 	float time_;			// 時間
 	float atk_time_;		// 攻撃時間
 	bool atk_now;			// 攻撃チェック
-	
+
+	bool thunder_on_;		// サンダーアタックフラグ
+	Boss_Thunder* atk_thunder_ = nullptr;	//サンダーアタック
+	int thunder_num_;
+	bool thunder_die_ = false;	//サンダーが消えたとき
 
 public:
 
