@@ -40,7 +40,7 @@ public:
 		std::wstring lvStr = L"lv";
 		for (int i = 0; i < 10; i++) {
 			state_lv[i] = AttributeState(attributeName, i + 1);
-			lvupPoint[i] = ini::GetInt(PARAM_PATH + L"player.ini", L"Player", L"lv", 0.5f);
+			lvupPoint[i] = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", lvStr + std::to_wstring(i + 1), 0);
 		}
 		// レベル1のステータスにする
 		state = state_lv;
@@ -121,7 +121,6 @@ private:
 	int moveTexNo = -1;
 	int attackTexNo = -1;
 	std::list<Animator> moveAnims;
-	std::list<Animator> attackAnims;
 	DWORD startTime = 0;
 
 public:
@@ -280,6 +279,10 @@ public:
   Wind
 ********************************************************/
 class ServerWind : public ServerAttribute {
+private:
+	float horizontalVelocity = 0.0f;
+	float maxHorizontalVelocity = 10.0f;
+
 public:
 	ServerWind(ServerPlayer *player) : ServerAttribute(player, L"Wind") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
@@ -291,11 +294,12 @@ public:
 class ClientWind : public ClientAttribute {
 public:
 	MultiAnimator idle;
-
+	int prevAnimType = ANIMATION_TYPE_IDLE;
+	Vector2 prevPosition;			// ワープ前の座標
 
 	ClientWind(ClientPlayer *player) : ClientAttribute(player, L"Wind") {
 		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 29, true);
-		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 25, true);
+		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_move.png"), 5, 6, 0, 29, false);
 		idle = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_idle.png"), 5, 6, 0, 29, true);
 	}
 

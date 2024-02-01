@@ -33,9 +33,6 @@ void ServerPlayer::Loop(void) {
 		attributeChange = false;
 	}
 
-	// 移動させる
-	transform.position += velocity + blownVelocity + gravityVelocity;
-
 	// 吹き飛ばしの速度を減速させる
 	blownVelocity *= blownFriction;
 	velocity *= friction;
@@ -112,7 +109,7 @@ void ClientPlayer::ShowExit() {
 }
 
 void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim) {
-	if (timer.GetNowTime() < 500ul && entryType == ENTRY || entryType == NONE) return;
+	if (timer.GetNowTime() < 200ul && entryType == ENTRY || entryType == NONE) return;
 
 	// 待機アニメーション
 	if (moveAttribute) {

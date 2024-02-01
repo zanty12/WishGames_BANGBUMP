@@ -176,6 +176,7 @@
     <ClCompile Include="movableobj.cpp" />
     <ClCompile Include="multiplay.cpp" />
     <ClCompile Include="multi_anim.cpp" />
+    <ClCompile Include="multi_animenum.cpp" />
     <ClCompile Include="multi_area_capture_mode.cpp" />
     <ClCompile Include="multi_attack.cpp" />
     <ClCompile Include="multi_attribute.cpp" />
@@ -351,6 +352,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="data\property\attribute_lv1.ini" />
+    <None Include="data\property\attribute_lv10.ini" />
+    <None Include="data\property\attribute_lv2.ini" />
+    <None Include="data\property\attribute_lv3.ini" />
+    <None Include="data\property\attribute_lv4.ini" />
+    <None Include="data\property\attribute_lv5.ini" />
+    <None Include="data\property\attribute_lv6.ini" />
+    <None Include="data\property\attribute_lv7.ini" />
+    <None Include="data\property\attribute_lv8.ini" />
+    <None Include="data\property\attribute_lv9.ini" />
     <None Include="data\property\enemy.ini" />
     <None Include="data\property\mode.ini" />
     <None Include="data\property\player.ini" />

@@ -10,6 +10,7 @@ struct AttributeState {
 	float maxPower = 10.0f;			// ƒpƒ[‚ÌÅ‘å’l
 	float addPower = 00.0f;			// ƒpƒ[‚Ì‰ÁZ’l
 	float friction = 0.98f;			// –€CŒW”
+	float brakeFriction = 0.98f;	// –€CŒW”i‹}’â~j
 	float powerFriction = 1.00f;	// ƒpƒ[‚Ì–€CŒW”
 
 	// “ü—Í
@@ -42,6 +43,7 @@ struct AttributeState {
 		maxPower = ini::GetFloat(PARAM_PATH + path, attributeName, L"maxPower", -1.0f);
 		addPower = ini::GetFloat(PARAM_PATH + path, attributeName, L"addPower", -1.0f);
 		friction = ini::GetFloat(PARAM_PATH + path, attributeName, L"friction", -1.0f);
+		brakeFriction = ini::GetFloat(PARAM_PATH + path, attributeName, L"brakeFriction", -1.0f);
 		powerFriction = ini::GetFloat(PARAM_PATH + path, attributeName, L"powerFriction", -1.0f);
 
 		// “ü—Í
@@ -73,6 +75,7 @@ struct AttributeState {
 		influence_state(maxPower);
 		influence_state(addPower);
 		influence_state(friction);
+		influence_state(brakeFriction);
 		influence_state(powerFriction);
 
 		// “ü—Í

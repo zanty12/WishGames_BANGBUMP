@@ -8,6 +8,7 @@
 #include "attribute_type.h"
 #include "multi_animenum.h"
 #include "multi_path.h"
+#include "ini.h"
 
 /*******************************************************
   Server
@@ -24,7 +25,7 @@ public:
 	int skillPoint = 0;									// スキルポイント
 	int score = 0;										// スコア
 	MultiMap *map = nullptr;							// マップ
-	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDLE;// アニメーション
+	int animType = ANIMATION_TYPE_IDLE;					// アニメーション
 	Vector2 attackVelocity;								// 攻撃のベクトル
 	Vector2 warpVelocity;								// ワープベクトル
 	bool attributeChange = false;						// 属性チェンジ
@@ -35,6 +36,8 @@ public:
 		radius = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"radius", 10.0f);
 		gravity = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"gravity", 0.01f);
 		maxGravity = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"maxGravity", 0.5f);
+		transform.scale.x = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"width", 20.0f);
+		transform.scale.y = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"height", 60.0f);
 	}
 	~ServerPlayer() {
 		if (moveAttribute) delete moveAttribute;
@@ -83,8 +86,8 @@ private:
 
 public:
 	int skillPoint = 0;										// スキルポイント
-	MULTI_ANIMATION_TYPE animType = ANIMATION_TYPE_IDLE;	// アニメーションタイプ
-	MULTI_ANIMATION_TYPE preAnimType = ANIMATION_TYPE_IDLE;	// アニメーション（1フレーム前）
+	int animType = ANIMATION_TYPE_IDLE;						// アニメーションタイプ
+	int preAnimType = ANIMATION_TYPE_IDLE;					// アニメーション（1フレーム前）
 	ATTRIBUTE_TYPE moveAttributeType;						// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType;						// 攻撃属性タイプ
 	MultiAnimator anim;										// アニメーション

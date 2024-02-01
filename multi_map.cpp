@@ -195,9 +195,8 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 				Vertex4 cellCollision(cellPos, 0.0f, Vector2(cellSize, cellSize));
 				NearHit tmpHit;
 
-
+				// 触れているなら
 				if (Collider2D::Touch(playerCollision, cellCollision, &tmpHit)) {
-
 					float distanceSq = (position - cellPos).DistanceSq();
 					if (minDistanceSq < 0.0f || distanceSq < minDistanceSq) {
 						hit = tmpHit;
@@ -235,11 +234,10 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 	// 判定
 	using namespace PHYSICS;
 	Vector2Int pushVector;
-	float halfCellSize = cellSize * 0.5f;
-	float minDistance = -1;
 	int id = -1;
 	float radius = scale.x < scale.y ? scale.y : scale.x;
 
+	
 	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
 		for (int y = leftBottomIdx.y; y <= rightTopIdx.y; y++) {
 			// 範囲外なら処理をしない
@@ -249,51 +247,56 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 			int tmpId = GetColliderMap(x, y);
 			// 判定できるなら
 			if (tmpId != -1) {
+				id = tmpId;
 				Vector2 cellPos = ToPosition({ x, y });							// セルの座標
-				float leftCell = cellPos.x - cellSize * 0.5f;
-				float rightCell = cellPos.x + cellSize * 0.5f;
-				float upCell = cellPos.y + cellSize * 0.5f;
-				float downCell = cellPos.y - cellSize * 0.5f;
+				Vertex4 playerCollision(position, 0.0f, scale);
+				Vertex4 cellCollision(cellPos, 0.0f, Vector2(cellSize, cellSize) * 0.5f);
 
-				float halfScaleX = scale.x * 0.5f;
-				float halfScaleY = scale.y * 0.5f;
+				// 触れているなら
+				if (Collider2D::Touch(playerCollision, cellCollision)) {
+					Vector2 direction = position - cellPos;
+					//if (0.0f < direction.x) {
+					//	if (direction.y < direction.x) pushVector.x++;
+					//	else if (direction.y > direction.x) pushVector.y++;
+					//	else if (direction.y < -direction.x) pushVector.y--;
+					//}
+					//else if (0.0f > direction.x) {
+					//	if (direction.y > direction.x) pushVector.x--;
+					//	else if (direction.y < direction.x) pushVector.y--;
+					//	else if (direction.y > -direction.x) pushVector.y++;
+					//}
 
+					position += direction.Normalize() * velocity->Distance();
 
-				// プレイヤーの左側
-				if (leftCell <= position.x - halfScaleX && position.x - halfScaleX <= rightCell) pushVector.x++;
-				// プレイヤーの右側
-				else if (leftCell <= position.x + halfScaleX && position.x + halfScaleX <= rightCell) pushVector.x--;
-				// プレイヤーの上側
-				if (downCell <= position.y + halfScaleY && position.y + halfScaleY <= upCell) pushVector.y--;
-				// プレイヤーの下側
-				else if (downCell <= position.y - halfScaleY && position.y - halfScaleY <= upCell) pushVector.y++;
+					if(0.0f < direction.y) {
+						if (gravityVelocity) gravityVelocity->y = 0.0f;
+					}
+				}
 			}
 		}
 	}
 
-	if (pushVector != Vector2::Zero) {
-		id = 1;
-		if (pushVector.x > 0) pushVector.x = 1;
-		else if (pushVector.x < 0) pushVector.x = -1;
-		if (pushVector.y > 0) pushVector.y = 1;
-		else if (pushVector.y < 0) pushVector.y = -1;
-		std::cout << pushVector.x << ", " << pushVector.y << std::endl;
+	//if (pushVector != Vector2::Zero) {
+	//	id = 1;
+	//	if (pushVector.x) pushVector.x = pushVector.x / MATH::Abs(pushVector.x);
+	//	if (pushVector.y) pushVector.y = pushVector.y / MATH::Abs(pushVector.y);
+	//	//std::cout << pushVector.x << ", " << pushVector.y << std::endl;
 
 
-		if (pushVector.x != 0) {
-			position.x += pushVector.x * scale.x * 0.5f;
-			if (velocity->x < 0.0f && pushVector.x < 0 ||
-				velocity->x > 0.0f && pushVector.x > 0) velocity->x = 0.0f;
-		}
-		if (pushVector.y != 0) {
-			position.y += pushVector.y * scale.y * 0.5f;
-			if (velocity->y < 0.0f && pushVector.y < 0 || 
-				velocity->y > 0.0f && pushVector.y > 0) velocity->y = 0.0f;
-		}
-		if (pushVector.y > 0) {
-			if (gravityVelocity) gravityVelocity->y = 0.0f;
-		}
-	}
+	//	//if (pushVector.x != 0) {
+	//	//	position.x += pushVector.x * scale.x;
+	//	//	if (velocity->x < 0.0f && pushVector.x < 0 ||
+	//	//		velocity->x > 0.0f && pushVector.x > 0) velocity->x = 0.0f;
+	//	//}
+	//	//if (pushVector.y != 0) {
+	//	//	position.y += pushVector.y * scale.y * 0.5f;
+	//	//	if (velocity->y < 0.0f && pushVector.y < 0 || 
+	//	//		velocity->y > 0.0f && pushVector.y > 0) velocity->y = 0.0f;
+	//	//}
+	//	if (pushVector.y > 0) {
+	//		if (gravityVelocity) gravityVelocity->y = 0.0f;
+	//	}
+	//}
 	return id;
 }
 

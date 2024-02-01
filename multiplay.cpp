@@ -128,11 +128,12 @@ void MultiPlayServer::PlayerUpdate(void) {
 
 			Input::SetState(0, client.currentInput);
 			Input::SetPreviousState(0, client.previousInput);
-			gameMode->GetMap()->Collision(player->transform.position, player->radius * 2.0f, &player->gravityVelocity);
 			player->map = gameMode->GetMap();
 			player->Loop();
-			//gameMode->GetMap()->Collision(player->transform.position, Vector2(player->radius * 0.5f, player->radius * 3.0f), &player->velocity, &player->gravityVelocity);
+			gameMode->GetMap()->Collision(player->transform.position, player->transform.scale, &player->velocity, &player->gravityVelocity);
 
+			// 移動させる
+			player->transform.position += player->velocity + player->blownVelocity + player->gravityVelocity;
 #ifdef DEBUG_INPUT
 			std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
 #endif
@@ -479,8 +480,15 @@ void MultiPlayClient::Unregister(void) {
 
 void MultiPlayClient::PlayerUpdate(void) {
 	// カメラ座標の計算
-	if (res_.clients.size()) offset = Vector2(0.0f, res_.clients.begin()->position.y - Graphical::GetHeight() * 0.25f) + Vector2::Up * res_.clients.begin()->moveVelocity.y * 10.0f;
+	if (res_.clients.size()) {
+		float posY = res_.clients.begin()->position.y;		// プレイヤーのY座標
+		float centerY = Graphical::GetHeight() * 0.35f;		// 画面中心にするY座標
+		float velY = res_.clients.begin()->moveVelocity.y;	// 加算するY座標
 
+		float nextY = posY - centerY + velY * 10.0f;		// 移動先のY座標
+		float ratio = 0.85f;								// 滑らかにする倍率
+		offset += Vector2(0.0f, (nextY - offset.y) * ratio);
+	}
 	// ゲームモードの描画
 	gameMode->Draw(res_, offset);
 

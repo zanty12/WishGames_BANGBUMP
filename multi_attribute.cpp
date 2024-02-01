@@ -99,7 +99,7 @@ void ServerFire::Move(void) {
 	// 移動中
 	if (StickTrigger(stick)) {
 		// アニメーションの指定
-		player->animType = ANIMATION_TYPE_MOVE;
+		SetPlayerAnimMove(player->animType);
 
 		// パワー加算
 		AddPower(stick);
@@ -113,13 +113,15 @@ void ServerFire::Move(void) {
 		// ベクトルの最大値
 		float maxPowerSq = state->maxPower * state->maxPower;
 		if (maxPowerSq < velocity.DistanceSq()) velocity = velocity.Normalize() * state->maxPower;
+
 	}
 	// 停止中
 	else {
-		player->animType = ANIMATION_TYPE_IDLE;
-
-		Friction();
+		// アニメーションの指定
+		SetPlayerAnimNoMove(player->animType);
 	}
+
+	velocity *= state->friction;
 	player->velocity = velocity;
 
 	// 摩擦
@@ -132,7 +134,7 @@ void ServerFire::Attack(void) {
 	// 攻撃中
 	if (StickTrigger(stick)) {
 		// アニメーションの指定
-		player->animType = ANIMATION_TYPE_ATTACK;
+		SetPlayerAnimAttack(player->animType);
 
 		player->attackVelocity = stick;
 
@@ -148,6 +150,9 @@ void ServerFire::Attack(void) {
 
 	}
 	else if (attack_ != nullptr) {
+		// アニメーションの指定
+		SetPlayerAnimNoAttack(player->animType);
+
 		// 攻撃オブジェクトの削除
 		DestroyAttack();
 	}
@@ -172,7 +177,7 @@ AttackServerSide *ServerFire::CreateAttack(void) {
 
 void ClientFire::Move(void) {
 	// 移動アニメーションではないなら終了
-	if (player->animType != ANIMATION_TYPE_MOVE) {
+	if (!IsPlayerAnimMove(player->animType)) {
 		if (moveAnims.size()) moveAnims.clear();
 		return;
 	}
@@ -215,47 +220,30 @@ void ClientFire::Move(void) {
 }
 void ClientFire::Attack(void) {
 	// 攻撃アニメーションではないなら終了
-	if (player->animType != ANIMATION_TYPE_ATTACK) {
-		if (attackAnims.size()) attackAnims.clear();
-		return;
-	}
+	if (!IsPlayerAnimAttack(player->animType)) return;
 
 
+
+	// 攻撃の向き
+	Vector2 direction = player->attackVelocity.Normalize() * state->showAttackY * 0.5f;
+
+	// キャラを反転させる
+	if (direction.x < 0.0f) player->isReverseX = false;
+	else if (direction.x > 0.0f) player->isReverseX = true;
+
+	// 手に移動
+	Vector2 localPos = Vector2(-12.0f, 45.0f);
+
+	// トランスフォーマー
+	Vector2 pos = player->transform.position;
+	float rot = atan2f(direction.x, direction.y);
+	Vector2 scl = Vector2(state->showAttackX, state->showAttackY);
+
+	// 反転した絵に合わせて位置も反転
+	if (player->isReverseX) localPos.x *= -1.0f;
 
 	// 描画する
-	Vector2 direction = player->attackVelocity;
-	float denominator = attackAnims.size();
-	float numerator = denominator * 0.5f;
-	for (Animator &anim : attackAnims) {
-		anim.anim.Draw(anim.pos - MultiPlayClient::offset, anim.rot, anim.scl, Color::White/*Color(1.0f, 1.0f, 1.0f, 1.0f - numerator / denominator)*/);
-		numerator += 0.5f;
-	}
-
-	// 時間を計測する
-	DWORD currentTime = timeGetTime();
-	DWORD deltaTime = currentTime - startTime;
-
-	// アニメーションを作成する
-	if (25 < deltaTime) {
-		// 計測をリセットする
-		startTime = currentTime;
-
-		// 炎の位置をずらす
-		//direction += direction.Normal() * MATH::Rand(-0.25f, 0.25f);
-
-		// アニメーション生成
-		float distance = 50.0f;
-		Vector2 pos = player->transform.position + direction.Normalize() * distance;
-		float rot = atan2f(direction.x, direction.y/*direction.y, -direction.x*/);
-		Vector2 scl = Vector2(state->showAttackX, state->showAttackY);
-		Color col = Color::White;
-		attackAnims.push_front({ pos, rot, scl, attackAnim });
-
-		// 要素が多いなら削除
-		if (1 < attackAnims.size()) {
-			attackAnims.pop_back();
-		}
-	}
+	attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
 }
 
 void ServerFireAttack::Loop(void) {
@@ -283,7 +271,7 @@ void ServerWater::Move(void) {
 	// ワープ
 	if (Input::GetKeyDown(0, Input::LThumb)) {
 		// アニメーションの指定
-		player->animType = ANIMATION_TYPE_MOVE;
+		SetPlayerAnimMove(player->animType);
 
 		// 移動
 		player->transform.position = player->warpVelocity;
@@ -294,7 +282,7 @@ void ServerWater::Move(void) {
 	// ワープ距離のチャージ
 	else if (stick != Vector2::Zero) {
 		// アニメーションの指定
-		player->animType = ANIMATION_TYPE_MOVE_CHARGE;
+		SetPlayerAnimMove(player->animType, true);
 
 		// パワー加算
 		AddPower(stick);
@@ -307,7 +295,7 @@ void ServerWater::Move(void) {
 	}
 	else {
 		// アニメーションの指定
-		player->animType = ANIMATION_TYPE_IDLE;
+		SetPlayerAnimNoMove(player->animType);
 
 		power = 0.0f;
 	}
@@ -322,7 +310,7 @@ void ServerWater::Attack(void) {
 		// 攻撃
 		if (Input::GetKey(0, Input::RThumb)) {
 			// アニメーションの指定
-			player->animType = ANIMATION_TYPE_ATTACK;
+			SetPlayerAnimAttack(player->animType);
 
 			// 攻撃オブジェクトの生成
 			CreateAttack();
@@ -330,7 +318,7 @@ void ServerWater::Attack(void) {
 		// チャージ
 		else if (stick != Vector2::Zero) {
 			// アニメーションの指定
-			player->animType = ANIMATION_TYPE_ATTACK_CHARGE;
+			SetPlayerAnimAttack(player->animType, true);
 
 			// ワープベクトルの指定
 			player->attackVelocity = stick.Normalize();
@@ -347,7 +335,7 @@ void ServerWater::Attack(void) {
 	// 攻撃中
 	if (attack_) {
 		// アニメーションの指定
-		player->animType = ANIMATION_TYPE_ATTACK;
+		SetPlayerAnimAttack(player->animType);
 
 		// アタック移動
 		attack_->transform.position = player->transform.position;
@@ -360,6 +348,9 @@ void ServerWater::Attack(void) {
 	// 攻撃オブジェクトの削除
 	if (!Input::GetKey(0, Input::RThumb)) {
 		DestroyAttack();
+
+		// アニメーションの指定
+		SetPlayerAnimNoAttack(player->animType);
 	}
 }
 AttackServerSide *ServerWater::CreateAttack(void) {
@@ -387,11 +378,11 @@ void ClientWater::Move(void) {
 	Color col = Color::White;
 
 	// 移動
-	if (player->animType == ANIMATION_TYPE_MOVE) {
+	if (IsPlayerAnimMove(player->animType)) {
 		moveAnim.MoveBegin();
 	}
 	// チャージ
-	else if (player->animType == ANIMATION_TYPE_MOVE_CHARGE) {
+	else if (IsPlayerAnimMoveCharge(player->animType)) {
 		moveChargeAnim.Draw(pos, rot, scl, col);
 
 		if (player->id == MultiPlayClient::GetID()) {
@@ -408,31 +399,44 @@ void ClientWater::Move(void) {
 		if(moveAnim.IsEnd()) prevPosition = player->transform.position;
 	}
 
-	moveAnim.Draw(prevPosition - MultiPlayClient::offset + Vector2(0.0f, state->showMoveY), rot, scl * 2.0f, col);
-	moveAnim.Draw(player->transform.position - MultiPlayClient::offset + Vector2(0.0f, state->showMoveY), rot, scl * 2.0f, col);
+	moveAnim.Draw(player->transform.position - MultiPlayClient::offset + Vector2(0.0f, state->showMoveY * 0.5f), rot, scl * 2.0f, col);
 }
 void ClientWater::Attack(void) {
 	// 攻撃アニメーションではないなら終了
-	if (player->animType != ANIMATION_TYPE_ATTACK) return;
+	if (!IsPlayerAnimAttack(player->animType)) return;
 
 
 
-	// アニメーション生成
-	Vector2 direction = player->attackVelocity;
-	Vector2 pos = player->transform.position + direction.Normalize() * state->showAttackY * 0.5f;
+
+	// 攻撃の向き
+	Vector2 direction = player->attackVelocity.Normalize() * state->showAttackY * 0.5f;
+
+	// キャラを反転させる
+	if (direction.x < 0.0f) player->isReverseX = false;
+	else if (direction.x > 0.0f) player->isReverseX = true;
+
+	// 手に移動
+	Vector2 localPos = Vector2(-12.0f, 35.0f);
+
+	// トランスフォーマー
+	Vector2 pos = player->transform.position;
 	float rot = atan2f(direction.x, direction.y);
 	Vector2 scl = Vector2(state->showAttackX, state->showAttackY);
-	Color col = Color::White;
-	attackAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
+
+	// 反転した絵に合わせて位置も反転
+	if (player->isReverseX) localPos.x *= -1.0f;
+
+	// 描画する
+	attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
 }
 void ClientWater::Idle(void) {
-	float localScale = 100.0f;
+	float localScale = 75.0f;
 
 
 	Vector2 pos = player->transform.position - MultiPlayClient::offset;
 	float rot = 0.0f;
 	Vector2 scl = Vector2::One * localScale;
-	Color col = Color::White;
+	Color col = Color(1.0f,1.0f,1.0f, 0.5f);
 
 	// 待機
 	if (player->animType == ANIMATION_TYPE_IDLE) {
@@ -459,9 +463,6 @@ bool ServerThunder::StickTrigger(Vector2 stick, Vector2 previousStick) {
 
 	//Charge
 	if (state->minInputDistance <= distance) {
-		// アニメーションの指定
-		player->animType = ANIMATION_TYPE_MOVE_CHARGE;
-
 		// パワー加算
 		AddPower(stick);
 	}
@@ -477,21 +478,51 @@ void ServerThunder::Move(void) {
 	Vector2 stick = Input::GetStickLeft(0);
 	Vector2 previousStick = Input::GetPreviousStickLeft(0);
 
+	// チャージ中
+	if (stick != Vector2::Zero && 0.0f < power) {
+		// アニメーションの指定
+		SetPlayerAnimMove(player->animType, true);
+	}
+	// 移動が終わったら（移動終了）
+	else if (IsPlayerAnimMove(player->animType) && player->velocity.DistanceSq() < 25.0f) {
+		// アニメーションの指定
+		SetPlayerAnimNoMove(player->animType);
+	}
+
+	// 移動
 	if (StickTrigger(stick, previousStick)) {
+		// アニメーションの指定
+		SetPlayerAnimMove(player->animType);
+
 		Vector2 direction = (stick - previousStick).Normalize();
 		player->velocity = CalcVector(direction);
 
 		// 初期化
 		power = 0.0f;
 	}
-
+	
 	Friction();
 }
 void ServerThunder::Attack(void) {
 	Vector2 stick = Input::GetStickRight(0);
 	Vector2 previousStick = Input::GetPreviousStickRight(0);
 
+	// チャージ中
+	if (stick != Vector2::Zero && 0.0f < power) {
+		// アニメーションの指定
+		SetPlayerAnimAttack(player->animType, true);
+	}
+	// 攻撃が終わったら（攻撃終了）
+	else if (IsPlayerAnimMove(player->animType) && player->velocity.DistanceSq() < 25.0f) {
+		// アニメーションの指定
+		SetPlayerAnimNoAttack(player->animType);
+	}
+
+	// 攻撃
 	if (StickTrigger(stick, previousStick)) {
+		// アニメーションの指定
+		SetPlayerAnimAttack(player->animType);
+
 		Vector2 direction = (stick - previousStick).Normalize();
 
 
@@ -549,7 +580,7 @@ void ServerThunderAttack::KnockBack(ServerMovableGameObject *object) {
 }
 
 void ClientThunderAttack::Loop(void) {
-	float localScale = 100;
+	float localScale = 300;
 
 	Vector2 pos = transform.position;
 	float rot = atan2f(velocity.x, velocity.y);
@@ -582,32 +613,49 @@ void ServerWind::Move(void) {
 	Vector2 previousStick = Input::GetPreviousStickLeft(0);
 
 	// 回転のスピードを取得
-	float rotSpeed = MATH::Abs(Vector2::Cross(stick, previousStick));
+	float rotSpeed = Vector2::Cross(stick, previousStick);
 
 	// 入力
 	if (StickTrigger(stick, previousStick)) {
-
 		// パワー加算
 		AddPower(rotSpeed);
+	}
+	else {
+		// 回していないときはさらに減速
+		power *= state->brakeFriction;
+	}
 
-		// 移動中
-		if (state->minActionPower < power) {
-			// アニメーションの指定
-			player->animType = ANIMATION_TYPE_MOVE;
 
-			// 移動
-			player->velocity = CalcVector(Vector2::Up);
 
-			// 重力をなくす
-			player->gravityVelocity = Vector2::Zero;
-		}
+
+	// パワーの絶対値
+	float absPower = MATH::Abs(power);
+
+	// 移動中
+	if (state->minActionPower < absPower) {
+		// アニメーションの指定
+		SetPlayerAnimMove(player->animType);
+
+		// 移動
+		player->velocity = absPower * Vector2::Up;
+
+		// 重力をなくす
+		player->gravityVelocity = Vector2::Zero;
+
+		// 横移動できないようにする
+		horizontalVelocity = 0.0f;
 	}
 	// 落下
 	else if (0.0f > player->gravityVelocity.y) {
 		// アニメーションの指定
-		player->animType = ANIMATION_TYPE_IDLE;
+		SetPlayerAnimNoMove(player->animType);
 
-		player->velocity.x += stick.x;
+		horizontalVelocity += stick.x;
+		if (maxHorizontalVelocity < horizontalVelocity) horizontalVelocity = maxHorizontalVelocity;
+		else if (horizontalVelocity < -maxHorizontalVelocity) horizontalVelocity = -maxHorizontalVelocity;
+
+		// 移動
+		player->velocity.x = horizontalVelocity;
 	}
 
 	FrictionPower();
@@ -618,14 +666,28 @@ void ServerWind::Attack(void) {
 	Vector2 stick = Input::GetStickRight(0);
 	Vector2 previousStick = Input::GetPreviousStickRight(0);
 
+	// 横移動できないようにする
+	horizontalVelocity = 0.0f;
 
 	// 回転のスピードを取得
 	float rotSpeed = MATH::Abs(Vector2::Cross(stick, previousStick));
 
-	// 攻撃中
+	// 入力
 	if (StickTrigger(stick, previousStick)) {
+		// パワー加算
+		AddPower(rotSpeed);
+	}
+
+
+
+
+	// パワーの絶対値
+	float absPower = MATH::Abs(power);
+
+	// 攻撃中
+	if (state->minActionPower < absPower) {
 		// アニメーションの指定
-		player->animType = ANIMATION_TYPE_ATTACK;
+		SetPlayerAnimAttack(player->animType);
 
 		// 攻撃オブジェクトの生成
 		CreateAttack();
@@ -636,10 +698,14 @@ void ServerWind::Attack(void) {
 		}
 	}
 	else {
+		// アニメーションの指定
+		SetPlayerAnimNoAttack(player->animType);
+
 		// 攻撃オブジェクトの削除
 		DestroyAttack();
 	}
 
+	FrictionPower();
 	player->attackVelocity = stick;
 }
 AttackServerSide *ServerWind::CreateAttack(void) {
@@ -661,8 +727,17 @@ AttackServerSide *ServerWind::CreateAttack(void) {
 };
 
 void ClientWind::Move(void) {
+	// 移動開始
+	if (!IsPlayerAnimMove(prevAnimType) && IsPlayerAnimMove(player->animType)) {
+		moveAnim.MoveBegin();
+		prevPosition = player->transform.position;
+	}
+
+	// 現在のアニメーションタイプを記録
+	prevAnimType = player->animType;
+
 	// 移動アニメーションではないなら終了
-	if (player->animType != ANIMATION_TYPE_MOVE) return;
+	if (!IsPlayerAnimMove(player->animType)) return;
 
 
 	Vector2 pos = player->transform.position;
@@ -670,13 +745,11 @@ void ClientWind::Move(void) {
 	Vector2 scl = Vector2(state->showMoveX, state->showMoveY);
 	Color col = Color::White;
 	// 移動
-	if (player->animType == ANIMATION_TYPE_MOVE) {
-		moveAnim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
-	}
+	moveAnim.Draw(prevPosition - MultiPlayClient::offset, rot, scl, col);
 }
 void ClientWind::Attack(void) {
 	// 攻撃アニメーションではないなら終了
-	if (player->animType != ANIMATION_TYPE_ATTACK) return;
+	if (!IsPlayerAnimAttack(player->animType)) return;
 
 
 

@@ -265,6 +265,9 @@
     <ClCompile Include="light_effect.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
+    <ClCompile Include="multi_animenum.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphical.h">
@@ -600,6 +603,33 @@
       <Filter>リソース ファイル</Filter>
     </None>
     <None Include="data\property\player.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv9.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv10.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv2.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv3.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv4.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv5.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv6.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv7.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv8.ini">
       <Filter>リソース ファイル</Filter>
     </None>
   </ItemGroup>

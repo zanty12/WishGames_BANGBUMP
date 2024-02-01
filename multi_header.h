@@ -50,7 +50,7 @@ struct CLIENT_DATA_CLIENT_SIDE {
 	int id = -1;												// ID
 	ATTRIBUTE_TYPE moveAttributeType = ATTRIBUTE_TYPE_FIRE;		// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType = ATTRIBUTE_TYPE_FIRE;	// 攻撃属性タイプ
-	MULTI_ANIMATION_TYPE animType;								// アニメーションタイプ
+	int animType;												// アニメーションタイプ
 	Vector2 position;											// 座標
 	Vector2 moveVelocity;										// 移動ベロシティ
 	Vector2 attackVelocity;										// 攻撃ベロシティ

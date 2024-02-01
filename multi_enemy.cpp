@@ -3,7 +3,11 @@
 
 void EnemyServerSide::Damage(AttackServerSide *attack) {
 	hp -= attack->atk;
-	if (hp <= 0) Destroy();
+	if (hp <= 0) {
+		// スキルオーブをドロップさせる
+		map->DropSkillOrb(deathDrop, transform.position, 10.0f);
+		Destroy();
+	}
 }
 void EnemyServerSide::BlownPlayers(void) {
 	// エネミーに対するダメージ処理
