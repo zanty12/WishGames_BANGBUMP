@@ -120,7 +120,6 @@ void MultiPlayServer::PlayerUpdate(void) {
 	std::cout << "UPD LOCK";
 #endif
 
-	std::cout << 0 << std::endl;
 	if (gameMode->GetGame()->IsPlayerMove()) {
 		// プレイヤーの更新
 		for (auto &kvp : clients_) {
@@ -129,10 +128,10 @@ void MultiPlayServer::PlayerUpdate(void) {
 
 			Input::SetState(0, client.currentInput);
 			Input::SetPreviousState(0, client.previousInput);
-			gameMode->GetMap()->Collision(player->transform.position, player->radius * 3.0f, &player->gravityVelocity);
+			//gameMode->GetMap()->Collision(player->transform.position, player->radius * 3.0f, &player->gravityVelocity);
 			player->map = gameMode->GetMap();
 			player->Loop();
-			//gameMode->GetMap()->Collision(player->transform.position, Vector2(player->radius * 0.5f, player->radius * 3.0f), &player->velocity, &player->gravityVelocity);
+			gameMode->GetMap()->Collision(player->transform.position, Vector2(player->radius * 0.5f, player->radius * 3.0f), &player->velocity, &player->gravityVelocity);
 
 #ifdef DEBUG_INPUT
 			std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
@@ -141,19 +140,15 @@ void MultiPlayServer::PlayerUpdate(void) {
 			std::cout << player->transform.position.x << ", " << player->transform.position.y << std::endl;
 #endif
 		}
-		std::cout << 1 << std::endl;
 
 		// スキルオーブの更新
 		gameMode->GetMap()->GetSkillOrbs()->AllLoop();
-		std::cout << 2 << std::endl;
 
 		// エネミーの更新
 		gameMode->GetMap()->GetEnemies()->AllLoop();
-		std::cout << 3 << std::endl;
 
 		// 攻撃オブジェクトの更新
 		gameMode->GetMap()->GetAttacks()->AllLoop();
-		std::cout << 4 << std::endl;
 
 		// 攻撃判定の更新
 		gameMode->GetMap()->AttackUpdate();
