@@ -3,6 +3,7 @@
 
 void EnemyServerSide::Damage(AttackServerSide *attack) {
 	hp -= attack->atk;
+	damageEffectAttributeType = true;
 	if (hp <= 0) {
 		// スキルオーブをドロップさせる
 		map->DropSkillOrb(deathDrop, transform.position, 10.0f);
@@ -34,6 +35,9 @@ void EnemyServerSide::BlownPlayers(void) {
 
 
 void Enemy1ServerSide::Loop(void) {
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
+
 	// 移動
 	transform.position += velocity;
 	if (map->Collision(transform.position, radius) != -1) {
@@ -53,6 +57,9 @@ void Enemy1ClientSide::Loop(void) {
 
 
 void Enemy2ServerSide::Loop(void) {
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
+
 	// 攻撃する
 	if (coolTime < spawnTimer.GetNowTime() * 0.001f) {
 		map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
@@ -108,6 +115,9 @@ void AttackEnemy2ClientSide::Loop(void) {
 
 
 void Enemy3ServerSide::Loop(void) {
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
+
 	ServerPlayer *targetPlayer = nullptr;
 	float minDistanceSq = -1.0f;
 
