@@ -599,5 +599,8 @@
     <None Include="data\property\enemy.ini">
       <Filter>リソース ファイル</Filter>
     </None>
+    <None Include="data\property\player.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

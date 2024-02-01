@@ -28,18 +28,19 @@ protected:
 
 public:
 	float power = 0.0f;					// パワー
-
+	int lv = 0;							// レベル
 	AttributeState *state = nullptr;	// 現在のステータス
 	AttributeState state_lv[10] = {};	// ステータス
+	int lvupPoint[10] = {};				// レベルアップに必要なポイント
 
 
 public:
 	ServerAttribute(ServerPlayer* player, std::wstring attributeName) : player(player) {
 		// ステータスを読み込む
-		int lv = 1;
-		for (auto &state : state_lv) {
-			state = AttributeState(attributeName, lv);
-			lv++;
+		std::wstring lvStr = L"lv";
+		for (int i = 0; i < 10; i++) {
+			state_lv[i] = AttributeState(attributeName, i + 1);
+			lvupPoint[i] = ini::GetInt(PARAM_PATH + L"player.ini", L"Player", L"lv", 0.5f);
 		}
 		// レベル1のステータスにする
 		state = state_lv;
@@ -52,6 +53,7 @@ public:
 	virtual AttackServerSide *CreateAttack(void);
 	virtual void DestroyAttack(void);
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
+	void LevelUpdate(void);
 	static ServerAttribute *Create(ServerPlayer *player, ATTRIBUTE_TYPE type);
 
 	void AddPower(void);

@@ -16,6 +16,22 @@ void ServerAttribute::DestroyAttack(void) {
 		attack_ = nullptr;
 	}
 };
+void ServerAttribute::LevelUpdate(void) {
+	int lv = 9;
+	// ƒŒƒxƒ‹‚ªãŒÀ‚Ìê‡
+	if (lvupPoint[lv] <= player->skillPoint) {
+		state = &state_lv[lv];
+		this->lv = lv;
+	}
+
+	// ƒŒƒxƒ‹‚Ì’²®
+	for (lv = 0; lv < 9; lv++) {
+		if (lvupPoint[lv] <= player->skillPoint && player->skillPoint < lvupPoint[lv + 1]) {
+			state = &state_lv[lv];
+			this->lv = lv;
+		}
+	}
+}
 
 ServerAttribute *ServerAttribute::Create(ServerPlayer *player, ATTRIBUTE_TYPE type) {
 	switch (type) {

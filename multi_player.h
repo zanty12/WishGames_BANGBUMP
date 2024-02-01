@@ -7,6 +7,7 @@
 #include "multi_map.h"
 #include "attribute_type.h"
 #include "multi_animenum.h"
+#include "multi_path.h"
 
 /*******************************************************
   Server
@@ -30,7 +31,11 @@ public:
 
 
 public:
-	ServerPlayer() { gravity = 0.01f; }
+	ServerPlayer() { 
+		radius = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"radius", 10.0f);
+		gravity = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"gravity", 0.01f);
+		maxGravity = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"maxGravity", 0.5f);
+	}
 	~ServerPlayer() {
 		if (moveAttribute) delete moveAttribute;
 		if (attackAttribute) delete attackAttribute;

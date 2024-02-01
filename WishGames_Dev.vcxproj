@@ -353,6 +353,7 @@
     <None Include="data\property\attribute_lv1.ini" />
     <None Include="data\property\enemy.ini" />
     <None Include="data\property\mode.ini" />
+    <None Include="data\property\player.ini" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

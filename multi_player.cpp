@@ -6,14 +6,19 @@
 
 
 void ServerPlayer::Loop(void) {
-
 	// —Ž‰º‚³‚¹‚é
 	gravityVelocity += Vector2::Down * gravity;
 	if (-maxGravity >= gravityVelocity.y) gravityVelocity.y = -maxGravity;
 
 	// ‘®«
-	if (moveAttribute) moveAttribute->Move();
-	if (attackAttribute) attackAttribute->Attack();
+	if (moveAttribute) {
+		moveAttribute->LevelUpdate();
+		moveAttribute->Move();
+	}
+	if (attackAttribute) {
+		attackAttribute->LevelUpdate();
+		attackAttribute->Attack();
+	}
 
 	// ‘®«Ø‚è‘Ö‚¦‚ª‚Á‚¿‚á‚ñ‚±II
 	if (0.75f < Input::GetTriggerLeft(0) && 0.75f < Input::GetTriggerRight(0)) {

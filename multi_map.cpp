@@ -250,15 +250,23 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 			// 判定できるなら
 			if (tmpId != -1) {
 				Vector2 cellPos = ToPosition({ x, y });							// セルの座標
+				float leftCell = cellPos.x - cellSize * 0.5f;
+				float rightCell = cellPos.x + cellSize * 0.5f;
+				float upCell = cellPos.y + cellSize * 0.5f;
+				float downCell = cellPos.y - cellSize * 0.5f;
 
-				// 左側（｜〇　｜）
-				if (cellPos.x - cellSize * 0.5f < position.x + scale.x * 0.5f) pushVector.x--;
-				// 右側（｜　〇｜）
-				if (position.x - scale.x * 0.5f < cellPos.x + cellSize * 0.5f) pushVector.x++;
-				// 上側（｜〇　｜）※左90度
-				if (cellPos.y - cellSize * 0.5f < position.y + scale.y * 0.5f) pushVector.y++;
-				// 下側（｜　〇｜）※左90度
-				if (position.y - scale.y * 0.5f < cellPos.y + cellSize * 0.5f) pushVector.y--;
+				float halfScaleX = scale.x * 0.5f;
+				float halfScaleY = scale.y * 0.5f;
+
+
+				// プレイヤーの左側
+				if (leftCell <= position.x - halfScaleX && position.x - halfScaleX <= rightCell) pushVector.x++;
+				// プレイヤーの右側
+				else if (leftCell <= position.x + halfScaleX && position.x + halfScaleX <= rightCell) pushVector.x--;
+				// プレイヤーの上側
+				if (downCell <= position.y + halfScaleY && position.y + halfScaleY <= upCell) pushVector.y--;
+				// プレイヤーの下側
+				else if (downCell <= position.y - halfScaleY && position.y - halfScaleY <= upCell) pushVector.y++;
 			}
 		}
 	}
