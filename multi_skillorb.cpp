@@ -40,7 +40,6 @@ void ServerSkillOrb::Loop(void) {
 
 
 ClientSkillOrb::ClientSkillOrb(Vector2 scale) {
-	texNo = LoadTexture(Asset::textures_.at(textures::skill_orb));
 	transform.scale = scale;
 }
 void ClientSkillOrb::Loop(void) {
@@ -48,3 +47,7 @@ void ClientSkillOrb::Loop(void) {
 	DrawSprite(texNo, transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
 	isShow = false;
 }
+
+ClientSkillOrbSmall::ClientSkillOrbSmall() : ClientSkillOrb(Vector2::One * 40) { texNo = LoadTexture("data/texture/Effect/effect_skillorb.png"); };
+ClientSkillOrbMidium::ClientSkillOrbMidium() : ClientSkillOrb(Vector2::One * 60) { texNo = LoadTexture("data/texture/Effect/effect_skillorb2.png"); };
+ClientSkillOrbBig::ClientSkillOrbBig() : ClientSkillOrb(Vector2::One * 80) { texNo = LoadTexture("data/texture/Effect/effect_skillorb3.png"); };

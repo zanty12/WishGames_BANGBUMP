@@ -56,14 +56,14 @@ public:
 };
 class ClientSkillOrbSmall : public ClientSkillOrb {
 public:
-	ClientSkillOrbSmall() : ClientSkillOrb(Vector2::One * 10) { };
+	ClientSkillOrbSmall();
 };
 class ClientSkillOrbMidium : public ClientSkillOrb {
 public:
-	ClientSkillOrbMidium() : ClientSkillOrb(Vector2::One * 50) { };
+	ClientSkillOrbMidium();
 };
 class ClientSkillOrbBig : public ClientSkillOrb {
 public:
-	ClientSkillOrbBig() : ClientSkillOrb(Vector2::One * 80) { };
+	ClientSkillOrbBig();
 };
 
