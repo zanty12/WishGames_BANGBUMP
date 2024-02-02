@@ -10,15 +10,17 @@
 
 using namespace Network;
 
+
+
 enum MULTI_MODE {
 	NONE = -1,
 	CHARACTER_SELECT = 0,
 	AREA_CAPTURE,
-	INTERMEDIATE_RESULT_1,
-	OBSTACLE_RACE,
-	INTERMEDIATE_RESULT_2,
+	//INTERMEDIATE_RESULT_1,
+	//OBSTACLE_RACE,
+	//INTERMEDIATE_RESULT_2,
 	ENEMY_RUSH,
-	INTERMEDIATE_RESULT_3,
+	//INTERMEDIATE_RESULT_3,
 	FINAL_BATTLE,
 };
 
@@ -48,7 +50,7 @@ struct CLIENT_DATA_CLIENT_SIDE {
 	int id = -1;												// ID
 	ATTRIBUTE_TYPE moveAttributeType = ATTRIBUTE_TYPE_FIRE;		// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType = ATTRIBUTE_TYPE_FIRE;	// 攻撃属性タイプ
-	MULTI_ANIMATION_TYPE animType;								// アニメーションタイプ
+	int animType;												// アニメーションタイプ
 	Vector2 position;											// 座標
 	Vector2 moveVelocity;										// 移動ベロシティ
 	Vector2 attackVelocity;										// 攻撃ベロシティ

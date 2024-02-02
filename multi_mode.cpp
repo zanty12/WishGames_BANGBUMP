@@ -1,4 +1,5 @@
 #include "multi_mode.h"
+#include "multiplay.h"
 
 void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
 	// 中間リザルトの経過時間を計算
@@ -8,6 +9,29 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 	if (time < 0.0f) return;
 
 
+}
+
+void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
+	float time = players.time;
+
+	const float SPAWN_ANIMATION_TIME = 3.0f;
+	float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
+	// スポーンさせる
+	if (spawnSpanTime * clientSpawnCount <= time) {
+
+		// イテレータ
+		auto iterator = players.clients.begin();
+
+		// アニメーションするプレイヤーのイテレータ
+		for (int i = 0; i < clientSpawnCount && iterator != players.clients.end(); i++) iterator++;
+
+		// イテレータが存在するなら
+		if (iterator != players.clients.end()) {
+			// アニメーションする
+			MultiPlayClient::clients[iterator->id]->ShowEntry();
+		}
+		clientSpawnCount++;
+	}
 }
 
 void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offset) {

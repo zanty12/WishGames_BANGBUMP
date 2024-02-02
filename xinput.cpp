@@ -70,6 +70,13 @@ float Input::GetTriggerLeft(int index) {
     return state[index].Gamepad.bLeftTrigger / 255.0f;
 }
 
+void Input::Vibration(int index, float left, float right) {
+    XINPUT_VIBRATION vibration = {};
+    vibration.wLeftMotorSpeed = left * 65535u;
+    vibration.wRightMotorSpeed = right * 65535u;
+    XInputSetState(index, &vibration);
+}
+
 Vector2 Input::GetPreviousStickRight(int index) {
     SHORT x = previous[index].Gamepad.sThumbRX;
     SHORT y = previous[index].Gamepad.sThumbRY;

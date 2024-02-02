@@ -1,6 +1,7 @@
 #pragma once
 #include <map>
 #include "multi_mode.h"
+#include "multi_runenum.h"
 #include "lib/math.h"
 #include "asset.h"
 #include "prep.h"
@@ -31,7 +32,7 @@ private:
 
 public:
 	MultiPlayCharacterSelectModeServerSide(MultiPlayServer *game)
-		: MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map0.csv"), L"CharacterSelect"), game_(game) {
+		: MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map0.csv", MULTIPLAY_RUN_TYPE_SERVER), L"CharacterSelect"), game_(game) {
 	}
 
 	void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override;
@@ -83,7 +84,7 @@ private:
 	void CharacterDraw(int idx, int maxIdx, float protrude, float gap, float showAttribute, float showRateMin, float showRateMax);
 
 public:
-	MultiPlayCharacterSelectModeClientSide(MultiPlayClient * game) : MultiPlayModeClientSide(new MultiMap(MAP_PATH + "MultiPlay_Map0.csv"), L"CharacterSelect"), game_(game) {
+	MultiPlayCharacterSelectModeClientSide(MultiPlayClient * game) : MultiPlayModeClientSide(new MultiMap(MAP_PATH + "MultiPlay_Map0.csv", MULTIPLAY_RUN_TYPE_CLIENT), L"CharacterSelect"), game_(game) {
 		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
 		video = new Video("./data/video/fire_move.mp4");

@@ -10,6 +10,7 @@
 #include "multi_player.h"
 #include "storage_lock.h"
 #include "light_effect.h"
+#include "multi_effect.h"
 #include <fstream>
 
 extern std::wstring ParamPath;
@@ -87,12 +88,13 @@ public:
 class MultiPlayClient {
 private:
 	static int id;										// ID
+	static MultiPlayFlowClientSide *gameMode;			// ゲームモード
 	Socket sockfd_;										// ソケット
 	Address serverAddr;									// アドレス
 	FD readfd_;											// ファイルディスクリプタ
 	Storage sendBuff = Storage(1024);					// 送信バッファ
 	Storage recvBuff = Storage(1024);					// 受信バッファ
-	MultiPlayFlowClientSide *gameMode = nullptr;		// ゲームモード
+
 	RESPONSE_PLAYER res_;								// レスポンス
 	char *recvTmpBuff = nullptr;						// 受信バッファ（仮格納用）
 	LightEffect lightEffect;
@@ -107,7 +109,7 @@ public:
 	int texNo = 0;
 	ATTRIBUTE_TYPE move_ = ATTRIBUTE_TYPE_FIRE;
 	ATTRIBUTE_TYPE action_ = ATTRIBUTE_TYPE_FIRE;
-	std::unordered_map<int, ClientPlayer *> clients;		// 描画用クライアント
+	static std::unordered_map<int, ClientPlayer *> clients;		// 描画用クライアント
 	std::unordered_map<int, GameObjectClientSide *> objects;	// 描画用オブジェクト
 
 	MultiPlayClient();
@@ -144,13 +146,7 @@ public:
 
 
 
-
-	std::list<RESPONSE_PLAYER::DESC>::iterator find(int id, std::list<RESPONSE_PLAYER::DESC> clients) {
-		return std::find_if(clients.begin(), clients.end(), [&](RESPONSE_PLAYER::DESC client) {
-			return client.id == id;
-			}
-		);
-	}
-
 	static int GetID(void) { return id; }
+
+	static MultiPlayFlowClientSide *GetGameMode(void) { return gameMode; }
 };

@@ -3,7 +3,12 @@
 
 void EnemyServerSide::Damage(AttackServerSide *attack) {
 	hp -= attack->atk;
-	if (hp <= 0) Destroy();
+	damageEffectAttributeType = true;
+	if (hp <= 0) {
+		// スキルオーブをドロップさせる
+		map->DropSkillOrb(deathDrop, transform.position, 10.0f);
+		Destroy();
+	}
 }
 void EnemyServerSide::BlownPlayers(void) {
 	// エネミーに対するダメージ処理
@@ -15,10 +20,11 @@ void EnemyServerSide::BlownPlayers(void) {
 
 		// ダメージ
 		if (maxRadiusSq >= Vector2::DistanceSq(transform.position, player->transform.position)) {
+			// ドロップ
 			player->SkillOrbDrop(atkDrop);
 			// 吹き飛ばす
 			Vector2 direction = player->transform.position - transform.position;
-			player->blownVelocity = direction.Normalize() * 30.0f;
+			player->blownVelocity = direction.Normalize() * knockbackRate;
 		}
 	}
 }
@@ -29,6 +35,9 @@ void EnemyServerSide::BlownPlayers(void) {
 
 
 void Enemy1ServerSide::Loop(void) {
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
+
 	// 移動
 	transform.position += velocity;
 	if (map->Collision(transform.position, radius) != -1) {
@@ -48,6 +57,9 @@ void Enemy1ClientSide::Loop(void) {
 
 
 void Enemy2ServerSide::Loop(void) {
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
+
 	// 攻撃する
 	if (coolTime < spawnTimer.GetNowTime() * 0.001f) {
 		map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
@@ -103,6 +115,9 @@ void AttackEnemy2ClientSide::Loop(void) {
 
 
 void Enemy3ServerSide::Loop(void) {
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
+
 	ServerPlayer *targetPlayer = nullptr;
 	float minDistanceSq = -1.0f;
 
@@ -128,6 +143,7 @@ void Enemy3ServerSide::Loop(void) {
 		velocity = velocity.Normalize() * speed;
 		this->velocity = velocity;
 	}
+	else velocity = Vector2::Zero;
 
 	// 移動
 	transform.position += velocity;
@@ -141,4 +157,6 @@ void Enemy3ClientSide::Loop(void) {
 	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White, velocity.x > 0.0f);
 	isShow = false;
 }
+
+
 
