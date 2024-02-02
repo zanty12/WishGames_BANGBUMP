@@ -82,6 +82,7 @@ void Fire::Action()
 {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
+    stick.y *= -1;
 
     if (stick.x > 0.0f)
     {

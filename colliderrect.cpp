@@ -1,5 +1,7 @@
 #include "colliderrect.h"
 
+#include <libavutil/mathematics.h>
+
 #include "bossatk.h"
 #include "gamebase.h"
 
@@ -10,7 +12,6 @@ ColliderRect::ColliderRect(GameObject* parent, bool movable) : Collider(RECTANGL
         Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),
         Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2),
         Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2));
-    rect_.Rotate(parent->GetRot());
     GameBase::GetCollMngr()->Add(this);
 }
 
@@ -55,7 +56,7 @@ void ColliderRect::Update()
         rect_.d = Vector2(GetPos().x - GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
     }
 
-    //Žè”²‚«‚Å‚«‚È‚©‚Á‚½
+    //Å½Ã¨â€Â²â€šÂ«â€šÃ…â€šÂ«â€šÃˆâ€šÂ©â€šÃâ€šÂ½
     //rect_.Rotate(GetParent()->GetRot());
     //apply rotation around center of collider
     Vector2 center = GetPos(); // Center of the rectangle
@@ -77,7 +78,7 @@ void ColliderRect::Update()
 
 void ColliderRect::CollisionInteract()
 {
-    if(GetParent()->GetType() == OBJ_ATTACK || GetParent()->GetType() == OBJ_VOID)
+    if (GetParent()->GetType() == OBJ_ATTACK || GetParent()->GetType() == OBJ_VOID)
         return;
     for (auto& other : collision_)
     {

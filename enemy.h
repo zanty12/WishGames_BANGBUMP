@@ -73,6 +73,7 @@ public:
         SetCollider(nullptr);
         GetAnimator()->SetTexenum(effect_enemydead);
         GetAnimator()->SetLoopAnim(EFFECT_ENEMYDEAD_ANIM);
+        GetCollider()->Discard();
     }
 
     bool EffectEnd(void) {
