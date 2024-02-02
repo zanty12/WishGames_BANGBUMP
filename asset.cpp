@@ -3,10 +3,101 @@
 #include "skillorb.h"
 
 const std::map<textures, std::string> Asset::textures_ = {
-    {textures::player, "data/texture/player.png"},
-    {textures::fire_attack, "data/texture/attack/fire_attack.png"},
-    {textures::wind_attack, "data/texture/attack/wind_attack.png"},
-    {textures::water_attack, "data/texture/attack/water_attack.png"},
+    //player
+     {textures::player, "data/texture/player.png"},
+
+     {textures::player1_12, "data/texture/Player/player1/player1_12.png"},
+     {textures::player1_13, "data/texture/Player/player1/player1_13.png"},
+     {textures::player1_14, "data/texture/Player/player1/player1_14.png"},
+     {textures::player1_21, "data/texture/Player/player1/player1_21.png"},
+     {textures::player1_23, "data/texture/Player/player1/player1_23.png"},
+     {textures::player1_24, "data/texture/Player/player1/player1_24.png"},
+     {textures::player1_31, "data/texture/Player/player1/player1_31.png"},
+     {textures::player1_32, "data/texture/Player/player1/player1_32.png"},
+     {textures::player1_34, "data/texture/Player/player1/player1_34.png"},
+     {textures::player1_41, "data/texture/Player/player1/player1_41.png"},
+     {textures::player1_42, "data/texture/Player/player1/player1_42.png"},
+     {textures::player1_43, "data/texture/Player/player1/player1_43.png"},
+
+     {textures::player2_12, "data/texture/Player/player2/player2_12.png"},
+     {textures::player2_13, "data/texture/Player/player2/player2_13.png"},
+     {textures::player2_14, "data/texture/Player/player2/player2_14.png"},
+     {textures::player2_21, "data/texture/Player/player2/player2_21.png"},
+     {textures::player2_23, "data/texture/Player/player2/player2_23.png"},
+     {textures::player2_24, "data/texture/Player/player2/player2_24.png"},
+     {textures::player2_31, "data/texture/Player/player2/player2_31.png"},
+     {textures::player2_32, "data/texture/Player/player2/player2_32.png"},
+     {textures::player2_34, "data/texture/Player/player2/player2_34.png"},
+     {textures::player2_41, "data/texture/Player/player2/player2_41.png"},
+     {textures::player2_42, "data/texture/Player/player2/player2_42.png"},
+     {textures::player2_43, "data/texture/Player/player2/player2_43.png"},
+
+     {textures::player3_12, "data/texture/Player/player3/player3_12.png"},
+     {textures::player3_13, "data/texture/Player/player3/player3_13.png"},
+     {textures::player3_14, "data/texture/Player/player3/player3_14.png"},
+     {textures::player3_21, "data/texture/Player/player3/player3_21.png"},
+     {textures::player3_23, "data/texture/Player/player3/player3_23.png"},
+     {textures::player3_24, "data/texture/Player/player3/player3_24.png"},
+     {textures::player3_31, "data/texture/Player/player3/player3_31.png"},
+     {textures::player3_32, "data/texture/Player/player3/player3_32.png"},
+     {textures::player3_34, "data/texture/Player/player3/player3_34.png"},
+     {textures::player3_41, "data/texture/Player/player3/player3_41.png"},
+     {textures::player3_42, "data/texture/Player/player3/player3_42.png"},
+     {textures::player3_43, "data/texture/Player/player3/player3_43.png"},
+
+     {textures::player4_12, "data/texture/Player/player4/player4_12.png"},
+     {textures::player4_13, "data/texture/Player/player4/player4_13.png"},
+     {textures::player4_14, "data/texture/Player/player4/player4_14.png"},
+     {textures::player4_21, "data/texture/Player/player4/player4_21.png"},
+     {textures::player4_23, "data/texture/Player/player4/player4_23.png"},
+     {textures::player4_24, "data/texture/Player/player4/player4_24.png"},
+     {textures::player4_31, "data/texture/Player/player4/player4_31.png"},
+     {textures::player4_32, "data/texture/Player/player4/player4_32.png"},
+     {textures::player4_34, "data/texture/Player/player4/player4_34.png"},
+     {textures::player4_41, "data/texture/Player/player4/player4_41.png"},
+     {textures::player4_42, "data/texture/Player/player4/player4_42.png"},
+     {textures::player4_43, "data/texture/Player/player4/player4_43.png"},
+
+     //attibute_move
+     {textures::fire_move, "data/texture/Move/effect_fire_move.png"},
+     {textures::dark_idle, "data/texture/Move/effect_water_idle.png"},
+     {textures::dark_move, "data/texture/Move/effect_water_move.png"},
+     {textures::thunder_move, "data/texture/Move/effect_thunder_move.png"},
+     {textures::wind_idle, "data/texture/Move/effect_wind_idle.png"},
+     {textures::wind_move, "data/texture/Move/effect_wind_move.png"},
+     {textures::dark_move_charge, "data/texture/Move/effect_water_charge.png"},
+     {textures::thunder_move_charge, "data/texture/Move/effect_thunder_charge.png"},
+
+     //attibute_attack
+     {textures::fire_attack, "data/texture/Attack/effect_fire_attack.png"},
+     {textures::dark_attack, "data/texture/Attack/effect_water_attack.png"},
+     {textures::thunder_attack, "data/texture/Attack/effect_thunder_arrow.png"},
+     {textures::wind_attack, "data/texture/Attack/effect_wind_attack.png"},
+
+     //enemy
+     {textures::enemy1_anim,"data/texture/Enemy/enemy1_anim.png"},
+     {textures::enemy2_anim,"data/texture/Enemy/enemy2_anim.png"},
+     {textures::enemy3_anim,"data/texture/Enemy/enemy3_anim.png"},
+     {textures::enemy2_attack,"data/texture/Enemy/effect_enemy2_attack.png"},
+
+     //boss
+     {textures::boss_idle,"data/texture/Boss/boss_idle.png"},
+     {textures::boss_attack_fire,"data/texture/Boss/effect_boss_fire.png"},
+     {textures::boss_attack_thunder,"data/texture/Boss/effect_boss_thunder.png"},
+     {textures::boss_attack_water,"data/texture/Boss/effect_boss_water.png"},
+     {textures::boss_attack_wind,"data/texture/Boss/effect_boss_wind.png"},
+
+     //effect
+     {textures::effect_dead,"data/texture/Effect/effect_dead.png"},
+     {textures::effect_enemydead,"data/texture/Effect/effect_enemydead.png"},
+     {textures::effect_spawn,"data/texture/Effect/effect_spawn.png"},
+     {textures::effect_hit,"data/texture/Effect/HitEffect/effect_hit_all.png"},
+     {textures::effect_hit_fire,"data/texture/Effect/HitEffect/effect_hit_fire.png"},
+     {textures::effect_hit_dark,"data/texture/Effect/HitEffect/effect_hit_water.png"},
+     {textures::effect_hit_thunder,"data/texture/Effect/HitEffect/effect_hit_thunder.png"},
+     {textures::effect_hit_wind,"data/texture/Effect/HitEffect/effect_hit_wind.png"},
+
+
     {textures::skill_orb, "data/texture/blocks/skillorb.png"},
     {textures::bg_stage1_front, "data/texture/bg/BG_stage1_front.png"},
     {textures::bg_stage1_back, "data/texture/bg/BG_stage1_back.png"},
@@ -29,6 +120,7 @@ const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::strin
 
 const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{
     {maps::test, "data/map/1.csv"},
+    {maps::test2, "data/map/2.csv"},
     {maps::single_stage_1, "data/map/SoloPlay_map.csv"},
     {maps::single_stage_2, "data/map/Boss_Map.csv"},
 };

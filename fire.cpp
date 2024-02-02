@@ -7,12 +7,32 @@
 #include "sprite.h"
 #include"lib/collider2d.h"
 
+Fire::Fire(Player* player)
+    : Attribute(player, ATTRIBUTE_TYPE_FIRE), move_effect_(new FireEffect(this))
+{
+}
+
 Vector2 Fire::Move()
 {
     Vector2 stick = Input::GetStickLeft(0);
     stick.y *= -1;
+
+    Vector2 stickR = Input::GetStickRight(0);
+    if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
+        abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
+    {
+        if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
+            player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
+    }
+
     if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() < speed * Time::GetDeltaTime())
     {
+        //エフェクト表示
+        move_effect_->SetColor(Color(1, 1, 1, 1));
+        move_effect_->GetAnimator()->SetIsAnim(true);
+        move_effect_->Update();
+
         Vector2 dir = stick.Normalize();
         Vector2 vel = player_->GetVel() + dir * speed * Time::GetDeltaTime() * Time::GetDeltaTime();
         Vector2 player_dir = player_->GetVel().Normalize();
@@ -23,8 +43,13 @@ Vector2 Fire::Move()
         player_->SetGravityState(GRAVITY_NONE);
         return vel;
     }
-    else if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() > speed * Time::GetDeltaTime())
+    else if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() >= speed * Time::GetDeltaTime())
     {
+        //エフェクト表示
+        move_effect_->SetColor(Color(1, 1, 1, 1));
+        move_effect_->GetAnimator()->SetIsAnim(true);
+        move_effect_->Update();
+
         Vector2 dir = stick.Normalize();
         Vector2 vel = dir * speed * Time::GetDeltaTime();
         player_->SetGravityState(GRAVITY_NONE);
@@ -32,6 +57,11 @@ Vector2 Fire::Move()
     }
     else
     {
+        if (move_effect_)   //操作をやめたら非表示
+        {
+            move_effect_->SetColor(Color(1, 1, 1, 0));
+        }
+
         player_->SetGravityState(GRAVITY_FULL);
         if (player_->GetVel().Distance() > Player::GRAVITY_SCALE_ * Time::GetDeltaTime())
             return player_->GetVel() * friction;
@@ -47,6 +77,8 @@ void Fire::Action()
 
     if (responseMinStickDistance < stick.Distance())
     {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_ATTACK_ANIM);
+
         //get angle from stick
         float angle = atan2(stick.y, stick.x);
         if (attack_ == nullptr)
@@ -55,7 +87,7 @@ void Fire::Action()
         Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2);
         pos = player_->GetPos() + pos;
         attack_->SetPos(pos);
-        attack_->SetRot(angle);
+        attack_->SetRot(angle + (3.14f / 2));
     }
     else
     {
@@ -84,8 +116,13 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);
-    SetMaxTick(1.0f / 3.0f);
-    //SetDamage(50);
+    SetMaxTick(0.01);
+    SetDamage(50);
+
+    //アニメーション設定
+    GetAnimator()->SetTexenum(fire_attack);
+    GetAnimator()->SetLoopAnim(FIRE_ATTACK_ANIM);
+    GetAnimator()->SetDrawPriority(75);
 }
 
 void FireAttack::Update()
@@ -106,6 +143,11 @@ void FireAttack::Update()
                     {
                         SetTick(0.0f);
                         enemy->SetHp(enemy->GetHp() - GetDamage());
+
+                        //エフェクトの生成
+                        Vector2 pos = enemy->GetPos();
+                        Vector2 scale = enemy->GetScale();
+                        AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_fire, EFFECT_HIT_FIRE_ANIM));
                     }
                 }
             }
@@ -114,4 +156,33 @@ void FireAttack::Update()
             break;
         }
     }
+
+    HitEffectUpdate();  //エフェクトのアップデート
+}
+
+FireEffect::FireEffect(Fire* parent)
+    :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(fire_move)), Vector2::Zero),
+    parent_(parent)
+{
+    SetType(OBJ_VOID);
+
+    //アニメーション設定
+    SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
+    GetAnimator()->SetTexenum(fire_move);
+    GetAnimator()->SetLoopAnim(FIRE_MOVE_ANIM);
+    GetAnimator()->SetDrawPriority(25);
+    SetColor(Color(0, 0, 0, 0));
+}
+
+void FireEffect::Update()
+{
+    Vector2 stick = Input::GetStickLeft(0);
+
+    float rot = atan2(-stick.y, -stick.x);
+    SetRot(rot);
+
+    Vector2 pos = parent_->GetPlayer()->GetPos();
+    SetPos(pos);
+
+    parent_->GetPlayer()->GetAnimator()->SetLoopAnim(PLAYER_FD_MOVE_ANIM);
 }

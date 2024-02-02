@@ -31,6 +31,7 @@ public:
     Collider(COLLIDER_TYPE type, GameObject* parent,bool movable);
     virtual ~Collider() = default;
     virtual void Update() = 0;
+    void Draw(int tex, Vector2 offset);
     virtual bool Collide(Collider* other) = 0;
 
     virtual void CollisionInteract() = 0;

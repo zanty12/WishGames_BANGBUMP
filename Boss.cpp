@@ -7,8 +7,10 @@
 #include <random>
 #include "scene.h"
 
+#include "bossatk.h"
+
 Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
-    : Enemy(x, y, LoadTexture("data/texture/boss.png"), enemy_mngr)
+    : Enemy(x, y, LoadTexture("data/texture/boss.png"), enemy_mngr),thunder_on_(false)
 {
     startPosition = GetPos();
     SetScale(Vector2(SIZE_ * 6, SIZE_ * 6));
@@ -17,6 +19,11 @@ Boss::Boss(int x, int y, EnemyMngr* enemy_mngr)
     atk_time_ = 0;
     atk_now = false;
     srand((unsigned int)time(NULL));
+
+    //アニメーター設定
+    SetTexNo(LoadTexture(Asset::GetAsset(boss_idle)));
+    GetAnimator()->SetTexenum(boss_idle);
+    GetAnimator()->SetLoopAnim(BOSS_IDLE_ANIM);
 }
 
 void Boss::Update()
@@ -24,7 +31,6 @@ void Boss::Update()
     //HPが0になったら消す,リザルトへ
     if (GetHp() <= 0)
     {
-        GameObject::Discard();
         Discard();
         GetEnemyMngr()->GetMapMngr()->GetGame()->SetChangeScene(1);
     }
@@ -53,7 +59,10 @@ void Boss::Update()
 
     GetAnimator()->SetIsAnim(true);
 
-
+    if (thunder_on_)
+    {
+        Thunder();
+    }
 
 }
 
@@ -71,7 +80,8 @@ void Boss::Atk()
 
     if (boosrand < 10)
     {
-        Thunder();
+        thunder_num_ = 0;
+        thunder_on_ = true;
     }
     else if (boosrand > 10 && boosrand < 30)
     {
@@ -106,34 +116,49 @@ void Boss::Fire()
 void Boss::Thunder()
 {
     //１ヒット　２００ダメージ
-    atk_time_ ++;
 
-    if (atk_time_ > 0 && atk_time_ < 2)
+    if (thunder_num_ == 0)
     {
-        Boss_Thunder* thunder = new Boss_Thunder(startPosition);
-        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder);
+        atk_thunder_ = new Boss_Thunder(startPosition);
+        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(atk_thunder_);
         SetAtk(200);
+
+        thunder_num_++;
+        thunder_die_ = false;
     }
-    else if (atk_time_ > 2 && atk_time_ < 4)
+    else if (thunder_num_ == 1 && thunder_die_)
     {
-        Boss_Thunder* thunder1 = new Boss_Thunder(startPosition);
-        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder1);
-        thunder1->SetVel(Vector2(0.0f, thunder1->GetVel().y));
+        atk_thunder_ = new Boss_Thunder(startPosition);
+        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(atk_thunder_);
+        atk_thunder_->SetVel(Vector2(0.0f, atk_thunder_->GetVel().y));
         SetAtk(200);
+
+        thunder_num_++;
+        thunder_die_ = false;
     }
-    else if (atk_time_ > 4 && atk_time_ < 6)
+    else if (thunder_num_ == 2 && thunder_die_)
     {
-        Boss_Thunder* thunder2 = new Boss_Thunder(startPosition);
-        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(thunder2);
-        thunder2->SetVel(Vector2(thunder2->GetVel().x * -1, thunder2->GetVel().y));
+        atk_thunder_ = new Boss_Thunder(startPosition);
+        GetEnemyMngr()->GetMapMngr()->GetGame()->GetProjectileMngr()->Add(atk_thunder_);
+        atk_thunder_->SetVel(Vector2(atk_thunder_->GetVel().x * -1, atk_thunder_->GetVel().y));
         SetAtk(200);
+
+        thunder_num_++;
+        thunder_die_ = false;
+    }
+    else if (thunder_num_ == 3 && thunder_die_)
+    {
+        thunder_on_ = false;
+        thunder_die_ = false;
+
+        return;
     }
 
-    if (atk_time_ > 6)
+    if (atk_thunder_->GetAtkEnd())
     {
-        atk_time_ = 0;
+        atk_thunder_->Discard();
+        thunder_die_ = true;
     }
-    
 
 }
 

@@ -159,6 +159,7 @@
     <ClCompile Include="graphical.cpp" />
     <ClCompile Include="enemy1.cpp" />
     <ClCompile Include="id.cpp" />
+    <ClCompile Include="image_data.cpp" />
     <ClCompile Include="ini.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="colliderrect.cpp" />
+    <ClCompile Include="playerattack.cpp" />
     <ClCompile Include="prep.cpp" />
     <ClCompile Include="projectilemngr.cpp" />
     <ClCompile Include="renderer.cpp" />
@@ -242,6 +244,7 @@
     <ClInclude Include="gset.h" />
     <ClInclude Include="id.h" />
     <ClInclude Include="ini.h" />
+    <ClInclude Include="image_data.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />
     <ClInclude Include="lib\imgui\imgui_impl_dx11.h" />

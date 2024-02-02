@@ -9,33 +9,63 @@ bool CheckLength(Vector2 a, Vector2 b, float len);
 
 void Enemy1::Update()
 {
-    //HPが0になったら消す
-    if (GetHp() <= 0)
-    {
-        GameObject::Discard();
-		Discard();
+	//HPが0になったら消す
+	if (GetHp() <= 0)
+	{
+		SetColor(Color(0, 0, 0, 0));    //透明にする
+		SetType(OBJ_VOID);  //当たり判定を消す
+		GetAnimator()->SetIsAnim(false);    //アニメーションをしない
+		if (dead_effect_ == nullptr)
+		{
+			dead_effect_ = new EnemyDeadEffect(GetPos());   //エフェクト生成
+			dead_effect_->SetScale(GetScale());
+		}
+
 		DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_SMALL);
-    }
+	}
+
+	//消滅エフェクト
+	if (dead_effect_)
+	{
+		//エフェクトが終了したらDiscard
+		if (dead_effect_->EffectEnd())
+		{
+			delete dead_effect_;
+			dead_effect_ = nullptr;
+			Discard();
+		}
+
+		//エネミーには何もさせない
+		return;
+	}
 
 	CollisionAction();
 
-    GetAnimator()->SetIsAnim(true);
+	GetAnimator()->SetIsAnim(true);
 
-    if (!CheckLength(GetPos(), startPosition, (SIZE_ * 3.0f)))
-    {
-        startPosition = GetPos();
-        SetVel(Vector2(GetVel().x * -1, GetVel().y));
-        dir_ *= -1;
-		SetScale(Vector2(GetScale().x * -1, GetScale().y));
-    }
+	if (!CheckLength(GetPos(), startPosition, (SIZE_ * 3.0f)))
+	{
+		startPosition = GetPos();
+		SetVel(Vector2(GetVel().x * -1, GetVel().y));
+		dir_ *= -1;
+		GetAnimator()->Invert();    //反転
+	}
 
-    this->AddVel(GetVel());
+	if (GetFlashing())
+	{
+		blinking();
+	}
+
+	this->AddVel(GetVel());
 }
 
 void Enemy1::CollisionAction(void)
 {
 	std::list<Collider*> collisions = GetCollider()->GetCollision();
 
+	if (collisions.size() >1 ) {
+		std::cout << "hit" << collisions.size()<<"\n";
+	}
 	for (auto collision : collisions)
 	{
 		OBJECT_TYPE type = collision->GetParent()->GetType();
@@ -43,10 +73,14 @@ void Enemy1::CollisionAction(void)
 		{
 		case OBJ_PLAYER:
 		{
-			GameObject* attack = collision->GetParent();
-			if (attack != nullptr)
+			GameObject* obj = collision->GetParent();
+			if (obj != nullptr)
 			{
-				blinking(attack);
+				//★テスト★
+				//Player* player = dynamic_cast<Player*>(obj);
+				//player->HpDown(300);
+
+				Flashing();
 			}
 
 			break;
@@ -72,27 +106,27 @@ void Enemy1::CollisionAction(void)
 //================================================================================
 void Enemy1::CollisionSpike(void)
 {
-    dir_ = GetVel().Normalize();
-    if (abs(GetVel().x) < 0.1f && abs(GetVel().y < 0.1f))
-    {
-        if (GetVel().x != 0.0f)
-            SetVel(Vector2(0.0f, GetVel().y));
-        if (GetVel().y != 0.0f)
-            SetVel(Vector2(GetVel().x, 0.0f));
+	dir_ = GetVel().Normalize();
+	if (abs(GetVel().x) < 0.1f && abs(GetVel().y < 0.1f))
+	{
+		if (GetVel().x != 0.0f)
+			SetVel(Vector2(0.0f, GetVel().y));
+		if (GetVel().y != 0.0f)
+			SetVel(Vector2(GetVel().x, 0.0f));
 
-        //knockback_end_がバグるのでそのまま
-        knockback_start_ = GetPos();
-        knockback_end_ = GetPos();
-        return;
-    }
-    dir_ *= -1; //反転させる
+		//knockback_end_がバグるのでそのまま
+		knockback_start_ = GetPos();
+		knockback_end_ = GetPos();
+		return;
+	}
+	dir_ *= -1; //反転させる
 
-    HpDown(6);
+	HpDown(6);
 
-    knockback_distance_ = SIZE_;
+	knockback_distance_ = SIZE_;
 
-    knockback_start_ = GetPos();
-    knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+	knockback_start_ = GetPos();
+	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
 }
 
 ////================================================================================
@@ -147,10 +181,10 @@ void Enemy1::CollisionSpike(void)
 bool CheckLength(Vector2 a, Vector2 b, float len)
 {
 
-    if (Vector2::Distance(a, b) < len)
-    {
-        return true;
-    }
+	if (Vector2::Distance(a, b) < len)
+	{
+		return true;
+	}
 
-    return false;
+	return false;
 }

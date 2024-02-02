@@ -2,6 +2,7 @@
 #include <list>
 
 #include "animator.h"
+#include "image_data.h"
 
 class Animator;
 class Camera;
@@ -24,6 +25,9 @@ public:
         }
         animators_.clear();
     }
+
+    void InitRenderer();
+
     void Update();
     void Draw();
     void Draw(Camera* camera);

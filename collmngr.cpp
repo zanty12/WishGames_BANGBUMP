@@ -119,6 +119,24 @@ void CollMngr::Update()
         prev_time_ = Time::GetCurrentTime();
 }
 
+void CollMngr::Draw(Camera* camera)
+{
+#if 0
+    //šƒeƒXƒgš
+    int tex = LoadTexture("data/texture/collision.png");
+
+    Vector2 offset = camera->GetCameraOffset();
+
+    for (const auto collider : dynamic_colliders_)
+    {
+        if (camera->InCamera(collider->GetPos()))
+        {
+            collider->Draw(tex, offset);
+        }
+    }
+#endif
+}
+
 void CollMngr::Collision(Collider* collider, Collider* other)
 {
     if (collider == other)

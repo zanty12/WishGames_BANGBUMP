@@ -28,6 +28,12 @@ public:
         SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
         SetAtk(5);
         SetHp(20);
+        SetType(OBJ_ENEMY);
+
+        //アニメーター設定
+        SetTexNo(LoadTexture(Asset::GetAsset(enemy1_anim)));
+        GetAnimator()->SetTexenum(enemy1_anim);
+        GetAnimator()->SetLoopAnim(ENEMY_1_ANIM);
     }
 
     void Update() override;
