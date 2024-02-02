@@ -56,7 +56,7 @@ void ColliderRect::Update()
         rect_.d = Vector2(GetPos().x - GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
     }
 
-    //Žè”²‚«‚Å‚«‚È‚©‚Á‚½
+    //Å½Ã¨â€Â²â€šÂ«â€šÃ…â€šÂ«â€šÃˆâ€šÂ©â€šÃâ€šÂ½
     //rect_.Rotate(GetParent()->GetRot());
     //apply rotation around center of collider
     Vector2 center = GetPos(); // Center of the rectangle
