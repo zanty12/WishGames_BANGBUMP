@@ -83,7 +83,8 @@ void Enemy2ServerSide::Loop(void) {
 		}
 
 		// •ûŒü‚ðŒˆ‚ß‚é
-		velocity = (targetPosition - transform.position).Normalize() * 10.0f;
+		if (targetPosition != Vector2::Zero) bullet->velocity = (targetPosition - transform.position).Normalize() * 10.0f;
+		else bullet->velocity = Vector2::Down * 10.0f;
 
 		spawnTimer.Start();
 	}
@@ -99,6 +100,9 @@ void Enemy2ClientSide::Loop(void) {
 void AttackEnemy2ServerSide::Loop(void) {	
 	// ˆÚ“®
 	transform.position += velocity;
+
+	if (MultiPlayClient::GetGameMode())
+		if (MultiPlayClient::GetGameMode()->GetMap()->Collision(transform.position, radius) != -1) Destroy();
 }
 void AttackEnemy2ServerSide::KnockBack(ServerMovableGameObject *object) {
 	object->blownVelocity = (object->transform.position - transform.position) * knockbackRate;

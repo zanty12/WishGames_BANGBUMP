@@ -602,7 +602,7 @@ bool ServerWind::StickTrigger(Vector2 stick, Vector2 previousStick) {
 	float stickDistance = stick.Distance();
 	float preStickDistance = previousStick.Distance();
 
-	if (state->minInputSpeed < MATH::Abs(Vector2::Cross(stick, previousStick)) &&
+	if (state->minInputSpeed < MATH::Abs(Vector2::Cross(stick * 10.f, previousStick)) &&
 		state->minInputDistance < stickDistance && state->minInputDistance < preStickDistance) {
 		return true;
 	}
