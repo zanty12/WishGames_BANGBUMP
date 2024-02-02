@@ -40,7 +40,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	Vector2 vel = Vector2::Zero;
 	ServerPlayer *player = new ServerPlayer();
 	player->SetMoveAttribute(new ServerFire(player));
-	player->SetAttackAttribute(new ServerWind(player));
+	player->SetAttackAttribute(new ServerWater(player));
 	if (gameMode->GetMap()->startPosition.size())
 		player->transform.position = *gameMode->GetMap()->startPosition.begin();
 
