@@ -84,6 +84,13 @@ private:
 	WIN::Time timer;										// スポーン開始時からの時間計測
 	ENTRY_TYPE entryType = NONE;							// 入場演出
 
+
+	MultiAnimator allDamageEffect;							// ダメージエフェクト
+	MultiAnimator fireDamageEffect;							// 炎ダメージエフェクト
+	MultiAnimator waterDamageEffect;						// 水ダメージエフェクト
+	MultiAnimator thunderDamageEffect;						// 雷ダメージエフェクト
+	MultiAnimator windDamageEffect;							// 風ダメージエフェクト
+
 public:
 	int skillPoint = 0;										// スキルポイント
 	int animType = ANIMATION_TYPE_IDLE;						// アニメーションタイプ
