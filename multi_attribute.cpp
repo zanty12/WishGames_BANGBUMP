@@ -531,6 +531,7 @@ void ServerThunder::Attack(void) {
 
 		// アタック移動
 		if (attack) {
+			attack->transform.position = player->transform.position;
 			attack->direction = direction.Normalize() * state->atkDistance * 0.5f;
 			attack->velocity = CalcVector(direction);
 		}
@@ -584,8 +585,8 @@ void ClientThunderAttack::Loop(void) {
 	float localScale = 300;
 
 	Vector2 pos = transform.position;
-	float rot = atan2f(velocity.x, velocity.y);
-	Vector2 scl = Vector2(localScale, localScale);
+	float rot = atan2f(-velocity.y, velocity.x);
+	Vector2 scl = Vector2(localScale * 0.25f, localScale);
 	Color col = Color::White;
 	anim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 
@@ -657,6 +658,9 @@ void ServerWind::Move(void) {
 
 		// 移動
 		player->velocity.x = horizontalVelocity;
+
+		// 減速
+		horizontalVelocity *= state->friction;
 	}
 
 	FrictionPower();
