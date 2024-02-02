@@ -1,5 +1,7 @@
 #include "colliderrect.h"
 
+#include <libavutil/mathematics.h>
+
 #include "bossatk.h"
 #include "gamebase.h"
 
@@ -10,7 +12,6 @@ ColliderRect::ColliderRect(GameObject* parent, bool movable) : Collider(RECTANGL
         Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),
         Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2),
         Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2));
-    rect_.Rotate(parent->GetRot());
     GameBase::GetCollMngr()->Add(this);
 }
 
@@ -77,7 +78,7 @@ void ColliderRect::Update()
 
 void ColliderRect::CollisionInteract()
 {
-    if(GetParent()->GetType() == OBJ_ATTACK || GetParent()->GetType() == OBJ_VOID)
+    if (GetParent()->GetType() == OBJ_ATTACK || GetParent()->GetType() == OBJ_VOID)
         return;
     for (auto& other : collision_)
     {

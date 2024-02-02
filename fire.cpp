@@ -73,6 +73,7 @@ void Fire::Action()
 {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
+    stick.y *= -1;
 
     if (responseMinStickDistance < stick.Distance())
     {
@@ -178,7 +179,7 @@ void FireEffect::Update()
 {
     Vector2 stick = Input::GetStickLeft(0);
 
-    float rot = atan2(-stick.y, -stick.x);
+    float rot = atan2(stick.y, -stick.x);
     SetRot(rot);
 
     Vector2 pos = parent_->GetPlayer()->GetPos();
