@@ -63,9 +63,6 @@ void Enemy1::CollisionAction(void)
 {
 	std::list<Collider*> collisions = GetCollider()->GetCollision();
 
-	if (collisions.size() >1 ) {
-		std::cout << "hit" << collisions.size()<<"\n";
-	}
 	for (auto collision : collisions)
 	{
 		OBJECT_TYPE type = collision->GetParent()->GetType();
