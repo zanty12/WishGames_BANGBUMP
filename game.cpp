@@ -44,7 +44,7 @@ void Game::Draw()
     else
         DrawResult();
 
-    coll_mngr_->Draw(camera_);
+    //coll_mngr_->Draw(camera_);
 
 }
 

@@ -78,7 +78,7 @@ void ColliderRect::Update()
 
 void ColliderRect::CollisionInteract()
 {
-    if (GetParent()->GetType() == OBJ_ATTACK || GetParent()->GetType() == OBJ_VOID)
+    if (GetParent()->GetType() == OBJ_ATTACK || GetParent()->GetType() == OBJ_VOID || GetParent()->GetType() == OBJ_BULLET)
         return;
     for (auto& other : collision_)
     {
