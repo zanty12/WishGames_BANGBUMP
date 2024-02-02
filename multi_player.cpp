@@ -43,6 +43,8 @@ void ServerPlayer::Damage(AttackServerSide *attack) {
 	// 攻撃者が自分なら終了
 	if (attack->GetSelf() == this) return;
 
+	damageEffectAttributeType = attack->GetType();
+
 	SkillOrbDrop(attack->atkDrop);
 
 	// ノックバックを与える
@@ -81,6 +83,9 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 void ClientPlayer::Loop(void) {
 	// 属性がないなら消す
 	if (!moveAttribute || !attackAttribute) return;
+
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
 
 
 

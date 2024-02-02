@@ -332,7 +332,6 @@ void MultiMap::AttackUpdate(void) {
 
 			// ƒ_ƒ[ƒW
 			if (attack->Touch(player)) {
-				player->damageEffectAttributeType = attack->GetType();
 				player->Damage(attack);
 			}
 		}

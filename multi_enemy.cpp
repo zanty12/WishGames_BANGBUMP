@@ -3,7 +3,7 @@
 
 void EnemyServerSide::Damage(AttackServerSide *attack) {
 	hp -= attack->atk;
-	damageEffectAttributeType = true;
+	damageEffectAttributeType = attack->GetType();
 	if (hp <= 0) {
 		// スキルオーブをドロップさせる
 		map->DropSkillOrb(deathDrop, transform.position, 10.0f);
