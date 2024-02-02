@@ -48,15 +48,15 @@ void ClientSkillOrb::Loop(void) {
 	isShow = false;
 }
 
-ClientSkillOrbSmall::ClientSkillOrbSmall() : ClientSkillOrb(Vector2::One * 40) { 
+ClientSkillOrbSmall::ClientSkillOrbSmall() : ClientSkillOrb(Vector2::One * 80) { 
 	texNo = LoadTexture("data/texture/Effect/effect_skillorb.png");
 	anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 };
-ClientSkillOrbMidium::ClientSkillOrbMidium() : ClientSkillOrb(Vector2::One * 60) {
+ClientSkillOrbMidium::ClientSkillOrbMidium() : ClientSkillOrb(Vector2::One * 100) {
 	texNo = LoadTexture("data/texture/Effect/effect_skillorb2.png");
 	anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 };
-ClientSkillOrbBig::ClientSkillOrbBig() : ClientSkillOrb(Vector2::One * 80) {
+ClientSkillOrbBig::ClientSkillOrbBig() : ClientSkillOrb(Vector2::One * 120) {
 	texNo = LoadTexture("data/texture/Effect/effect_skillorb3.png");
 	anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 };
