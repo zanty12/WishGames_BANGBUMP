@@ -2,6 +2,9 @@
 #include "multiplay.h"
 
 void EnemyServerSide::Damage(AttackServerSide *attack) {
+	if (GetType() == ENEMY_1 && attack->GetType() == MULTI_ATTACK_ENEMY2 ||
+		GetType() == ENEMY_2 && attack->GetType() == MULTI_ATTACK_ENEMY2 ||
+		GetType() == ENEMY_3 && attack->GetType() == MULTI_ATTACK_ENEMY2) return;
 	hp -= attack->atk;
 	damageEffectAttributeType = attack->GetType();
 	if (hp <= 0) {
@@ -62,7 +65,26 @@ void Enemy2ServerSide::Loop(void) {
 
 	// 攻撃する
 	if (coolTime < spawnTimer.GetNowTime() * 0.001f) {
-		map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
+		float minDistanceSq = -1.0f;
+		Vector2 targetPosition;
+		auto bullet = map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
+
+		// 最も近いプレイヤーを調べる
+		for (auto &client : MultiPlayServer::clients_) {
+			auto &player = client.second.player_;
+			// 距離の計算
+			float distanceSq = Vector2::DistanceSq(transform.position, player->transform.position);
+			float maxRadiusSq = radius + player->radius;
+			maxRadiusSq = maxRadiusSq * maxRadiusSq;
+
+			if (minDistanceSq < 0.0f || distanceSq < minDistanceSq) {
+				targetPosition = player->transform.position;
+			}
+		}
+
+		// 方向を決める
+		velocity = (targetPosition - transform.position).Normalize() * 10.0f;
+
 		spawnTimer.Start();
 	}
 
@@ -74,30 +96,7 @@ void Enemy2ClientSide::Loop(void) {
 	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White);
 	isShow = false;
 }
-void AttackEnemy2ServerSide::Loop(void) {
-	float minDistanceSq = -1.0f;
-	Vector2 targetPosition;
-
-	// 最も近いプレイヤーを調べる
-	for (auto &client : MultiPlayServer::clients_) {
-		auto &player = client.second.player_;
-		// 距離の計算
-		float distanceSq = Vector2::DistanceSq(transform.position, player->transform.position);
-		float maxRadiusSq = radius + player->radius;
-		maxRadiusSq = maxRadiusSq * maxRadiusSq;
-
-		if (minDistanceSq < 0.0f || distanceSq < minDistanceSq) {
-			targetPosition = player->transform.position;
-		}
-
-		if (distanceSq <= maxRadiusSq) {
-			Destroy();
-			return;
-		}
-	}
-
-	// 方向を決める
-	velocity = (targetPosition - transform.position).Normalize() * 10.0f;
+void AttackEnemy2ServerSide::Loop(void) {	
 	// 移動
 	transform.position += velocity;
 }

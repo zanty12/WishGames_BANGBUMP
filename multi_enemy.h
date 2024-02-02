@@ -64,7 +64,8 @@ public:
 
 
 class Enemy2ServerSide : public EnemyServerSide {
-	float coolTime = 1.0f;
+	float activeRadius = 1000.0f;		// ŒŸ’m”ÍˆÍ
+	float coolTime = 4.0f;
 	WIN::Time spawnTimer;
 
 public:
