@@ -256,17 +256,6 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 				// 触れているなら
 				if (Collider2D::Touch(playerCollision, cellCollision)) {
 					Vector2 direction = position - cellPos;
-					//if (0.0f < direction.x) {
-					//	if (direction.y < direction.x) pushVector.x++;
-					//	else if (direction.y > direction.x) pushVector.y++;
-					//	else if (direction.y < -direction.x) pushVector.y--;
-					//}
-					//else if (0.0f > direction.x) {
-					//	if (direction.y > direction.x) pushVector.x--;
-					//	else if (direction.y < direction.x) pushVector.y--;
-					//	else if (direction.y > -direction.x) pushVector.y++;
-					//}
-
 					position += direction.Normalize() * velocity->Distance();
 
 					if(0.0f < direction.y) {
@@ -277,27 +266,6 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 		}
 	}
 
-	//if (pushVector != Vector2::Zero) {
-	//	id = 1;
-	//	if (pushVector.x) pushVector.x = pushVector.x / MATH::Abs(pushVector.x);
-	//	if (pushVector.y) pushVector.y = pushVector.y / MATH::Abs(pushVector.y);
-	//	//std::cout << pushVector.x << ", " << pushVector.y << std::endl;
-
-
-	//	//if (pushVector.x != 0) {
-	//	//	position.x += pushVector.x * scale.x;
-	//	//	if (velocity->x < 0.0f && pushVector.x < 0 ||
-	//	//		velocity->x > 0.0f && pushVector.x > 0) velocity->x = 0.0f;
-	//	//}
-	//	//if (pushVector.y != 0) {
-	//	//	position.y += pushVector.y * scale.y * 0.5f;
-	//	//	if (velocity->y < 0.0f && pushVector.y < 0 || 
-	//	//		velocity->y > 0.0f && pushVector.y > 0) velocity->y = 0.0f;
-	//	//}
-	//	if (pushVector.y > 0) {
-	//		if (gravityVelocity) gravityVelocity->y = 0.0f;
-	//	}
-	//}
 	return id;
 }
 
@@ -364,6 +332,7 @@ void MultiMap::AttackUpdate(void) {
 
 			// ダメージ
 			if (attack->Touch(player)) {
+				player->damageEffectAttributeType = attack->GetType();
 				player->Damage(attack);
 			}
 		}
@@ -390,6 +359,7 @@ void MultiMap::AttackUpdate(void) {
 
 			// ダメージ
 			if (attack->Touch(enemy)) {
+				enemy->damageEffectAttributeType = attack->GetType();
 				enemy->Damage(attack);
 			}
 		}

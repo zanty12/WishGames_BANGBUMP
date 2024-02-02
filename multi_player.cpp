@@ -89,6 +89,8 @@ void ClientPlayer::Loop(void) {
 
 	// アニメーションタイプの更新
 	preAnimType = animType;
+
+	// あにめ
 }
 
 void ClientPlayer::ShowEntry() {
