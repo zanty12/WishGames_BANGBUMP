@@ -48,7 +48,8 @@ public:
 		:MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(texenum)), Vector2::Zero), time_(0.0f), draw_(false) {
 		SetType(OBJ_VOID);
 		GetCollider()->Discard();
-;		GetAnimator()->SetTexenum(texenum);
+		SetCollider(nullptr);
+		GetAnimator()->SetTexenum(texenum);
 		GetAnimator()->SetLoopAnim(loop_anim);
 		GetAnimator()->SetDrawPriority(75);
 		SetPos(pos);
