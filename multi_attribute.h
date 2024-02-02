@@ -263,7 +263,7 @@ public:
 
 	ClientThunderAttack(Transform transform) : AttackClientSide(transform) {
 		texNo = LoadTexture("data/texture/Effect/effect_thunder_arrow.png");
-		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
+		anim = MultiAnimator(texNo, 5, 2, 0, 9, true);
 	}
 
 	void Loop(void) override;
