@@ -121,7 +121,7 @@ void CollMngr::Update()
 
 void CollMngr::Draw(Camera* camera)
 {
-#if 0
+#if 1
     //šƒeƒXƒgš
     int tex = LoadTexture("data/texture/collision.png");
 
