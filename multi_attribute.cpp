@@ -526,14 +526,18 @@ void ServerThunder::Attack(void) {
 		Vector2 direction = (stick - previousStick).Normalize();
 
 
-		// 攻撃オブジェクトの生成
-		auto attack = CreateAttack();
+		// パワーがあるなら
+		if (state->minPower <= power && 0.01f < direction.DistanceSq()) {
+			// 攻撃オブジェクトの生成
+			auto attack = CreateAttack();
 
-		// アタック移動
-		if (attack) {
-			attack->transform.position = player->transform.position;
-			attack->direction = direction.Normalize() * state->atkDistance * 0.5f;
-			attack->velocity = CalcVector(direction);
+			// アタック移動
+			if (attack) {
+				Vector2 localPos = Vector2(0.0f, 10.0f);
+				attack->transform.position = player->transform.position + localPos;
+				attack->direction = direction.Normalize() * state->atkDistance;
+				attack->velocity = CalcVector(direction);
+			}
 		}
 
 		// 初期化
