@@ -169,6 +169,7 @@
     <ClCompile Include="lib\imgui\imgui_widgets.cpp" />
     <ClCompile Include="lib\video_reader.cpp" />
     <ClCompile Include="light_effect.cpp" />
+    <ClCompile Include="load.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapmngr.cpp" />
@@ -253,6 +254,7 @@
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
     <ClInclude Include="lib\video_reader.hpp" />
     <ClInclude Include="light_effect.h" />
+    <ClInclude Include="load.h" />
     <ClInclude Include="mapenum.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="map.h" />
@@ -351,6 +353,7 @@
     <Content Include="data\texture\wapuro-mincho.otf" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\multiplay.ini" />
     <None Include="data\property\attribute_lv1.ini" />
     <None Include="data\property\attribute_lv10.ini" />
     <None Include="data\property\attribute_lv2.ini" />

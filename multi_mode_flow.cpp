@@ -1,5 +1,6 @@
 #include "multiplay.h"
 #include "multi_mode_flow.h"
+#include "load.h"
 
 /***********************************************************
 	Server
@@ -34,7 +35,7 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 	if (gameMode_->maxTime_ < gameMode_->time_ || gameMode_->isSkip) {
 		// 現在のモードの取得
 		MULTI_MODE mode_ = GetMode();
-
+		isNowLoad = true;
 		// 現在のモードの削除
 		if (gameMode_) {
 			// 現在のモードのリリース関数を呼び出す
@@ -66,6 +67,8 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 				}
 			}
 		}
+
+		isNowLoad = false;
 	}
 	else {
 		// 時間の更新

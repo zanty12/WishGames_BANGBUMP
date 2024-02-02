@@ -121,6 +121,7 @@ void MultiMap::Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType) {
 		}
 		y--;
 	}
+	Sleep(1000);
 	file.close();
 }	
 

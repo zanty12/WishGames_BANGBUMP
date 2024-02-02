@@ -427,7 +427,8 @@ int MultiPlayClient::Register(std::string serverAddress) {
 
 	// IPV4アドレスの登録
 	if (serverAddress == "") {
-		serverAddress = ini::GetString(L"data/multiplay.ini", L"System", L"Addr");
+		std::wstring path = ROOT_PATH + L"multiplay.ini";
+		serverAddress = ini::GetString(path.c_str(), L"System", L"Addr");
 	}
 
 	// ソケット作成
