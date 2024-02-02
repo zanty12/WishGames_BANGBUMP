@@ -244,7 +244,7 @@ public:
 
 class ServerThunderAttack : public AttackServerSide {
 public:
-	float gravity = 0.1f;
+	float gravity = 0.0f;
 
 	ServerThunderAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
 		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) {

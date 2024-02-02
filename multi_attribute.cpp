@@ -528,7 +528,6 @@ void ServerThunder::Attack(void) {
 
 		// 攻撃オブジェクトの生成
 		auto attack = CreateAttack();
-		//auto attack = player->map->GetAttacks()->Add<ServerThunderAttack>(player, this);
 
 		// アタック移動
 		if (attack) {
