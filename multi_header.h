@@ -56,6 +56,7 @@ struct CLIENT_DATA_CLIENT_SIDE {
 	Vector2 attackVelocity;										// 攻撃ベロシティ
 	Vector2 warpVelocity;										// ワープベロシティ
 	int score = 0;												// スコア
+	int damageEffectAttributeType = -1;							// ダメージ与えられた時の属性タイプ
 	int skillPoint = 0;											// スキルポイント
 	int previousSkillPoint = 0;									// 1ゲーム前のスキルポイント
 };
@@ -83,9 +84,10 @@ struct OBJECT_DATA_CLIENT_SIDE {
 
 
 
-	int id = -1;
-	int tag = NONE;
-	int anim = NONE;
+	int id = -1;												// ID
+	int tag = NONE;												// タグ
+	int anim = NONE;											// アニメーション
+	int damageEffectAttributeType = -1;							// ダメージ与えられた時の属性タイプ
 	Vector2 position;
 	Vector2 velocity;
 };
