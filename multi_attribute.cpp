@@ -677,6 +677,10 @@ void ServerWind::Attack(void) {
 		// ƒpƒ[‰ÁŽZ
 		AddPower(rotSpeed);
 	}
+	else {
+		// ‰ñ‚µ‚Ä‚¢‚È‚¢‚Æ‚«‚Í‚³‚ç‚ÉŒ¸‘¬
+		power *= state->brakeFriction;
+	}
 
 
 
