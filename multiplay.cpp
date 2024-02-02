@@ -236,7 +236,7 @@ void MultiPlayServer::SendUpdate(void) {
 			player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
 			player->animType,
 			player->transform.position, player->velocity, player->attackVelocity, player->warpVelocity,
-			0, player->skillPoint, 0 }
+			0, player->damageEffectAttributeType, player->skillPoint, 0 }
 		);
 	}
 
@@ -629,6 +629,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				player->animType = client.animType;
 				player->moveAttributeType = client.moveAttributeType;
 				player->attackAttributeType = client.attackAttributeType;
+				player->damageEffectAttributeType = client.damageEffectAttributeType;
 			}			
 		}
 
@@ -657,6 +658,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				obj->isShow = true;
 				obj->transform.position = object.position;
 				obj->velocity = object.velocity;
+				obj->damageEffectAttributeType = object.damageEffectAttributeType;
 			}
 		}
 

@@ -9,7 +9,6 @@ public:
 	float blownFriction = 0.85f;						// ダメージ時吹き飛ばされた際の減速度
 	Vector2 gravityVelocity;							// 重力ベクトル
 
-	int damageEffectAttributeType = -1;					// ダメージ与えられた時の属性タイプ
 	float gravity = 0.0f;
 	float maxGravity = 0.5f;
 

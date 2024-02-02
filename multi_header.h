@@ -183,6 +183,7 @@ struct RESPONSE_PLAYER {
 				id,										// ID
 				gameObject->GetType(),					// tag
 				0,										// animation
+				gameObject->damageEffectAttributeType,	// damage
 				position,								// pos
 				velocity								// vel
 				}
