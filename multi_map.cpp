@@ -215,6 +215,12 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 			if (velocity) velocity->y = 0.0f;
 		}
 	}
+
+	// �͈͊O
+	if (position.x < cellSize * 0.5f) position.x = cellSize * 0.5f;
+	else if (cellSize * width - cellSize * 0.5f < position.x) position.x = cellSize * width - cellSize * 0.5f;
+	if (position.y < cellSize * 0.5f) position.y = cellSize * 0.5f;
+	else if (cellSize * height - cellSize * 0.5f < position.y) position.y = cellSize * height - cellSize * 0.5f;
 	return id;
 }
 
@@ -265,6 +271,12 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 			}
 		}
 	}
+
+	// �͈͊O
+	if (position.x < cellSize * 0.5f) position.x = cellSize * 0.5f;
+	else if (cellSize * width - cellSize * 0.5f < position.x) position.x = cellSize * width - cellSize * 0.5f;
+	if (position.y < cellSize * 0.5f) position.y = cellSize * 0.5f;
+	else if (cellSize * height - cellSize * 0.5f < position.y) position.y = cellSize * height - cellSize * 0.5f;
 
 	return id;
 }
