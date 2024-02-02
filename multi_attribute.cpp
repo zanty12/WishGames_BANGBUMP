@@ -531,6 +531,7 @@ void ServerThunder::Attack(void) {
 
 		// アタック移動
 		if (attack) {
+			attack->direction = direction.Normalize() * state->atkDistance * 0.5f;
 			attack->velocity = CalcVector(direction);
 		}
 
@@ -579,6 +580,7 @@ void ServerThunderAttack::KnockBack(ServerMovableGameObject *object) {
 }
 
 void ClientThunderAttack::Loop(void) {
+	if (!isShow) return;
 	float localScale = 300;
 
 	Vector2 pos = transform.position;
