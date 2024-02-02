@@ -6,6 +6,9 @@
 
 
 void ServerPlayer::Loop(void) {
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
+
 	// 落下させる
 	gravityVelocity += Vector2::Down * gravity;
 	if (-maxGravity >= gravityVelocity.y) gravityVelocity.y = -maxGravity;
@@ -83,9 +86,6 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 void ClientPlayer::Loop(void) {
 	// 属性がないなら消す
 	if (!moveAttribute || !attackAttribute) return;
-
-	// ダメージ処理初期化
-	damageEffectAttributeType = -1;
 
 
 
