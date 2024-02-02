@@ -38,7 +38,7 @@ public:
 		if (attack_indicator_) delete attack_indicator_;
 		if (move_effect_) delete move_effect_;
 	}
-	Vector2 Move() override;
+	void Move() override;
 	void Action() override;
 	void DebugMenu() override;
 };

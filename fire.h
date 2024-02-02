@@ -7,27 +7,20 @@ class FireEffect;
 
 class Fire : public Attribute
 {
-    //const float speed = 10.0f;						// スピード
-    float friction = 0.88f; // 摩擦定数
-    const float responseMinStickDistance = 0.2f; // スティックの傾けたときに判定する最小値
     FireAttack* attack_ = nullptr;
     FireEffect* move_effect_ = nullptr;
 
     Vector2 attackDirection;
-    bool isDraw = false;
+    float brake_ = 0.50f;
+    Vector2 vel_;
 
-    //調整のためにconst抜き
-    float speed = 100 * GameObject::SIZE_;
 
 
 public:
     Fire(Player* player);
-
-    ~Fire() override { 
-        if (attack_)delete attack_;
-        if (move_effect_)delete move_effect_;
-    }
-    Vector2 Move() override;
+    ~Fire() override;
+    bool StickTrigger(Vector2 stick, Vector2 previousStick = Vector2::Zero) override;
+    void Move() override;
     void Action() override;
     void DebugMenu() override;
 };

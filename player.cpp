@@ -109,7 +109,7 @@ void Player::Update(void)
 	Vector2 next_vel = GetVel();
 	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
-		next_vel = move_attribute_->Move();
+		move_attribute_->Move();
 	}
 	else if (clash_spike_ == 0)
 	{/*//‰½‚à‘®«‚ª‚È‚¯‚ê‚Î—‚¿‚é

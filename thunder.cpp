@@ -54,7 +54,7 @@ bool Thunder::StickTrigger(Vector2 stick, Vector2 previousStick)
     return false;
 }
 
-Vector2 Thunder::Move()
+void Thunder::Move()
 {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickLeft(0);

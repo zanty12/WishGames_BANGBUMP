@@ -12,10 +12,19 @@ Fire::Fire(Player* player)
 {
 }
 
-Vector2 Fire::Move()
+Fire::~Fire() {
+    if (attack_)delete attack_;
+    if (move_effect_)delete move_effect_;
+}
+
+bool Fire::StickTrigger(Vector2 stick, Vector2 previousStick)
+{
+    return stick.DistanceSq() > state_->minInputDistance * state_->minInputDistance;
+}
+
+void Fire::Move()
 {
     Vector2 stick = Input::GetStickLeft(0);
-    stick.y *= -1;
 
     Vector2 stickR = Input::GetStickRight(0);
     if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
@@ -26,48 +35,47 @@ Vector2 Fire::Move()
             player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
     }
 
-    if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() < speed * Time::GetDeltaTime())
+    //移動
+    if (StickTrigger(stick))
     {
         //エフェクト表示
         move_effect_->SetColor(Color(1, 1, 1, 1));
         move_effect_->GetAnimator()->SetIsAnim(true);
         move_effect_->Update();
-
-        Vector2 dir = stick.Normalize();
+        //もう存在しない慣性移動
+        /*Vector2 dir = stick.Normalize();
         Vector2 vel = player_->GetVel() + dir * speed * Time::GetDeltaTime() * Time::GetDeltaTime();
         Vector2 player_dir = player_->GetVel().Normalize();
 
         float angle = acos(Vector2::Dot(dir, player_dir));
         if (acos(Vector2::Dot(dir, player_dir)) > M_PI_2)
-            vel += dir * speed * Time::GetDeltaTime() * Time::GetDeltaTime();
-        player_->SetGravityState(GRAVITY_NONE);
-        return vel;
-    }
-    else if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() >= speed * Time::GetDeltaTime())
-    {
-        //エフェクト表示
-        move_effect_->SetColor(Color(1, 1, 1, 1));
-        move_effect_->GetAnimator()->SetIsAnim(true);
-        move_effect_->Update();
+            vel += dir * speed * Time::GetDeltaTime() * Time::GetDeltaTime();*/
+        AddPower(stick);
+        ImGuiIO& io = ImGui::GetIO();
+        float fps = io.Framerate;
+        vel_ += CalcVector(stick / (fps / server_tick_rate));
 
-        Vector2 dir = stick.Normalize();
-        Vector2 vel = dir * speed * Time::GetDeltaTime();
         player_->SetGravityState(GRAVITY_NONE);
-        return vel;
+
+        //limit velocity
+        float maxPowerSq = state_->maxPower * state_->maxPower;
+        if (maxPowerSq < player_->GetVel().DistanceSq()) player_->SetVel( player_->GetVel().Normalize() * state_->maxPower);
     }
+
+    //停止
     else
     {
         if (move_effect_)   //操作をやめたら非表示
         {
             move_effect_->SetColor(Color(1, 1, 1, 0));
         }
-
         player_->SetGravityState(GRAVITY_FULL);
-        if (player_->GetVel().Distance() > Player::GRAVITY_SCALE_ * Time::GetDeltaTime())
-            return player_->GetVel() * friction;
-        else
-            return player_->GetVel();
+
+        Friction();
     }
+    player_->SetVel(vel_);
+    Friction();
+
 };
 
 void Fire::Action()
@@ -75,7 +83,7 @@ void Fire::Action()
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
 
-    if (responseMinStickDistance < stick.Distance())
+    if (StickTrigger(stick))
     {
         player_->GetAnimator()->SetLoopAnim(PLAYER_ATTACK_ANIM);
 
@@ -101,9 +109,6 @@ void Fire::Action()
 
 void Fire::DebugMenu()
 {
-    ImGui::Begin("Fire");
-    ImGui::SliderFloat2("speed", &speed, 0.0f, 9 * GameObject::SIZE_);
-    ImGui::End();
 }
 
 FireAttack::FireAttack(Fire* parent) : parent_(parent),

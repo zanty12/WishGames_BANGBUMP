@@ -70,7 +70,7 @@ public:
 
     ~Wind() override = default;
     bool StickTrigger(Vector2 stick, Vector2 previousStick);
-    Vector2 Move(void) override;
+    void Move(void) override;
     void Action(void) override;
     void DebugMenu(void) override;
 };

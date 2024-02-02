@@ -112,7 +112,6 @@ void ServerFire::Move(void) {
 void ServerFire::Attack(void) {
 	Vector2 stick = Input::GetStickRight(0);
 
-
 	// 攻撃中
 	if (StickTrigger(stick)) {
 		// アニメーションの指定

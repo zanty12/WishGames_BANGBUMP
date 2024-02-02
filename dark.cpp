@@ -19,7 +19,7 @@ Dark::Dark(Player* player)
 {
 }
 
-Vector2 Dark::Move()
+void Dark::Move()
 {
     Vector2 velocity = player_->GetVel();
     Vector2 stick = Input::GetStickLeft(0);

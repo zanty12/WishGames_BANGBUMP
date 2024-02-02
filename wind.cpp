@@ -23,7 +23,7 @@ bool Wind::StickTrigger(Vector2 stick, Vector2 previousStick)
     return false;
 }
 
-Vector2 Wind::Move(void)
+void Wind::Move(void)
 {
     Vector2 vel = player_->GetVel();
     Vector2 stick = Input::GetStickLeft(0);

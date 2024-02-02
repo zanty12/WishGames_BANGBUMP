@@ -48,7 +48,7 @@ public:
     Thunder(Player* player);
     ~Thunder()override ;
     bool StickTrigger(Vector2 stick, Vector2 previousStick);
-    Vector2 Move() override;
+    void Move() override;
     void Action() override;
     void DebugMenu() override;
 };

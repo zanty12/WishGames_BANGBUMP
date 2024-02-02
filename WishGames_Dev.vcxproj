@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClCompile Include="animator.cpp" />
     <ClCompile Include="asset.cpp" />
+    <ClCompile Include="attribute.cpp" />
     <ClCompile Include="boss.cpp" />
     <ClCompile Include="bossatk.cpp" />
     <ClCompile Include="bullet.cpp" />
