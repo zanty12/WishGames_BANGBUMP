@@ -15,7 +15,6 @@ Fire::Fire(Player* player)
 Vector2 Fire::Move()
 {
     Vector2 stick = Input::GetStickLeft(0);
-    stick.y *= -1;
 
     if (stick.x > 0.0f)
     {
@@ -183,6 +182,7 @@ FireEffect::FireEffect(Fire* parent)
     parent_(parent)
 {
     SetType(OBJ_VOID);
+    GetCollider()->Discard();
 
     //アニメーション設定
     SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));

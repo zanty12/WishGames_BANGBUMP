@@ -17,7 +17,7 @@ class Fire : public Attribute
     bool isDraw = false;
 
     //’²®‚Ì‚½‚ß‚Éconst”²‚«
-    float speed = 7 * GameObject::SIZE_;
+    float speed = 10 * GameObject::SIZE_;
 
 
 public:

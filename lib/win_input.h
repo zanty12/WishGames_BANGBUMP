@@ -98,9 +98,9 @@ namespace WIN {
 		static Vector2Int GetMousePosition(HWND hwnd);
 
 		/// <summary>
-		/// キーバッファのスワップ
+		/// キーバッファの更新
 		/// </summary>
-		static void Swap(void);
+		static void Update(void);
 	};
 }
 

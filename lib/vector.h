@@ -75,11 +75,13 @@ public:
 	friend Vector2 operator/ (Vector2 v, float scaler) { return Vector2(v.x / scaler, v.y / scaler); }
 	friend Vector2 operator* (float scaler, Vector2 v) { return Vector2(scaler * v.x, scaler * v.y); }
 	friend Vector2 operator/ (float scaler, Vector2 v) { return Vector2(scaler / v.x, scaler / v.y); }
+	friend Vector2 operator* (Vector2 a, Vector2 b) { return Vector2(a.x * b.x, a.y * b.y); }
+	friend Vector2 operator/ (Vector2 a, Vector2 b) { return Vector2(a.x / b.x, a.y / b.y); }
 
 	Vector2 operator+= (Vector2 v);
 	Vector2 operator-= (Vector2 v);
-	friend Vector2 operator*= (Vector2 v, float scaler) { return Vector2(v.x *= scaler, v.y *= scaler); }
-	friend Vector2 operator/= (Vector2 v, float scaler) { return Vector2(v.x /= scaler, v.y /= scaler); }
+	friend Vector2 operator*= (Vector2 &v, float scaler) { return Vector2(v.x *= scaler, v.y *= scaler); }
+	friend Vector2 operator/= (Vector2 &v, float scaler) { return Vector2(v.x /= scaler, v.y /= scaler); }
 	friend Vector2 operator*= (float scaler, Vector2 v) { return Vector2(scaler *= v.x, scaler *= v.y); }
 	friend Vector2 operator/= (float scaler, Vector2 v) { return Vector2(scaler /= v.x, scaler /= v.y); }
 
@@ -95,12 +97,15 @@ public:
 
 
 	float Distance(void);
+	float DistanceSq(void);
 	Vector2 Normal(void);
+	Vector2 NormalRev(void);
 	Vector2 Normalize(void);
 
 	static float Dot(Vector2 a, Vector2 b);
 	static float Cross(Vector2 a, Vector2 b);
 	static float Distance(Vector2 a, Vector2 b);
+	static float DistanceSq(Vector2 a, Vector2 b);
 };
 class Vector3 {
 public:

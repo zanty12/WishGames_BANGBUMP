@@ -60,6 +60,10 @@ void DrawSprite(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, V
 	pos.y = -pos.y + Graphical::GetHeight();
 	DrawSpriteLeftTop(texNo, pos, rot, scale, color, uv, uvWidth);
 }
+void DrawSpriteCircleEffect(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, Vector2 uv, Vector2 uvWidth, float ratio) {
+	pos.y = -pos.y + Graphical::GetHeight();
+	DrawUICircle(texNo, pos, rot, scale, color, uv, uvWidth, ratio);
+}
 
 void DrawSpriteLeftTop(int texNo, Vector2 pos, float rot, Vector2 scale, Color color) {
 	DrawSpriteLeftTop(texNo, pos, rot, scale, color, Vector2(0, 0), Vector2(1, 1));
@@ -250,7 +254,7 @@ void DrawCollider(PHYSICS::VertexN vertex, Color color, Vector2 offset, float wi
 
 
 
-void DrawUICircle(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, float ratio) {
+void DrawUICircle(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, Vector2 uv, Vector2 uvWidth, float ratio) {
 	using namespace DX;
 	using namespace DX::DX11;
 	if (texNo <= -1) return;
@@ -269,6 +273,13 @@ void DrawUICircle(int texNo, Vector2 pos, float rot, Vector2 scale, Color color,
 	transform = scaler * rotation;
 	transform = translation * transform;
 	g_WorldMatrix = transform;
+
+	// UV変換
+	g_Square.GetVertexPointer()[0].uv = uv + Vector2(0.0f, uvWidth.y);
+	g_Square.GetVertexPointer()[1].uv = uv + Vector2(uvWidth.x, uvWidth.y);
+	g_Square.GetVertexPointer()[2].uv = uv;
+	g_Square.GetVertexPointer()[3].uv = uv + Vector2(uvWidth.x, 0.0f);
+	g_Square.Update();
 
 	// シェーダーの設定
 	ShaderManager::SetCircleMode();

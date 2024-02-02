@@ -52,6 +52,8 @@ public:
 		now = value;
 	}
 	bool IsSwitch(void) { return previous != now; }
+	T Get(void) { return now; }
+	T GetPrevious(void) { return previous; }
 };
 
 #endif

@@ -50,6 +50,8 @@ public:
     Complex() { }
     Complex(float re, float im) : re(re), im(im) { }
 
+    Complex operator+();
+    Complex operator-();
     Complex operator+(Complex c);
     Complex operator-(Complex c);
     Complex operator*(Complex c);
