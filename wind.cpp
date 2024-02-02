@@ -189,6 +189,9 @@ WindEffect::WindEffect(Wind* parent)
     :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(wind_move)), Vector2::Zero),
     parent_(parent)
 {
+    GetCollider()->Discard();
+    SetCollider(nullptr);
+
     SetType(OBJ_VOID);
 
     //アニメーション設定

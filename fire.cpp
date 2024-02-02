@@ -183,6 +183,7 @@ FireEffect::FireEffect(Fire* parent)
 {
     SetType(OBJ_VOID);
     GetCollider()->Discard();
+    SetCollider(nullptr);
 
     //アニメーション設定
     SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
@@ -196,7 +197,7 @@ void FireEffect::Update()
 {
     Vector2 stick = Input::GetStickLeft(0);
 
-    float rot = atan2(-stick.y, -stick.x);
+    float rot = atan2(stick.y, -stick.x);
     SetRot(rot);
 
     Vector2 pos = parent_->GetPlayer()->GetPos();

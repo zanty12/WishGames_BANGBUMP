@@ -308,6 +308,9 @@ ThunderEffect::ThunderEffect(Thunder* parent)
     :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(dark_move_charge)), Vector2::Zero),
     parent_(parent),move_time_(0.0f)
 {
+    GetCollider()->Discard();
+    SetCollider(nullptr);
+
     SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
     SetType(OBJ_VOID);
     SetColor(Color(0, 0, 0, 0));

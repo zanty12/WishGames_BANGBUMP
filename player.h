@@ -187,6 +187,8 @@ public:
 	PlayerHitEffect(void)
 		:MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(effect_hit)), Vector2::Zero), time_(0.0f),draw_(false) {
 		SetType(OBJ_VOID);
+		GetCollider()->Discard();
+		SetCollider(nullptr);
 		GetAnimator()->SetTexenum(effect_hit);
 		GetAnimator()->SetLoopAnim(EFFECT_HIT_ANIM);
 		GetAnimator()->SetDrawPriority(75);
