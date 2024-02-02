@@ -69,6 +69,8 @@ public:
     EnemyDeadEffect(Vector2 pos)
         :MovableObj(pos, 0.0f, LoadTexture(Asset::GetAsset(effect_enemydead)),Vector2::Zero), time_(0.0f) {
         SetType(OBJ_VOID);
+        GetCollider()->Discard();
+        SetCollider(nullptr);
         GetAnimator()->SetTexenum(effect_enemydead);
         GetAnimator()->SetLoopAnim(EFFECT_ENEMYDEAD_ANIM);
     }

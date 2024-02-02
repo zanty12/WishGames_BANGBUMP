@@ -24,6 +24,15 @@ Vector2 Dark::Move()
     Vector2 velocity = player_->GetVel();
     Vector2 stick = Input::GetStickLeft(0);
 
+    if (stick.x > 0.0f)
+    {
+        player_->GetAnimator()->DirRight();
+    }
+    else if (stick.x < 0.0f)
+    {
+        player_->GetAnimator()->DirLeft();
+    }
+
     Vector2 stickR = Input::GetStickRight(0);
     if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
         abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
@@ -109,6 +118,15 @@ void Dark::Action()
     if (Input::GetKeyDown(0, Input::RThumb) && responseMinStickDistance < stick.Distance())
     {
         attackDirection_ = stick.Normalize();
+
+        if (stick.x > 0.0f)
+        {
+            player_->GetAnimator()->DirRight();
+        }
+        else if (stick.x < 0.0f)
+        {
+            player_->GetAnimator()->DirLeft();
+        }
     }
     // 攻撃
     else if (Input::GetKey(0, Input::RThumb))
@@ -258,6 +276,9 @@ DarkEffect::DarkEffect(Dark* parent)
     :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(dark_move_charge)), Vector2::Zero),
     parent_(parent), move_time_(0.0f), teleport_(false), charge_(false)
 {
+    GetCollider()->Discard();
+    SetCollider(nullptr);
+
     SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
     SetType(OBJ_VOID);
     SetColor(Color(0, 0, 0, 0));

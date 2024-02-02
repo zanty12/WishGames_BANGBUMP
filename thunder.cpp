@@ -65,6 +65,15 @@ Vector2 Thunder::Move()
 
     move_effect_->Update();
 
+    if (stick.x < 0.0f)
+    {
+        player_->GetAnimator()->DirRight();
+    }
+    else if (stick.x > 0.0f)
+    {
+        player_->GetAnimator()->DirLeft();
+    }
+
     Vector2 stickR = Input::GetStickRight(0);
     if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
         abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
@@ -163,6 +172,15 @@ void Thunder::Action()
     //charge up
     if (stick_distance >= responseMinStickDistance)
     {
+        if (stick.x < 0.0f)
+        {
+            player_->GetAnimator()->DirRight();
+        }
+        else if (stick.x > 0.0f)
+        {
+            player_->GetAnimator()->DirLeft();
+        }
+
         player_->GetAnimator()->SetLoopAnim(PLAYER_TA_CHARGE_ANIM);
 
         attack_charge_ += Time::GetDeltaTime();
@@ -290,6 +308,9 @@ ThunderEffect::ThunderEffect(Thunder* parent)
     :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(dark_move_charge)), Vector2::Zero),
     parent_(parent),move_time_(0.0f)
 {
+    GetCollider()->Discard();
+    SetCollider(nullptr);
+
     SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
     SetType(OBJ_VOID);
     SetColor(Color(0, 0, 0, 0));

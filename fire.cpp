@@ -16,6 +16,15 @@ Vector2 Fire::Move()
 {
     Vector2 stick = Input::GetStickLeft(0);
 
+    if (stick.x > 0.0f)
+    {
+        player_->GetAnimator()->DirRight();
+    }
+    else if (stick.x < 0.0f)
+    {
+        player_->GetAnimator()->DirLeft();
+    }
+
     Vector2 stickR = Input::GetStickRight(0);
     if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
         abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
@@ -73,6 +82,15 @@ void Fire::Action()
 {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
+
+    if (stick.x > 0.0f)
+    {
+        player_->GetAnimator()->DirRight();
+    }
+    else if (stick.x < 0.0f)
+    {
+        player_->GetAnimator()->DirLeft();
+    }
 
     if (responseMinStickDistance < stick.Distance())
     {
@@ -165,6 +183,7 @@ FireEffect::FireEffect(Fire* parent)
 {
     SetType(OBJ_VOID);
     GetCollider()->Discard();
+    SetCollider(nullptr);
 
     //アニメーション設定
     SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
@@ -178,7 +197,7 @@ void FireEffect::Update()
 {
     Vector2 stick = Input::GetStickLeft(0);
 
-    float rot = atan2(-stick.y, -stick.x);
+    float rot = atan2(stick.y, -stick.x);
     SetRot(rot);
 
     Vector2 pos = parent_->GetPlayer()->GetPos();
