@@ -83,6 +83,18 @@ Vector2 Wind::Move(void)
     prev_power_ = power_;
     move_effect_->Update();
 
+    if (!move)
+    {
+        if (stick.x > 0.0f)
+        {
+            player_->GetAnimator()->DirRight();
+        }
+        else if(stick.x < 0.0f)
+        {
+            player_->GetAnimator()->DirLeft();
+        }
+    }
+
     prev_y_ = vel.y;
     return vel;
 }

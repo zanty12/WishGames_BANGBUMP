@@ -65,6 +65,15 @@ Vector2 Thunder::Move()
 
     move_effect_->Update();
 
+    if (stick.x < 0.0f)
+    {
+        player_->GetAnimator()->DirRight();
+    }
+    else if (stick.x > 0.0f)
+    {
+        player_->GetAnimator()->DirLeft();
+    }
+
     Vector2 stickR = Input::GetStickRight(0);
     if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
         abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
@@ -163,6 +172,15 @@ void Thunder::Action()
     //charge up
     if (stick_distance >= responseMinStickDistance)
     {
+        if (stick.x < 0.0f)
+        {
+            player_->GetAnimator()->DirRight();
+        }
+        else if (stick.x > 0.0f)
+        {
+            player_->GetAnimator()->DirLeft();
+        }
+
         player_->GetAnimator()->SetLoopAnim(PLAYER_TA_CHARGE_ANIM);
 
         attack_charge_ += Time::GetDeltaTime();
