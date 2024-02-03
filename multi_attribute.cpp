@@ -342,7 +342,7 @@ void ServerWater::Attack(void) {
 		attack_->direction = player->attackVelocity * state->atkDistance;
 
 		// 摩擦抵抗
-		player->velocity *= state->friction;
+		player->velocity = Vector2::Zero;
 	}
 
 	// 攻撃オブジェクトの削除
