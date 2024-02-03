@@ -216,7 +216,7 @@ void ClientFire::Move(void) {
 		moveAnims.push_front({ pos, rot, scl, moveAnim });
 
 		// 要素が多いなら削除
-		if (5 < moveAnims.size()) {
+		if (1 < moveAnims.size()) {
 			moveAnims.pop_back();
 		}
 	}
@@ -330,6 +330,9 @@ void ServerWater::Attack(void) {
 			AddPower(stick);
 		}
 		else {
+			// アニメーションの指定
+			SetPlayerAnimNoAttack(player->animType);
+
 			// 初期化
 			power = 0.0f;
 		}
