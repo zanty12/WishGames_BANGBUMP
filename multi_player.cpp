@@ -30,6 +30,7 @@ void ServerPlayer::Loop(void) {
 			attackAttribute = moveAttribute;
 			moveAttribute = tmp;
 			attributeChange = true;
+			SetPlayerAnimIdle(animType);
 		}
 	}
 	else {

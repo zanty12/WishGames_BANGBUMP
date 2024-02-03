@@ -9,12 +9,15 @@
 AttackServerSide *ServerAttribute::CreateAttack(void) {
 	return nullptr;
 };
-void ServerAttribute::DestroyAttack(void) {
+bool ServerAttribute::DestroyAttack(void) {
 	// 攻撃削除
 	if (attack_ && state->atkAfterTime <= atkAfterTimer.GetNowTime() * 0.001f) {
 		attack_->Destroy();
 		attack_ = nullptr;
+		return true;
 	}
+
+	return false;
 };
 void ServerAttribute::LevelUpdate(void) {
 	int lv = 9;
@@ -345,13 +348,11 @@ void ServerWater::Attack(void) {
 		player->velocity = Vector2::Zero;
 	}
 
-	//// 攻撃オブジェクトの削除
-	//if (!Input::GetKey(0, Input::RThumb)) {
-	//	DestroyAttack();
-
-	//	// アニメーションの指定
-	//	SetPlayerAnimNoAttack(player->animType);
-	//}
+	// 攻撃オブジェクトが削除可能なら
+	if (DestroyAttack()) {
+		// アニメーションの指定
+		SetPlayerAnimNoAttack(player->animType);
+	}
 }
 AttackServerSide *ServerWater::CreateAttack(void) {
 	// 攻撃オブジェクトが生成されているなら終了
@@ -445,12 +446,6 @@ void ClientWater::Idle(void) {
 }
 
 void ServerWaterAttack::Loop(void) {
-	if (timer.GetNowTime() * 0.001f < attribute->state->atkAfterTime) return;
-
-	// アニメーションの指定
-	SetPlayerAnimNoAttack(attribute->player->animType);
-
-	Destroy();
 }
 void ServerWaterAttack::KnockBack(ServerMovableGameObject *object) {
 	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * knockbackRate;

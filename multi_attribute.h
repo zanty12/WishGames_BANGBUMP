@@ -51,7 +51,7 @@ public:
 	virtual void Move(void) = 0;
 	virtual void Attack(void) = 0;
 	virtual AttackServerSide *CreateAttack(void);
-	virtual void DestroyAttack(void);
+	virtual bool DestroyAttack(void);
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	void LevelUpdate(void);
 	static ServerAttribute *Create(ServerPlayer *player, ATTRIBUTE_TYPE type);
@@ -159,6 +159,8 @@ public:
   Water
 ********************************************************/
 class ServerWater : public ServerAttribute {
+	WIN::Time timer;
+
 public:
 	ServerWater(ServerPlayer *player) : ServerAttribute(player, L"Water") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
@@ -194,12 +196,10 @@ public:
 class ServerWaterAttack : public AttackServerSide {
 private:
 	ServerAttribute *attribute = nullptr;
-	WIN::Time timer;
 
 public:
 	ServerWaterAttack(GameObjectServerSide *self, ServerAttribute *attribute) : attribute(attribute),
 		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) {
-		timer.Start();
 	}
 
 	void Loop(void) override;

@@ -57,7 +57,7 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 		if (pTouchClient == nullptr) continue;
 
 		// 占領し続けているならゲージの更新
-		if (inPlayerNum == 1 && area.id == pTouchClient->header.id) {
+		if (area.id == pTouchClient->header.id) {
 			area.captureNowTime += (curTime - preTime) * 0.001f;
 		}
 		// 別のプレイヤーに占領されたなら初期化

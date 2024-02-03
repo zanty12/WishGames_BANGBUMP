@@ -2,9 +2,9 @@
 #include "multiplay.h"
 
 void EnemyServerSide::Damage(AttackServerSide *attack) {
-	if (GetType() == ENEMY_1 && attack->GetType() == MULTI_ATTACK_ENEMY2 ||
-		GetType() == ENEMY_2 && attack->GetType() == MULTI_ATTACK_ENEMY2 ||
-		GetType() == ENEMY_3 && attack->GetType() == MULTI_ATTACK_ENEMY2) return;
+	if (GetType() == MULTI_ENEMY1 && attack->GetType() == MULTI_ATTACK_ENEMY2 ||
+		GetType() == MULTI_ENEMY2 && attack->GetType() == MULTI_ATTACK_ENEMY2 ||
+		GetType() == MULTI_ENEMY3 && attack->GetType() == MULTI_ATTACK_ENEMY2) return;
 	hp -= attack->atk;
 	damageEffectAttributeType = attack->GetType();
 	if (hp <= 0) {

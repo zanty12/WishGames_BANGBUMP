@@ -229,7 +229,7 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 	Vector2Int leftBottomIdx = ToIndex(position - scale);											// 左下のインデックス
 	Vector2Int rightTopIdx = ToIndex(position + scale);												// 右上のインデックス
 	leftBottomIdx.x--;
-	leftBottomIdx.y--;
+	leftBottomIdx.y -= 2;
 	rightTopIdx.x++;
 	rightTopIdx.y++;
 
