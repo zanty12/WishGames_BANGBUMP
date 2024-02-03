@@ -33,7 +33,7 @@ bool IsPlayerAnimMoveCharge(int type) {
 }
 
 bool IsPlayerAnimAttack(int type) {
-	return (type & ANIMATION_TYPE_ATTACK);
+	return (type & ANIMATION_TYPE_ATTACK) == ANIMATION_TYPE_ATTACK;
 }
 
 bool IsPlayerAnimAttackCharge(int type) {

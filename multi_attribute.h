@@ -19,7 +19,7 @@ class ClientPlayer;
 class ServerMovableGameObject;
 class ClientMovableGameObject;
 class ServerAttribute {
-protected:
+public:
 	ServerPlayer *player = nullptr;
 	WIN::Time coolTimer;
 	WIN::Time atkCoolTimer;
@@ -192,9 +192,15 @@ public:
 };
 
 class ServerWaterAttack : public AttackServerSide {
+private:
+	ServerAttribute *attribute = nullptr;
+	WIN::Time timer;
+
 public:
-	ServerWaterAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
-		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) { }
+	ServerWaterAttack(GameObjectServerSide *self, ServerAttribute *attribute) : attribute(attribute),
+		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) {
+		timer.Start();
+	}
 
 	void Loop(void) override;
 	void KnockBack(ServerMovableGameObject *object) override;
