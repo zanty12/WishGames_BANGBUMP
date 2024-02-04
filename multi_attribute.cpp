@@ -327,7 +327,7 @@ void ServerWater::Attack(void) {
 	// 攻撃してない
 	if (attack_ == nullptr) {
 		// 攻撃
-		if (Input::GetKey(0, Input::RThumb)) {
+		if (Input::GetKey(0, Input::RThumb) && IsUseMp()) {
 			// アニメーションの指定
 			SetPlayerAnimAttack(player->animType);
 
@@ -355,7 +355,7 @@ void ServerWater::Attack(void) {
 	}
 
 	// 攻撃中
-	if (attack_ && IsUseMp()) {
+	if (attack_) {
 		// アニメーションの指定
 		SetPlayerAnimAttack(player->animType);
 
@@ -546,16 +546,19 @@ void ServerThunder::Attack(void) {
 
 
 		// パワーがあるなら
-		if (state->minPower <= power && 0.01f < direction.DistanceSq() && IsUseMp()) {
-			// 攻撃オブジェクトの生成
-			auto attack = CreateAttack();
+		if (state->minPower <= power && 0.01f < direction.DistanceSq()) {
+			if (IsUseMp()) {
 
-			// アタック移動
-			if (attack) {
-				Vector2 localPos = Vector2(0.0f, 10.0f);
-				attack->transform.position = player->transform.position + localPos;
-				attack->direction = direction.Normalize() * state->atkDistance;
-				attack->velocity = CalcVector(direction);
+				// 攻撃オブジェクトの生成
+				auto attack = CreateAttack();
+
+				// アタック移動
+				if (attack) {
+					Vector2 localPos = Vector2(0.0f, 10.0f);
+					attack->transform.position = player->transform.position + localPos;
+					attack->direction = direction.Normalize() * state->atkDistance;
+					attack->velocity = CalcVector(direction);
+				}
 			}
 		}
 

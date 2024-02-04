@@ -153,8 +153,8 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		float centerX = Graphical::GetWidth() * 0.5f;		// ‰æ–Ê‚Ì’†‰›iXÀ•Wj
 
 		// ŠÔ§ŒÀ‚Ì•`‰æ
-		DrawSprite(timerTexNo,
-			Vector2(centerX, 100), 0.0f, Vector2(200, 100),
+		DrawSpriteLeftTop(timerTexNo,
+			Vector2(centerX, 100), 0.0f, Vector2(1000, 250) * 0.5f,
 			Color::White,
 			Vector2::Zero, Vector2::One
 		);

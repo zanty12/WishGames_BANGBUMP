@@ -48,6 +48,7 @@ public:
 		state = state_lv;
 
 		coolTimer.Start();
+		skillMpTimer.Start();
 	}
 	virtual bool StickTrigger(Vector2 stick, Vector2 previousStick) = 0;
 	virtual void Move(void) = 0;
