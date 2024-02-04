@@ -172,25 +172,28 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 			float u = moveAttribute / 4.0f;
 			float v = attackAttribute / 12.0f;
 			Vector2 uv = Vector2(u, v + idx * 0.25f);
+			Vector2 uvScale = Vector2(0.25f, 1.0f / 12.0f);
 
 			float center = (float)maxMembers * 0.5f - 0.5f;	// 中心のIdxを計算
 			float x = center - idx;							// X座標を計算
 			x *= -1;
 
+			uv = Vector2::Zero;
+			uvScale = Vector2::One;
 			DrawSprite(icon,
 				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
 				Color::White,
-				uv, Vector2(0.25f, 1.0f / 12.0f)
+				uv, uvScale
 			);
 			DrawSprite(icon2,
 				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
 				Color::White,
-				uv, Vector2(0.25f, 1.0f / 12.0f)
+				uv, uvScale
 			);
 			DrawSprite(icon3,
 				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
 				Color::White,
-				uv, Vector2(0.25f, 1.0f / 12.0f)
+				uv, uvScale
 			);
 
 			Number(Vector2(centerX + x * width, 200), Vector2(100, 100), client.skillPoint);
