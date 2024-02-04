@@ -185,7 +185,7 @@ AttackServerSide *ServerFire::CreateAttack(void) {
 
 
 	// 攻撃生成
-	attack_ = player->map->GetAttacks()->Add<ServerWaterAttack>(player, this);
+	attack_ = player->map->GetAttacks()->Add<ServerFireAttack>(player, this);
 
 	// クールタイム計測開始
 	coolTimer.Start();
@@ -323,9 +323,11 @@ void ServerWater::Move(void) {
 }
 void ServerWater::Attack(void) {
 	Vector2 stick = Input::GetStickRight(0);
+	bool isCharge = IsPlayerAnimAttackCharge(player->animType);
+	bool isAttack = IsPlayerAnimAttack(player->animType);
 
 	// 攻撃してない
-	if (!IsPlayerAnimAttack(player->animType) && !IsPlayerAnimAttackCharge(player->animType)) {
+	if (!isAttack && !isCharge) {
 		// 攻撃開始
 		if (Input::GetKey(0, Input::RThumb) && IsUseMp()) {
 			// アニメーションの指定
@@ -352,23 +354,25 @@ void ServerWater::Attack(void) {
 	}
 
 	// ため攻撃
-	if (IsPlayerAnimAttackCharge(player->animType)) {
-
-		// ため攻撃（0.25秒）
-		if (0.25f <= attackTimer.GetNowTime() * 0.001f) {
+	if (isCharge) {
+		// ため攻撃（0.5秒）
+		if (0.5f <= attackTimer.GetNowTime() * 0.001f) {
 
 			// 攻撃オブジェクトの生成
 			CreateAttack();
 		}
 	}
-	// 攻撃中
-	if (attack_) {
-		// アニメーションの指定
-		SetPlayerAnimAttack(player->animType);
 
-		// アタック移動
-		attack_->transform.position = player->transform.position;
-		attack_->direction = player->attackVelocity * state->atkDistance;
+	// 攻撃中
+	if (isAttack || isCharge) {
+		if (attack_) {
+			// アニメーションの指定
+			SetPlayerAnimAttack(player->animType);
+
+			// アタック移動
+			attack_->transform.position = player->transform.position;
+			attack_->direction = player->attackVelocity * state->atkDistance;
+		}
 
 		// 摩擦抵抗
 		player->velocity = Vector2::Zero;
@@ -452,19 +456,20 @@ void ClientWater::Attack(void) {
 
 
 
-	// ため攻撃
-	if (IsPlayerAnimAttackCharge(player->animType)) {
-		// 描画する
-		attackChargeAnim.Draw(pos + localPos - MultiPlayClient::offset, rot, scl, Color::White);
-	}
+
 	// 攻撃
-	else if (IsPlayerAnimAttack(player->animType)) {
+	if (IsPlayerAnimAttack(player->animType)) {
 		// 描画する
 		attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
+
+		attackChargeAnim.MoveBegin();
 	}
-
-
-
+	// ため攻撃
+	else if (IsPlayerAnimAttackCharge(player->animType)) {
+		// 描画する
+		rot = atan2f(-direction.y, direction.x);
+		attackChargeAnim.Draw(pos + localPos - MultiPlayClient::offset, rot, Vector2::One * 100.0f, Color::White);
+	}
 }
 void ClientWater::Idle(void) {
 	float localScale = 75.0f;

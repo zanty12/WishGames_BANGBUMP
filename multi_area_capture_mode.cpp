@@ -37,7 +37,7 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 		for (auto &kvp : clients) {
 			auto &client = kvp.second;
 			auto &player = client.player_;
-			Vertex1 clientCollider = Vertex1(player->transform.position, player->radius);	// プレイヤーのコライダー
+			Vertex1 clientCollider = Vertex1(player->transform.position, 0.0f);	// プレイヤーのコライダー
 
 			// 衝突判定
 			if (Collider2D::Touch(areaCollider, clientCollider)) {
@@ -139,7 +139,7 @@ void MultiPlayAreaCaptureModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 
 	for (auto &area : res.areas) {
 		Vector2 pos = area.position - offset;
 		float rot = 0.0f;
-		Vector2 scl = Vector2(area.radius, area.radius);
+		Vector2 scl = Vector2(area.radius, area.radius) * 2.0f;
 		Color col = Color::White * 0.5f;
 		anim.Draw(pos, rot, scl, col);
 		DrawSpriteCircleEffect(anim.texNo, pos, rot, scl, col, Vector2::Zero, Vector2::One, area.captureRatio);
