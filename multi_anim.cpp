@@ -17,7 +17,10 @@ void MultiAnimator::Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool is
 		// 終点なら始点にする
 		if (isLoop) { if (loopEnd < idx) idx = loopBegin; }
 		// ループしないなら終了
-		else if (end < idx) return;
+		else if (end < idx) {
+			if (!isEndShow)	return;
+			else idx = end;
+		}
 	}
 
 	// UV値の計算
@@ -113,7 +116,7 @@ void MultiAnimator::GetPlayer(int animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE 
 	switch (move) {
 	case ATTRIBUTE_TYPE_FIRE: moveIdxWidth = 30; break;
 	case ATTRIBUTE_TYPE_DARK: moveIdxWidth = 30; break;
-	case ATTRIBUTE_TYPE_THUNDER: moveIdxWidth = 4; break;
+	case ATTRIBUTE_TYPE_THUNDER: moveIdxWidth = 1; break;
 	case ATTRIBUTE_TYPE_WIND: moveIdxWidth = 1; break;
 	}
 
@@ -138,13 +141,18 @@ void MultiAnimator::GetPlayer(int animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE 
 		anim->idx = anim->begin;
 	}
 	// CHARGE（Thunder）
-	if (animType & ANIMATION_TYPE_ATTACK_CHARGE && move == ATTRIBUTE_TYPE_THUNDER) {
+	if (IsPlayerAnimAttackCharge(animType) && attack == ATTRIBUTE_TYPE_THUNDER) {
 		int begin = idleIdxWidth + attackIdxWidth + moveIdxWidth;
 		anim->begin = begin;
 		anim->end = begin + 4;
 		anim->loopBegin = begin;
 		anim->loopEnd = begin + 4;
-		anim->isLoop = true;
+		anim->isLoop = false;
 		anim->idx = anim->begin;
+		anim->isEndShow = true;
+	}
+	// ATTACK（Thunder）
+	if (IsPlayerAnimAttack(animType) && attack == ATTRIBUTE_TYPE_THUNDER) {
+		anim->isLoop = false;
 	}
 }

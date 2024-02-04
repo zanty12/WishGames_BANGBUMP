@@ -532,6 +532,9 @@ void MultiPlayClient::PlayerUpdate(void) {
 	// ライトエフェクトの描画
 	lightEffect.Draw(offset);
 
+	// UIの描画
+	gameMode->DrawUI(res_);
+
 #ifdef DEBUG_LINK
 	if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
 #endif

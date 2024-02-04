@@ -74,6 +74,7 @@ public:
 	}
 
 	void Draw(RESPONSE_PLAYER &res, Vector2 offset);
+	void DrawUI(RESPONSE_PLAYER &res);
 
 	void ParseResponse(Storage &in);
 

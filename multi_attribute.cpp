@@ -554,7 +554,7 @@ void ServerThunder::Attack(void) {
 		SetPlayerAnimAttack(player->animType, true);
 	}
 	// 攻撃が終わったら（攻撃終了）
-	else if (IsPlayerAnimMove(player->animType) && player->velocity.DistanceSq() < 25.0f) {
+	else if (IsPlayerAnimAttack(player->animType) && player->velocity.DistanceSq() < 25.0f) {
 		// アニメーションの指定
 		SetPlayerAnimNoAttack(player->animType);
 	}

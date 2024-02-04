@@ -20,6 +20,7 @@ public:
 	int loopBegin = 0;
 	int loopEnd = 1;
 	bool isAnimation = true;
+	bool isEndShow = false;
 
 
 
@@ -40,6 +41,8 @@ public:
 
 	void Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool isReverseX = false, bool isReverseY = false);
 
+	void SetFrame(DWORD frameTime) { this->frameTime = frameTime; }
+	void SetEndShow(bool isEndShow) { this->isEndShow = isEndShow; }
 	void SetActive(bool active) { isAnimation = active; }
 	void MoveBegin(void) { idx = begin; }
 	void MoveEnd(void) { idx = end + 1; }
