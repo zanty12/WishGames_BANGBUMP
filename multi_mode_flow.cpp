@@ -180,7 +180,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 
 			uv = Vector2::Zero;
 			uvScale = Vector2::One;
-			DrawSprite(icon,
+			DrawSprite(icon3,
 				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
 				Color::White,
 				uv, uvScale
@@ -190,7 +190,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 				Color::White,
 				uv, uvScale
 			);
-			DrawSprite(icon3,
+			DrawSprite(icon,
 				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
 				Color::White,
 				uv, uvScale

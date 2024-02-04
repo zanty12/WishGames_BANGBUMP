@@ -364,16 +364,16 @@ void ServerWater::Attack(void) {
 	}
 
 	// 攻撃中
+	if (attack_) {
+		// アニメーションの指定
+		SetPlayerAnimAttack(player->animType);
+
+		// アタック移動
+		attack_->transform.position = player->transform.position;
+		attack_->direction = player->attackVelocity * state->atkDistance;
+	}
+
 	if (isAttack || isCharge) {
-		if (attack_) {
-			// アニメーションの指定
-			SetPlayerAnimAttack(player->animType);
-
-			// アタック移動
-			attack_->transform.position = player->transform.position;
-			attack_->direction = player->attackVelocity * state->atkDistance;
-		}
-
 		// 摩擦抵抗
 		player->velocity = Vector2::Zero;
 	}
