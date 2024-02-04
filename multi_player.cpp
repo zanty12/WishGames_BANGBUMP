@@ -17,10 +17,12 @@ void ServerPlayer::Loop(void) {
 	if (moveAttribute) {
 		moveAttribute->LevelUpdate();
 		moveAttribute->Move();
+		moveAttribute->MpUpdate();
 	}
 	if (attackAttribute) {
 		attackAttribute->LevelUpdate();
 		attackAttribute->Attack();
+		attackAttribute->MpUpdate();
 	}
 
 	// ‘®«Ø‚è‘Ö‚¦‚ª‚Á‚¿‚á‚ñ‚±II

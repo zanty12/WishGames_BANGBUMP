@@ -59,7 +59,7 @@ private:
 	MultiPlayClient *game_ = nullptr;
 	MULTI_MODE currentMode_ = MULTI_MODE::NONE;
 	int numTexNo = LoadTexture("data/texture/UI/number.png");
-	int timerTexNo = LoadTexture("data/texture/UI/timer.png");
+	int timerTexNo = LoadTexture("data/texture/UI/multi_timer.png");
 	int icon = LoadTexture("data/texture/UI/testicon1.png");
 	int icon2 = LoadTexture("data/texture/UI/testicon2.png");
 	int icon3 = LoadTexture("data/texture/UI/testicon3.png");

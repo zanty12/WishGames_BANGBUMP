@@ -57,6 +57,7 @@ public:
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	void LevelUpdate(void);
 	void MpUpdate(void);
+	bool IsUseMp(void);
 	static ServerAttribute *Create(ServerPlayer *player, ATTRIBUTE_TYPE type);
 
 	void AddPower(void);

@@ -35,7 +35,6 @@ void ServerAttribute::LevelUpdate(void) {
 		}
 	}
 }
-
 void ServerAttribute::MpUpdate(void) {
 	if (state->healSpanTime <= skillMpTimer.GetNowTime() * 0.001f) {
 		mp += state->heal;
@@ -44,6 +43,13 @@ void ServerAttribute::MpUpdate(void) {
 
 	if (state->maxMp < mp) mp = state->maxMp;
 	else if (mp < state->minMp) mp = state->minMp;
+}
+bool ServerAttribute::IsUseMp(void) {
+	if (state->cost <= mp) {
+		mp -= state->cost;
+		return true;
+	}
+	return false;
 }
 
 ServerAttribute *ServerAttribute::Create(ServerPlayer *player, ATTRIBUTE_TYPE type) {
@@ -155,7 +161,7 @@ void ServerFire::Attack(void) {
 		CreateAttack();
 
 		// アタック移動
-		if (attack_) {
+		if (attack_ && IsUseMp()) {
 			attack_->transform.position = player->transform.position;
 			attack_->direction = stick.Normalize() * state->atkDistance;
 			attack_->transform.rotation = std::atan2(stick.y, stick.x);
@@ -349,7 +355,7 @@ void ServerWater::Attack(void) {
 	}
 
 	// 攻撃中
-	if (attack_) {
+	if (attack_ && IsUseMp()) {
 		// アニメーションの指定
 		SetPlayerAnimAttack(player->animType);
 
@@ -540,7 +546,7 @@ void ServerThunder::Attack(void) {
 
 
 		// パワーがあるなら
-		if (state->minPower <= power && 0.01f < direction.DistanceSq()) {
+		if (state->minPower <= power && 0.01f < direction.DistanceSq() && IsUseMp()) {
 			// 攻撃オブジェクトの生成
 			auto attack = CreateAttack();
 
@@ -695,7 +701,7 @@ void ServerWind::Attack(void) {
 	float rotSpeed = MATH::Abs(Vector2::Cross(stick, previousStick));
 
 	// 入力
-	if (StickTrigger(stick, previousStick)) {
+	if (StickTrigger(stick, previousStick) && IsUseMp()) {
 		// パワー加算
 		AddPower(rotSpeed);
 	}
