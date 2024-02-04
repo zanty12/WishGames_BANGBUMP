@@ -164,7 +164,7 @@ public:
   Water
 ********************************************************/
 class ServerWater : public ServerAttribute {
-	WIN::Time timer;
+	WIN::Time attackTimer;
 
 public:
 	ServerWater(ServerPlayer *player) : ServerAttribute(player, L"Water") { }
@@ -177,6 +177,7 @@ public:
 class ClientWater : public ClientAttribute {
 public:
 	MultiAnimator moveChargeAnim;
+	MultiAnimator attackChargeAnim;
 	MultiAnimator idle;
 	MultiAnimator indicator;
 	Vector2 prevPosition;			// ワープ前の座標
@@ -186,6 +187,7 @@ public:
 		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_move.png"), 5, 3, 0, 14, false);
 		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_attack.png"), 5, 6, 0, 29, true);
 		moveChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_charge.png"), 5, 10, 0, 47, true);
+		attackChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_charge.png"), 5, 10, 0, 47, true);
 		idle = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_idle.png"), 5, 6, 0, 29, true);
 		indicator = MultiAnimator(LoadTexture("data/texture/Effect/UI_water_indicator.png"), 5, 4, 0, 18, true);
 

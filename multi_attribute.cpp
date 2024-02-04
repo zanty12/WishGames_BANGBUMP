@@ -325,20 +325,17 @@ void ServerWater::Attack(void) {
 	Vector2 stick = Input::GetStickRight(0);
 
 	// 攻撃してない
-	if (attack_ == nullptr) {
-		// 攻撃
+	if (!IsPlayerAnimAttack(player->animType) && !IsPlayerAnimAttackCharge(player->animType)) {
+		// 攻撃開始
 		if (Input::GetKey(0, Input::RThumb) && IsUseMp()) {
-			// アニメーションの指定
-			SetPlayerAnimAttack(player->animType);
-
-			// 攻撃オブジェクトの生成
-			CreateAttack();
-		}
-		// チャージ
-		else if (stick != Vector2::Zero) {
 			// アニメーションの指定
 			SetPlayerAnimAttack(player->animType, true);
 
+			// 時間計測開始
+			attackTimer.Start();
+		}
+		// チャージ
+		else if (stick != Vector2::Zero) {
 			// ワープベクトルの指定
 			player->attackVelocity = stick.Normalize();
 
@@ -354,6 +351,16 @@ void ServerWater::Attack(void) {
 		}
 	}
 
+	// ため攻撃
+	if (IsPlayerAnimAttackCharge(player->animType)) {
+
+		// ため攻撃（0.25秒）
+		if (0.25f <= attackTimer.GetNowTime() * 0.001f) {
+
+			// 攻撃オブジェクトの生成
+			CreateAttack();
+		}
+	}
 	// 攻撃中
 	if (attack_) {
 		// アニメーションの指定
@@ -422,11 +429,6 @@ void ClientWater::Move(void) {
 	moveAnim.Draw(player->transform.position - MultiPlayClient::offset + Vector2(0.0f, state->showMoveY * 0.5f), rot, scl * 2.0f, col);
 }
 void ClientWater::Attack(void) {
-	// 攻撃アニメーションではないなら終了
-	if (!IsPlayerAnimAttack(player->animType)) return;
-
-
-
 
 	// 攻撃の向き
 	Vector2 direction = player->attackVelocity.Normalize() * state->showAttackY * 0.5f;
@@ -446,8 +448,23 @@ void ClientWater::Attack(void) {
 	// 反転した絵に合わせて位置も反転
 	if (player->isReverseX) localPos.x *= -1.0f;
 
-	// 描画する
-	attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
+
+
+
+
+	// ため攻撃
+	if (IsPlayerAnimAttackCharge(player->animType)) {
+		// 描画する
+		attackChargeAnim.Draw(pos + localPos - MultiPlayClient::offset, rot, scl, Color::White);
+	}
+	// 攻撃
+	else if (IsPlayerAnimAttack(player->animType)) {
+		// 描画する
+		attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
+	}
+
+
+
 }
 void ClientWater::Idle(void) {
 	float localScale = 75.0f;
