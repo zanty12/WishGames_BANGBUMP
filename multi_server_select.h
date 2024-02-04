@@ -13,6 +13,8 @@ private:
     bool start_ = false;
     SceneMngr* scene_mngr_;
 
+    ImFont* font_;
+
 public:
     Multi_Server_Select(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
     {
@@ -55,15 +57,27 @@ public:
 
     void Draw() override
     {
+        //background
         DrawSprite(bg_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2), 0,
                    Vector2(Graphical::GetWidth(), Graphical::GetHeight()), Color::White);
-        ImGui::Begin(u8"Ú‘±");
-        ImGui::InputText("IP", ip_, 16);
+        ImGuiWindowFlags window_flags = 0;
+        window_flags |= ImGuiWindowFlags_NoBackground;
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+        bool open = true;
+        font_ = ImGui::GetFont();
+        font_->Scale *= 2;
+        ImGui::SetNextWindowPos(ImVec2(Graphical::GetWidth() /2 , Graphical::GetHeight() / 2));
+        // Draw the texture with ImGui
+        ImGui::PushFont(font_);
+        ImGui::Begin(u8"Ú‘±", &open, window_flags);
+        ImGui::InputText("##", ip_, 16);
         if (ImGui::Button("Link Start"))
         {
             //stop scenemngr and go to multiplay client
             connect_ = true;
         }
+        ImGui::GetFont()->Scale /=2;
+        ImGui::PopFont();
         ImGui::End();
     }
     void DebugMenu() override{}
