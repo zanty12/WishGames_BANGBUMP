@@ -13,6 +13,13 @@ struct AttributeState {
 	float brakeFriction = 0.98f;	// –€CŒW”i‹}’â~j
 	float powerFriction = 1.00f;	// ƒpƒ[‚Ì–€CŒW”
 
+	// –‚—Í
+	int minMp = 0;					// Å¬–‚—Í
+	int maxMp = 3;					// Å‘å–‚—Í
+	int cost = 1;					// –‚—ÍÁ”ï—Ê
+	float healSpanTime = 1.0f;		// ‰ñ•œ‚·‚éŠÔ
+	int heal = 1;					// ‰ñ•œ—Ê
+
 	// “ü—Í
 	float minInputDistance = 0.50f;	// “ü—Í‚Ì”»’è’l
 	float minInputSpeed = 0.50f;	// “ü—Í‚Ì‰Á‘¬‚Ì”»’è’l
@@ -46,6 +53,13 @@ struct AttributeState {
 		brakeFriction = ini::GetFloat(PARAM_PATH + path, attributeName, L"brakeFriction", -1.0f);
 		powerFriction = ini::GetFloat(PARAM_PATH + path, attributeName, L"powerFriction", -1.0f);
 
+		// –‚—Í
+		minMp = ini::GetInt(PARAM_PATH + path, attributeName, L"minMp", -1);
+		maxMp = ini::GetInt(PARAM_PATH + path, attributeName, L"maxMp", -1);
+		cost = ini::GetInt(PARAM_PATH + path, attributeName, L"cost", -1);
+		healSpanTime = ini::GetFloat(PARAM_PATH + path, attributeName, L"healSpanTime", -1.0f);
+		heal = ini::GetInt(PARAM_PATH + path, attributeName, L"heal", -1);
+
 		// “ü—Í
 		minInputDistance = ini::GetFloat(PARAM_PATH + path, attributeName, L"minInputDistance", -1.0f);
 		minInputSpeed = ini::GetFloat(PARAM_PATH + path, attributeName, L"minInputSpeed", -1.0f);
@@ -77,6 +91,13 @@ struct AttributeState {
 		influence_state(friction);
 		influence_state(brakeFriction);
 		influence_state(powerFriction);
+
+		// –‚—Í
+		influence_state(minMp);
+		influence_state(maxMp);
+		influence_state(cost);
+		influence_state(healSpanTime);
+		influence_state(heal);
 
 		// “ü—Í
 		influence_state(minInputDistance);

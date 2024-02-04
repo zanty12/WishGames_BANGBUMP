@@ -24,10 +24,12 @@ public:
 	WIN::Time coolTimer;
 	WIN::Time atkCoolTimer;
 	WIN::Time atkAfterTimer;
+	WIN::Time skillMpTimer;
 	AttackServerSide *attack_ = nullptr;
 
 public:
 	float power = 0.0f;					// パワー
+	int mp = 0;
 	int lv = 0;							// レベル
 	AttributeState *state = nullptr;	// 現在のステータス
 	AttributeState state_lv[10] = {};	// ステータス
@@ -54,6 +56,7 @@ public:
 	virtual bool DestroyAttack(void);
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	void LevelUpdate(void);
+	void MpUpdate(void);
 	static ServerAttribute *Create(ServerPlayer *player, ATTRIBUTE_TYPE type);
 
 	void AddPower(void);

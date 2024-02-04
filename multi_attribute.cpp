@@ -36,6 +36,16 @@ void ServerAttribute::LevelUpdate(void) {
 	}
 }
 
+void ServerAttribute::MpUpdate(void) {
+	if (state->healSpanTime <= skillMpTimer.GetNowTime() * 0.001f) {
+		mp += state->heal;
+		skillMpTimer.Start();
+	}
+
+	if (state->maxMp < mp) mp = state->maxMp;
+	else if (mp < state->minMp) mp = state->minMp;
+}
+
 ServerAttribute *ServerAttribute::Create(ServerPlayer *player, ATTRIBUTE_TYPE type) {
 	switch (type) {
 	case ATTRIBUTE_TYPE_FIRE: return new ServerFire(player);

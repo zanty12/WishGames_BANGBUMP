@@ -153,6 +153,11 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		float centerX = Graphical::GetWidth() * 0.5f;		// 画面の中央（X座標）
 
 		// 時間制限の描画
+		DrawSprite(timerTexNo,
+			Vector2(centerX, 100), 0.0f, Vector2(200, 100),
+			Color::White,
+			Vector2::Zero, Vector2::One
+		);
 		Number(Vector2(centerX, 100), Vector2(100, 100), res.maxTime - res.time);
 
 		// スコアの描画
@@ -173,6 +178,16 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 			x *= -1;
 
 			DrawSprite(icon,
+				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
+				Color::White,
+				uv, Vector2(0.25f, 1.0f / 12.0f)
+			);
+			DrawSprite(icon2,
+				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
+				Color::White,
+				uv, Vector2(0.25f, 1.0f / 12.0f)
+			);
+			DrawSprite(icon3,
 				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
 				Color::White,
 				uv, Vector2(0.25f, 1.0f / 12.0f)
