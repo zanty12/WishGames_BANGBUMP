@@ -68,6 +68,7 @@ void Enemy2ServerSide::Loop(void) {
 		float minDistanceSq = -1.0f;
 		Vector2 targetPosition;
 		auto bullet = map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
+		float searchRadiusSq = activeRadius * activeRadius;
 
 		// Å‚à‹ß‚¢ƒvƒŒƒCƒ„[‚ð’²‚×‚é
 		for (auto &client : MultiPlayServer::clients_) {
@@ -77,8 +78,10 @@ void Enemy2ServerSide::Loop(void) {
 			float maxRadiusSq = radius + player->radius;
 			maxRadiusSq = maxRadiusSq * maxRadiusSq;
 
-			if (minDistanceSq < 0.0f || distanceSq < minDistanceSq) {
-				targetPosition = player->transform.position;
+			if (distanceSq <= searchRadiusSq) {
+				if (minDistanceSq < 0.0f || distanceSq < minDistanceSq) {
+					targetPosition = player->transform.position;
+				}
 			}
 		}
 
