@@ -153,12 +153,13 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		float centerX = Graphical::GetWidth() * 0.5f;		// 画面の中央（X座標）
 
 		// 時間制限の描画
-		DrawSpriteLeftTop(timerTexNo,
-			Vector2(centerX, 100), 0.0f, Vector2(1000, 250) * 0.5f,
+		DrawSpriteLeftTop(
+			timerTexNo,
+			Vector2(centerX, 50.0f), 0.0f, Vector2(1000, 250) * 0.5f,
 			Color::White,
 			Vector2::Zero, Vector2::One
 		);
-		Number(Vector2(centerX, 100), Vector2(100, 100), res.maxTime - res.time);
+		Number(Vector2(centerX, 50.0f), Vector2(100, 100), res.maxTime - res.time);
 
 		// スコアの描画
 		int idx = 0;										// インデックス
