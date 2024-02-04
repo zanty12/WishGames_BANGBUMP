@@ -244,7 +244,7 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 	int id = -1;
 	float radius = scale.x < scale.y ? scale.y : scale.x;
 
-	
+	int i = 0;
 	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
 		for (int y = leftBottomIdx.y; y <= rightTopIdx.y; y++) {
 			// îÕàÕäOÇ»ÇÁèàóùÇÇµÇ»Ç¢
@@ -257,7 +257,7 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 				id = tmpId;
 				Vector2 cellPos = ToPosition({ x, y });							// ÉZÉãÇÃç¿ïW
 				Vertex4 playerCollision(position, 0.0f, scale);
-				Vertex4 cellCollision(cellPos, 0.0f, Vector2(cellSize, cellSize) * 0.5f);
+				Vertex4 cellCollision(cellPos, 0.0f, Vector2::One * cellSize * 0.5f);
 
 				int up = y < height - 1 ? GetColliderMap(x, y + 1) : -1;
 				int down = 0 < y ? GetColliderMap(x, y - 1) : -1;
@@ -268,7 +268,6 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 				if (Collider2D::Touch(playerCollision, cellCollision)) {
 					Vector2 direction = position - cellPos;
 					position += direction.Normalize() * velocity->Distance();
-
 					//// ècÇÃï«Ç»ÇÁ
 					//if (up != -1 || down != -1) direction.x = 0.0f;
 					//// â°ÇÃï«Ç»ÇÁ
