@@ -229,7 +229,7 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 	Vector2Int leftBottomIdx = ToIndex(position - scale);											// 左下のインデックス
 	Vector2Int rightTopIdx = ToIndex(position + scale);												// 右上のインデックス
 	leftBottomIdx.x--;
-	leftBottomIdx.y -= 2;
+	leftBottomIdx.y--;
 	rightTopIdx.x++;
 	rightTopIdx.y++;
 
@@ -259,12 +259,23 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 				Vertex4 playerCollision(position, 0.0f, scale);
 				Vertex4 cellCollision(cellPos, 0.0f, Vector2(cellSize, cellSize) * 0.5f);
 
+				int up = y < height - 1 ? GetColliderMap(x, y + 1) : -1;
+				int down = 0 < y ? GetColliderMap(x, y - 1) : -1;
+				int left = 0 < x ? GetColliderMap(x - 1, y) : -1;
+				int right = x < width - 1 ? GetColliderMap(x + 1, y) : -1;
+
 				// 触れているなら
 				if (Collider2D::Touch(playerCollision, cellCollision)) {
 					Vector2 direction = position - cellPos;
 					position += direction.Normalize() * velocity->Distance();
 
-					if(0.0f < direction.y) {
+					//// 縦の壁なら
+					//if (up != -1 || down != -1) direction.x = 0.0f;
+					//// 横の壁なら
+					//if (left != -1 || right != -1) direction.y = 0.0f;
+
+
+					if (0.0f < direction.y) {
 						if (gravityVelocity) gravityVelocity->y = 0.0f;
 					}
 				}
@@ -273,10 +284,10 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 	}
 
 	// 範囲外
-	if (position.x < cellSize * 0.5f) position.x = cellSize * 1.5f;
-	else if (cellSize * width - cellSize * 0.5f < position.x) position.x = cellSize * width - cellSize * 1.5f;
-	if (position.y < cellSize * 0.5f) position.y = cellSize * 1.5f;
-	else if (cellSize * height - cellSize * 0.5f < position.y) position.y = cellSize * height - cellSize * 1.5f;
+	if (position.x < cellSize * 0.5f) position.x = cellSize * 2.0f;
+	else if (cellSize * width - cellSize * 0.5f < position.x) position.x = cellSize * width - cellSize * 2.0f;
+	if (position.y < cellSize * 0.5f) position.y = cellSize * 2.0f;
+	else if (cellSize * height - cellSize * 0.5f < position.y) position.y = cellSize * height - cellSize * 2.0f;
 
 	return id;
 }

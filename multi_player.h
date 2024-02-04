@@ -19,6 +19,7 @@ class ServerPlayer : public ServerMovableGameObject {
 private:
 	ServerAttribute *moveAttribute = nullptr;			// 移動属性
 	ServerAttribute *attackAttribute = nullptr;			// 攻撃属性
+	WIN::Time exCoolTime;								// がっちゃんこクールタイム
 
 
 public:
@@ -38,6 +39,7 @@ public:
 		maxGravity = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"maxGravity", 0.5f);
 		transform.scale.x = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"width", 20.0f);
 		transform.scale.y = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"height", 60.0f);
+		exCoolTime.Start();
 	}
 	~ServerPlayer() {
 		if (moveAttribute) delete moveAttribute;

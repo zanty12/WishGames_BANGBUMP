@@ -13,6 +13,9 @@ struct AttributeState {
 	float brakeFriction = 0.98f;	// 摩擦係数（急停止）
 	float powerFriction = 1.00f;	// パワーの摩擦係数
 
+	// 切り替え
+	float exCoolTime = 1.5f;		// がっちゃんこクールタイム
+
 	// 魔力
 	int minMp = 0;					// 最小魔力
 	int maxMp = 3;					// 最大魔力
@@ -53,6 +56,9 @@ struct AttributeState {
 		brakeFriction = ini::GetFloat(PARAM_PATH + path, attributeName, L"brakeFriction", -1.0f);
 		powerFriction = ini::GetFloat(PARAM_PATH + path, attributeName, L"powerFriction", -1.0f);
 
+		// 切り替え
+		exCoolTime = ini::GetFloat(PARAM_PATH + path, attributeName, L"exCoolTime", -1.0f);
+
 		// 魔力
 		minMp = ini::GetInt(PARAM_PATH + path, attributeName, L"minMp", -1);
 		maxMp = ini::GetInt(PARAM_PATH + path, attributeName, L"maxMp", -1);
@@ -91,6 +97,9 @@ struct AttributeState {
 		influence_state(friction);
 		influence_state(brakeFriction);
 		influence_state(powerFriction);
+
+		// 切り替え
+		influence_state(exCoolTime);
 
 		// 魔力
 		influence_state(minMp);

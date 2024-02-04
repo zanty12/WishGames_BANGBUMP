@@ -26,17 +26,21 @@ void ServerPlayer::Loop(void) {
 	}
 
 	// ‘®«Ø‚è‘Ö‚¦‚ª‚Á‚¿‚á‚ñ‚±II
-	if (0.75f < Input::GetTriggerLeft(0) && 0.75f < Input::GetTriggerRight(0)) {
-		if (attributeChange == false) {
-			ServerAttribute *tmp = attackAttribute;
-			attackAttribute = moveAttribute;
-			moveAttribute = tmp;
-			attributeChange = true;
-			SetPlayerAnimIdle(animType);
+	if (attackAttribute->state->exCoolTime <= exCoolTime.GetNowTime() * 0.001f) {
+		if (0.75f < Input::GetTriggerLeft(0) && 0.75f < Input::GetTriggerRight(0)) {
+			if (attributeChange == false) {
+				ServerAttribute *tmp = attackAttribute;
+				attackAttribute = moveAttribute;
+				moveAttribute = tmp;
+				attributeChange = true;
+				SetPlayerAnimIdle(animType);
+
+				exCoolTime.Start();
+			}
 		}
-	}
-	else {
-		attributeChange = false;
+		else {
+			attributeChange = false;
+		}
 	}
 
 	// ‚«”ò‚Î‚µ‚Ì‘¬“x‚ğŒ¸‘¬‚³‚¹‚é
