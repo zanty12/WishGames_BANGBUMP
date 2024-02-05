@@ -193,7 +193,7 @@ void Thunder::Action()
         {
             attack_indicator_ = new ThunderIndicator();
         }
-        float angle = atan2(previousStick.y, -previousStick.x);
+        float angle = atan2(previousStick.y, previousStick.x);
         Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_indicator_->GetScale().x / 2);
         pos = player_->GetPos() + pos;
         attack_indicator_->SetPos(pos);
@@ -208,7 +208,7 @@ void Thunder::Action()
             {
                 float range = 1 + (attack_charge_ - atttack_trigger_min_) / (attack_charge_max_- atttack_trigger_min_)*(15 + 1) * GameObject::SIZE_;
                 //15‚ÌŒã‚ÍƒŒƒxƒ‹•Ï“®’l
-                attack_[i] = new ThunderAttack(this, -previousStick.Normalize(),
+                attack_[i] = new ThunderAttack(this, Vector2(previousStick.x,-previousStick.y).Normalize(),
                                                17 * GameObject::SIZE_ * Time::GetDeltaTime(),range);
                 attack_charge_ = 0.0f;
                 attack_cd_ = 1.0f;
@@ -300,6 +300,8 @@ ThunderIndicator::ThunderIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTextu
 {
     SetScale(Vector2(2 * GameObject::SIZE_, 0.5 * GameObject::SIZE_));
     SetType(OBJ_VOID);
+    GetCollider()->Discard();
+    SetCollider(nullptr);
 }
 
 

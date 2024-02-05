@@ -49,7 +49,6 @@ Vector2 Dark::Move()
             move_indicator_ = new DarkIndicator();
         }
         Vector2 dir = stick.Normalize();
-        dir.y *= -1;
         Vector2 target_pos = player_->GetPos() + dir * warpDistance_ / 2;
         move_indicator_->SetPos(player_->GetPos());
         move_indicator_->SetTargetPos(target_pos);
@@ -96,6 +95,7 @@ void Dark::Action()
 {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
+    stick.y *= -1;
     //float distance = stick.Distance();
     if (stick != Vector2::Zero)
     {
@@ -136,10 +136,12 @@ void Dark::Action()
         if (attack_ == nullptr)
             attack_ = new DarkAttack(this);
         float angle = atan2(attackDirection_.y, attackDirection_.x);
-        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2);
+        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2+0.5*GameObject::SIZE_);
         pos = player_->GetPos() + pos;
         attack_->SetPos(pos);
         attack_->SetRot(angle + (3.14f / 2));
+        delete attack_indicator_;
+        attack_indicator_ = nullptr;
     }
     else
     {
