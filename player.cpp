@@ -153,6 +153,23 @@ void Player::Update(void)
 		player_state_ = FALL;
 	}
 
+	//limit player pos
+	if (GetPos().y < this->GetScale().y)
+	{
+		SetPos(Vector2(GetPos().x, this->GetScale().y));
+	}
+	if(GetPos().x < this->GetScale().x)
+	{
+		SetPos(Vector2( this->GetScale().x, GetPos().y));
+	}
+	if(GetPos().x > map_mangr_->GetMap()->GetWidth()*SIZE_ - this->GetScale().x)
+	{
+		SetPos(Vector2(map_mangr_->GetMap()->GetWidth() * SIZE_ - this->GetScale().x, GetPos().y));
+	}
+	if(GetPos().y > map_mangr_->GetMap()->GetHeight()*SIZE_  - this->GetScale().y)
+	{
+		SetPos(Vector2(GetPos().x, map_mangr_->GetMap()->GetHeight() * SIZE_  - this->GetScale().y));
+	}
 }
 
 void Player::DropSkillOrb(void)
@@ -254,16 +271,6 @@ void Player::CollisionAction(void)
 		{
 			GameObject* gameObj = collision->GetParent();
 			CollisionBullet(gameObj);
-			break;
-		}
-		case OBJ_ATTACK:
-		{
-			GameObject* attack = collision->GetParent();
-			if (attack != nullptr)
-			{
-				CollisionAttack(attack);
-			}
-
 			break;
 		}
 		case OBJ_ITEM:

@@ -12,6 +12,15 @@ public:
     static int Hash(int seed)
     {
         //the prime number could be better
+        if(seed < 0)
+        {
+            seed *= -1;
+        }
+        if(seed > 1000)
+        {
+            //suppress the number to a reasonable range
+            seed = seed % 1000;
+        }
         return seed / 10;
     }
 
@@ -81,7 +90,8 @@ public:
             id += std::to_string(id_rand);
         }
         id_list_.push_back(id);
-        id_list_.sort();
+        //sort the list according to the numeric value of the id
+        id_list_.sort([](std::string a, std::string b) { return std::stoi(a) < std::stoi(b); });
         return id;
     }
 };

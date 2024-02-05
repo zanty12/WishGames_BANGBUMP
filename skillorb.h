@@ -149,6 +149,7 @@ public:
     std::string GetID(void) { return gameObject_ ? gameObject_->GetID() : ""; }
     bool GetDiscard(void) { return gameObject_ ? gameObject_->GetDiscard() : false; }
     GameObject *GetGameObject(void) { return gameObject_ ? gameObject_ : nullptr; }
+    void SetGameObject(GameObject *gameObject) { gameObject_ = gameObject; }
 };
 
 class SkillOrbMovable : public MovableObj, public SkillOrb

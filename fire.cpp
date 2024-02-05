@@ -42,24 +42,8 @@ Vector2 Fire::Move()
         move_effect_->Update();
 
         Vector2 dir = stick.Normalize();
-        Vector2 vel = player_->GetVel() + dir * speed * Time::GetDeltaTime() * Time::GetDeltaTime();
-        Vector2 player_dir = player_->GetVel().Normalize();
-
-        float angle = acos(Vector2::Dot(dir, player_dir));
-        if (acos(Vector2::Dot(dir, player_dir)) > M_PI_2)
-            vel += dir * speed * Time::GetDeltaTime() * Time::GetDeltaTime();
-        player_->SetGravityState(GRAVITY_NONE);
-        return vel;
-    }
-    else if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() >= speed * Time::GetDeltaTime())
-    {
-        //エフェクト表示
-        move_effect_->SetColor(Color(1, 1, 1, 1));
-        move_effect_->GetAnimator()->SetIsAnim(true);
-        move_effect_->Update();
-
-        Vector2 dir = stick.Normalize();
         Vector2 vel = dir * speed * Time::GetDeltaTime();
+
         player_->SetGravityState(GRAVITY_NONE);
         return vel;
     }
@@ -83,6 +67,8 @@ void Fire::Action()
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
     stick.y *= -1;
+    if(attack_ != nullptr)
+        attack_->Update();
 
     if (stick.x > 0.0f)
     {
