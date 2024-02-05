@@ -20,6 +20,7 @@ class ServerMovableGameObject;
 class ClientMovableGameObject;
 class ServerAttribute {
 public:
+	static const int MAX_LV = 10;
 	ServerPlayer *player = nullptr;
 	WIN::Time coolTimer;
 	WIN::Time atkCoolTimer;
@@ -28,19 +29,19 @@ public:
 	AttackServerSide *attack_ = nullptr;
 
 public:
-	float power = 0.0f;					// パワー
+	float power = 0.0f;						// パワー
 	int mp = 0;
-	int lv = 0;							// レベル
-	AttributeState *state = nullptr;	// 現在のステータス
-	AttributeState state_lv[10] = {};	// ステータス
-	int lvupPoint[10] = {};				// レベルアップに必要なポイント
+	int lv = 0;								// レベル
+	AttributeState *state = nullptr;		// 現在のステータス
+	AttributeState state_lv[MAX_LV] = {};	// ステータス
+	int lvupPoint[MAX_LV] = {};				// レベルアップに必要なポイント
 
 
 public:
 	ServerAttribute(ServerPlayer* player, std::wstring attributeName) : player(player) {
 		// ステータスを読み込む
 		std::wstring lvStr = L"lv";
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < MAX_LV; i++) {
 			state_lv[i] = AttributeState(attributeName, i + 1);
 			lvupPoint[i] = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", lvStr + std::to_wstring(i + 1), 0);
 		}
@@ -70,20 +71,22 @@ public:
 };
 class ClientAttribute {
 protected:
+	static const int MAX_LV = 10;
 	ClientPlayer *player = nullptr;
 	MultiAnimator attackAnim;
 	MultiAnimator moveAnim;
 
-	AttributeState *state = nullptr;	// 現在のステータス
-	AttributeState state_lv[10] = {};	// ステータス
+	AttributeState *state = nullptr;		// 現在のステータス
+	AttributeState state_lv[MAX_LV] = {};	// ステータス
+	int lvupPoint[MAX_LV] = {};				// レベルアップに必要なポイント
 
 public:
 	ClientAttribute(ClientPlayer *player, std::wstring attributeName) : player(player) {
 		// ステータスを読み込む
-		int lv = 1;
-		for (auto &state : state_lv) {
-			state = AttributeState(attributeName, lv);
-			lv++;
+		std::wstring lvStr = L"lv";
+		for (int i = 0; i < MAX_LV; i++) {
+			state_lv[i] = AttributeState(attributeName, i + 1);
+			lvupPoint[i] = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", lvStr + std::to_wstring(i + 1), 0);
 		}
 		// レベル1のステータスにする
 		state = state_lv;
@@ -93,6 +96,21 @@ public:
 	virtual void Idle(void) { }
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	static ClientAttribute *Create(ClientPlayer *player, ATTRIBUTE_TYPE type);
+	void LevelUpdate(void);
+	int GetLv(void) {
+		if (state) return (state - state_lv);
+		else return 0;
+	}
+	int GetLvMinSkillOrb(void) {
+		int lv = GetLv();
+		int min = lvupPoint[lv];
+		return min;
+	}
+	int GetLvMaxSkillOrb(void) {
+		int lv = GetLv();
+		int max = lv < MAX_LV - 1 ? lvupPoint[lv + 1] : -1;
+		return max;
+	}
 };
 
 

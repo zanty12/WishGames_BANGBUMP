@@ -25,8 +25,8 @@ private:
 public:
 	int skillPoint = 0;									// スキルポイント
 	int score = 0;										// スコア
-	MultiMap *map = nullptr;							// マップ
 	int animType = ANIMATION_TYPE_IDLE;					// アニメーション
+	MultiMap *map = nullptr;							// マップ
 	Vector2 attackVelocity;								// 攻撃のベクトル
 	Vector2 warpVelocity;								// ワープベクトル
 	bool isAttributeChange = false;						// 属性チェンジ
@@ -81,10 +81,6 @@ private:
 	};
 
 private:
-	ClientAttribute *moveAttribute = nullptr;				// 移動属性
-	ClientAttribute *attackAttribute = nullptr;				// 攻撃属性
-	ClientAttribute *curMoveAttribute = nullptr;			// 移動属性（現在）
-	ClientAttribute *curAttackAttribute = nullptr;			// 攻撃属性（現在）
 	MultiAnimator anim;										// アニメーション
 	MultiAnimator reverseAnim;								// 反転アニメーション
 	MultiAnimator *curAnim = nullptr;						// アニメーション（現在）
@@ -110,6 +106,10 @@ public:
 	bool isReverseX = false;								// 横軸の向き
 	Vector2 attackVelocity;									// 攻撃のベロシティ
 	Vector2 warpVelocity;									// ワープベロシティ
+	ClientAttribute *moveAttribute = nullptr;				// 移動属性
+	ClientAttribute *attackAttribute = nullptr;				// 攻撃属性
+	ClientAttribute *curMoveAttribute = nullptr;			// 移動属性（現在）
+	ClientAttribute *curAttackAttribute = nullptr;			// 攻撃属性（現在）
 
 
 

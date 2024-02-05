@@ -625,6 +625,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 			else {
 				auto &player = iterator->second;
 				player->isShow = true;
+				player->skillPoint = client.skillPoint;
 				player->transform.position = client.position;
 				player->velocity = client.moveVelocity;
 				player->attackVelocity = client.attackVelocity;

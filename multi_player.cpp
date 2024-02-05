@@ -174,6 +174,7 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 	if (moveAttribute) {
 		if (moveAttribute->GetAttribute() == ATTRIBUTE_TYPE_FIRE) {
 			// 移動アニメーション
+			moveAttribute->LevelUpdate();
 			moveAttribute->Move();
 		}
 	}
@@ -181,6 +182,7 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 	if (attackAttribute) {
 		if (attackAttribute->GetAttribute() == ATTRIBUTE_TYPE_WIND) {
 			// 移動アニメーション
+			attackAttribute->LevelUpdate();
 			attackAttribute->Attack();
 		}
 	}

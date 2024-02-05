@@ -13,11 +13,7 @@ MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 	{
 	case CHARACTER_SELECT: rstMode = new MultiPlayCharacterSelectModeServerSide(game_); break;
 	case AREA_CAPTURE: rstMode = new MultiPlayAreaCaptureModeServerSide(); break;
-	//case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeServerSide();
-	//case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeServerSide(game_);
-	//case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResult2ModeServerSide();
 	case ENEMY_RUSH: return new MultiPlayEnemyRushModeServerSide();
-	//case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResult3ModeServerSide();
 	case FINAL_BATTLE: rstMode = new MultiPlayFinalBattleModeServerSide(); break;
 	}
 
@@ -100,11 +96,7 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 	{
 	case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeClientSide(game_);
 	case AREA_CAPTURE: return new MultiPlayAreaCaptureModeClientSide();
-	//case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeClientSide();
-	//case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeClientSide(game_);
-	//case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResult2ModeClientSide();
 	case ENEMY_RUSH: return new MultiPlayEnemyRushModeClientSide();
-	//case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResult3ModeClientSide();
 	case FINAL_BATTLE: return new MultiPlayFinalBattleModeClientSide();
 	}
 	return nullptr;
@@ -183,23 +175,37 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 
 		uv = Vector2::Zero;
 		uvScale = Vector2::One;
+		Vector2 pos = CalcIconPosition(idx, maxMembers);
+		Vector2 scl = Vector2(200, 100);
 		DrawSprite(icon3,
-			CalcIconPosition(idx, maxMembers), 0.0f, Vector2(200, 100),
+			CalcIconPosition(idx, maxMembers), 0.0f, scl,
 			Color::White,
 			uv, uvScale
 		);
-		DrawSprite(icon2,
-			CalcIconPosition(idx, maxMembers), 0.0f, Vector2(200, 100),
-			Color::White,
-			uv, uvScale
-		);
+		{
+			auto player = MultiPlayClient::clients[client.id];
+			int curSkillOrb = player->skillPoint;
+			int lv = player->curMoveAttribute ? player->curMoveAttribute->GetLv() : 0;
+			int minSkillOrb = player->curMoveAttribute ? player->curMoveAttribute->GetLvMinSkillOrb() : 0;
+			int maxSkillOrb = player->curMoveAttribute ? player->curMoveAttribute->GetLvMaxSkillOrb() : 0;
+			float ratio = (float)(curSkillOrb - minSkillOrb) / (float)(maxSkillOrb - minSkillOrb);
+			float t = MATH::Leap(0.25f, 0.98f, ratio);
+			float x = pos.x - scl.x * 0.5f;
+			//std::cout << (curSkillOrb - minSkillOrb) << " / " << (maxSkillOrb - minSkillOrb) << " = " << ratio << std::endl;
+			std::cout << minSkillOrb << " ~ " << maxSkillOrb << " = " << lv << std::endl;
+			DrawSprite(icon2,
+				Vector2(x + scl.x * (t) * 0.5f, pos.y), 0.0f, Vector2(scl.x * t, scl.y),
+				Color::White,
+				uv, Vector2(t, 1.0f)
+			);
+		};
 		DrawSprite(icon,
-			CalcIconPosition(idx, maxMembers), 0.0f, Vector2(200, 100),
+			pos, 0.0f, scl,
 			Color::White,
 			uv, uvScale
 		);
 
-		Number(CalcIconPosition(idx, maxMembers), Vector2(100, 100), client.skillPoint);
+		Number(pos, Vector2(100, 100), client.skillPoint);
 		idx++;
 	}
 }

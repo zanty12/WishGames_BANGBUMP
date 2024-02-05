@@ -20,7 +20,7 @@ bool ServerAttribute::DestroyAttack(void) {
 	return false;
 };
 void ServerAttribute::LevelUpdate(void) {
-	int lv = 9;
+	int lv = MAX_LV - 1;
 	// レベルが上限の場合
 	if (lvupPoint[lv] <= player->skillPoint) {
 		state = &state_lv[lv];
@@ -28,7 +28,7 @@ void ServerAttribute::LevelUpdate(void) {
 	}
 
 	// レベルの調整
-	for (lv = 0; lv < 9; lv++) {
+	for (lv = 0; lv < MAX_LV - 1; lv++) {
 		if (lvupPoint[lv] <= player->skillPoint && player->skillPoint < lvupPoint[lv + 1]) {
 			state = &state_lv[lv];
 			this->lv = lv;
@@ -69,6 +69,20 @@ ClientAttribute *ClientAttribute::Create(ClientPlayer*player, ATTRIBUTE_TYPE typ
 	case ATTRIBUTE_TYPE_WIND: return new ClientWind(player);
 	}
 	return nullptr;
+}
+void ClientAttribute::LevelUpdate(void) {
+	int lv = MAX_LV - 1;
+	// レベルが上限の場合
+	if (lvupPoint[lv] <= player->skillPoint) {
+		state = &state_lv[lv];
+	}
+
+	// レベルの調整
+	for (lv = 0; lv < MAX_LV - 1; lv++) {
+		if (lvupPoint[lv] <= player->skillPoint && player->skillPoint < lvupPoint[lv + 1]) {
+			state = &state_lv[lv];
+		}
+	}
 }
 void ServerAttribute::AddPower(void) {
 	power += state->addPower;
