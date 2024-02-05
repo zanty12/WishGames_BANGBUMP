@@ -49,7 +49,7 @@ Vector2 Dark::Move()
             move_indicator_ = new DarkIndicator();
         }
         Vector2 dir = stick.Normalize();
-        dir.y *= -1;
+        //dir.y *= -1;
         Vector2 target_pos = player_->GetPos() + dir * warpDistance_ / 2;
         move_indicator_->SetPos(player_->GetPos());
         move_indicator_->SetTargetPos(target_pos);
@@ -212,11 +212,16 @@ void DarkAttack::Update()
     HitEffectUpdate();  //エフェクトのアップデート
 }
 
-DarkIndicator::DarkIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(player)), Vector2::Zero)
+DarkIndicator::DarkIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(effect_water_indicator)), Vector2::Zero)
 {
     SetScale(Vector2(2 * GameObject::SIZE_, 2 * GameObject::SIZE_));
     GetAnimator()->SetColor(Color(0.0f, 0.0f, 0.5f, 0.5f));
     SetType(OBJ_VOID);
+
+    //アニメーション設定
+    GetAnimator()->SetTexenum(effect_water_indicator);
+    GetAnimator()->SetLoopAnim(EFFECT_WATER_INDICATOR);
+    GetAnimator()->SetDrawPriority(25);
 }
 
 void DarkIndicator::Update()
