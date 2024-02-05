@@ -13,7 +13,7 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 	if (time < 0.0f) return;
 
 	// ‚Í‚¶‚ß‚Ì‚Ý
-	if (preMode != mode) {
+	if (preMode != mode && GetMode() != MULTI_MODE::CHARACTER_SELECT) {
 		int maxScore = -1;
 		for (int i = 0; i < clients.size(); i++) {
 			int score = maxScore;
