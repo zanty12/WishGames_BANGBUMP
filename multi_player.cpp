@@ -257,8 +257,8 @@ void ClientPlayer::SetAttackAttribute(ClientAttribute *attackAttribute) {
 	attackAttributeType = attackAttribute->GetAttribute();
 	// アニメーションの設定
 	if (moveAttribute) {
-		anim = MultiAnimator::GetPlayerInitialize(0, moveAttribute->GetAttribute(), attackAttribute->GetAttribute());
-		reverseAnim = MultiAnimator::GetPlayerInitialize(0, attackAttribute->GetAttribute(), moveAttribute->GetAttribute());
+		anim = MultiAnimator::GetPlayerInitialize(id % 4, moveAttribute->GetAttribute(), attackAttribute->GetAttribute());
+		reverseAnim = MultiAnimator::GetPlayerInitialize(id % 4, attackAttribute->GetAttribute(), moveAttribute->GetAttribute());
 	}
 }
 
