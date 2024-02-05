@@ -167,7 +167,7 @@ void Game::UpdateNormal()
     std::thread projectile(&ProjectileMngr::Update, projectile_mngr_);
     //projectile_mngr_->Update();
     //std::thread orb(&SkillOrbMngr::Update, orb_mngr_);
-    //orb_mngr_->Update();
+
     //projectile.join();
     //orb.join();
     std::thread camera(&Camera::Update, camera_, GetPlayer()->GetPos(), GetPlayer()->GetVel(),
@@ -181,7 +181,7 @@ void Game::UpdateNormal()
     projectile.join();
     camera.join();
     renderer.join();
-
+    orb_mngr_->Update();
     //check scene change
     if (GetPlayer()->GetChangeSceneFlag())
     {

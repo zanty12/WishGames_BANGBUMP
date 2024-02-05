@@ -8,6 +8,7 @@ private:
 public:
     ~SkillOrbMngr();
 
+    void Update(void);
     /*
     * スキルポイントをポップする
     * cellX : セル座標X
