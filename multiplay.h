@@ -16,7 +16,7 @@
 extern std::wstring ParamPath;
 #define MAX_MEMBER (4)
 #define PORT (8080)
-#define MAX_BUFF (1024 * 8)
+#define MAX_BUFF (1024 * 16)
 
 
 
