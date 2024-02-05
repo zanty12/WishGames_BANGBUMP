@@ -1,6 +1,7 @@
 #pragma once
 #include "multi_anim.h"
 #include "multi_object.h"
+#include "asset.h"
 
 class ResultSkillOrb : public GameObjectClientSide {
 public:
@@ -12,7 +13,7 @@ public:
 	MultiAnimator anim;
 
 	ResultSkillOrb(Vector2 target, Vector2 velocity) : target(target), velocity(velocity) {
-		//anim = MultiAnimator()
+		//anim = MultiAnimator(Asset::textures_[])
 	}
 
 	void Loop(void) override;
