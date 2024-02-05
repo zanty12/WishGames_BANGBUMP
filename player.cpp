@@ -101,35 +101,29 @@ void Player::Update(void)
 
 	bool affected_gravity = false;	//d—Í‚ðŽó‚¯‚½‚©‚Ç‚¤‚©
 
+	//d—Í
+	if(GetGravityState() == GRAVITY_FULL)
+	{
+		SetVel(Vector2(GetVel().x, GetVel().y - GRAVITY_SCALE_ * Time::GetDeltaTime() * Time::GetDeltaTime()));
+	}
+	else if (GetGravityState() == GRAVITY_HALF)
+	{
+		SetVel(Vector2(GetVel().x, GetVel().y - GRAVITY_SCALE_ / 2 * Time::GetDeltaTime() * Time::GetDeltaTime()));
+	}
+	else if (GetGravityState() == GRAVITY_NONE)
+	{
+
+	}
+
 	if (attack_attribute_ != nullptr)
 	{
 		attack_attribute_->Action();
 	}
 
-	Vector2 next_vel = GetVel();
 	if (move_attribute_ != nullptr && clash_spike_ == 0)
 	{
 		move_attribute_->Move();
 	}
-	else if (clash_spike_ == 0)
-	{/*//‰½‚à‘®«‚ª‚È‚¯‚ê‚Î—Ž‚¿‚é
-		if (GetVel().y >= GRAVITY_SCALE_)
-			SetVel(Vector2(GetVel().x, GetVel().y - 0.05f));*/
-	}
-	//d—Í
-	if(GetGravityState() == GRAVITY_FULL)
-	{
-		SetVel(Vector2(next_vel.x, next_vel.y - GRAVITY_SCALE_ * Time::GetDeltaTime() * Time::GetDeltaTime()));
-	}
-	else if (GetGravityState() == GRAVITY_HALF)
-	{
-		SetVel(Vector2(next_vel.x, next_vel.y - GRAVITY_SCALE_ / 2 * Time::GetDeltaTime() * Time::GetDeltaTime()));
-	}
-	else if (GetGravityState() == GRAVITY_NONE)
-	{
-		SetVel(Vector2(next_vel.x, next_vel.y));
-	}
-
 
 
 	UpdateDir();
@@ -247,7 +241,7 @@ void Player::CollisionAction(void)
 		case OBJ_ENEMY:
 		{
 			GameObject* gameObj = collision->GetParent();
-			CollisionEnemy(gameObj);
+			//CollisionEnemy(gameObj);
 			break;
 		}
 		case OBJ_BULLET:

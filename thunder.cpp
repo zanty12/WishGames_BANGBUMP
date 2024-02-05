@@ -14,7 +14,7 @@
 #include"lib/collider2d.h"
 
 Thunder::Thunder(Player* player)
-    : Attribute(player, ATTRIBUTE_TYPE_THUNDER),move_effect_(new ThunderEffect(this))
+    : Attribute(player, ATTRIBUTE_TYPE_THUNDER), move_effect_(new ThunderEffect(this))
 {
 }
 
@@ -81,8 +81,8 @@ void Thunder::Move()
         if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
             player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
         {
-            if(!moving_)
-            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
+            if (!moving_)
+                player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
         }
     }
 
@@ -96,12 +96,13 @@ void Thunder::Move()
         }
         player_->SetGravityState(GRAVITY_NONE);
         //put indicator
-        if(move_indicator_ == nullptr)
+        if (move_indicator_ == nullptr)
         {
             move_indicator_ = new ThunderIndicator();
         }
         float angle = atan2(previousStick.y, -previousStick.x);
-        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + move_indicator_->GetScale().x / 2);
+        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + move_indicator_->GetScale().x /
+            2);
         pos = player_->GetPos() + pos;
         move_indicator_->SetPos(pos);
         move_indicator_->SetRot(angle);
@@ -131,7 +132,7 @@ void Thunder::Move()
             moving_ = false;
             player_->SetGravityState(GRAVITY_FULL);
         }
-        return direction;
+        //return direction;
     }
     else
     {
@@ -139,7 +140,7 @@ void Thunder::Move()
         if (move_cd_ < 0.0f)
             move_cd_ = 0.0f;
     }
-    return player_->GetVel();
+    //return player_->GetVel();
 }
 
 void Thunder::Action()
@@ -189,12 +190,13 @@ void Thunder::Action()
             attack_charge_ = attack_charge_max_;
         }
         //put indicator
-        if(attack_indicator_ == nullptr)
+        if (attack_indicator_ == nullptr)
         {
             attack_indicator_ = new ThunderIndicator();
         }
         float angle = atan2(previousStick.y, -previousStick.x);
-        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_indicator_->GetScale().x / 2);
+        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_indicator_->GetScale().x /
+            2);
         pos = player_->GetPos() + pos;
         attack_indicator_->SetPos(pos);
         attack_indicator_->SetRot(angle);
@@ -206,10 +208,11 @@ void Thunder::Action()
         {
             if (attack_[i] == nullptr)
             {
-                float range = 1 + (attack_charge_ - atttack_trigger_min_) / (attack_charge_max_- atttack_trigger_min_)*(15 + 1) * GameObject::SIZE_;
+                float range = 1 + (attack_charge_ - atttack_trigger_min_) / (attack_charge_max_ - atttack_trigger_min_)
+                    * (15 + 1) * GameObject::SIZE_;
                 //15の後はレベル変動値
                 attack_[i] = new ThunderAttack(this, -previousStick.Normalize(),
-                                               17 * GameObject::SIZE_ * Time::GetDeltaTime(),range);
+                                               17 * GameObject::SIZE_ * Time::GetDeltaTime(), range);
                 attack_charge_ = 0.0f;
                 attack_cd_ = 1.0f;
 
@@ -242,11 +245,12 @@ void Thunder::DebugMenu()
     ImGui::End();
 }
 
-ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range): parent_(parent),range_(range),
-                                                                       MovableObj(parent->GetPlayer()->GetPos(),
-                                                                           atan2(-dir.y, dir.x),
-                                                                           LoadTexture(Asset::GetAsset(fire_attack)),
-                                                                           dir * vel),PlayerAttack(10000)
+ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel, float range): parent_(parent), range_(range),
+    MovableObj(parent->GetPlayer()->GetPos(),
+               atan2(-dir.y, dir.x),
+               LoadTexture(Asset::GetAsset(fire_attack)),
+               dir * vel), PlayerAttack(parent->GetState()->atk, parent->GetState()->atkCoolTime,
+                                        parent->GetState()->knockbackRate)
 {
     start_pos_ = parent_->GetPlayer()->GetPos();
     SetPos(parent_->GetPlayer()->GetPos());
@@ -293,20 +297,20 @@ void ThunderAttack::Update()
         Discard();
     AddVel(GetVel());
 
-    HitEffectUpdate();  //エフェクトのアップデート
+    HitEffectUpdate(); //エフェクトのアップデート
 }
 
-ThunderIndicator::ThunderIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(thunder_indicator)), Vector2::Zero)
+ThunderIndicator::ThunderIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(thunder_indicator)),
+                                                  Vector2::Zero)
 {
     SetScale(Vector2(2 * GameObject::SIZE_, 0.5 * GameObject::SIZE_));
     SetType(OBJ_VOID);
 }
 
 
-
 ThunderEffect::ThunderEffect(Thunder* parent)
-    :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(dark_move_charge)), Vector2::Zero),
-    parent_(parent),move_time_(0.0f)
+    : MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(dark_move_charge)), Vector2::Zero),
+      parent_(parent), move_time_(0.0f)
 {
     GetCollider()->Discard();
     SetCollider(nullptr);
@@ -337,7 +341,6 @@ void ThunderEffect::Update()
     {
         SetColor(Color(0, 0, 0, 0));
     }
-
 }
 
 void ThunderEffect::Move()

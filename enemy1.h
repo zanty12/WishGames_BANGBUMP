@@ -27,7 +27,7 @@ public:
         SetVel(Vector2(-x_spd_ * dt, GetVel().y));
         SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
         SetAtk(5);
-        SetHp(20);
+        SetHp(1);
         SetType(OBJ_ENEMY);
 
         //アニメーター設定

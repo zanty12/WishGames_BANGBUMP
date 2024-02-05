@@ -96,7 +96,7 @@ void Wind::Move(void)
     }
 
     prev_y_ = vel.y;
-    return vel;
+    //return vel;
 }
 
 void Wind::Action(void)
@@ -138,7 +138,8 @@ void Wind::DebugMenu()
 }
 
 WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPlayer()->GetPos(), 0.0f,
-                                           LoadTexture(Asset::GetAsset(wind_attack)), Vector2::Zero),PlayerAttack(10000)
+LoadTexture(Asset::GetAsset(wind_attack)), Vector2::Zero),PlayerAttack(parent->GetState()->atk, parent->GetState()->atkCoolTime,
+         parent->GetState()->knockbackRate)
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);
@@ -151,7 +152,7 @@ WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPl
 
 void WindAttack::Update()
 {
-    UpdateTick();
+
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
@@ -163,9 +164,9 @@ void WindAttack::Update()
                 Enemy* enemy = dynamic_cast<Enemy*>(collision->GetParent());
                 if (enemy != nullptr)
                 {
-                    if (GetTick() > GetMaxTick())
+                    if (1)
                     {
-                        SetTick(0.0f);
+
                         enemy->SetHp(enemy->GetHp() - GetDamage());
 
                         //エフェクトの生成

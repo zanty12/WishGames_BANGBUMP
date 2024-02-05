@@ -26,7 +26,17 @@ bool Fire::StickTrigger(Vector2 stick, Vector2 previousStick)
 void Fire::Move()
 {
     Vector2 stick = Input::GetStickLeft(0);
+    ImGuiIO& io = ImGui::GetIO();
+    float refresh_proportion = io.Framerate / server_tick_rate; //更新比率
 
+    if (stick.x > 0.0f)
+    {
+        player_->GetAnimator()->DirRight();
+    }
+    else if (stick.x < 0.0f)
+    {
+        player_->GetAnimator()->DirLeft();
+    }
     Vector2 stickR = Input::GetStickRight(0);
     if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
         abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
@@ -51,16 +61,17 @@ void Fire::Move()
         float angle = acos(Vector2::Dot(dir, player_dir));
         if (acos(Vector2::Dot(dir, player_dir)) > M_PI_2)
             vel += dir * speed * Time::GetDeltaTime() * Time::GetDeltaTime();*/
-        AddPower(stick);
         ImGuiIO& io = ImGui::GetIO();
         float fps = io.Framerate;
-        vel_ += CalcVector(stick / (fps / server_tick_rate));
+        AddPower(stick / refresh_proportion);
+        vel_ += CalcVector(stick);
 
         player_->SetGravityState(GRAVITY_NONE);
 
         //limit velocity
         float maxPowerSq = state_->maxPower * state_->maxPower;
-        if (maxPowerSq < player_->GetVel().DistanceSq()) player_->SetVel( player_->GetVel().Normalize() * state_->maxPower);
+        if (maxPowerSq < vel_.DistanceSq())
+            vel_ = vel_.Normalize() * state_->maxPower / refresh_proportion;
     }
 
     //停止
@@ -82,6 +93,9 @@ void Fire::Action()
 {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
+    stick.y *= -1;
+    if (attack_ != nullptr)
+        attack_->Update();
 
     if (StickTrigger(stick))
     {
@@ -120,7 +134,7 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
                                        PlayerAttack(parent->GetState()->atk, parent->GetState()->atkCoolTime,
                                                     parent->GetState()->knockbackRate)
 {
-    SetScale(Vector2(parent->GetState()->atkDistance, parent->GetState()->atkRange));
+    SetScale(Vector2(parent->GetState()->atkRange, parent->GetState()->atkDistance * 2));
     SetType(OBJ_ATTACK);
 
     //アニメーション設定
@@ -132,6 +146,7 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
 void FireAttack::Update()
 {
     std::list<Collider*> collisions = GetCollider()->GetCollision();
+    if (collisions.empty()) return;
     for (auto collision : collisions)
     {
         OBJECT_TYPE type = collision->GetParent()->GetType();
@@ -150,8 +165,16 @@ void FireAttack::Update()
     }
 
     //deal damage to all hit enemies
+    if (target_.size() == 0)
+        return;
     for (auto& target : target_)
     {
+        //if target is not in collision anymore, remove from map
+        if (std::find(collisions.begin(), collisions.end(), target.first) == collisions.end())
+        {
+            target_.erase(target.first);
+            continue;
+        }
         Enemy* enemy = dynamic_cast<Enemy*>(target.first->GetParent());
         if (target.second.GetNowTime() * 0.001f > tick_)
         {

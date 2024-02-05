@@ -26,7 +26,7 @@ public:
 
     Attribute(Player* player, ATTRIBUTE_TYPE attr) : player_(player), attributeType_(attr)
     {
-        int lv = 10;
+        int lv = 1;
         for (auto& state : state_lv_)
         {
             state = AttributeState(GetAttributeString(attr), lv);

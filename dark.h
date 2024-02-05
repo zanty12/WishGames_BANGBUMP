@@ -32,12 +32,8 @@ class Dark : public Attribute
 public:
 
 	Dark(Player* player);
-	~Dark() override {
-		if (attack_) delete attack_;
-		if (move_indicator_) delete move_indicator_;
-		if (attack_indicator_) delete attack_indicator_;
-		if (move_effect_) delete move_effect_;
-	}
+	~Dark() override;
+	bool StickTrigger(Vector2 stick, Vector2 previousStick) {return false;}
 	void Move() override;
 	void Action() override;
 	void DebugMenu() override;

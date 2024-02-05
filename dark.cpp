@@ -19,6 +19,14 @@ Dark::Dark(Player* player)
 {
 }
 
+Dark::~Dark()
+{
+    if (attack_) delete attack_;
+    if (move_indicator_) delete move_indicator_;
+    if (attack_indicator_) delete attack_indicator_;
+    if (move_effect_) delete move_effect_;
+}
+
 void Dark::Move()
 {
     Vector2 velocity = player_->GetVel();
@@ -68,7 +76,7 @@ void Dark::Move()
         if (velocity.y <= -maxSpeedFalling)
         {
             velocity.y = maxSpeedFalling;
-            return velocity;
+            //return velocity;
         }
     }
     if (Input::GetKeyUp(0, Input::LThumb))
@@ -89,7 +97,7 @@ void Dark::Move()
 
     move_effect_->Update();
 
-    return player_->GetVel();
+    //return player_->GetVel();
 };
 
 void Dark::Action()
@@ -166,7 +174,9 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
                                            Vector2(
                                                parent->GetPlayer()->GetPos().x + parent->GetPlayer()->GetScale().x / 2 +
                                                5 * GameObject::SIZE_, parent->GetPlayer()->GetPos().y), 0.0f,
-                                           LoadTexture(Asset::GetAsset(dark_attack)), Vector2::Zero),PlayerAttack(10000)
+                                           LoadTexture(Asset::GetAsset(dark_attack)), Vector2::Zero),
+                                       PlayerAttack(parent->GetState()->atk, parent->GetState()->atkCoolTime,
+                                                    parent->GetState()->knockbackRate)
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);
@@ -179,7 +189,6 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
 
 void DarkAttack::Update()
 {
-    UpdateTick();
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
@@ -191,9 +200,8 @@ void DarkAttack::Update()
                 Enemy* enemy = dynamic_cast<Enemy*>(collision->GetParent());
                 if (enemy != nullptr)
                 {
-                    if (GetTick() > GetMaxTick())
+                    if (1)
                     {
-                        SetTick(0.0f);
                         enemy->SetHp(enemy->GetHp() - GetDamage());
 
                         //エフェクトの生成
@@ -209,7 +217,7 @@ void DarkAttack::Update()
         }
     }
 
-    HitEffectUpdate();  //エフェクトのアップデート
+    HitEffectUpdate(); //エフェクトのアップデート
 }
 
 DarkIndicator::DarkIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(player)), Vector2::Zero)
@@ -224,10 +232,10 @@ void DarkIndicator::Update()
     bool hit = false;
     //try collision at target_pos_
     ColliderRect* target_collider = dynamic_cast<ColliderRect*>(GetCollider());
-    ColliderRect* temp= new ColliderRect(*target_collider);
+    ColliderRect* temp = new ColliderRect(*target_collider);
     temp->SetPos(target_pos_);
     GameBase::GetCollMngr()->UpdateCollision(temp);
-    if(temp->GetCollision().size() == 0 || temp->GetCollision().front()->GetParent()->GetType() == OBJ_VOID)
+    if (temp->GetCollision().size() == 0 || temp->GetCollision().front()->GetParent()->GetType() == OBJ_VOID)
     {
         //std::cout<<"target_pos_ is valid"<<std::endl;
         SetPos(target_pos_);
@@ -271,10 +279,9 @@ void DarkIndicator::Update()
 }
 
 
-
 DarkEffect::DarkEffect(Dark* parent)
-    :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(dark_move_charge)), Vector2::Zero),
-    parent_(parent), move_time_(0.0f), teleport_(false), charge_(false)
+    : MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(dark_move_charge)), Vector2::Zero),
+      parent_(parent), move_time_(0.0f), teleport_(false), charge_(false)
 {
     GetCollider()->Discard();
     SetCollider(nullptr);

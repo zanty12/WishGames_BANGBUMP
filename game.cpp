@@ -17,7 +17,7 @@ Game::Game(SceneMngr* scene_mngr)
     projectile_mngr_ = new ProjectileMngr();
     orb_mngr_ = new SkillOrbMngr();
     players_ = std::list<Player *>();
-    mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_1).c_str(), this);
+    mapmngr_ = new MapMngr(Asset::GetAsset(test).c_str(), this);
     text_format_ = Text::MakeTextFormat(L"ÉèÅ[ÉvÉçñæí©", 50, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL);
     brush_ = Text::MakeBrush(Color(1.0f, 1.0f, 1.0f, 1.0f));
     timer_tex_ = LoadTexture(Asset::GetAsset(timer));
