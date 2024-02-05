@@ -8,12 +8,14 @@ void ResultSkillOrb::Loop(void) {
 	velocity += direction * moveAmoument;
 
 	// ターゲットないなら削除する
-	if (direction.DistanceSq() <= destroyDistance) {
+	if (direction.DistanceSq() <= destroyDistance * destroyDistance) {
 		isDestroy = true;
 	}
 
 	// 移動
-	transform.position += velocity;
+	transform.position -= direction;
+
+	std::cout << transform.position.y << std::endl;
 
 	anim.Draw(transform.position, transform.rotation, transform.scale, Color::White);
 }

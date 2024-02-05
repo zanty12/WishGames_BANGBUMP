@@ -44,12 +44,29 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 	auto afterClients = players.clients;
 	const float RANKING_SORT_ANIMATION_TIME = 1.0f;
 
+	//rstSkillOrb.remove_if(
+	//	[](ResultSkillOrb skillorb) {
+	//		return skillorb.isDestroy;
+	//	}
+	//);
+
+
+	// 0.5秒ごとにスキルオーブをドロップ
+	if (5000 < dropSkillOrbCoolTimer.GetNowTime()) {
+		for (int i = 0; i < 20; i++) rstSkillOrb.push_back(ResultSkillOrb(
+			Vector2(Graphical::GetWidth() * 0.5f, Graphical::GetHeight() * 0.5f),
+			Vector2(0, 0), 
+			Vector2::Up * 10.0f));
+		dropSkillOrbCoolTimer.Start();
+	}
+
+	for (auto &skillOrb : rstSkillOrb) {
+		skillOrb.Loop();
+	}
+
 	// ランキングのアニメーション
 	if (time <= RANKING_SORT_ANIMATION_TIME) {
-		// 0.5秒ごとにスキルオーブをドロップ
-		if (500 < dropSkillOrbCoolTimer.GetNowTime()) {
-
-		}
+		
 		
 		//// ランキングをソートする
 		//sort(beforeClients);									// ゲーム開始時のランキング表
