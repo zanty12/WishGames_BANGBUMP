@@ -220,6 +220,8 @@ public:
     float GetV(void) const { return v_; }   //UV(V)の値を取得
 
     void Invert(void) { invert_ *= -1; }    //反転
+    void DirRight(void) { invert_ = -1; } //右を向く
+    void DirLeft(void) { invert_ = 1; } //左を向く
 
     void SetParent(GameObject* parent) { parent_ = parent; }
     GameObject* GetParent(void) const { return parent_; }

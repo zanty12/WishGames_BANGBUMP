@@ -83,6 +83,18 @@ void Wind::Move(void)
     prev_power_ = power_;
     move_effect_->Update();
 
+    if (!move)
+    {
+        if (stick.x > 0.0f)
+        {
+            player_->GetAnimator()->DirRight();
+        }
+        else if(stick.x < 0.0f)
+        {
+            player_->GetAnimator()->DirLeft();
+        }
+    }
+
     prev_y_ = vel.y;
     return vel;
 }
@@ -177,6 +189,9 @@ WindEffect::WindEffect(Wind* parent)
     :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(wind_move)), Vector2::Zero),
     parent_(parent)
 {
+    GetCollider()->Discard();
+    SetCollider(nullptr);
+
     SetType(OBJ_VOID);
 
     //アニメーション設定

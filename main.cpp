@@ -22,7 +22,7 @@ int main()
     server.OpenTerminal();
 #else
     MSG msg;
-    Graphical::Initialize(1600, 900);
+    Graphical::Initialize(1920, 1080);
     DebugUI::Initialize();
     Text::CreateResources();
     WIN::Window window = Graphical::GetHwnd();
