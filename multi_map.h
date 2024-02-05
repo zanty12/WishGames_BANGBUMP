@@ -14,7 +14,7 @@ private:
 	int height = 0;
 	int *map = nullptr;
 	int *collMap = nullptr;
-	
+
 
 	MultiBehavior *skillOrbs;
 	MultiBehavior *enemies;
@@ -38,7 +38,7 @@ public:
 	void Initialize(void);
 	void Release(void);
 	void Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType);
-	Vector2Int ToIndex(Vector2 pos) { return Vector2Int((pos.x + cellSize * 0.5f) / cellSize, (pos.y + cellSize * 0.5f) / cellSize); }
+	Vector2Int ToIndex(Vector2 pos) { return Vector2Int(pos.x / cellSize, pos.y / cellSize); }
 	Vector2 ToPosition(Vector2Int idx) { return Vector2(idx.x * cellSize, idx.y * cellSize); }
 	void Draw(Vector2 offset);
 	void AttackUpdate(void);
@@ -52,6 +52,4 @@ public:
 	EffectClientSide *GetEffects(void) { return &effects; }
 	std::list<Vector2> GetAreaCaptures(void) { return areaCaptures; }
 	void DropSkillOrb(unsigned int drop, Vector2 position, float magnitude);
-
-private:
 };

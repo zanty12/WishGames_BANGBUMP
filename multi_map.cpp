@@ -266,17 +266,17 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 
 				// êGÇÍÇƒÇ¢ÇÈÇ»ÇÁ
 				if (Collider2D::Touch(playerCollision, cellCollision)) {
-					Vector2 direction = position - cellPos;
+					Vector2 direction = position - cellPos - Vector2(cellSize, cellSize + cellSize*0.5) * 0.5f;
 					position += direction.Normalize() * velocity->Distance();
-					//// ècÇÃï«Ç»ÇÁ
-					//if (up != -1 || down != -1) direction.x = 0.0f;
-					//// â°ÇÃï«Ç»ÇÁ
-					//if (left != -1 || right != -1) direction.y = 0.0f;
-
 
 					if (0.0f < direction.y) {
 						if (gravityVelocity) gravityVelocity->y = 0.0f;
 					}
+
+					// ècÇÃï«Ç»ÇÁ
+					if (up != -1 || down != -1) direction.x = 0.0f;
+					// â°ÇÃï«Ç»ÇÁ
+					if (left != -1 || right != -1) direction.y = 0.0f;
 				}
 			}
 		}
