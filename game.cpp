@@ -161,13 +161,13 @@ void Game::UpdateNormal()
     coll_mngr_->Update();
     std::thread map(&MapMngr::Update, mapmngr_);
     //mapmngr_->Update();
-    std::thread enemy(&EnemyMngr::Update, mapmngr_->GetEnemyMngr());
+    
     std::thread player(&Player::Update, GetPlayer());
     //GetPlayer()->Update();
     std::thread projectile(&ProjectileMngr::Update, projectile_mngr_);
     //projectile_mngr_->Update();
     //std::thread orb(&SkillOrbMngr::Update, orb_mngr_);
-
+    std::thread enemy(&EnemyMngr::Update, mapmngr_->GetEnemyMngr());
     //projectile.join();
     //orb.join();
     std::thread camera(&Camera::Update, camera_, GetPlayer()->GetPos(), GetPlayer()->GetVel(),
@@ -176,9 +176,9 @@ void Game::UpdateNormal()
     std::thread renderer(&Renderer::Update, renderer_);
     //renderer_->Update();
     map.join();
-    enemy.join();
     player.join();
     projectile.join();
+    enemy.join();
     camera.join();
     renderer.join();
     orb_mngr_->Update();
