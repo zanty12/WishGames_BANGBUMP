@@ -13,7 +13,7 @@ public:
 	MultiAnimator anim;
 
 	ResultSkillOrb(Vector2 target, Vector2 velocity) : target(target), velocity(velocity) {
-		//anim = MultiAnimator(Asset::textures_[])
+		anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_skillorb2.png"), 5, 6, 0, 29);
 	}
 
 	void Loop(void) override;

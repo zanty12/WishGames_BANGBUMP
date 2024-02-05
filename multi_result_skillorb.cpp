@@ -15,5 +15,5 @@ void ResultSkillOrb::Loop(void) {
 	// ˆÚ“®
 	transform.position += velocity;
 
-	
+	anim.Draw(transform.position, transform.rotation, transform.scale, Color::White);
 }
