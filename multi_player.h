@@ -29,7 +29,8 @@ public:
 	int animType = ANIMATION_TYPE_IDLE;					// アニメーション
 	Vector2 attackVelocity;								// 攻撃のベクトル
 	Vector2 warpVelocity;								// ワープベクトル
-	bool attributeChange = false;						// 属性チェンジ
+	bool isAttributeChange = false;						// 属性チェンジ
+	WIN::Time exStartTime;								// がっちゃんこ開始タイマー
 
 
 public:
@@ -82,7 +83,11 @@ private:
 private:
 	ClientAttribute *moveAttribute = nullptr;				// 移動属性
 	ClientAttribute *attackAttribute = nullptr;				// 攻撃属性
+	ClientAttribute *curMoveAttribute = nullptr;			// 移動属性（現在）
+	ClientAttribute *curAttackAttribute = nullptr;			// 攻撃属性（現在）
+	MultiAnimator anim;										// アニメーション
 	MultiAnimator reverseAnim;								// 反転アニメーション
+	MultiAnimator *curAnim = nullptr;						// アニメーション（現在）
 	WIN::Time timer;										// スポーン開始時からの時間計測
 	ENTRY_TYPE entryType = NONE;							// 入場演出
 
@@ -92,6 +97,7 @@ private:
 	MultiAnimator waterDamageEffect;						// 水ダメージエフェクト
 	MultiAnimator thunderDamageEffect;						// 雷ダメージエフェクト
 	MultiAnimator windDamageEffect;							// 風ダメージエフェクト
+	MultiAnimator exEffect;									// がっちゃんこエフェクト
 
 public:
 	int skillPoint = 0;										// スキルポイント
@@ -99,13 +105,14 @@ public:
 	int preAnimType = ANIMATION_TYPE_IDLE;					// アニメーション（1フレーム前）
 	ATTRIBUTE_TYPE moveAttributeType;						// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType;						// 攻撃属性タイプ
-	MultiAnimator anim;										// アニメーション
+	ATTRIBUTE_TYPE preMoveAttributeType;					// 移動属性タイプ
+	ATTRIBUTE_TYPE preAttackAttributeType;					// 攻撃属性タイプ
 	bool isReverseX = false;								// 横軸の向き
 	Vector2 attackVelocity;									// 攻撃のベロシティ
 	Vector2 warpVelocity;									// ワープベロシティ
 
 
-	
+
 public:
 	ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform);
 
@@ -123,3 +130,4 @@ public:
 	ClientAttribute *GetMoveAttribute(void) { return moveAttribute; }
 	ClientAttribute *GetAttackAttribute(void) { return attackAttribute; }
 };
+

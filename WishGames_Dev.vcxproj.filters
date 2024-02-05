@@ -274,6 +274,9 @@
     <ClCompile Include="multi_result_skillorb.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
+    <ClCompile Include="multi_ui.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphical.h">
@@ -580,6 +583,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="multi_result_skillorb.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_ui.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
   </ItemGroup>

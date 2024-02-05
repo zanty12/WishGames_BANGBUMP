@@ -7,8 +7,8 @@ class ResultSkillOrb : public GameObjectClientSide {
 public:
 	Vector2 velocity;
 	Vector2 target;
-	float moveAmoument = 0.1f;
-	float destroyDistance = 5.0f;
+	float moveAmount = 0.002f;
+	float destroyDistance = 50.0f;
 	bool isDestroy = false;
 	MultiAnimator anim;
 

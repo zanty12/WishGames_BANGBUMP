@@ -28,18 +28,12 @@ void ServerPlayer::Loop(void) {
 	// 属性切り替えがっちゃんこ！！
 	if (attackAttribute->state->exCoolTime <= exCoolTime.GetNowTime() * 0.001f) {
 		if (0.75f < Input::GetTriggerLeft(0) && 0.75f < Input::GetTriggerRight(0)) {
-			if (attributeChange == false) {
-				ServerAttribute *tmp = attackAttribute;
-				attackAttribute = moveAttribute;
-				moveAttribute = tmp;
-				attributeChange = true;
-				SetPlayerAnimIdle(animType);
+			ServerAttribute *tmp = attackAttribute;
+			attackAttribute = moveAttribute;
+			moveAttribute = tmp;
+			SetPlayerAnimIdle(animType);
 
-				exCoolTime.Start();
-			}
-		}
-		else {
-			attributeChange = false;
+			exCoolTime.Start();
 		}
 	}
 
@@ -82,12 +76,16 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	SetAttackAttribute(attackAttribute);
 	this->transform.scale = Vector2::One * 150;
 
+	preMoveAttributeType = moveAttributeType;
+	preAttackAttributeType = attackAttributeType;
 
 	// ダメージエフェクトのロード
 	fireDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_fire.png"), 5, 2, 0, 7, false);
 	waterDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_water.png"), 5, 2, 0, 7, false);
 	thunderDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_thunder.png"), 5, 2, 0, 7, false);
 	windDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_wind.png"), 5, 2, 0, 7, false);
+	exEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_EX.png"), 5, 6, 0, 29, false);
+	exEffect.MoveEnd();
 }
 
 void ClientPlayer::Loop(void) {
@@ -96,20 +94,37 @@ void ClientPlayer::Loop(void) {
 
 
 
-	// 入れ替わってない！？
-	if (moveAttribute->GetAttribute() == moveAttributeType && attackAttribute->GetAttribute() == attackAttributeType) {
-		Update(moveAttribute, attackAttribute, &anim);
+	// がっちゃんこアニメーション開始
+	if (preMoveAttributeType == attackAttributeType &&
+		preAttackAttributeType == moveAttributeType) {
+		exEffect.MoveBegin();
 	}
-	// 私たち入れ替わってる！？
-	else if (moveAttribute->GetAttribute() == attackAttributeType && attackAttribute->GetAttribute() == moveAttributeType) {
-		Update(attackAttribute, moveAttribute, &reverseAnim);
+
+	// アニメーションが開始されていないなら、現在発動している属性をそれぞれ指定する
+	if (18 < exEffect.GetIndex()) {
+		// 入れ替わってない！？
+		if (moveAttribute->GetAttribute() == moveAttributeType && attackAttribute->GetAttribute() == attackAttributeType) {
+			curMoveAttribute = moveAttribute, curAttackAttribute = attackAttribute;
+			curAnim = &anim;
+		}
+		// 私たち入れ替わってる！？
+		else if (moveAttribute->GetAttribute() == attackAttributeType && attackAttribute->GetAttribute() == moveAttributeType) {
+			curMoveAttribute = attackAttribute, curAttackAttribute = moveAttribute;
+			curAnim = &reverseAnim;
+		}
 	}
+
+	Update(curMoveAttribute, curAttackAttribute, curAnim);
+
 
 
 	// アニメーションタイプの更新
 	preAnimType = animType;
 
-	
+	exEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.8f, Color::White);
+	preMoveAttributeType = moveAttributeType;
+	preAttackAttributeType = attackAttributeType;
+
 	if (damageEffectAttributeType != -1) {
 		MultiAnimator *anim = &allDamageEffect;
 		if (damageEffectAttributeType == MULTI_ATTACK_FIRE) anim = &fireDamageEffect;

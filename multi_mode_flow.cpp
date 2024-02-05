@@ -1,6 +1,7 @@
 #include "multiplay.h"
 #include "multi_mode_flow.h"
 #include "load.h"
+#include "multi_ui.h"
 
 /***********************************************************
 	Server
@@ -155,9 +156,9 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	float centerX = Graphical::GetWidth() * 0.5f;		// 画面の中央（X座標）
 
 	// 時間制限の描画
-	DrawSpriteLeftTop(
+	DrawSprite(
 		timerTexNo,
-		Vector2(centerX, 50.0f), 0.0f, Vector2(1000, 250) * 0.5f,
+		CalcTimePosition(), 0.0f, Vector2(1000, 250) * 0.5f,
 		Color::White,
 		Vector2::Zero, Vector2::One
 	);
@@ -166,7 +167,6 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	// スコアの描画
 	int idx = 0;										// インデックス
 	int maxMembers = res.clients.size();				// プレイヤー人数
-	int width = 300;									// アイコンの幅
 	for (auto &client : res.clients) {
 		int moveAttribute = client.moveAttributeType;
 		int attackAttribute = client.attackAttributeType;
@@ -184,22 +184,22 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		uv = Vector2::Zero;
 		uvScale = Vector2::One;
 		DrawSprite(icon3,
-			Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
+			CalcIconPosition(idx, maxMembers), 0.0f, Vector2(200, 100),
 			Color::White,
 			uv, uvScale
 		);
 		DrawSprite(icon2,
-			Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
+			CalcIconPosition(idx, maxMembers), 0.0f, Vector2(200, 100),
 			Color::White,
 			uv, uvScale
 		);
 		DrawSprite(icon,
-			Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
+			CalcIconPosition(idx, maxMembers), 0.0f, Vector2(200, 100),
 			Color::White,
 			uv, uvScale
 		);
 
-		Number(Vector2(centerX + x * width, 200), Vector2(100, 100), client.skillPoint);
+		Number(CalcIconPosition(idx, maxMembers), Vector2(100, 100), client.skillPoint);
 		idx++;
 	}
 }
