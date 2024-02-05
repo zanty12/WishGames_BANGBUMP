@@ -68,6 +68,20 @@ public:
 	void FrictionPower(void);
 	void Friction(void);
 	Vector2 CalcVector(Vector2 stick);
+	int GetLv(void) {
+		if (state) return (state - state_lv);
+		else return 0;
+	}
+	int GetLvMinSkillOrb(void) {
+		int lv = GetLv();
+		int min = lvupPoint[lv];
+		return min;
+	}
+	int GetLvMaxSkillOrb(void) {
+		int lv = GetLv();
+		int max = lv < MAX_LV - 1 ? lvupPoint[lv + 1] : -1;
+		return max;
+	}
 };
 class ClientAttribute {
 protected:

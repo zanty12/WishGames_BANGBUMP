@@ -73,8 +73,22 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 		gameMode_->time_ = deltaTime;
 
 
-
-		gameMode_->Update(clients);
+		// ゲームのスタートの更新
+		if (gameMode_->time_ < gameMode_->startTime_) {
+			gameMode_->mode = MultiPlayModeServerSide::START;
+			gameMode_->UpdateStart(clients);
+		}
+		// ゲームのリザルトの更新
+		else if (0.0f < gameMode_->time_ - gameMode_->maxTime_ + gameMode_->resultTime_) {
+			gameMode_->mode = MultiPlayModeServerSide::RESULT;
+			gameMode_->UpdateResult(clients);
+		}
+		// ゲームモードの更新
+		else {
+			gameMode_->mode = MultiPlayModeServerSide::PLAY;
+			gameMode_->Update(clients);
+		}
+		gameMode_->preMode = gameMode_->mode;
 	}
 }
 
@@ -191,8 +205,6 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 			float ratio = (float)(curSkillOrb - minSkillOrb) / (float)(maxSkillOrb - minSkillOrb);
 			float t = MATH::Leap(0.25f, 0.98f, ratio);
 			float x = pos.x - scl.x * 0.5f;
-			//std::cout << (curSkillOrb - minSkillOrb) << " / " << (maxSkillOrb - minSkillOrb) << " = " << ratio << std::endl;
-			std::cout << minSkillOrb << " ~ " << maxSkillOrb << " = " << lv << std::endl;
 			DrawSprite(icon2,
 				Vector2(x + scl.x * (t) * 0.5f, pos.y), 0.0f, Vector2(scl.x * t, scl.y),
 				Color::White,

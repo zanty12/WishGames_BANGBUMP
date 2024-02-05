@@ -2,6 +2,9 @@
 #include "multiplay.h"
 #include "multi_ui.h"
 
+void MultiPlayModeServerSide::UpdateStart(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
+}
+
 void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
 	// 中間リザルトの経過時間を計算
 	float time = time_ - maxTime_ - resultTime_;
@@ -9,7 +12,30 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 	// 時間がマイナスなら終了（まだ中間リザルトではない）
 	if (time < 0.0f) return;
 
+	// はじめのみ
+	if (preMode != mode) {
+		int maxScore = -1;
+		for (int i = 0; i < clients.size(); i++) {
+			int score = maxScore;
+			ServerPlayer *editPlayer = nullptr;
 
+			// 加算されていないクライアントで最大スコアの検索
+			for (auto &client : clients) {
+				if (client.second.player_->score <= score || score == -1) {
+					score = client.second.player_->score;
+					editPlayer = client.second.player_;
+				}
+			}
+
+			if (editPlayer) {
+				auto attribute = editPlayer->GetMoveAttribute();
+				int expRange = attribute->GetLvMaxSkillOrb() - attribute->GetLvMinSkillOrb();
+				editPlayer->skillPoint += expRange * (1.0f - (float)i / (float)clients.size());
+			}
+
+			score;
+		}
+	}
 }
 
 void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {

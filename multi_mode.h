@@ -8,6 +8,11 @@
 class MultiPlayFlowServerSide;
 class MultiPlayModeServerSide {
 protected:
+	enum MODE {
+		START,
+		PLAY,
+		RESULT,
+	};
 	float maxTime_ = 60.0f;
 	float time_ = 0.0f;
 	float startTime_ = 15.0f;			// ŠJŽn‚Ü‚Å‚ÌŽžŠÔ
@@ -18,6 +23,8 @@ protected:
 
 
 public:
+	int mode = NONE;
+	int preMode = NONE;
 	MultiPlayModeServerSide(MultiMap *map, std::wstring modeName) : map_(map) {
 		startTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"startTime");
 		resultTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"resultTime");
@@ -26,6 +33,7 @@ public:
 	}
 	~MultiPlayModeServerSide() { if (map_) delete map_; }
 	virtual void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
+	virtual void UpdateStart(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
 	virtual void UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
 	virtual void CreateResponse(Storage& out) { };
 	virtual void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
