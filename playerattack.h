@@ -3,28 +3,26 @@
 #include <list>
 #include "movableobj.h"
 #include "time.h"
+#include "lib/win_time.h"
 
 class AttackHitEffect;
 
 class PlayerAttack
 {
 private:
-    float damage_;
-    float max_tick_ = 0.1f; //max time for each damage tick
-    float tick_ = 0.0f; //time for each damage tick
+
 protected:
 	std::list< AttackHitEffect*> hit_effects_;
+	std::map<Collider*,WIN::Time> target_;
+	float damage_ = 0;
+	float tick_ = 1.0f;
+	float knock_back_rate_ = 10.f;
 
 public:
-    PlayerAttack(float damage) : damage_(damage) {}
+    PlayerAttack(float damage,float tick,float knock_back_rate) : damage_(damage),tick_(tick),knock_back_rate_(knock_back_rate) {}
     virtual ~PlayerAttack() = default;
     void SetDamage(float damage) { damage_ = damage; }
     float GetDamage() const { return damage_; }
-    void SetTick(float tick) { tick_ = tick; }
-    float GetTick() const { return tick_; }
-    void SetMaxTick(float max_tick) { max_tick_ = max_tick; }
-    float GetMaxTick() const { return max_tick_; }
-    void UpdateTick() { tick_ += Time::GetDeltaTime(); }
 
 	//エフェクト追加
 	void AttachHitEffect(AttackHitEffect* hit_effect) {

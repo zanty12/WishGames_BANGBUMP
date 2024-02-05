@@ -12,7 +12,8 @@ Fire::Fire(Player* player)
 {
 }
 
-Fire::~Fire() {
+Fire::~Fire()
+{
     if (attack_)delete attack_;
     if (move_effect_)delete move_effect_;
 }
@@ -65,7 +66,7 @@ void Fire::Move()
     //停止
     else
     {
-        if (move_effect_)   //操作をやめたら非表示
+        if (move_effect_) //操作をやめたら非表示
         {
             move_effect_->SetColor(Color(1, 1, 1, 0));
         }
@@ -75,7 +76,6 @@ void Fire::Move()
     }
     player_->SetVel(vel_);
     Friction();
-
 };
 
 void Fire::Action()
@@ -117,12 +117,11 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
                                                parent->GetPlayer()->GetPos().x + parent->GetPlayer()->GetScale().x / 2 +
                                                1.5 * GameObject::SIZE_, parent->GetPlayer()->GetPos().y), 0.0f,
                                            LoadTexture(Asset::GetAsset(fire_attack)), Vector2::Zero),
-                                       PlayerAttack(10000)
+                                       PlayerAttack(parent->GetState()->atk, parent->GetState()->atkCoolTime,
+                                                    parent->GetState()->knockbackRate)
 {
-    SetScale(size_);
+    SetScale(Vector2(parent->GetState()->atkDistance, parent->GetState()->atkRange));
     SetType(OBJ_ATTACK);
-    SetMaxTick(0.01);
-    SetDamage(50);
 
     //アニメーション設定
     GetAnimator()->SetTexenum(fire_attack);
@@ -132,7 +131,6 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
 
 void FireAttack::Update()
 {
-    UpdateTick();
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
@@ -141,20 +139,9 @@ void FireAttack::Update()
         {
         case OBJ_ENEMY:
             {
-                Enemy* enemy = dynamic_cast<Enemy*>(collision->GetParent());
-                if (enemy != nullptr)
-                {
-                    if (GetTick() > GetMaxTick())
-                    {
-                        SetTick(0.0f);
-                        enemy->SetHp(enemy->GetHp() - GetDamage());
-
-                        //エフェクトの生成
-                        Vector2 pos = enemy->GetPos();
-                        Vector2 scale = enemy->GetScale();
-                        AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_fire, EFFECT_HIT_FIRE_ANIM));
-                    }
-                }
+                //put collider into map if hit for first time
+                target_[collision] = WIN::Time();
+                target_[collision].Start();
             }
             break;
         default:
@@ -162,12 +149,26 @@ void FireAttack::Update()
         }
     }
 
-    HitEffectUpdate();  //エフェクトのアップデート
+    //deal damage to all hit enemies
+    for (auto& target : target_)
+    {
+        Enemy* enemy = dynamic_cast<Enemy*>(target.first->GetParent());
+        if (target.second.GetNowTime() * 0.001f > tick_)
+        {
+            target.second.Start();
+            enemy->SetHp(enemy->GetHp() - damage_);
+            //エフェクトの生成
+            Vector2 pos = target.first->GetParent()->GetPos();
+            Vector2 scale = target.first->GetParent()->GetScale();
+            AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_fire, EFFECT_HIT_FIRE_ANIM));
+        }
+    }
+    HitEffectUpdate(); //エフェクトのアップデート
 }
 
 FireEffect::FireEffect(Fire* parent)
-    :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(fire_move)), Vector2::Zero),
-    parent_(parent)
+    : MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(fire_move)), Vector2::Zero),
+      parent_(parent)
 {
     SetType(OBJ_VOID);
 
