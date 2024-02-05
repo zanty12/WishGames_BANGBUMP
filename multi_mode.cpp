@@ -71,7 +71,7 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 			int id = client.id;
 			int rank = get_rank(sortPlayers, id);
 			int dropRate = (1.0f - (float)(rank + 1) / (float)players.clients.size());
-			dropOrb(rank, 20, 50.0f);
+			dropOrb(rank, 20, 30.0f);
 		}
 		dropSkillOrbCoolTimer.Start();
 	}
