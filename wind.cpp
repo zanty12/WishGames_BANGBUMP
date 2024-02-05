@@ -43,7 +43,6 @@ Vector2 Wind::Move(void)
 
     move_filter_.PassSignal(StickTrigger(stick, previousStick));
     int move = move_filter_.PredictNext();
-    std::cout<<move<<std::endl;
     // 移動中
     if (move)
     {
@@ -108,10 +107,10 @@ void Wind::Action(void)
 
     // 回転のスピードを取得
     float rotSpeed = Vector2::Cross(stick, previousStick);
-    std::cout<<StickTrigger(stick, previousStick);
+    
     attack_filter_.PassSignal(StickTrigger(stick, previousStick));
     int attack = attack_filter_.PredictNext();
-    std::cout<<attack<<std::endl;
+    
     // 攻撃中
     if (attack)
     {
