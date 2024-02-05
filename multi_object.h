@@ -17,7 +17,7 @@ public:
 
 	GameObjectServerSide() = default;
 	GameObjectServerSide(Transform transform) : transform(transform) { }
-	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
+	virtual MULTI_OBJECT_TYPE GetType(void) {};
 };
 
 class GameObjectClientSide : public MultiBehavior {

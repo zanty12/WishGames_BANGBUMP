@@ -11,6 +11,13 @@ void EnemyServerSide::Damage(AttackServerSide *attack) {
 		// スキルオーブをドロップさせる
 		map->DropSkillOrb(deathDrop, transform.position, 10.0f);
 		Destroy();
+
+		// 攻撃者がプレイヤーならスコアを加算する
+		auto attackerType = attack->GetSelf()->GetType();
+		if (attackerType == MULTI_PLAYER) {
+			auto player = attack->GetSelf()->Cast<ServerPlayer>();
+			player->score += score;
+		}
 	}
 }
 void EnemyServerSide::BlownPlayers(void) {

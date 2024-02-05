@@ -25,7 +25,7 @@ public:
 	AttackServerSide(int atk, int atkDrop, float spanTime, float knockbackRate, float radius, GameObjectServerSide *self) : self(self), atk(atk), atkDrop(atkDrop), spanTime(spanTime), knockbackRate(knockbackRate) { this->radius = radius; }
 	bool Touch(GameObjectServerSide *object, Vector2 localPosition = Vector2::Zero);
 
-	const GameObjectServerSide *GetSelf(void) { return self; }
+	GameObjectServerSide *GetSelf(void) { return self; }
 	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
 	virtual void KnockBack(ServerMovableGameObject *object) {};
 };

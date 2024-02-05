@@ -2,6 +2,7 @@
 #include "multi_header.h"
 #include "multi_runenum.h"
 #include "multi_map.h"
+#include "multi_result_skillorb.h"
 #include "time.h"
 
 class MultiPlayFlowServerSide;
@@ -47,6 +48,8 @@ protected:
 	std::list<CLIENT_DATA_CLIENT_SIDE> beforeClients;	// ゲーム開始直後のクライアントデータ
 	MultiMap *map_;
 	int clientSpawnCount = 0;							// クライアントのスポーンカウント
+	std::list<ResultSkillOrb> rstSkillOrb;				// リザルト時のスキルオーブ
+	WIN::Time dropSkillOrbCoolTimer;					// リザルト時のスキルオーブドロップアニメーションで使うタイマー
 	friend MultiPlayFlowClientSide;
 
 
@@ -78,6 +81,7 @@ public:
 	MultiPlayModeClientSide(MultiMap* map, std::wstring modeName) : map_(map) {
 		startTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"startTime");
 		resultTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"resultTime");
+		dropSkillOrbCoolTimer.Start();
 	};
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 

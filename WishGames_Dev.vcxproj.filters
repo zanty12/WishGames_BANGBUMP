@@ -268,6 +268,12 @@
     <ClCompile Include="multi_animenum.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
+    <ClCompile Include="load.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_result_skillorb.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphical.h">
@@ -570,6 +576,12 @@
     <ClInclude Include="multi_runenum.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
+    <ClInclude Include="load.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_result_skillorb.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h">
@@ -632,5 +644,6 @@
     <None Include="data\property\attribute_lv8.ini">
       <Filter>リソース ファイル</Filter>
     </None>
+    <None Include="data\multiplay.ini" />
   </ItemGroup>
 </Project>

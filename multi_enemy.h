@@ -15,6 +15,7 @@ public:
 	int hp = 5;
 	int atkDrop = 5;
 	int deathDrop = 5;
+	int score = 1;
 	float knockbackRate = 5.0f;
 
 
@@ -22,6 +23,7 @@ public:
 public:
 	EnemyServerSide(Transform transform, MultiMap* map, std::wstring enemyName) : map(map), ServerMovableGameObject(transform) {
 		hp = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"hp");
+		score = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"score");;
 		radius = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"radius");;
 		atkDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"atkDrop");;
 		deathDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"drop");;
