@@ -131,12 +131,6 @@ void MultiMap::Draw(Vector2 offset) {
 	Vector2Int rightTopIdx = ToIndex(offset + screen);                                              // 右上のインデックス
 	rightTopIdx.y++;
 
-	if (leftBottomIdx.x < 0) leftBottomIdx.x = 0;
-	if (rightTopIdx.x >= width) rightTopIdx.x = width;
-	if (leftBottomIdx.y < 0) leftBottomIdx.y = 0;
-	if (rightTopIdx.y >= height) rightTopIdx.y = height;
-
-
 	// 描画（背景）
 	float aspectRatio = 3600.0f / 1280.0f;
 	float maxY = height * cellSize;
@@ -147,16 +141,21 @@ void MultiMap::Draw(Vector2 offset) {
 	// 描画（ブロック）
 	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
 		for (int y = leftBottomIdx.y; y <= rightTopIdx.y; y++) {
-			// 範囲外なら処理をしない
-			if (x < 0 || y < 0 || x >= width || y >= height) continue;
-
-			// ブロックのIDを取得
-			int id = GetMap(x, y);
-			// 描画できるなら
-			if (id != -1) {
-				int texNo = texNumbers[id];
+			// 範囲外なら
+			if (x < 0 || y < 0 || x >= width || y >= height) {
+				int texNo = texNumbers[MAP_READ_WALL];
 				Vector2 pos = ToPosition({ x, y }) - offset;
 				DrawSprite(texNo, pos, 0.0f, Vector2::One * cellSize, Color::White);
+			}
+			else {
+				// ブロックのIDを取得
+				int id = GetMap(x, y);
+				// 描画できるなら
+				if (id != -1) {
+					int texNo = texNumbers[id];
+					Vector2 pos = ToPosition({ x, y }) - offset;
+					DrawSprite(texNo, pos, 0.0f, Vector2::One * cellSize, Color::White);
+				}
 			}
 		}
 	}
