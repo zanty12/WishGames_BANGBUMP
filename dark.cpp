@@ -112,7 +112,8 @@ void Dark::Action()
         attack_indicator_->SetPos(pos);
         attack_indicator_->SetRot(angle);
     }
-
+    if (attack_)
+        attack_->Update();
 
     // 押し込む
     if (Input::GetKeyDown(0, Input::RThumb) && responseMinStickDistance < stick.Distance())
@@ -136,7 +137,7 @@ void Dark::Action()
         if (attack_ == nullptr)
             attack_ = new DarkAttack(this);
         float angle = atan2(attackDirection_.y, attackDirection_.x);
-        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2+0.5*GameObject::SIZE_);
+        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2 + 0.5 * GameObject::SIZE_);
         pos = player_->GetPos() + pos;
         attack_->SetPos(pos);
         attack_->SetRot(angle + (3.14f / 2));
@@ -149,8 +150,14 @@ void Dark::Action()
         {
             player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
 
-            delete attack_;
-            attack_ = nullptr;
+            if (attack_ != nullptr)
+            {
+                if (!attack_->CheckHitEffect())
+                {
+                    delete attack_;
+                    attack_ = nullptr;
+                }
+            }
         }
     }
 }
@@ -198,10 +205,13 @@ void DarkAttack::Update()
                         SetTick(0.0f);
                         enemy->SetHp(enemy->GetHp() - GetDamage());
 
-                        //エフェクトの生成
-                        Vector2 pos = enemy->GetPos();
-                        Vector2 scale = enemy->GetScale();
-                        AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_dark, EFFECT_HIT_DARK_ANIM));
+                        //エフェクトの生成★エネミー３の位置とか色々バグっているので生成するとエラー
+                        if (!enemy->GetDiscard() && enemy->GetEnemyType() != TYPE__PHANTOM)
+                        {
+                            Vector2 pos = enemy->GetPos();
+                            Vector2 scale = enemy->GetScale();
+                            AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_dark, EFFECT_HIT_DARK_ANIM));
+                        }
                     }
                 }
             }

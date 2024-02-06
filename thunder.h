@@ -59,6 +59,8 @@ class ThunderAttack : public MovableObj,public PlayerAttack
     Vector2 size_ = Vector2(2 * GameObject::SIZE_, 2 * GameObject::SIZE_);
     Vector2 start_pos_;
     float range_;
+    int hit_;   //ìGÇ…ìñÇΩÇ¡ÇΩêî
+
 public:
     ThunderAttack() = delete;
     ThunderAttack(Thunder* parent,Vector2 dir,float vel,float range);

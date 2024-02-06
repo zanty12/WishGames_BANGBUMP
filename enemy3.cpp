@@ -125,9 +125,7 @@ void Enemy3::CollisionAction(void)
             break;
         case OBJ_ATTACK:
             {
-                PlayerAttack* attack = dynamic_cast<PlayerAttack*>(collision->GetParent());
-                if(attack != nullptr)
-                    SetHp(GetHp() - attack->GetDamage());
+
             }
             break;
         default:

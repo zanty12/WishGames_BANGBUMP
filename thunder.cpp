@@ -157,8 +157,11 @@ void Thunder::Action()
             attack_[i]->Update();
             if (attack_[i]->GetDiscard())
             {
-                delete attack_[i];
-                attack_[i] = nullptr;
+                if (!attack_[i]->CheckHitEffect())
+                {
+                    delete attack_[i];
+                    attack_[i] = nullptr;
+                }
             }
         }
     }
@@ -255,6 +258,7 @@ ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range
 
     float rot = GetRot();
     SetRot(rot + (3.14f / 2));
+    hit_ = 0;
 
     //アニメーション設定
     SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
@@ -265,6 +269,18 @@ ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range
 
 void ThunderAttack::Update()
 {
+    HitEffectUpdate();  //エフェクトのアップデート
+
+    if (hit_ > 0)
+    {
+        SetVel(Vector2::Zero);
+        if (!CheckHitEffect())
+        {
+            Discard();
+        }
+        return;//エフェクトのためすぐには消さない
+    }
+
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
@@ -277,11 +293,14 @@ void ThunderAttack::Update()
                 if (enemy != nullptr)
                 {
                     enemy->SetHp(enemy->GetHp() - GetDamage());
-
-                    //エフェクトの生成
-                    Vector2 pos = enemy->GetPos();
-                    Vector2 scale = enemy->GetScale();
-                    AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_thunder, EFFECT_HIT_THUNDER_ANIM));
+                    hit_++;
+                    //エフェクトの生成★エネミー３の位置とか色々バグっているので生成するとエラー
+                    if (!enemy->GetDiscard() && enemy->GetEnemyType() != TYPE__PHANTOM)
+                    {
+                        Vector2 pos = enemy->GetPos();
+                        Vector2 scale = enemy->GetScale();
+                        AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_thunder, EFFECT_HIT_THUNDER_ANIM));
+                    }
                 }
             }
             break;
@@ -293,7 +312,6 @@ void ThunderAttack::Update()
         Discard();
     AddVel(GetVel());
 
-    HitEffectUpdate();  //エフェクトのアップデート
 }
 
 ThunderIndicator::ThunderIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(thunder_indicator)), Vector2::Zero)

@@ -154,6 +154,11 @@ void CollMngr::CheckDiscard()
     dynamic_colliders_.remove_if(
         [](Collider* collider)
         {
+            if (collider == nullptr)
+            {
+                delete collider;
+                return true;
+            }
             if (collider->GetDiscard())
             {
                 delete collider;
