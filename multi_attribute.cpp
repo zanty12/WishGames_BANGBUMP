@@ -867,8 +867,8 @@ void ClientWind::Attack(void) {
 	else {
 		attackAnim.texNo = attack2TexNo;
 		attackAnim.width = 5;
-		attackAnim.height = 1;
-		attackAnim.end = 4;
+		attackAnim.height = 6;
+		attackAnim.end = 29;
 	}
 
 	Vector2 pos = player->transform.position;
