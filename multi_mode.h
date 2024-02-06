@@ -53,7 +53,6 @@ class MultiPlayModeClientSide {
 protected:
 	float startTime_ = 15.0f;							// 開始までの時間
 	float resultTime_ = 15.0f;							// 中間リザルトの時間
-	std::list<CLIENT_DATA_CLIENT_SIDE> beforeClients;	// ゲーム開始直後のクライアントデータ
 	MultiMap *map_;
 	int clientSpawnCount = 0;							// クライアントのスポーンカウント
 	std::list<ResultSkillOrb> rstSkillOrb;				// リザルト時のスキルオーブ
