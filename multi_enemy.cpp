@@ -59,7 +59,7 @@ void Enemy1ServerSide::Loop(void) {
 }
 void Enemy1ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White, velocity.x > 0.0f);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White, velocity.x > 0.0f);
 	isShow = false;
 }
 
@@ -120,7 +120,7 @@ void AttackEnemy2ServerSide::KnockBack(ServerMovableGameObject *object) {
 }
 void AttackEnemy2ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White);
 	isShow = false;
 }
 
@@ -168,7 +168,7 @@ void Enemy3ServerSide::Loop(void) {
 }
 void Enemy3ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White, velocity.x > 0.0f);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White, velocity.x > 0.0f);
 	isShow = false;
 }
 
