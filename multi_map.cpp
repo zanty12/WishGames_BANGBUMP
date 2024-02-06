@@ -130,6 +130,7 @@ void MultiMap::Draw(Vector2 offset) {
 	Vector2Int leftBottomIdx = ToIndex(offset);                                                     // 左下のインデックス
 	Vector2Int rightTopIdx = ToIndex(offset + screen);                                              // 右上のインデックス
 	rightTopIdx.y++;
+	leftBottomIdx.y--;
 
 	// 描画（背景）
 	float aspectRatio = 3600.0f / 1280.0f;

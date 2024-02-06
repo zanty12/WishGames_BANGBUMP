@@ -678,6 +678,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: pObject = new ClientSkillOrbMidium(); break;
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: pObject = new ClientSkillOrbBig(); break;
 				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER: pObject = new ClientThunderAttack(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2: pObject = new ClientThunder2Attack(Transform(object.position)); break;
 				}
 				if (pObject) objects[object.id] = pObject;
 			}

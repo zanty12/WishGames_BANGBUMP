@@ -47,15 +47,16 @@ void ServerPlayer::Damage(AttackServerSide *attack) {
 	// 攻撃者が自分なら終了
 	if (attack->GetSelf() == this) return;
 
+	// ダメージエフェクト
+	damageEffectAttributeType = attack->GetType();
+
+	// スキルオーブのドロップ
 	if (MultiPlayServer::GetGameMode()->GetMode() == MULTI_MODE::FINAL_BATTLE || attack->GetType() == MULTI_OBJECT_TYPE::MULTI_ATTACK_ENEMY2) {
-
-		damageEffectAttributeType = attack->GetType();
-
 		SkillOrbDrop(attack->atkDrop);
-
-		// ノックバックを与える
-		attack->KnockBack(this);
 	}
+
+	// ノックバックを与える
+	attack->KnockBack(this);
 }
 
 void ServerPlayer::SkillOrbDrop(int drop) {
