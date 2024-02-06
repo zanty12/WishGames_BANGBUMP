@@ -376,6 +376,7 @@ void MultiPlayServer::OpenTerminal(void) {
 				}
 				SendUpdate();
 
+				// スキルオールチートシート
 				for (int i = 0; i < 10; i++) {
 					std::string vk = std::to_string(i);
 					if (GetAsyncKeyState(vk.c_str()[0])) {

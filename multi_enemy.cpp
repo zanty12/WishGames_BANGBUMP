@@ -105,7 +105,7 @@ void Enemy2ServerSide::Loop(void) {
 }
 void Enemy2ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 170, Color::White);
 	isShow = false;
 }
 void AttackEnemy2ServerSide::Loop(void) {	

@@ -23,11 +23,11 @@ public:
 public:
 	EnemyServerSide(Transform transform, MultiMap* map, std::wstring enemyName) : map(map), ServerMovableGameObject(transform) {
 		hp = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"hp");
-		score = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"score");;
-		radius = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"radius");;
-		atkDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"atkDrop");;
-		deathDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"drop");;
-		knockbackRate = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"knockbackRate");;
+		score = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"score");
+		radius = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"radius");
+		atkDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"atkDrop");
+		deathDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"drop");
+		knockbackRate = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"knockbackRate");
 	}
 	void Damage(AttackServerSide *attack) override;
 	void BlownPlayers(void);
@@ -37,7 +37,10 @@ protected:
 	MultiAnimator anim;
 
 public:
-	EnemyClientSide(Transform transform) : ClientMovableGameObject(transform) { }
+
+	EnemyClientSide(Transform transform, std::wstring enemyName) : ClientMovableGameObject(transform) {
+		radius = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"radius");
+	}
 };
 
 
@@ -47,7 +50,6 @@ class Enemy1ServerSide : public EnemyServerSide {
 public:
 	Enemy1ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map, L"Enemy1") {
 		velocity = Vector2::Left * speed;
-		radius = 50.0f;
 	}
 
 	void Loop(void) override;
@@ -55,7 +57,7 @@ public:
 };
 class Enemy1ClientSide : public EnemyClientSide {
 public:
-	Enemy1ClientSide(Transform transform) : EnemyClientSide(transform) {
+	Enemy1ClientSide(Transform transform) : EnemyClientSide(transform, L"Enemy1") {
 		texNo = LoadTexture("data/texture/Enemy/enemy1_anim.png");
 		anim = MultiAnimator(texNo, 5, 4, 0, 17, true);
 	}
@@ -73,7 +75,6 @@ class Enemy2ServerSide : public EnemyServerSide {
 public:
 	Enemy2ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map, L"Enemy2") {
 		spawnTimer.Start();
-		radius = 50.0f;
 	}
 
 	void Loop(void) override;
@@ -81,7 +82,7 @@ public:
 };
 class Enemy2ClientSide : public EnemyClientSide {
 public:
-	Enemy2ClientSide(Transform transform) : EnemyClientSide(transform) {
+	Enemy2ClientSide(Transform transform) : EnemyClientSide(transform, L"Enemy2") {
 		texNo = LoadTexture("data/texture/Enemy/enemy2_anim.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 	}
@@ -115,7 +116,6 @@ class Enemy3ServerSide : public EnemyServerSide {
 public:
 	float activeRadius = 1000.0f;		// ŒŸ’m”ÍˆÍ
 	Enemy3ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map, L"Enemy3") {
-		radius = 50.0f;
 	}
 
 	void Loop(void) override;
@@ -130,7 +130,7 @@ public:
 
 
 public:
-	Enemy3ClientSide(Transform transform) : EnemyClientSide(transform) {
+	Enemy3ClientSide(Transform transform) : EnemyClientSide(transform, L"Enemy3") {
 		texNo = LoadTexture("data/texture/Enemy/enemy3_anim.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 	}

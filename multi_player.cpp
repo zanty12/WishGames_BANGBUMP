@@ -90,6 +90,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	lvUpUI = MultiAnimator(LoadTexture("data/texture/UI/UI_levelup.png"), 5, 6, 0, 29, false);
 	lvDownUI = MultiAnimator(LoadTexture("data/texture/UI/UI_leveldown.png"), 5, 6, 0, 29, false);
 
+	exEffect.SetFrame(1000 / 42);
 	exEffect.MoveEnd();
 	lvUpEffect.MoveEnd();
 	lvUpUI.MoveEnd();
