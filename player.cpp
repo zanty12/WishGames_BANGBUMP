@@ -39,10 +39,53 @@ const float Player::INVINCIBILITY_MAX_TIME_ = 1 + (1.0f / 4);
 
 void Player::Update(void)
 {
+
 	//HPが0になったらリザルトに移る
 	if (hp_ <= 0)
 	{
-		change_scene_ = true;
+		SetColor(Color(0, 0, 0, 0));	//透明にする
+		SetType(OBJ_VOID);  //当たり判定を消す
+		GetAnimator()->SetIsAnim(false);	//アニメーションをしない
+		delete move_attribute_;
+		move_attribute_ = nullptr;
+		delete attack_attribute_;
+		attack_attribute_ = nullptr;
+
+		delete hit_effect_;
+		hit_effect_ = nullptr;
+
+		if (dead_effect_ == nullptr)
+		{
+			dead_effect_ = new PlayerDeadEffect(GetPos());	//エフェクト生成
+			dead_effect_->SetScale(GetScale());
+		}
+	}
+
+	//消滅エフェクト
+	if (dead_effect_)
+	{
+		//エフェクトが終了したらDiscard
+		if (dead_effect_->EffectEnd())
+		{
+			delete dead_effect_;
+			dead_effect_ = nullptr;
+			Discard();
+
+			change_scene_ = true;
+		}
+
+		//プレイヤーには何もさせない
+		return;
+	}
+
+	//ヒットエフェクト作成
+	if (hit_effect_ == nullptr)
+	{
+		hit_effect_ = new PlayerHitEffect();
+	}
+	if (hit_effect_)
+	{
+		hit_effect_->Update();
 	}
 
 	//5フレーム中に何も操作していなかったら落ちる動作に移行する
@@ -55,12 +98,6 @@ void Player::Update(void)
 		not_stick_working_ = 0;
 	}
 
-	//----------------------------------------★アトリビュートができるまでのしのぎ
-	/*Vector2 stick = Input::GetStickLeft(0);
-	stick.y *= -1;
-	Vector2 player_vel = stick * 5.0f;
-	SetVel(player_vel);*/
-	//----------------------------------------★アトリビュートができるまでのしのぎ
 
 	bool affected_gravity = false;	//重力を受けたかどうか
 
@@ -116,6 +153,23 @@ void Player::Update(void)
 		player_state_ = FALL;
 	}
 
+	//limit player pos
+	if (GetPos().y < this->GetScale().y)
+	{
+		SetPos(Vector2(GetPos().x, this->GetScale().y));
+	}
+	if(GetPos().x < this->GetScale().x)
+	{
+		SetPos(Vector2( this->GetScale().x, GetPos().y));
+	}
+	if(GetPos().x > map_mangr_->GetMap()->GetWidth()*SIZE_ - this->GetScale().x)
+	{
+		SetPos(Vector2(map_mangr_->GetMap()->GetWidth() * SIZE_ - this->GetScale().x, GetPos().y));
+	}
+	if(GetPos().y > map_mangr_->GetMap()->GetHeight()*SIZE_  - this->GetScale().y)
+	{
+		SetPos(Vector2(GetPos().x, map_mangr_->GetMap()->GetHeight() * SIZE_  - this->GetScale().y));
+	}
 }
 
 void Player::DropSkillOrb(void)
@@ -200,8 +254,11 @@ void Player::CollisionAction(void)
 				SetVel(Vector2(GetVel().x, 0.0f));
 			break;
 		case OBJ_SPIKE:
+		{
 			CollisionSpike();
+			GameObject* gameObj = collision->GetParent();
 			break;
+		}
 		case OBJ_PLAYER:
 			break;
 		case OBJ_ENEMY:
@@ -214,16 +271,6 @@ void Player::CollisionAction(void)
 		{
 			GameObject* gameObj = collision->GetParent();
 			CollisionBullet(gameObj);
-			break;
-		}
-		case OBJ_ATTACK:
-		{
-			GameObject* attack = collision->GetParent();
-			if (attack != nullptr)
-			{
-				CollisionAttack(attack);
-			}
-
 			break;
 		}
 		case OBJ_ITEM:
@@ -337,6 +384,9 @@ void Player::CollisionAttack(GameObject* obj)
 		break;
 	}
 
+	//エフェクトの表示
+	hit_effect_->Hit(GetPos());
+
 	knockback_start_ = GetPos();
 	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
 
@@ -383,6 +433,10 @@ void Player::CollisionSpike(void)
 
 	knockback_start_ = GetPos();
 	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+
+	//エフェクトの表示
+	hit_effect_->Hit(GetPos());
+
 }
 
 //================================================================================
@@ -434,6 +488,9 @@ void Player::CollisionEnemy(GameObject* obj)
 	knockback_start_ = GetPos();
 	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
 
+	//エフェクトの表示
+	hit_effect_->Hit(GetPos());
+
 }
 
 //================================================================================
@@ -467,6 +524,9 @@ void Player::CollisionBullet(GameObject* obj)
 
 	knockback_start_ = GetPos();
 	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+
+	//エフェクトの表示
+	hit_effect_->Hit(GetPos());
 }
 
 //================================================================================

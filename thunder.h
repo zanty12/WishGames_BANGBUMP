@@ -14,6 +14,7 @@
 
 class ThunderAttack;
 class ThunderIndicator;
+class ThunderEffect;
 class Thunder : public Attribute
 {
     const float responseMinStickDistance = 0.5f;    // スティック傾けたとき判定する距離
@@ -37,11 +38,14 @@ class Thunder : public Attribute
     const float attack_vel_ = 10*GameObject::SIZE_;
     ThunderAttack* attack_[5] = {nullptr};
     ThunderIndicator* attack_indicator_ = nullptr;
+    ThunderEffect* move_effect_ = nullptr;
+
+    float atk_time_ = 1.0f;
     //ここからは調整用のためconst抜き
     float movePower = 11 * GameObject::SIZE_;
 
 public:
-    Thunder(Player* player) : Attribute(player, ATTRIBUTE_TYPE_THUNDER) {}
+    Thunder(Player* player);
     ~Thunder()override ;
     bool StickTrigger(Vector2 stick, Vector2 previousStick);
     Vector2 Move() override;
@@ -69,4 +73,19 @@ public:
     ThunderIndicator();
     ~ThunderIndicator() override = default;
     void Update() override{};
+};
+
+class ThunderEffect : public MovableObj
+{
+    Thunder* parent_;
+    float move_time_;
+    bool draw_ = false;
+
+public:
+    ThunderEffect() = delete;
+    ThunderEffect(Thunder* parent);
+    ~ThunderEffect() override = default;
+    void Update() override;
+    void Move();
+    void Charge();
 };

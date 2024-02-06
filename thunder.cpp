@@ -13,6 +13,11 @@
 #include"xinput.h"
 #include"lib/collider2d.h"
 
+Thunder::Thunder(Player* player)
+    : Attribute(player, ATTRIBUTE_TYPE_THUNDER),move_effect_(new ThunderEffect(this))
+{
+}
+
 Thunder::~Thunder()
 {
     for (auto& a : attack_)
@@ -58,6 +63,29 @@ Vector2 Thunder::Move()
     previousStick.y *= -1;
     float stick_distance = stick.Distance();
 
+    move_effect_->Update();
+
+    if (stick.x < 0.0f)
+    {
+        player_->GetAnimator()->DirRight();
+    }
+    else if (stick.x > 0.0f)
+    {
+        player_->GetAnimator()->DirLeft();
+    }
+
+    Vector2 stickR = Input::GetStickRight(0);
+    if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
+        abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
+    {
+        if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
+            player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
+        {
+            if(!moving_)
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
+        }
+    }
+
     //charge up
     if (stick_distance >= responseMinStickDistance)
     {
@@ -77,16 +105,20 @@ Vector2 Thunder::Move()
         pos = player_->GetPos() + pos;
         move_indicator_->SetPos(pos);
         move_indicator_->SetRot(angle);
+
+        move_effect_->Charge();
     }
     //release
     if (move_charge_ > move_trigger_min_ && stick_distance < responseMinStickDistance && move_cd_ <= 0.0f)
     {
         move_dir_ = -previousStick.Normalize();
-        move_charge_ = 0.0f;
+        //move_charge_ = 0.0f;
         move_cd_ = 1.0f;
         delete move_indicator_;
         move_indicator_ = nullptr;
         moving_ = true;
+
+        move_effect_->Move();
     }
     if (moving_)
     {
@@ -140,6 +172,17 @@ void Thunder::Action()
     //charge up
     if (stick_distance >= responseMinStickDistance)
     {
+        if (stick.x < 0.0f)
+        {
+            player_->GetAnimator()->DirRight();
+        }
+        else if (stick.x > 0.0f)
+        {
+            player_->GetAnimator()->DirLeft();
+        }
+
+        player_->GetAnimator()->SetLoopAnim(PLAYER_TA_CHARGE_ANIM);
+
         attack_charge_ += Time::GetDeltaTime();
         if (attack_charge_ >= attack_charge_max_)
         {
@@ -150,7 +193,7 @@ void Thunder::Action()
         {
             attack_indicator_ = new ThunderIndicator();
         }
-        float angle = atan2(previousStick.y, -previousStick.x);
+        float angle = atan2(previousStick.y, previousStick.x);
         Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_indicator_->GetScale().x / 2);
         pos = player_->GetPos() + pos;
         attack_indicator_->SetPos(pos);
@@ -165,15 +208,27 @@ void Thunder::Action()
             {
                 float range = 1 + (attack_charge_ - atttack_trigger_min_) / (attack_charge_max_- atttack_trigger_min_)*(15 + 1) * GameObject::SIZE_;
                 //15の後はレベル変動値
-                attack_[i] = new ThunderAttack(this, -previousStick.Normalize(),
+                attack_[i] = new ThunderAttack(this, Vector2(previousStick.x,-previousStick.y).Normalize(),
                                                17 * GameObject::SIZE_ * Time::GetDeltaTime(),range);
                 attack_charge_ = 0.0f;
                 attack_cd_ = 1.0f;
+
+                atk_time_ = 0.0f;
                 break;
             }
         }
         delete attack_indicator_;
         attack_indicator_ = nullptr;
+    }
+
+    atk_time_ += Time::GetDeltaTime();
+    if (attack_charge_ == 0.0f && player_->GetAnimator()->GetLoopAnim() == PLAYER_TA_CHARGE_ANIM)
+    {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_ATTACK_ANIM);
+    }
+    if (atk_time_ > 0.5f && player_->GetAnimator()->GetLoopAnim() == PLAYER_ATTACK_ANIM)
+    {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
     }
 }
 
@@ -196,7 +251,16 @@ ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range
     start_pos_ = parent_->GetPlayer()->GetPos();
     SetPos(parent_->GetPlayer()->GetPos());
     SetScale(size_);
-    SetType(OBJ_VOID);
+    SetType(OBJ_ATTACK);
+
+    float rot = GetRot();
+    SetRot(rot + (3.14f / 2));
+
+    //アニメーション設定
+    SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
+    GetAnimator()->SetTexenum(thunder_attack);
+    GetAnimator()->SetLoopAnim(THUNDER_ATTACK_ANIM);
+    GetAnimator()->SetDrawPriority(75);
 }
 
 void ThunderAttack::Update()
@@ -213,6 +277,11 @@ void ThunderAttack::Update()
                 if (enemy != nullptr)
                 {
                     enemy->SetHp(enemy->GetHp() - GetDamage());
+
+                    //エフェクトの生成
+                    Vector2 pos = enemy->GetPos();
+                    Vector2 scale = enemy->GetScale();
+                    AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_thunder, EFFECT_HIT_THUNDER_ANIM));
                 }
             }
             break;
@@ -223,10 +292,77 @@ void ThunderAttack::Update()
     if ((GetPos() - start_pos_).Distance() > range_)
         Discard();
     AddVel(GetVel());
+
+    HitEffectUpdate();  //エフェクトのアップデート
 }
 
 ThunderIndicator::ThunderIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(thunder_indicator)), Vector2::Zero)
 {
     SetScale(Vector2(2 * GameObject::SIZE_, 0.5 * GameObject::SIZE_));
     SetType(OBJ_VOID);
+    GetCollider()->Discard();
+    SetCollider(nullptr);
+}
+
+
+
+ThunderEffect::ThunderEffect(Thunder* parent)
+    :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(dark_move_charge)), Vector2::Zero),
+    parent_(parent),move_time_(0.0f)
+{
+    GetCollider()->Discard();
+    SetCollider(nullptr);
+
+    SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
+    SetType(OBJ_VOID);
+    SetColor(Color(0, 0, 0, 0));
+    GetAnimator()->SetDrawPriority(75);
+}
+
+void ThunderEffect::Update()
+{
+    if (draw_)
+    {
+        move_time_ += Time::GetDeltaTime();
+        if (move_time_ > 1.0f / 2)
+        {
+            draw_ = false;
+            move_time_ = 0.0f;
+        }
+
+        Vector2 vel = parent_->GetPlayer()->GetVel();
+        float rot = atan2f(-vel.y, vel.x);
+        SetRot(rot);
+    }
+
+    if (!draw_)
+    {
+        SetColor(Color(0, 0, 0, 0));
+    }
+
+}
+
+void ThunderEffect::Move()
+{
+    SetTexNo(LoadTexture(Asset::GetAsset(thunder_move)));
+    SetColor(Color(1, 1, 1, 1));
+    GetAnimator()->SetTexenum(thunder_move);
+    GetAnimator()->SetLoopAnim(THUNDER_MOVE_ANIM);
+
+    parent_->GetPlayer()->GetAnimator()->SetLoopAnim(PLAYER_TW_MOVE_ANIM);
+}
+
+void ThunderEffect::Charge()
+{
+    SetTexNo(LoadTexture(Asset::GetAsset(thunder_move_charge)));
+    SetColor(Color(1, 1, 1, 1));
+    GetAnimator()->SetTexenum(thunder_move_charge);
+    GetAnimator()->SetLoopAnim(THUNDER_MOVE_CHARGE_ANIM);
+    draw_ = true;
+    move_time_ = 0.0f;
+
+    Vector2 pos = parent_->GetPlayer()->GetPos();
+    SetPos(pos);
+
+    parent_->GetPlayer()->GetAnimator()->SetLoopAnim(PLAYER_TM_CHARGE_ANIM);
 }

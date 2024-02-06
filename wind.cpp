@@ -4,6 +4,11 @@
 #include "xinput.h"
 #include "lib/collider2d.h"
 
+Wind::Wind(Player* player)
+    : Attribute(player, ATTRIBUTE_TYPE_WIND),move_effect_(new WindEffect(this))
+{
+}
+
 bool Wind::StickTrigger(Vector2 stick, Vector2 previousStick)
 {
     //TODO: rewrite triggering to give a more stable output
@@ -24,12 +29,25 @@ Vector2 Wind::Move(void)
     Vector2 stick = Input::GetStickLeft(0);
     Vector2 previousStick = Input::GetPreviousStickLeft(0);
 
+    Vector2 stickR = Input::GetStickRight(0);
+    if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
+        abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
+    {
+        if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
+            player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
+    }
+
     // 回転のスピードを取得
     float rotSpeed = Vector2::Cross(stick, previousStick);
 
+    move_filter_.PassSignal(StickTrigger(stick, previousStick));
+    int move = move_filter_.PredictNext();
     // 移動中
-    if (StickTrigger(stick, previousStick))
+    if (move)
     {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_TW_MOVE_ANIM);
+
         power_ += rotSpeed * rotSpeed * rotInputFriction / Time::GetDeltaTime();
         if (maxPower_ < power_) power_ = maxPower_;
 
@@ -38,7 +56,7 @@ Vector2 Wind::Move(void)
         previous_time_ = Time::GetCurrentTime();
     }
     // 落下処理
-    else if (0 < Vector2::Dot(Vector2::Down, vel) || prev_y_ > vel.y || Time::GetDeltaTime(previous_time_) > 0.04f)
+    else if (/*0 < Vector2::Dot(Vector2::Down, vel) || prev_y_ > vel.y*/!move)
     {
         power_ *= friction_;
 
@@ -53,6 +71,29 @@ Vector2 Wind::Move(void)
         power_ *= friction_;
         player_->SetGravityState(GRAVITY_HALF);
     }
+
+    if (prev_power_ < 0.0001f && power_ > 0.0001f)
+    {
+        //エフェクト表示
+        move_effect_->SetPos(GetPlayer()->GetPos());
+        move_effect_->DrawEffect();
+    }
+
+    prev_power_ = power_;
+    move_effect_->Update();
+
+    if (!move)
+    {
+        if (stick.x > 0.0f)
+        {
+            player_->GetAnimator()->DirRight();
+        }
+        else if(stick.x < 0.0f)
+        {
+            player_->GetAnimator()->DirLeft();
+        }
+    }
+
     prev_y_ = vel.y;
     return vel;
 }
@@ -66,13 +107,15 @@ void Wind::Action(void)
 
     // 回転のスピードを取得
     float rotSpeed = Vector2::Cross(stick, previousStick);
-    std::cout<<StickTrigger(stick, previousStick);
+    
     attack_filter_.PassSignal(StickTrigger(stick, previousStick));
     int attack = attack_filter_.PredictNext();
-    std::cout<<attack<<std::endl;
+    
     // 攻撃中
     if (attack)
     {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_ATTACK_ANIM);
+
         if (attack_ == nullptr)
             attack_ = new WindAttack(this);
         attack_->SetPos(GetPlayer()->GetPos());
@@ -97,7 +140,12 @@ WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPl
                                            LoadTexture(Asset::GetAsset(wind_attack)), Vector2::Zero),PlayerAttack(10000)
 {
     SetScale(size_);
-    SetType(OBJ_VOID);
+    SetType(OBJ_ATTACK);
+
+    //アニメーション設定
+    GetAnimator()->SetTexenum(wind_attack);
+    GetAnimator()->SetLoopAnim(WIND_ATTACK_ANIM);
+    GetAnimator()->SetDrawPriority(25);
 }
 
 void WindAttack::Update()
@@ -118,6 +166,11 @@ void WindAttack::Update()
                     {
                         SetTick(0.0f);
                         enemy->SetHp(enemy->GetHp() - GetDamage());
+
+                        //エフェクトの生成
+                        Vector2 pos = enemy->GetPos();
+                        Vector2 scale = enemy->GetScale();
+                        AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_wind, EFFECT_HIT_WIND_ANIM));
                     }
                 }
             }
@@ -125,5 +178,62 @@ void WindAttack::Update()
         default:
             break;
         }
+    }
+
+    HitEffectUpdate();  //エフェクトのアップデート
+}
+
+
+WindEffect::WindEffect(Wind* parent)
+    :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(wind_move)), Vector2::Zero),
+    parent_(parent)
+{
+    GetCollider()->Discard();
+    SetCollider(nullptr);
+
+    SetType(OBJ_VOID);
+
+    //アニメーション設定
+    SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
+    GetAnimator()->SetTexenum(wind_move);
+    GetAnimator()->SetLoopAnim(WIND_MOVE_ANIM);
+    GetAnimator()->SetDrawPriority(75);
+    SetColor(Color(0, 0, 0, 0));
+}
+
+void WindEffect::Update()
+{
+    if (draw_)
+    {
+        SetColor(Color(1, 1, 1, 1));
+        GetAnimator()->SetColor(GetColor());
+        GetAnimator()->SetIsAnim(true);
+        GetAnimator()->SetTexenum(wind_move);
+        GetAnimator()->SetLoopAnim(WIND_MOVE_ANIM);
+
+        draw_time_ += Time::GetDeltaTime();
+        if (draw_time_ > 1.0f)
+        {
+            draw_ = false;
+            draw_time_ = 0.0f;
+        }
+    }
+    else if(parent_->GetPlayer()->GetAnimator()->GetLoopAnim() == PLAYER_IDLE_ANIM)
+    {
+        SetColor(Color(1, 1, 1, 1));
+        GetAnimator()->SetColor(GetColor());
+        GetAnimator()->SetIsAnim(true);
+        GetAnimator()->SetTexenum(wind_idle);
+        GetAnimator()->SetLoopAnim(WIND_IDLE_ANIM);
+        Vector2 pos = parent_->GetPlayer()->GetPos();
+        pos.y -= parent_->GetPlayer()->GetScale().y / 2;
+        SetPos(pos);
+    }
+    else
+    {
+        SetColor(Color(1, 1, 1, 0));
+        GetAnimator()->SetColor(GetColor());
+        GetAnimator()->SetIsAnim(false);
+        GetAnimator()->SetLoopAnim(ANIM_NONE);
     }
 }

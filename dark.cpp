@@ -14,10 +14,33 @@
 #include"lib/collider2d.h"
 
 
+Dark::Dark(Player* player)
+    : Attribute(player, ATTRIBUTE_TYPE_DARK),move_effect_(new DarkEffect(this))
+{
+}
+
 Vector2 Dark::Move()
 {
     Vector2 velocity = player_->GetVel();
     Vector2 stick = Input::GetStickLeft(0);
+
+    if (stick.x > 0.0f)
+    {
+        player_->GetAnimator()->DirRight();
+    }
+    else if (stick.x < 0.0f)
+    {
+        player_->GetAnimator()->DirLeft();
+    }
+
+    Vector2 stickR = Input::GetStickRight(0);
+    if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
+        abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
+    {
+        if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
+            player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
+    }
 
     if (stick != Vector2::Zero)
     {
@@ -26,7 +49,6 @@ Vector2 Dark::Move()
             move_indicator_ = new DarkIndicator();
         }
         Vector2 dir = stick.Normalize();
-        dir.y *= -1;
         Vector2 target_pos = player_->GetPos() + dir * warpDistance_ / 2;
         move_indicator_->SetPos(player_->GetPos());
         move_indicator_->SetTargetPos(target_pos);
@@ -40,6 +62,8 @@ Vector2 Dark::Move()
     }
     if (Input::GetKey(0, Input::LThumb))
     {
+        move_effect_->Charge();
+
         if (velocity.y <= -maxSpeedFalling)
         {
             velocity.y = maxSpeedFalling;
@@ -48,6 +72,8 @@ Vector2 Dark::Move()
     }
     if (Input::GetKeyUp(0, Input::LThumb))
     {
+        move_effect_->Move();
+
         Vector2 stick = Input::GetStickLeft(0);
         stick = stick.Normalize();
         stick.y *= -1;
@@ -60,6 +86,8 @@ Vector2 Dark::Move()
     }
     else warpPosition = Vector2::Zero;
 
+    move_effect_->Update();
+
     return player_->GetVel();
 };
 
@@ -67,6 +95,7 @@ void Dark::Action()
 {
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
+    stick.y *= -1;
     //float distance = stick.Distance();
     if (stick != Vector2::Zero)
     {
@@ -89,22 +118,37 @@ void Dark::Action()
     if (Input::GetKeyDown(0, Input::RThumb) && responseMinStickDistance < stick.Distance())
     {
         attackDirection_ = stick.Normalize();
+
+        if (stick.x > 0.0f)
+        {
+            player_->GetAnimator()->DirRight();
+        }
+        else if (stick.x < 0.0f)
+        {
+            player_->GetAnimator()->DirLeft();
+        }
     }
     // 攻撃
     else if (Input::GetKey(0, Input::RThumb))
     {
+        player_->GetAnimator()->SetLoopAnim(PLAYER_ATTACK_ANIM);
+
         if (attack_ == nullptr)
             attack_ = new DarkAttack(this);
         float angle = atan2(attackDirection_.y, attackDirection_.x);
-        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2);
+        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_->GetScale().x / 2+0.5*GameObject::SIZE_);
         pos = player_->GetPos() + pos;
         attack_->SetPos(pos);
-        attack_->SetRot(angle);
+        attack_->SetRot(angle + (3.14f / 2));
+        delete attack_indicator_;
+        attack_indicator_ = nullptr;
     }
     else
     {
         if (attack_ != nullptr)
         {
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
+
             delete attack_;
             attack_ = nullptr;
         }
@@ -124,10 +168,15 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
                                            Vector2(
                                                parent->GetPlayer()->GetPos().x + parent->GetPlayer()->GetScale().x / 2 +
                                                5 * GameObject::SIZE_, parent->GetPlayer()->GetPos().y), 0.0f,
-                                           LoadTexture(Asset::GetAsset(water_attack)), Vector2::Zero),PlayerAttack(10000)
+                                           LoadTexture(Asset::GetAsset(dark_attack)), Vector2::Zero),PlayerAttack(10000)
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);
+
+    //アニメーション設定
+    GetAnimator()->SetTexenum(dark_attack);
+    GetAnimator()->SetLoopAnim(DARK_ATTACK_ANIM);
+    GetAnimator()->SetDrawPriority(75);
 }
 
 void DarkAttack::Update()
@@ -148,6 +197,11 @@ void DarkAttack::Update()
                     {
                         SetTick(0.0f);
                         enemy->SetHp(enemy->GetHp() - GetDamage());
+
+                        //エフェクトの生成
+                        Vector2 pos = enemy->GetPos();
+                        Vector2 scale = enemy->GetScale();
+                        AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_dark, EFFECT_HIT_DARK_ANIM));
                     }
                 }
             }
@@ -156,6 +210,8 @@ void DarkAttack::Update()
             break;
         }
     }
+
+    HitEffectUpdate();  //エフェクトのアップデート
 }
 
 DarkIndicator::DarkIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(player)), Vector2::Zero)
@@ -214,4 +270,86 @@ void DarkIndicator::Update()
         }
     }
     SetPos(GetCollider()->GetPos());
+}
+
+
+
+DarkEffect::DarkEffect(Dark* parent)
+    :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(dark_move_charge)), Vector2::Zero),
+    parent_(parent), move_time_(0.0f), teleport_(false), charge_(false)
+{
+    GetCollider()->Discard();
+    SetCollider(nullptr);
+
+    SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
+    SetType(OBJ_VOID);
+    SetColor(Color(0, 0, 0, 0));
+    GetAnimator()->SetDrawPriority(25);
+}
+
+void DarkEffect::Update()
+{
+    //moveに遷移したタイミングではポジションがまだ決まっていないためポジションが決まった後にセットする
+    if (move_time_ < 0.1f)
+    {
+        Vector2 pos = parent_->GetPlayer()->GetPos();
+        SetPos(pos);
+    }
+
+    if (teleport_)
+    {
+        move_time_ += Time::GetDeltaTime();
+        if (move_time_ > 1.0f / 2)
+        {
+            SetColor(Color(0, 0, 0, 0));
+            GetAnimator()->SetIsAnim(false);
+
+            teleport_ = false;
+            move_time_ = 0.0f;
+        }
+    }
+
+    if (!charge_ && !teleport_)
+    {
+        Idle();
+    }
+}
+
+void DarkEffect::Idle()
+{
+    SetTexNo(LoadTexture(Asset::GetAsset(dark_idle)));
+    SetColor(Color(1, 1, 1, 1));
+    GetAnimator()->SetTexenum(dark_idle);
+    GetAnimator()->SetLoopAnim(DARK_IDLE_ANIM);
+    GetAnimator()->SetDrawPriority(25);
+
+    Vector2 pos = parent_->GetPlayer()->GetPos();
+    pos.y = pos.y - parent_->GetPlayer()->GetScale().y / 2;
+    SetPos(pos);
+}
+
+void DarkEffect::Move()
+{
+    SetTexNo(LoadTexture(Asset::GetAsset(dark_move)));
+    SetColor(Color(1, 1, 1, 1));
+    GetAnimator()->SetTexenum(dark_move);
+    GetAnimator()->SetLoopAnim(DARK_MOVE_ANIM);
+    GetAnimator()->SetDrawPriority(75);
+    charge_ = false;
+    teleport_ = true;
+}
+
+void DarkEffect::Charge()
+{
+    SetTexNo(LoadTexture(Asset::GetAsset(dark_move_charge)));
+    SetColor(Color(1, 1, 1, 1));
+    GetAnimator()->SetTexenum(dark_move_charge);
+    GetAnimator()->SetLoopAnim(DARK_MOVE_CHARGE_ANIM);
+    GetAnimator()->SetDrawPriority(75);
+    charge_ = true;
+
+    Vector2 pos = parent_->GetPlayer()->GetPos();
+    SetPos(pos);
+
+    parent_->GetPlayer()->GetAnimator()->SetLoopAnim(PLAYER_FD_MOVE_ANIM);
 }

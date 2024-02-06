@@ -28,6 +28,8 @@ enum GRAVITY_STATE
 class MapMngr;
 class Camera;
 class SkillOrb;
+class PlayerDeadEffect;
+class PlayerHitEffect;
 
 class Player : public MovableObj
 {
@@ -68,6 +70,10 @@ private:
 	PLAYER_STATE player_state_;
 	GRAVITY_STATE gravity_state_ = GRAVITY_FULL;
 
+protected:
+	PlayerDeadEffect* dead_effect_ = nullptr;
+	PlayerHitEffect* hit_effect_ = nullptr;
+
 public:
 	Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr)
 		:MovableObj(pos, rot, 0, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
@@ -80,6 +86,9 @@ public:
 		SetTexNo(tex);
 		GetAnimator()->SetTexNo(tex);
 		SetType(OBJ_PLAYER);
+
+		//表示優先度設定
+		GetAnimator()->SetDrawPriority(50);
 	}
 
 	~Player() { delete move_attribute_; delete attack_attribute_; }
@@ -139,4 +148,72 @@ private:
 	void LvUp(void);
 
 	void HpMaxUp(void);
+};
+
+
+
+class PlayerDeadEffect : public MovableObj
+{
+private:
+	float time_;
+
+public:
+	PlayerDeadEffect(Vector2 pos)
+		:MovableObj(pos, 0.0f, LoadTexture(Asset::GetAsset(effect_enemydead)), Vector2::Zero), time_(0.0f) {
+		SetType(OBJ_VOID);
+		GetAnimator()->SetTexenum(effect_dead);
+		GetAnimator()->SetLoopAnim(EFFECT_DEAD_ANIM);
+	}
+
+	bool EffectEnd(void) {
+		time_ += Time::GetDeltaTime();
+		if (time_ > 2.5f) {
+			return true;
+		}
+		return false;
+	}
+
+	void Update(void) override {}
+};
+
+
+class PlayerHitEffect : public MovableObj
+{
+private:
+	float time_;
+	bool draw_;
+
+public:
+	PlayerHitEffect(void)
+		:MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(effect_hit)), Vector2::Zero), time_(0.0f),draw_(false) {
+		SetType(OBJ_VOID);
+		GetCollider()->Discard();
+		SetCollider(nullptr);
+		GetAnimator()->SetTexenum(effect_hit);
+		GetAnimator()->SetLoopAnim(EFFECT_HIT_ANIM);
+		GetAnimator()->SetDrawPriority(75);
+		SetScale(Vector2(SIZE_ * 1.5f, SIZE_ * 1.5f));
+	}
+
+	void Hit(Vector2 my_pos) {
+		draw_ = true;
+		SetPos(my_pos);
+
+		SetColor(Color(1, 1, 1, 1));
+		GetAnimator()->SetIsAnim(true);
+		GetAnimator()->SetColor(GetColor());
+	}
+
+	bool GetDraw(void) { return draw_; }
+
+	void Update(void) override {
+		if (draw_) {
+			time_ += Time::GetDeltaTime();
+			if (time_ > 0.3f) {
+				time_ = 0.0f;
+				draw_ = false;
+				DispUninit();
+			}
+		}
+	}
 };

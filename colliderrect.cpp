@@ -1,5 +1,7 @@
 #include "colliderrect.h"
 
+#include <libavutil/mathematics.h>
+
 #include "bossatk.h"
 #include "gamebase.h"
 
@@ -10,7 +12,6 @@ ColliderRect::ColliderRect(GameObject* parent, bool movable) : Collider(RECTANGL
         Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y + parent->GetScale().y / 2),
         Vector2(parent->GetPos().x + parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2),
         Vector2(parent->GetPos().x - parent->GetScale().x / 2, parent->GetPos().y - parent->GetScale().y / 2));
-    rect_.Rotate(parent->GetRot());
     GameBase::GetCollMngr()->Add(this);
 }
 
@@ -38,7 +39,7 @@ bool ColliderRect::Collide(Collider* other)
                 rect_.a.y > other_rect.c.y && rect_.c.y < other_rect.a.y);
         }*/
         //SAT
-            return CheckIntersect(rect_, dynamic_cast<ColliderRect*>(other)->GetRect());
+        return CheckIntersect(rect_, dynamic_cast<ColliderRect*>(other)->GetRect());
     default:
         return false;
     }
@@ -54,11 +55,31 @@ void ColliderRect::Update()
         rect_.c = Vector2(GetPos().x + GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
         rect_.d = Vector2(GetPos().x - GetParent()->GetScale().x / 2, GetPos().y - GetParent()->GetScale().y / 2);
     }
-    rect_.Rotate(GetParent()->GetRot());
+
+    //Žè”²‚«‚Å‚«‚È‚©‚Á‚½
+    //rect_.Rotate(GetParent()->GetRot());
+    //apply rotation around center of collider
+    Vector2 center = GetPos(); // Center of the rectangle
+    // Subtract the center from each vertex (translate to origin)
+    rect_.a -= center;
+    rect_.b -= center;
+    rect_.c -= center;
+    rect_.d -= center;
+    // Rotate each vertex around the origin
+    float rot = GetParent()->GetRot();
+    rect_.Rotate(-rot);
+
+    // Add the center back to each vertex (translate back)
+    rect_.a += center;
+    rect_.b += center;
+    rect_.c += center;
+    rect_.d += center;
 }
 
 void ColliderRect::CollisionInteract()
 {
+    if (GetParent()->GetType() == OBJ_ATTACK || GetParent()->GetType() == OBJ_VOID || GetParent()->GetType() == OBJ_BULLET)
+        return;
     for (auto& other : collision_)
     {
         switch (other->GetParent()->GetType())
@@ -164,13 +185,13 @@ void ColliderRect::CollisionSolid(Collider* other)
                     MovableObj* parent = dynamic_cast<MovableObj*>(GetParent());
                     if (parent != nullptr)
                     {
-                        Vector2 vel= parent->GetVel() * GetBounciness();
+                        Vector2 vel = parent->GetVel() * GetBounciness();
                         //if the object is moving towards the collision, bounce it
                         if (Vector2::Dot(vel, coll_dir) > 0)
                         {
-                            if(overlap_x != 0.0f)
+                            if (overlap_x != 0.0f)
                                 vel.x = -vel.x;
-                            if(overlap_y != 0.0f)
+                            if (overlap_y != 0.0f)
                                 vel.y = -vel.y;
                         }
                         //vel += Vector2(-move_amount.x * GetBounciness(), move_amount.y * GetBounciness());
@@ -178,7 +199,7 @@ void ColliderRect::CollisionSolid(Collider* other)
                     }
                 }
                 //if other is heavier or not movable, move self
-                if(GetWeight() > other->GetWeight() || !other->GetIsMovable())
+                if (GetWeight() > other->GetWeight() || !other->GetIsMovable())
                     SetPos(GetPos() + move_amount);
                 else
                     //if other is lighter, move other
@@ -277,6 +298,33 @@ void ColliderRect::CollisionPen(Collider* other)
         }
         break;
     }
+}
+
+void ColliderRect::Draw(int tex, Vector2 offset)
+{
+    const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
+    const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
+    Vector2 uvs[4] = {
+        Vector2(0.0f, 0.0f),
+        Vector2(0.0f, 1.0f),
+        Vector2(1.0f, 0.0f),
+        Vector2(1.0f, 1.0f),
+    };
+    Vector2 rect[4] = {
+        (rect_.a - offset),
+        (rect_.d - offset),
+        (rect_.b - offset),
+        (rect_.c - offset)
+    };
+    rect[0].y = Graphical::GetHeight() - rect[0].y;
+    rect[1].y = Graphical::GetHeight() - rect[1].y;
+    rect[2].y = Graphical::GetHeight() - rect[2].y;
+    rect[3].y = Graphical::GetHeight() - rect[3].y;
+    /*rect[0] *= scale_x;
+    rect[1] *= scale_x;
+    rect[2] *= scale_x;
+    rect[3] *= scale_x;*/
+    DrawSprite(tex, rect, uvs, Color(0, 1.0f, 1.0f, 0.5f));
 }
 
 bool ColliderRect::CheckIntersect(Vertex4 rect, Vertex4 other)

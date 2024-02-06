@@ -8,6 +8,19 @@ SkillOrbMngr::~SkillOrbMngr()
     }
 }
 
+void SkillOrbMngr::Update()
+{
+    skillOrbs_.remove_if([](SkillOrb* skillOrb)
+        {
+            if (skillOrb->GetDiscard())
+            {
+                delete skillOrb;
+                return true;
+            }
+            return false;
+        });
+}
+
 // スキルポイントをポップする
 void SkillOrbMngr::Pop(int cellX, int cellY, SKILLORB_SIZE_TYPE sizeType, bool isMovable)
 {

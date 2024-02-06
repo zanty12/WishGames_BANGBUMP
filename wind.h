@@ -40,6 +40,7 @@ struct SignalFilter
 
 
 class WindAttack;
+class WindEffect;
 
 class Wind : public Attribute
 {
@@ -47,23 +48,25 @@ private:
     float power_ = 0.0f;
     //const float maxPower_ = 1000.0f;
     const float rotInputFriction = 2.0f; // ‚Ü‚í‚·‰Á‘¬“x‚Ì–€C’è”
-    const float rotInputJudgeMin = 0.03; // ‚Ü‚í‚·‚ğ”»’è‚·‚é
+    const float rotInputJudgeMin = 5; // ‚Ü‚í‚·‚ğ”»’è‚·‚é
     //const float friction_ = 0.95f;			// –€C
 
     float prev_y_ = 0.0f;
 
+    float prev_power_ = 0.0f;
+
     WindAttack* attack_ = nullptr;
     float previous_time_ = 0.0f;
     SignalFilter attack_filter_;
+    SignalFilter move_filter_;
+    WindEffect* move_effect_ = nullptr;
 
     //’²®‚Ì‚½‚ßconst”²‚«
     float maxPower_ = 10 * GameObject::SIZE_;
     float friction_ = 0.8f;
 
 public:
-    Wind(Player* player) : Attribute(player, ATTRIBUTE_TYPE_WIND)
-    {
-    }
+    Wind(Player* player);
 
     ~Wind() override = default;
     bool StickTrigger(Vector2 stick, Vector2 previousStick);
@@ -83,3 +86,17 @@ public:
     void Update() override;
 };
 
+
+class WindEffect : public MovableObj
+{
+    Wind* parent_;
+    float draw_time_;
+    bool draw_ = false;
+
+public:
+    WindEffect() = delete;
+    WindEffect(Wind* parent);
+    ~WindEffect() override = default;
+    void Update() override;
+    void DrawEffect() { draw_ = true; }
+};

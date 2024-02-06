@@ -18,6 +18,7 @@ public:
     void CollisionInteract() override;
     void CollisionSolid(Collider* other) override;
     void CollisionPen(Collider* other) override;
+    void Draw(int tex, Vector2 offset) override;
 
 private:
     static bool CheckIntersect(Vertex4 rect, Vertex4 other);

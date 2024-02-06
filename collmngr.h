@@ -4,6 +4,8 @@
 #include "collider.h"
 #include "time.h"
 
+class Camera;
+
 class CollMngr
 {
 private:
@@ -28,6 +30,7 @@ public:
 
     bool Add(Collider* collider);
     void Update();
+    void Draw(Camera* camera);
     void CheckDiscard();
     void UpdateCollision(Collider* collider);
 

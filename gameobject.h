@@ -68,6 +68,7 @@ public:
 
     virtual ~GameObject()
     {
+        DispUninit();
         if (animator_)animator_->Discard();
         if (collider_)collider_->Discard();
     }
@@ -94,6 +95,8 @@ public:
 
 
     virtual void Update(void) = 0;
+
+    void DispUninit(void);  //画面からオブジェクトの描画と当たり判定を消す
 
     static Vector2 GetWorldCoord(Vector2 pos);
 };

@@ -8,6 +8,7 @@
 #include "prep.h"
 #include "title.h"
 #include "menu.h"
+#include "multi_server_select.h"
 #include "result.h"
 #include "thunder.h"
 #include "wind.h"
@@ -28,6 +29,9 @@ SceneMngr::SceneMngr(SCENE scene)
         break;
     case SCENE_MENU:
         scene_ = new Menu(this);
+        break;
+    case SCENE_MULTI_SERVER_SELECT:
+        scene_ = new Multi_Server_Select(this);
         break;
     case SCENE_PREP:
         scene_ = new Prep(this);
@@ -93,6 +97,9 @@ void SceneMngr::LoadScene(SCENE scene)
         break;
     case SCENE_MENU:
         scene_ = new Menu(this);
+        break;
+    case SCENE_MULTI_SERVER_SELECT:
+        scene_ = new Multi_Server_Select(this);
         break;
     case SCENE_PREP:
         scene_ = new Prep(this);
@@ -227,6 +234,77 @@ void SceneMngr::ParseGame(const std::string& message)
     game->AddCamera(new Camera(player->GetPos(),
                                Vector2(game->GetMapMngr()->GetMap()->GetWidth(),
                                        game->GetMapMngr()->GetMap()->GetHeight())));
+
+    //プレイヤーのテクスチャを決める
+    switch (player->GetAttackAttribute()->GetAttribute())
+    {
+    case ATTRIBUTE_TYPE_FIRE:
+        switch (player->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_DARK:
+            player->GetAnimator()->SetTexenum(player1_12);
+            break;
+        case ATTRIBUTE_TYPE_WIND:
+            player->GetAnimator()->SetTexenum(player1_14);
+            break;
+        case ATTRIBUTE_TYPE_THUNDER:
+            player->GetAnimator()->SetTexenum(player1_13);
+            break;
+        default:
+            break;
+        }
+        break;
+    case ATTRIBUTE_TYPE_DARK:
+        switch (player->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_FIRE:
+            player->GetAnimator()->SetTexenum(player1_21);
+            break;
+        case ATTRIBUTE_TYPE_WIND:
+            player->GetAnimator()->SetTexenum(player1_24);
+            break;
+        case ATTRIBUTE_TYPE_THUNDER:
+            player->GetAnimator()->SetTexenum(player1_23);
+            break;
+        default:
+            break;
+        }
+        break;
+    case ATTRIBUTE_TYPE_WIND:
+        switch (player->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_FIRE:
+            player->GetAnimator()->SetTexenum(player1_41);
+            break;
+        case ATTRIBUTE_TYPE_DARK:
+            player->GetAnimator()->SetTexenum(player1_42);
+            break;
+        case ATTRIBUTE_TYPE_THUNDER:
+            player->GetAnimator()->SetTexenum(player1_43);
+            break;
+        default:
+            break;
+        }
+        break;
+    case ATTRIBUTE_TYPE_THUNDER:
+        switch (player->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_FIRE:
+            player->GetAnimator()->SetTexenum(player1_31);
+            break;
+        case ATTRIBUTE_TYPE_DARK:
+            player->GetAnimator()->SetTexenum(player1_32);
+            break;
+        case ATTRIBUTE_TYPE_WIND:
+            player->GetAnimator()->SetTexenum(player1_34);
+            break;
+        default:
+            break;
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 void SceneMngr::CaptureScreen()

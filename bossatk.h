@@ -29,6 +29,7 @@ private:
 	float time_;
 	float speed_;
 	Vector2 boss_pos_;
+	bool atk_end_ = false;
 
 public:
 	Boss_Thunder() = delete;
@@ -37,6 +38,7 @@ public:
 	Boss_Thunder(Vector2 pos);
 	void Update() override;
 
+	bool GetAtkEnd(void) const { return atk_end_; }
 
 };
 class Boss_Wind : public MovableObj
