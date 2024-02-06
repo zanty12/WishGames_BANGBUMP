@@ -258,8 +258,18 @@ void ClientFire::Attack(void) {
 
 
 	// レベルによってテクスチャの変更
-	if (player->GetLv() < 6) attackAnim.texNo = attackTexNo;
-	else attackAnim.texNo = attack2TexNo;
+	if (player->GetLv() < 6) {
+		attackAnim.texNo = attackTexNo;
+		attackAnim.width = 5;
+		attackAnim.height = 6;
+		attackAnim.end = 25;
+	}
+	else {
+		attackAnim.texNo = attack2TexNo;
+		attackAnim.width = 5;
+		attackAnim.height = 6;
+		attackAnim.end = 29;
+	}
 
 	// 攻撃の向き
 	Vector2 direction = player->attackVelocity.Normalize() * state->showAttackY * 0.5f;
@@ -463,8 +473,18 @@ void ClientWater::Attack(void) {
 
 
 	// レベルによってテクスチャの変更
-	if (player->GetLv() < 6) attackAnim.texNo = attackTexNo;
-	else attackAnim.texNo = attack2TexNo;
+	if (player->GetLv() < 6) {
+		attackAnim.texNo = attackTexNo;
+		attackAnim.width = 5;
+		attackAnim.height = 6;
+		attackAnim.end = 29;
+	}
+	else {
+		attackAnim.texNo = attack2TexNo;
+		attackAnim.width = 5;
+		attackAnim.height = 6;
+		attackAnim.end = 29;
+	}
 
 	// 手に移動
 	Vector2 localPos = Vector2(-12.0f, 35.0f);
@@ -824,10 +844,6 @@ void ClientWind::Move(void) {
 	// 移動アニメーションではないなら終了
 	if (!IsPlayerAnimMove(player->animType)) return;
 
-	// レベルによってテクスチャの変更
-	if (player->GetLv() < 6) attackAnim.texNo = attackTexNo;
-	else attackAnim.texNo = attack2TexNo;
-
 	Vector2 pos = player->transform.position;
 	float rot = 0.0f;
 	Vector2 scl = Vector2(state->showMoveX, state->showMoveY);
@@ -840,6 +856,20 @@ void ClientWind::Attack(void) {
 	if (!IsPlayerAnimAttack(player->animType)) return;
 
 
+
+	// レベルによってテクスチャの変更
+	if (player->GetLv() < 6) {
+		attackAnim.texNo = attackTexNo;
+		attackAnim.width = 5;
+		attackAnim.height = 6;
+		attackAnim.end = 29;
+	}
+	else {
+		attackAnim.texNo = attack2TexNo;
+		attackAnim.width = 5;
+		attackAnim.height = 1;
+		attackAnim.end = 4;
+	}
 
 	Vector2 pos = player->transform.position;
 	float rot = 0.0f;

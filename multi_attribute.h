@@ -190,7 +190,7 @@ public:
 	ClientWater(ClientPlayer *player) : ClientAttribute(player, L"Water") {
 		moveTexNo = LoadTexture(Asset::GetAsset(textures::dark_move));
 		attackTexNo = LoadTexture(Asset::GetAsset(textures::dark_attack));
-		attack2TexNo = LoadTexture("data/texture/Attack/effect_fire_attack2.png");
+		attack2TexNo = LoadTexture("data/texture/Attack/effect_water_attack2.png");
 		int moveChargeTexNo = LoadTexture(Asset::GetAsset(textures::dark_move_charge));
 		int attackChargeTexNo = LoadTexture("data/texture/Effect/effect_water_attack_charge.png");
 		int idleTexNo = LoadTexture(Asset::GetAsset(textures::dark_idle));
@@ -292,7 +292,7 @@ public:
 
 	ClientThunderAttack(Transform transform) : AttackClientSide(transform) {
 		texNo = LoadTexture("data/texture/Attack/effect_thunder_arrow.png");
-		anim = MultiAnimator(texNo, 5, 2, 0, 9, true);
+		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 	}
 
 	void Loop(void) override;
@@ -306,7 +306,7 @@ public:
 
 	ClientThunder2Attack(Transform transform) : ClientThunderAttack(transform) {
 		texNo = LoadTexture("data/texture/Attack/effect_thunder_arrow2.png");
-		anim = MultiAnimator(texNo, 5, 2, 0, 9, true);
+		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 	}
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2; }
