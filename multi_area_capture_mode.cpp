@@ -37,7 +37,7 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 		for (auto &kvp : clients) {
 			auto &client = kvp.second;
 			auto &player = client.player_;
-			Vertex1 clientCollider = Vertex1(player->transform.position, player->radius);	// プレイヤーのコライダー
+			Vertex1 clientCollider = Vertex1(player->transform.position, 0.0f);	// プレイヤーのコライダー
 
 			// 衝突判定
 			if (Collider2D::Touch(areaCollider, clientCollider)) {
@@ -57,7 +57,7 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 		if (pTouchClient == nullptr) continue;
 
 		// 占領し続けているならゲージの更新
-		if (inPlayerNum == 1 && area.id == pTouchClient->header.id) {
+		if (area.id == pTouchClient->header.id) {
 			area.captureNowTime += (curTime - preTime) * 0.001f;
 		}
 		// 別のプレイヤーに占領されたなら初期化
@@ -91,7 +91,7 @@ void MultiPlayAreaCaptureModeServerSide::DestroyUpdate(void) {
 }
 
 MultiPlayAreaCaptureModeServerSide::MultiPlayAreaCaptureModeServerSide()
-	: MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map1.csv"), L"AreaCapture") {
+	: MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map1.csv", MULTIPLAY_RUN_TYPE_SERVER), L"AreaCapture") {
 	// 占領データを取得
 	for (auto &areaPosition : GetMap()->GetAreaCaptures()) {
 		areas.push_back(Area(areaPosition));
@@ -139,7 +139,7 @@ void MultiPlayAreaCaptureModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 
 	for (auto &area : res.areas) {
 		Vector2 pos = area.position - offset;
 		float rot = 0.0f;
-		Vector2 scl = Vector2(area.radius, area.radius);
+		Vector2 scl = Vector2(area.radius, area.radius) * 2.0f;
 		Color col = Color::White * 0.5f;
 		anim.Draw(pos, rot, scl, col);
 		DrawSpriteCircleEffect(anim.texNo, pos, rot, scl, col, Vector2::Zero, Vector2::One, area.captureRatio);

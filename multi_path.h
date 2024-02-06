@@ -11,3 +11,9 @@
 #else
 #define MAP_PATH std::string("../../data/map/")
 #endif
+
+#ifdef _DEBUG
+#define ROOT_PATH std::wstring(L"data/")
+#else
+#define ROOT_PATH std::wstring(L"../../data/")
+#endif

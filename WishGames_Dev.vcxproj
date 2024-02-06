@@ -170,6 +170,7 @@
     <ClCompile Include="lib\imgui\imgui_widgets.cpp" />
     <ClCompile Include="lib\video_reader.cpp" />
     <ClCompile Include="light_effect.cpp" />
+    <ClCompile Include="load.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapmngr.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="movableobj.cpp" />
     <ClCompile Include="multiplay.cpp" />
     <ClCompile Include="multi_anim.cpp" />
+    <ClCompile Include="multi_animenum.cpp" />
     <ClCompile Include="multi_area_capture_mode.cpp" />
     <ClCompile Include="multi_attack.cpp" />
     <ClCompile Include="multi_attribute.cpp" />
@@ -188,7 +190,9 @@
     <ClCompile Include="multi_mode_flow.cpp" />
     <ClCompile Include="multi_object.cpp" />
     <ClCompile Include="multi_player.cpp" />
+    <ClCompile Include="multi_result_skillorb.cpp" />
     <ClCompile Include="multi_skillorb.cpp" />
+    <ClCompile Include="multi_ui.cpp" />
     <ClCompile Include="number.cpp" />
     <ClCompile Include="original_window.cpp" />
     <ClCompile Include="player.cpp" />
@@ -255,6 +259,7 @@
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
     <ClInclude Include="lib\video_reader.hpp" />
     <ClInclude Include="light_effect.h" />
+    <ClInclude Include="load.h" />
     <ClInclude Include="mapenum.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="map.h" />
@@ -269,6 +274,7 @@
     <ClInclude Include="multi_character_select_mode.h" />
     <ClInclude Include="multi_client_gameobject.h" />
     <ClInclude Include="multi_connect_renderer.h" />
+    <ClInclude Include="multi_effect.h" />
     <ClInclude Include="multi_enemy.h" />
     <ClInclude Include="multi_enemy_rush_mode.h" />
     <ClInclude Include="multi_final_battle_mode.h" />
@@ -283,9 +289,12 @@
     <ClInclude Include="multi_obstacle_race_mode.h" />
     <ClInclude Include="multi_path.h" />
     <ClInclude Include="multi_player.h" />
+    <ClInclude Include="multi_result_skillorb.h" />
+    <ClInclude Include="multi_runenum.h" />
     <ClInclude Include="multi_server_select.h" />
     <ClInclude Include="multi_skillorb.h" />
     <ClInclude Include="multi_transform.h" />
+    <ClInclude Include="multi_ui.h" />
     <ClInclude Include="number.h" />
     <ClInclude Include="original_window.h" />
     <ClInclude Include="movableobj.h" />
@@ -352,8 +361,20 @@
     <Content Include="data\texture\wapuro-mincho.otf" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\multiplay.ini" />
     <None Include="data\property\attribute_lv1.ini" />
+    <None Include="data\property\attribute_lv10.ini" />
+    <None Include="data\property\attribute_lv2.ini" />
+    <None Include="data\property\attribute_lv3.ini" />
+    <None Include="data\property\attribute_lv4.ini" />
+    <None Include="data\property\attribute_lv5.ini" />
+    <None Include="data\property\attribute_lv6.ini" />
+    <None Include="data\property\attribute_lv7.ini" />
+    <None Include="data\property\attribute_lv8.ini" />
+    <None Include="data\property\attribute_lv9.ini" />
+    <None Include="data\property\enemy.ini" />
     <None Include="data\property\mode.ini" />
+    <None Include="data\property\player.ini" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,11 +1,18 @@
 #pragma once
 #include "multi_header.h"
+#include "multi_runenum.h"
 #include "multi_map.h"
+#include "multi_result_skillorb.h"
 #include "time.h"
 
 class MultiPlayFlowServerSide;
 class MultiPlayModeServerSide {
 protected:
+	enum MODE {
+		START,
+		PLAY,
+		RESULT,
+	};
 	float maxTime_ = 60.0f;
 	float time_ = 0.0f;
 	float startTime_ = 15.0f;			// 開始までの時間
@@ -16,6 +23,8 @@ protected:
 
 
 public:
+	int mode = NONE;
+	int preMode = NONE;
 	MultiPlayModeServerSide(MultiMap *map, std::wstring modeName) : map_(map) {
 		startTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"startTime");
 		resultTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"resultTime");
@@ -24,6 +33,7 @@ public:
 	}
 	~MultiPlayModeServerSide() { if (map_) delete map_; }
 	virtual void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
+	virtual void UpdateStart(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
 	virtual void UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
 	virtual void CreateResponse(Storage& out) { };
 	virtual void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
@@ -45,6 +55,9 @@ protected:
 	float resultTime_ = 15.0f;							// 中間リザルトの時間
 	std::list<CLIENT_DATA_CLIENT_SIDE> beforeClients;	// ゲーム開始直後のクライアントデータ
 	MultiMap *map_;
+	int clientSpawnCount = 0;							// クライアントのスポーンカウント
+	std::list<ResultSkillOrb> rstSkillOrb;				// リザルト時のスキルオーブ
+	WIN::Time dropSkillOrbCoolTimer;					// リザルト時のスキルオーブドロップアニメーションで使うタイマー
 	friend MultiPlayFlowClientSide;
 
 
@@ -74,12 +87,14 @@ protected:
 
 public:
 	MultiPlayModeClientSide(MultiMap* map, std::wstring modeName) : map_(map) {
-		startTime_ = ini::GetFloat(L"mode.ini", modeName.c_str(), L"startTime");
-		resultTime_ = ini::GetFloat(L"mode.ini", modeName.c_str(), L"resultTime");
+		startTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"startTime");
+		resultTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"resultTime");
+		dropSkillOrbCoolTimer.Start();
 	};
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 
 	virtual void Draw(RESPONSE_PLAYER &players, Vector2 offset) { };
+	virtual void DrawStart(RESPONSE_PLAYER &players, Vector2 offset);
 	virtual void DrawResult(RESPONSE_PLAYER &players, Vector2 offset);
 	virtual void ParseResponse(Storage& in) { };
 	virtual void Release(RESPONSE_PLAYER &players) { };

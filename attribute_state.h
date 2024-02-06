@@ -10,7 +10,18 @@ struct AttributeState {
 	float maxPower = 10.0f;			// パワーの最大値
 	float addPower = 00.0f;			// パワーの加算値
 	float friction = 0.98f;			// 摩擦係数
+	float brakeFriction = 0.98f;	// 摩擦係数（急停止）
 	float powerFriction = 1.00f;	// パワーの摩擦係数
+
+	// 切り替え
+	float exCoolTime = 1.5f;		// がっちゃんこクールタイム
+
+	// 魔力
+	int minMp = 0;					// 最小魔力
+	int maxMp = 3;					// 最大魔力
+	int cost = 1;					// 魔力消費量
+	float healSpanTime = 1.0f;		// 回復する時間
+	int heal = 1;					// 回復量
 
 	// 入力
 	float minInputDistance = 0.50f;	// 入力の判定値
@@ -42,7 +53,18 @@ struct AttributeState {
 		maxPower = ini::GetFloat(PARAM_PATH + path, attributeName, L"maxPower", -1.0f);
 		addPower = ini::GetFloat(PARAM_PATH + path, attributeName, L"addPower", -1.0f);
 		friction = ini::GetFloat(PARAM_PATH + path, attributeName, L"friction", -1.0f);
+		brakeFriction = ini::GetFloat(PARAM_PATH + path, attributeName, L"brakeFriction", -1.0f);
 		powerFriction = ini::GetFloat(PARAM_PATH + path, attributeName, L"powerFriction", -1.0f);
+
+		// 切り替え
+		exCoolTime = ini::GetFloat(PARAM_PATH + path, attributeName, L"exCoolTime", -1.0f);
+
+		// 魔力
+		minMp = ini::GetInt(PARAM_PATH + path, attributeName, L"minMp", -1);
+		maxMp = ini::GetInt(PARAM_PATH + path, attributeName, L"maxMp", -1);
+		cost = ini::GetInt(PARAM_PATH + path, attributeName, L"cost", -1);
+		healSpanTime = ini::GetFloat(PARAM_PATH + path, attributeName, L"healSpanTime", -1.0f);
+		heal = ini::GetInt(PARAM_PATH + path, attributeName, L"heal", -1);
 
 		// 入力
 		minInputDistance = ini::GetFloat(PARAM_PATH + path, attributeName, L"minInputDistance", -1.0f);
@@ -73,7 +95,18 @@ struct AttributeState {
 		influence_state(maxPower);
 		influence_state(addPower);
 		influence_state(friction);
+		influence_state(brakeFriction);
 		influence_state(powerFriction);
+
+		// 切り替え
+		influence_state(exCoolTime);
+
+		// 魔力
+		influence_state(minMp);
+		influence_state(maxMp);
+		influence_state(cost);
+		influence_state(healSpanTime);
+		influence_state(heal);
 
 		// 入力
 		influence_state(minInputDistance);

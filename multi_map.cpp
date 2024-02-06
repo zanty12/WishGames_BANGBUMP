@@ -51,8 +51,7 @@ void MultiMap::Release(void) {
 	areaCaptures.clear();
 }
 
-void MultiMap::Load(std::string path)
-{
+void MultiMap::Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType) {
 	Release();
 
 	skillOrbs = new MultiBehavior("SkillOrbMngr");
@@ -60,8 +59,7 @@ void MultiMap::Load(std::string path)
 	attacks = new MultiBehavior("AttackMngr");
 
 	std::ifstream file(path);
-	if (!file)
-	{
+	if (!file) {
 		std::cout << "error loading map";
 		return;
 	}
@@ -115,14 +113,15 @@ void MultiMap::Load(std::string path)
 				}
 				// 登録
 				else {
-					GetColliderMap(x, y) = id;
-					GetMap(x, y) = id;
+					if (multiplayType == MULTIPLAY_RUN_TYPE_SERVER) GetColliderMap(x, y) = id;
+					if (multiplayType == MULTIPLAY_RUN_TYPE_CLIENT) GetMap(x, y) = id;
 				}
 			}
 			x++;
 		}
 		y--;
 	}
+	Sleep(1000);
 	file.close();
 }	
 
@@ -130,6 +129,7 @@ void MultiMap::Draw(Vector2 offset) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());                        // 画面のサイズ
 	Vector2Int leftBottomIdx = ToIndex(offset);                                                     // 左下のインデックス
 	Vector2Int rightTopIdx = ToIndex(offset + screen);                                              // 右上のインデックス
+	rightTopIdx.y++;
 
 	if (leftBottomIdx.x < 0) leftBottomIdx.x = 0;
 	if (rightTopIdx.x >= width) rightTopIdx.x = width;
@@ -138,7 +138,11 @@ void MultiMap::Draw(Vector2 offset) {
 
 
 	// 描画（背景）
-	DrawSprite(backBGTexNo, screen * 0.5f, 0.0f, screen, Color::White);
+	float aspectRatio = 3600.0f / 1280.0f;
+	float maxY = height * cellSize;
+	float t = offset.y / maxY;
+	float y = MATH::Leap(maxY, 0.0f, t) - maxY * 0.5f;
+	DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
 
 	// 描画（ブロック）
 	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
@@ -175,7 +179,7 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 	// 判定
 	using namespace PHYSICS;
 	NearHit hit;
-	float minDistance = -1;
+	float minDistanceSq = -1;
 	int id = -1;
 	
 	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
@@ -192,13 +196,12 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 				Vertex4 cellCollision(cellPos, 0.0f, Vector2(cellSize, cellSize));
 				NearHit tmpHit;
 
-
+				// 触れているなら
 				if (Collider2D::Touch(playerCollision, cellCollision, &tmpHit)) {
-
-					float distance = (position - cellPos).Distance();
-					if (minDistance < 0.0f || distance < minDistance) {
+					float distanceSq = (position - cellPos).DistanceSq();
+					if (minDistanceSq < 0.0f || distanceSq < minDistanceSq) {
 						hit = tmpHit;
-						minDistance = distance;
+						minDistanceSq = distanceSq;
 						id = tmpId;
 					}
 				}
@@ -212,6 +215,79 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 			if (velocity) velocity->y = 0.0f;
 		}
 	}
+
+	// 範囲外
+	if (position.x < cellSize * 0.5f) position.x = cellSize * 0.5f;
+	else if (cellSize * width - cellSize * 0.5f < position.x) position.x = cellSize * width - cellSize * 0.5f;
+	if (position.y < cellSize * 0.5f) position.y = cellSize * 0.5f;
+	else if (cellSize * height - cellSize * 0.5f < position.y) position.y = cellSize * height - cellSize * 0.5f;
+	return id;
+}
+
+int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vector2 *gravityVelocity) {
+	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());						// 画面のサイズ
+	Vector2Int leftBottomIdx = ToIndex(position - scale);											// 左下のインデックス
+	Vector2Int rightTopIdx = ToIndex(position + scale);												// 右上のインデックス
+	leftBottomIdx.x--;
+	leftBottomIdx.y--;
+	rightTopIdx.x++;
+	rightTopIdx.y++;
+
+	if (leftBottomIdx.x < 0) leftBottomIdx.x = 0;
+	if (rightTopIdx.x >= width) rightTopIdx.x = width;
+	if (leftBottomIdx.y < 0) leftBottomIdx.y = 0;
+	if (rightTopIdx.y >= height) rightTopIdx.y = height;
+
+	// 判定
+	using namespace PHYSICS;
+	Vector2Int pushVector;
+	int id = -1;
+	float radius = scale.x < scale.y ? scale.y : scale.x;
+
+	int i = 0;
+	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
+		for (int y = leftBottomIdx.y; y <= rightTopIdx.y; y++) {
+			// 範囲外なら処理をしない
+			if (x < 0 || y < 0 || x >= width || y >= height) continue;
+
+			// ブロックのIDを取得
+			int tmpId = GetColliderMap(x, y);
+			// 判定できるなら
+			if (tmpId != -1) {
+				id = tmpId;
+				Vector2 cellPos = ToPosition({ x, y });							// セルの座標
+				Vertex4 playerCollision(position, 0.0f, scale);
+				Vertex4 cellCollision(cellPos, 0.0f, Vector2::One * cellSize * 0.5f);
+
+				int up = y < height - 1 ? GetColliderMap(x, y + 1) : -1;
+				int down = 0 < y ? GetColliderMap(x, y - 1) : -1;
+				int left = 0 < x ? GetColliderMap(x - 1, y) : -1;
+				int right = x < width - 1 ? GetColliderMap(x + 1, y) : -1;
+
+				// 触れているなら
+				if (Collider2D::Touch(playerCollision, cellCollision)) {
+					Vector2 direction = position - cellPos - Vector2(cellSize, cellSize + cellSize*0.5) * 0.5f;
+					position += direction.Normalize() * velocity->Distance();
+
+					if (0.0f < direction.y) {
+						if (gravityVelocity) gravityVelocity->y = 0.0f;
+					}
+
+					// 縦の壁なら
+					if (up != -1 || down != -1) direction.x = 0.0f;
+					// 横の壁なら
+					if (left != -1 || right != -1) direction.y = 0.0f;
+				}
+			}
+		}
+	}
+
+	// 範囲外
+	if (position.x < cellSize * 0.5f) position.x = cellSize * 2.0f;
+	else if (cellSize * width - cellSize * 0.5f < position.x) position.x = cellSize * width - cellSize * 2.0f;
+	if (position.y < cellSize * 0.5f) position.y = cellSize * 2.0f;
+	else if (cellSize * height - cellSize * 0.5f < position.y) position.y = cellSize * height - cellSize * 2.0f;
+
 	return id;
 }
 
@@ -261,8 +337,6 @@ void MultiMap::AttackUpdate(void) {
 		for (auto &kvp : MultiPlayServer::clients_) {
 
 			auto &player = kvp.second.player_;
-			float maxRadius = attack->radius + player->radius;
-			float maxRadiusSq = maxRadius * maxRadius;
 
 			// イテレータの取得
 			auto iterator = attack->touchGameObjects.find(player);
@@ -305,7 +379,8 @@ void MultiMap::AttackUpdate(void) {
 			}
 
 			// ダメージ
-			if (maxRadiusSq >= Vector2::DistanceSq(attack->transform.position, enemy->transform.position)) {
+			if (attack->Touch(enemy)) {
+				enemy->damageEffectAttributeType = attack->GetType();
 				enemy->Damage(attack);
 			}
 		}

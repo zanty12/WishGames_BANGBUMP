@@ -17,7 +17,10 @@ void MultiAnimator::Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool is
 		// 終点なら始点にする
 		if (isLoop) { if (loopEnd < idx) idx = loopBegin; }
 		// ループしないなら終了
-		else if (end < idx) return;
+		else if (end < idx) {
+			if (!isEndShow)	return;
+			else idx = end;
+		}
 	}
 
 	// UV値の計算
@@ -88,7 +91,7 @@ MultiAnimator MultiAnimator::GetPlayerInitialize(int playerIdx, ATTRIBUTE_TYPE m
 	return MultiAnimator(LoadTexture(path.str()), width, height, begin, end, true, begin, end);
 }
 
-void MultiAnimator::GetPlayer(MULTI_ANIMATION_TYPE animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack, MultiAnimator* anim) {
+void MultiAnimator::GetPlayer(int animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack, MultiAnimator* anim) {
 	if (anim == nullptr) return;
 	// IDLE
 	if (animType == ANIMATION_TYPE_IDLE) {
@@ -104,21 +107,21 @@ void MultiAnimator::GetPlayer(MULTI_ANIMATION_TYPE animType, ATTRIBUTE_TYPE move
 	int idleIdxWidth = 30;		// 待機に使うインデックスの幅
 	int moveIdxWidth = -1;		// 移動に使うインデックスの幅
 	int attackIdxWidth = -1;	// 攻撃に使うインデックスの幅
-	switch (move) {
-	case ATTRIBUTE_TYPE_FIRE: moveIdxWidth = 30; break;
-	case ATTRIBUTE_TYPE_DARK: moveIdxWidth = 30; break;
-	case ATTRIBUTE_TYPE_THUNDER: moveIdxWidth = 4; break;
-	case ATTRIBUTE_TYPE_WIND: moveIdxWidth = 1; break;
-	}
 	switch (attack) {
 	case ATTRIBUTE_TYPE_FIRE: attackIdxWidth = 9; break;
 	case ATTRIBUTE_TYPE_DARK: attackIdxWidth = 9; break;
 	case ATTRIBUTE_TYPE_THUNDER: attackIdxWidth = 9; break;
 	case ATTRIBUTE_TYPE_WIND: attackIdxWidth = 9; break;
 	}
+	switch (move) {
+	case ATTRIBUTE_TYPE_FIRE: moveIdxWidth = 30; break;
+	case ATTRIBUTE_TYPE_DARK: moveIdxWidth = 30; break;
+	case ATTRIBUTE_TYPE_THUNDER: moveIdxWidth = 1; break;
+	case ATTRIBUTE_TYPE_WIND: moveIdxWidth = 1; break;
+	}
 
 	// ATTACK
-	if (animType == ANIMATION_TYPE_ATTACK) {
+	if (animType & ANIMATION_TYPE_ATTACK) {
 		int begin = idleIdxWidth;
 		anim->begin = begin;
 		anim->end = begin + attackIdxWidth - 1;
@@ -136,5 +139,20 @@ void MultiAnimator::GetPlayer(MULTI_ANIMATION_TYPE animType, ATTRIBUTE_TYPE move
 		anim->loopEnd = begin + moveIdxWidth - 1;
 		anim->isLoop = true;
 		anim->idx = anim->begin;
+	}
+	// CHARGE（Thunder）
+	if (IsPlayerAnimAttackCharge(animType) && attack == ATTRIBUTE_TYPE_THUNDER) {
+		int begin = idleIdxWidth + attackIdxWidth + moveIdxWidth;
+		anim->begin = begin;
+		anim->end = begin + 4;
+		anim->loopBegin = begin;
+		anim->loopEnd = begin + 4;
+		anim->isLoop = false;
+		anim->idx = anim->begin;
+		anim->isEndShow = true;
+	}
+	// ATTACK（Thunder）
+	if (IsPlayerAnimAttack(animType) && attack == ATTRIBUTE_TYPE_THUNDER) {
+		anim->isLoop = false;
 	}
 }

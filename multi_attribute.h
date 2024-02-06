@@ -19,39 +19,47 @@ class ClientPlayer;
 class ServerMovableGameObject;
 class ClientMovableGameObject;
 class ServerAttribute {
-protected:
+public:
+	static const int MAX_LV = 10;
 	ServerPlayer *player = nullptr;
 	WIN::Time coolTimer;
 	WIN::Time atkCoolTimer;
 	WIN::Time atkAfterTimer;
+	WIN::Time skillMpTimer;
 	AttackServerSide *attack_ = nullptr;
 
 public:
-	float power = 0.0f;					// パワー
-
-	AttributeState *state = nullptr;	// 現在のステータス
-	AttributeState state_lv[10] = {};	// ステータス
+	float power = 0.0f;						// パワー
+	int mp = 0;
+	int lv = 0;								// レベル
+	AttributeState *state = nullptr;		// 現在のステータス
+	AttributeState state_lv[MAX_LV] = {};	// ステータス
+	int lvupPoint[MAX_LV] = {};				// レベルアップに必要なポイント
 
 
 public:
 	ServerAttribute(ServerPlayer* player, std::wstring attributeName) : player(player) {
 		// ステータスを読み込む
-		int lv = 1;
-		for (auto &state : state_lv) {
-			state = AttributeState(attributeName, lv);
-			lv++;
+		std::wstring lvStr = L"lv";
+		for (int i = 0; i < MAX_LV; i++) {
+			state_lv[i] = AttributeState(attributeName, i + 1);
+			lvupPoint[i] = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", lvStr + std::to_wstring(i + 1), 0);
 		}
 		// レベル1のステータスにする
 		state = state_lv;
 
 		coolTimer.Start();
+		skillMpTimer.Start();
 	}
 	virtual bool StickTrigger(Vector2 stick, Vector2 previousStick) = 0;
 	virtual void Move(void) = 0;
 	virtual void Attack(void) = 0;
 	virtual AttackServerSide *CreateAttack(void);
-	virtual void DestroyAttack(void);
+	virtual bool DestroyAttack(void);
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
+	void LevelUpdate(void);
+	void MpUpdate(void);
+	bool IsUseMp(void);
 	static ServerAttribute *Create(ServerPlayer *player, ATTRIBUTE_TYPE type);
 
 	void AddPower(void);
@@ -60,23 +68,39 @@ public:
 	void FrictionPower(void);
 	void Friction(void);
 	Vector2 CalcVector(Vector2 stick);
+	int GetLv(void) {
+		if (state) return (state - state_lv);
+		else return 0;
+	}
+	int GetLvMinSkillOrb(void) {
+		int lv = GetLv();
+		int min = lvupPoint[lv];
+		return min;
+	}
+	int GetLvMaxSkillOrb(void) {
+		int lv = GetLv();
+		int max = lv < MAX_LV - 1 ? lvupPoint[lv + 1] : -1;
+		return max;
+	}
 };
 class ClientAttribute {
 protected:
+	static const int MAX_LV = 10;
 	ClientPlayer *player = nullptr;
 	MultiAnimator attackAnim;
 	MultiAnimator moveAnim;
 
-	AttributeState *state = nullptr;	// 現在のステータス
-	AttributeState state_lv[10] = {};	// ステータス
+	AttributeState *state = nullptr;		// 現在のステータス
+	AttributeState state_lv[MAX_LV] = {};	// ステータス
+	int lvupPoint[MAX_LV] = {};				// レベルアップに必要なポイント
 
 public:
 	ClientAttribute(ClientPlayer *player, std::wstring attributeName) : player(player) {
 		// ステータスを読み込む
-		int lv = 1;
-		for (auto &state : state_lv) {
-			state = AttributeState(attributeName, lv);
-			lv++;
+		std::wstring lvStr = L"lv";
+		for (int i = 0; i < MAX_LV; i++) {
+			state_lv[i] = AttributeState(attributeName, i + 1);
+			lvupPoint[i] = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", lvStr + std::to_wstring(i + 1), 0);
 		}
 		// レベル1のステータスにする
 		state = state_lv;
@@ -86,6 +110,21 @@ public:
 	virtual void Idle(void) { }
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	static ClientAttribute *Create(ClientPlayer *player, ATTRIBUTE_TYPE type);
+	void LevelUpdate(void);
+	int GetLv(void) {
+		if (state) return (state - state_lv);
+		else return 0;
+	}
+	int GetLvMinSkillOrb(void) {
+		int lv = GetLv();
+		int min = lvupPoint[lv];
+		return min;
+	}
+	int GetLvMaxSkillOrb(void) {
+		int lv = GetLv();
+		int max = lv < MAX_LV - 1 ? lvupPoint[lv + 1] : -1;
+		return max;
+	}
 };
 
 
@@ -119,7 +158,6 @@ private:
 	int moveTexNo = -1;
 	int attackTexNo = -1;
 	std::list<Animator> moveAnims;
-	std::list<Animator> attackAnims;
 	DWORD startTime = 0;
 
 public:
@@ -130,7 +168,7 @@ public:
 		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
 
 		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true);
-		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true, 0, 25);
+		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true);
 		startTime = timeGetTime();
 	}
 
@@ -158,6 +196,8 @@ public:
   Water
 ********************************************************/
 class ServerWater : public ServerAttribute {
+	WIN::Time attackTimer;
+
 public:
 	ServerWater(ServerPlayer *player) : ServerAttribute(player, L"Water") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
@@ -169,6 +209,7 @@ public:
 class ClientWater : public ClientAttribute {
 public:
 	MultiAnimator moveChargeAnim;
+	MultiAnimator attackChargeAnim;
 	MultiAnimator idle;
 	MultiAnimator indicator;
 	Vector2 prevPosition;			// ワープ前の座標
@@ -177,7 +218,8 @@ public:
 	ClientWater(ClientPlayer *player) : ClientAttribute(player, L"Water") {
 		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_move.png"), 5, 3, 0, 14, false);
 		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_attack.png"), 5, 6, 0, 29, true);
-		moveChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_charge.png"), 5, 10, 0, 47, true);
+		moveChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_move_charge.png"), 5, 10, 0, 47, true);
+		attackChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_attack_charge.png"), 5, 10, 0, 47, true);
 		idle = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_idle.png"), 5, 6, 0, 29, true);
 		indicator = MultiAnimator(LoadTexture("data/texture/Effect/UI_water_indicator.png"), 5, 4, 0, 18, true);
 
@@ -191,9 +233,13 @@ public:
 };
 
 class ServerWaterAttack : public AttackServerSide {
+private:
+	ServerAttribute *attribute = nullptr;
+
 public:
-	ServerWaterAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
-		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) { }
+	ServerWaterAttack(GameObjectServerSide *self, ServerAttribute *attribute) : attribute(attribute),
+		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) {
+	}
 
 	void Loop(void) override;
 	void KnockBack(ServerMovableGameObject *object) override;
@@ -243,7 +289,7 @@ public:
 
 class ServerThunderAttack : public AttackServerSide {
 public:
-	float gravity = 0.1f;
+	float gravity = 0.0f;
 
 	ServerThunderAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
 		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) {
@@ -257,12 +303,12 @@ public:
 };
 class ClientThunderAttack : public AttackClientSide {
 public:
-	float gravity = 0.1f;
+	float gravity = 0.0f;
 	MultiAnimator anim;
 
 	ClientThunderAttack(Transform transform) : AttackClientSide(transform) {
 		texNo = LoadTexture("data/texture/Effect/effect_thunder_arrow.png");
-		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
+		anim = MultiAnimator(texNo, 5, 2, 0, 9, true);
 	}
 
 	void Loop(void) override;
@@ -278,6 +324,10 @@ public:
   Wind
 ********************************************************/
 class ServerWind : public ServerAttribute {
+private:
+	float horizontalVelocity = 0.0f;
+	float maxHorizontalVelocity = 10.0f;
+
 public:
 	ServerWind(ServerPlayer *player) : ServerAttribute(player, L"Wind") { }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
@@ -289,11 +339,12 @@ public:
 class ClientWind : public ClientAttribute {
 public:
 	MultiAnimator idle;
-
+	int prevAnimType = ANIMATION_TYPE_IDLE;
+	Vector2 prevPosition;			// ワープ前の座標
 
 	ClientWind(ClientPlayer *player) : ClientAttribute(player, L"Wind") {
 		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 29, true);
-		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 25, true);
+		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_move.png"), 5, 6, 0, 29, false);
 		idle = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_idle.png"), 5, 6, 0, 29, true);
 	}
 
