@@ -72,6 +72,13 @@ void ServerPlayer::SkillOrbDrop(int drop) {
 
 ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform) :
 	ClientMovableGameObject(transform) {
+	// レベル範囲の読み込み
+	std::wstring lvStr = L"lv";
+	for (int i = 0; i < MAX_LV; i++) {
+		lvupPoint[i] = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", lvStr + std::to_wstring(i + 1), 0);
+	}
+
+
 	SetMoveAttribute(moveAttribute);
 	SetAttackAttribute(attackAttribute);
 	this->transform.scale = Vector2::One * 150;
@@ -173,7 +180,7 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 	if (timer.GetNowTime() < 200ul && entryType == ENTRY || entryType == NONE) return;
 
 	// レベルを取得
-	lv = moveAttribute->GetLv();
+	lv = GetLv();
 
 	// 待機アニメーション
 	if (moveAttribute) {

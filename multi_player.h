@@ -9,6 +9,7 @@
 #include "multi_animenum.h"
 #include "multi_path.h"
 #include "ini.h"
+#define MAX_LV 10
 
 /*******************************************************
   Server
@@ -32,9 +33,15 @@ public:
 	bool isAttributeChange = false;						// 属性チェンジ
 	WIN::Time exStartTime;								// がっちゃんこ開始タイマー
 
+	int lvupPoint[MAX_LV] = {};							// レベルアップに必要なポイント
 
 public:
-	ServerPlayer() { 
+	ServerPlayer() {
+		std::wstring lvStr = L"lv";
+		for (int i = 0; i < MAX_LV; i++) {
+			lvupPoint[i] = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", lvStr + std::to_wstring(i + 1), 0);
+		}
+
 		radius = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"radius", 10.0f);
 		gravity = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"gravity", 0.01f);
 		maxGravity = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"maxGravity", 0.5f);
@@ -57,6 +64,30 @@ public:
 	ServerAttribute *GetMoveAttribute(void) { return moveAttribute; }
 	ServerAttribute *GetAttackAttribute(void) { return attackAttribute; }
 
+	int GetLv(void) {
+		int lv = MAX_LV - 1;
+		// レベルが上限の場合
+		if (lvupPoint[lv] <= skillPoint) {
+			return lv;
+		}
+
+		// レベルの調整
+		for (lv = 0; lv < MAX_LV - 1; lv++) {
+			if (lvupPoint[lv] <= skillPoint && skillPoint < lvupPoint[lv + 1]) {
+				return lv;
+			}
+		}
+	}
+	int GetLvMinSkillOrb(void) {
+		int lv = GetLv();
+		int min = lvupPoint[lv];
+		return min;
+	}
+	int GetLvMaxSkillOrb(void) {
+		int lv = GetLv();
+		int max = lv < MAX_LV - 1 ? lvupPoint[lv + 1] : -1;
+		return max;
+	}
 	void Loop(void) override;
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_PLAYER; }
 };
@@ -117,6 +148,7 @@ public:
 	ClientAttribute *curAttackAttribute = nullptr;			// 攻撃属性（現在）
 	float skillPointAnimation = 0.0f;						// スキルポイント獲得時のゲージのアニメーションで使用する
 
+	int lvupPoint[MAX_LV] = {};								// レベルアップに必要なポイント
 
 
 public:
@@ -132,6 +164,31 @@ public:
 	void SetAttribute(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute) {
 		SetMoveAttribute(moveAttribute);
 		SetAttackAttribute(attackAttribute);
+	}
+
+	int GetLv(void) {
+		int lv = MAX_LV - 1;
+		// レベルが上限の場合
+		if (lvupPoint[lv] <= skillPoint) {
+			return lv;
+		}
+
+		// レベルの調整
+		for (lv = 0; lv < MAX_LV - 1; lv++) {
+			if (lvupPoint[lv] <= skillPoint && skillPoint < lvupPoint[lv + 1]) {
+				return lv;
+			}
+		}
+	}
+	int GetLvMinSkillOrb(void) {
+		int lv = GetLv();
+		int min = lvupPoint[lv];
+		return min;
+	}
+	int GetLvMaxSkillOrb(void) {
+		int lv = GetLv();
+		int max = lv < MAX_LV - 1 ? lvupPoint[lv + 1] : -1;
+		return max;
 	}
 	ClientAttribute *GetMoveAttribute(void) { return moveAttribute; }
 	ClientAttribute *GetAttackAttribute(void) { return attackAttribute; }

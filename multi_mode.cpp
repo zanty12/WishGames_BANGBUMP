@@ -36,8 +36,7 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 					rank = i;
 				}
 
-				auto attribute = editPlayer->GetMoveAttribute();
-				int expRange = attribute->GetLvMaxSkillOrb() - attribute->GetLvMinSkillOrb();
+				int expRange = editPlayer->GetLvMaxSkillOrb() - editPlayer->GetLvMinSkillOrb();
 				editPlayer->skillPoint += expRange * (1.0f - (float)rank / (float)clients.size());
 				preScore = editPlayer->score;
 			}

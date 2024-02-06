@@ -208,8 +208,8 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 			auto player = MultiPlayClient::clients[client.id];
 			// スキルポイント関連の取得
 			int curSkillOrb = player->skillPoint;
-			int minSkillOrb = player->curMoveAttribute ? player->curMoveAttribute->GetLvMinSkillOrb() : 0;
-			int maxSkillOrb = player->curMoveAttribute ? player->curMoveAttribute->GetLvMaxSkillOrb() : 0;
+			int minSkillOrb = player ? player->GetLvMinSkillOrb() : 0;
+			int maxSkillOrb = player ? player->GetLvMaxSkillOrb() : 0;
 			// ゲージの割合を計算
 			float ratio = (float)(curSkillOrb - minSkillOrb) / (float)(maxSkillOrb - minSkillOrb);
 			if (ratio < 0.0f) ratio = 0.0f;
