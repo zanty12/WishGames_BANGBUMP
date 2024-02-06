@@ -237,9 +237,11 @@ public:
 class ServerThunder : public ServerAttribute {
 private:
 	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
+	WIN::Time chargeToAttackTimer;		// チャージアニメーションから攻撃アニメーションに切り替わったときの時間
+	float friction = 0.0f;
 
 public:
-	ServerThunder(ServerPlayer *player) : ServerAttribute(player, L"Thunder") { }
+	ServerThunder(ServerPlayer *player) : ServerAttribute(player, L"Thunder") { chargeToAttackTimer.Start(); }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;
@@ -248,11 +250,12 @@ public:
 };
 class ClientThunder : public ClientAttribute {
 public:
+	MultiAnimator chargeAttackAnim;
 
 
 	ClientThunder(ClientPlayer *player) : ClientAttribute(player, L"Thunder") {
-		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true);
-		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true);
+		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_move.png"), 5, 3, 0, 14, false);
+		chargeAttackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_charge.png"), 5, 3, 0, 14, true);
 	}
 
 	void Move(void) override;
@@ -289,13 +292,17 @@ class ClientThunderAttack : public AttackClientSide {
 public:
 	float gravity = 0.0f;
 	MultiAnimator anim;
+	MultiAnimator deathAnim;
 
 	ClientThunderAttack(Transform transform) : AttackClientSide(transform) {
 		texNo = LoadTexture("data/texture/Attack/effect_thunder_arrow.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
+		deathAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_lost.png"), 5, 2, 0, 4, false);
+		this->transform.scale = Vector2::One * 150.0f;
 	}
 
 	void Loop(void) override;
+	void Release(void) override;
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER; }
 };

@@ -15,7 +15,7 @@ void SetPlayerAnimNoMove(int &type) {
 }
 
 void SetPlayerAnimAttack(int &type, bool isCharge) {
-	SetPlayerAnimNoMove(type);
+	SetPlayerAnimNoAttack(type);
 	if (isCharge) type |= ANIMATION_TYPE_ATTACK_CHARGE;
 	else type |= ANIMATION_TYPE_ATTACK;
 }
@@ -29,7 +29,7 @@ bool IsPlayerAnimMove(int type) {
 }
 
 bool IsPlayerAnimMoveCharge(int type) {
-	return (type & ANIMATION_TYPE_MOVE_CHARGE) == ANIMATION_TYPE_MOVE_CHARGE;
+	return (type & ANIMATION_TYPE_MOVE) == ANIMATION_TYPE_MOVE_CHARGE;
 }
 
 bool IsPlayerAnimAttack(int type) {
@@ -37,5 +37,5 @@ bool IsPlayerAnimAttack(int type) {
 }
 
 bool IsPlayerAnimAttackCharge(int type) {
-	return (type & ANIMATION_TYPE_ATTACK_CHARGE) == ANIMATION_TYPE_ATTACK_CHARGE;
+	return (type & ANIMATION_TYPE_ATTACK) == ANIMATION_TYPE_ATTACK_CHARGE;
 }

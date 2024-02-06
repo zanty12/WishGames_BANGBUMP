@@ -236,7 +236,7 @@ void MultiPlayServer::SendUpdate(void) {
 			client.header.id,
 			player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
 			player->animType,
-			player->transform.position, player->velocity, player->attackVelocity, player->warpVelocity,
+			player->transform.position, player->velocity, player->attackVelocity, player->chargeVelocity,
 			player->score, player->damageEffectAttributeType, player->skillPoint, 0 }
 		);
 	}
@@ -529,6 +529,9 @@ void MultiPlayClient::PlayerUpdate(void) {
 			// イテレータを一つ前に戻す
 			iterator++;
 
+			// 削除時に呼び出す
+			delIterator->second->Release();
+
 			// データの削除
 			delete object;
 
@@ -653,7 +656,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				player->transform.position = client.position;
 				player->velocity = client.moveVelocity;
 				player->attackVelocity = client.attackVelocity;
-				player->warpVelocity = client.warpVelocity;
+				player->chargeVelocity = client.warpVelocity;
 				player->animType = client.animType;
 				player->moveAttributeType = client.moveAttributeType;
 				player->attackAttributeType = client.attackAttributeType;

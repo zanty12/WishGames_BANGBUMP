@@ -28,8 +28,8 @@ public:
 	int score = 0;										// スコア
 	int animType = ANIMATION_TYPE_IDLE;					// アニメーション
 	MultiMap *map = nullptr;							// マップ
-	Vector2 attackVelocity;								// 攻撃のベクトル
-	Vector2 warpVelocity;								// ワープベクトル
+	Vector2 attackVelocity;								// 攻撃のベロシティ
+	Vector2 chargeVelocity;								// チャージベロシティ
 	bool isAttributeChange = false;						// 属性チェンジ
 	WIN::Time exStartTime;								// がっちゃんこ開始タイマー
 
@@ -139,9 +139,10 @@ public:
 	ATTRIBUTE_TYPE attackAttributeType;						// 攻撃属性タイプ
 	ATTRIBUTE_TYPE preMoveAttributeType;					// 移動属性タイプ
 	ATTRIBUTE_TYPE preAttackAttributeType;					// 攻撃属性タイプ
+	bool isReverseXAttributeControl = false;				// 横軸の向きを属性側でコントロールするか否か
 	bool isReverseX = false;								// 横軸の向き
 	Vector2 attackVelocity;									// 攻撃のベロシティ
-	Vector2 warpVelocity;									// ワープベロシティ
+	Vector2 chargeVelocity;									// チャージベロシティ
 	ClientAttribute *moveAttribute = nullptr;				// 移動属性
 	ClientAttribute *attackAttribute = nullptr;				// 攻撃属性
 	ClientAttribute *curMoveAttribute = nullptr;			// 移動属性（現在）

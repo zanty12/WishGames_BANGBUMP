@@ -39,6 +39,29 @@ void EnemyServerSide::BlownPlayers(void) {
 	}
 }
 
+void EnemyClientSide::DamageEffectUpdate(void) {
+	if (damageEffectAttributeType != -1) {
+		MultiAnimator *anim = &allDamageEffect;
+		if (damageEffectAttributeType == MULTI_ATTACK_FIRE) anim = &fireDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_WATER) anim = &waterDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_THUNDER) anim = &thunderDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_WIND) anim = &windDamageEffect;
+
+		// ダメージエフェクト
+		if (MultiPlayClient::GetGameMode())MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(
+			*anim,
+			transform.position,
+			0.0f,
+			Vector2::One * radius,
+			Color::White
+		);
+	}
+}
+
+void EnemyClientSide::Release(void) {
+	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(deathAnim, transform.position, 0.0f, Vector2::One * radius * 1.5f);
+}
+
 
 
 
@@ -60,6 +83,7 @@ void Enemy1ServerSide::Loop(void) {
 void Enemy1ClientSide::Loop(void) {
 	if (!isShow) return;
 	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White, velocity.x > 0.0f);
+	DamageEffectUpdate();
 	isShow = false;
 }
 
@@ -105,7 +129,8 @@ void Enemy2ServerSide::Loop(void) {
 }
 void Enemy2ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 170, Color::White);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White);
+	DamageEffectUpdate();
 	isShow = false;
 }
 void AttackEnemy2ServerSide::Loop(void) {	
@@ -169,8 +194,6 @@ void Enemy3ServerSide::Loop(void) {
 void Enemy3ClientSide::Loop(void) {
 	if (!isShow) return;
 	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White, velocity.x > 0.0f);
+	DamageEffectUpdate();
 	isShow = false;
 }
-
-
-

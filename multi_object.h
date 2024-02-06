@@ -34,4 +34,5 @@ public:
 
 	GameObjectClientSide() = default;
 	GameObjectClientSide(Transform transform) : transform(transform) { };
+	virtual void Release(void) { };
 };

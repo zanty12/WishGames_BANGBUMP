@@ -35,12 +35,29 @@ public:
 class EnemyClientSide : public ClientMovableGameObject {
 protected:
 	MultiAnimator anim;
+	MultiAnimator deathAnim;
 
+	MultiAnimator allDamageEffect;							// ダメージエフェクト
+	MultiAnimator fireDamageEffect;							// 炎ダメージエフェクト
+	MultiAnimator waterDamageEffect;						// 水ダメージエフェクト
+	MultiAnimator thunderDamageEffect;						// 雷ダメージエフェクト
+	MultiAnimator windDamageEffect;							// 風ダメージエフェクト
 public:
 
 	EnemyClientSide(Transform transform, std::wstring enemyName) : ClientMovableGameObject(transform) {
 		radius = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"radius");
+		transform.scale = Vector2::One * radius;
+		deathAnim = MultiAnimator(LoadTexture(Asset::GetAsset(textures::effect_enemydead)), 5, 8, 0, 36, false);
+
+		// ダメージエフェクト
+		fireDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_fire.png"), 5, 2, 0, 7, false);
+		waterDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_water.png"), 5, 2, 0, 7, false);
+		thunderDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_thunder.png"), 5, 2, 0, 7, false);
+		windDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_wind.png"), 5, 2, 0, 7, false);
 	}
+
+	void DamageEffectUpdate(void);
+	void Release(void) override;
 };
 
 
@@ -103,6 +120,7 @@ public:
 	AttackEnemy2ClientSide(Transform transform) : AttackClientSide(transform) {
 		texNo = LoadTexture("data/texture/Effect/effect_enemy2_attack.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
+		radius = 100.0f;
 	}
 
 	void Loop(void) override;

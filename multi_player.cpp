@@ -13,16 +13,23 @@ void ServerPlayer::Loop(void) {
 	gravityVelocity += Vector2::Down * gravity;
 	if (-maxGravity >= gravityVelocity.y) gravityVelocity.y = -maxGravity;
 
-	// 属性
-	if (moveAttribute) {
-		moveAttribute->LevelUpdate();
-		moveAttribute->Move();
-		moveAttribute->MpUpdate();
-	}
-	if (attackAttribute) {
-		attackAttribute->LevelUpdate();
-		attackAttribute->Attack();
-		attackAttribute->MpUpdate();
+	// 吹き飛ばしの速度を減速させる
+	blownVelocity *= blownFriction;
+	velocity *= friction;
+
+	// 属性使用できるなら
+	if (attackAttribute->state->exNoAttributeTime <= exCoolTime.GetNowTime() * 0.001f) {
+		// 属性
+		if (moveAttribute) {
+			moveAttribute->LevelUpdate();
+			moveAttribute->Move();
+			moveAttribute->MpUpdate();
+		}
+		if (attackAttribute) {
+			attackAttribute->LevelUpdate();
+			attackAttribute->Attack();
+			attackAttribute->MpUpdate();
+		}
 	}
 
 	// 属性切り替えがっちゃんこ！！
@@ -36,10 +43,6 @@ void ServerPlayer::Loop(void) {
 			exCoolTime.Start();
 		}
 	}
-
-	// 吹き飛ばしの速度を減速させる
-	blownVelocity *= blownFriction;
-	velocity *= friction;
 	if (blownVelocity.DistanceSq() < 1.0f) blownVelocity = Vector2::Zero;
 }
 
@@ -96,6 +99,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	waterDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_water.png"), 5, 2, 0, 7, false);
 	thunderDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_thunder.png"), 5, 2, 0, 7, false);
 	windDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_wind.png"), 5, 2, 0, 7, false);
+	// その他エフェクト
 	exEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_EX.png"), 5, 6, 0, 29, false);
 	lvUpEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_levelup.png"), 5, 6, 0, 29, false);
 
@@ -187,6 +191,12 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 	// レベルを取得
 	lv = GetLv();
 
+	// プレイヤー反転
+	if (!isReverseXAttributeControl) {
+		if (0.0 < velocity.x) isReverseX = true;
+		else if (velocity.x < 0.0f) isReverseX = false;
+	}
+
 	// 待機アニメーション
 	if (moveAttribute) {
 		moveAttribute->Idle();
@@ -214,10 +224,6 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 
 	// アニメーションが切り替わった瞬間、アニメーションする位置を更新する
 	if (preAnimType != animType) MultiAnimator::GetPlayer(animType, moveAttribute->GetAttribute(), attackAttribute->GetAttribute(), anim);
-
-	// プレイヤー反転
-	if (0.0 < velocity.x) isReverseX = true;
-	else if (velocity.x < 0.0f) isReverseX = false;
 
 	// 描画する
 	anim->Draw(transform.position - MultiPlayClient::offset, transform.rotation, transform.scale, Color::White, isReverseX);

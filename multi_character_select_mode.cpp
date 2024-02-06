@@ -11,7 +11,7 @@
 /// </summary>
 void MultiPlayCharacterSelectModeServerSide::AttributeSelect(Vector2 stick, Vector2 previousStick, ATTRIBUTE_TYPE &attributeType) {
 	Vector2 direction = stick - previousStick;					// “ü—Í‚ÌƒxƒNƒgƒ‹
-	float triggerJudge = 0.75f;									// “ü—Í”»’è
+	float triggerJudge = 0.5f;									// “ü—Í”»’è
 	int type = (int)attributeType;								// ‘®«
 
 	// X“ü—Í‚É“ü—Í‚³‚ê‚½‚È‚ç
