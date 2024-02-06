@@ -196,6 +196,96 @@
     <ClCompile Include="bossatk.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="asset.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="id.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="image_data.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ini.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="light_effect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="menu.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="number.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="playerattack.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="storage.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="text.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_anim.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_area_capture_mode.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_attack.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_attribute.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_behavior.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_character_select_mode.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_enemy.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_map.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_mode.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_mode_flow.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_object.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_player.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_skillorb.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multiplay.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="move_scene_anim.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_animenum.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_ui.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_result_skillorb.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="load.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphical.h">
@@ -279,9 +369,6 @@
     <ClInclude Include="mapmngr.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="penfloor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="scenemngr.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -360,9 +447,6 @@
     <ClInclude Include="projectilemngr.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="skillorbattribute.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="skillorbmngr.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -378,14 +462,144 @@
     <ClInclude Include="bossatk.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="color-shader.hlsl">
-      <Filter>A1\リソースファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="texture-shader.hlsl">
-      <Filter>A1\リソースファイル</Filter>
-    </FxCompile>
+    <ClInclude Include="asset.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="attribute_state.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="gset.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="id.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ini.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="image_data.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="light_effect.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="number.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="playerattack.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="playerstate.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="storage.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="storage_lock.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="string.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="text.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_anim.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_animenum.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_area_capture_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_attack.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_attribute.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_behavior.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_character_select_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_client_gameobject.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_connect_renderer.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_enemy.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_enemy_rush_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_final_battle_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_header.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_intermediate_result_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_map.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_mode_flow.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_movable_object.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_object.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_objenum.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_obstacle_race_mode.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_path.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_player.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_server_select.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_skillorb.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_transform.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multiplay.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="move_scene_anim.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_ui.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_result_skillorb.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="load.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="player.h">
@@ -409,5 +623,44 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="data\property\attribute_lv1.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv2.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv3.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv4.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv5.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv6.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv7.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv8.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv9.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\attribute_lv10.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\enemy.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\mode.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="data\property\player.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>

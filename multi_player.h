@@ -94,11 +94,16 @@ private:
 	MultiAnimator thunderDamageEffect;						// 雷ダメージエフェクト
 	MultiAnimator windDamageEffect;							// 風ダメージエフェクト
 	MultiAnimator exEffect;									// がっちゃんこエフェクト
+	MultiAnimator lvUpEffect;								// レベルアップエフェクト
+	MultiAnimator lvUpUI;									// レベルアップUIエフェクト
+	MultiAnimator lvDownUI;									// レベルダウンUIエフェクト
 
 public:
 	int skillPoint = 0;										// スキルポイント
 	int animType = ANIMATION_TYPE_IDLE;						// アニメーションタイプ
 	int preAnimType = ANIMATION_TYPE_IDLE;					// アニメーション（1フレーム前）
+	int lv = 0;												// レベル
+	int preLv = 0;											// レベル（1フレーム前）
 	ATTRIBUTE_TYPE moveAttributeType;						// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType;						// 攻撃属性タイプ
 	ATTRIBUTE_TYPE preMoveAttributeType;					// 移動属性タイプ
@@ -110,6 +115,7 @@ public:
 	ClientAttribute *attackAttribute = nullptr;				// 攻撃属性
 	ClientAttribute *curMoveAttribute = nullptr;			// 移動属性（現在）
 	ClientAttribute *curAttackAttribute = nullptr;			// 攻撃属性（現在）
+	float skillPointAnimation = 0.0f;						// スキルポイント獲得時のゲージのアニメーションで使用する
 
 
 

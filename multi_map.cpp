@@ -15,9 +15,9 @@
 
 void MultiMap::Initialize() {
 	texNumbers[MAP_READ_WALL] = LoadTexture("data/texture/wall.png");
-	texNumbers[MAP_READ_FLOOR] = LoadTexture("data/texture/wall.png");
+	texNumbers[MAP_READ_FLOOR] = LoadTexture("data/texture/floor.png");
 	texNumbers[MAP_READ_CLOUD] = LoadTexture("data/texture/cloud.png");
-	texNumbers[MAP_READ_BLOCK] = LoadTexture("data/texture/wall.png");
+	texNumbers[MAP_READ_BLOCK] = LoadTexture("data/texture/floor.png");
 	texNumbers[MAP_READ_ORB_SMALL] = LoadTexture(Asset::textures_.at(textures::skill_orb));
 	texNumbers[MAP_READ_ORB_MID] = LoadTexture(Asset::textures_.at(textures::skill_orb));
 	texNumbers[MAP_READ_ORB_BIG] = LoadTexture(Asset::textures_.at(textures::skill_orb));

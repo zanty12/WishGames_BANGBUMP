@@ -74,7 +74,6 @@ void Enemy2ServerSide::Loop(void) {
 	if (coolTime < spawnTimer.GetNowTime() * 0.001f) {
 		float minDistanceSq = -1.0f;
 		Vector2 targetPosition;
-		auto bullet = map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
 		float searchRadiusSq = activeRadius * activeRadius;
 
 		// Å‚à‹ß‚¢ƒvƒŒƒCƒ„[‚ð’²‚×‚é
@@ -93,8 +92,10 @@ void Enemy2ServerSide::Loop(void) {
 		}
 
 		// •ûŒü‚ðŒˆ‚ß‚é
-		if (targetPosition != Vector2::Zero) bullet->velocity = (targetPosition - transform.position).Normalize() * 10.0f;
-		else bullet->velocity = Vector2::Down * 10.0f;
+		if (targetPosition != Vector2::Zero) {
+			auto bullet = map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
+			bullet->velocity = (targetPosition - transform.position).Normalize() * 10.0f;
+		}
 
 		spawnTimer.Start();
 	}

@@ -161,34 +161,42 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	float centerX = Graphical::GetWidth() * 0.5f;		// 画面の中央（X座標）
 
-	// 時間制限の描画
+	// 時間制限の描画（UI）
 	DrawSprite(
 		timerTexNo,
 		CalcTimePosition(), 0.0f, Vector2(1000, 250) * 0.5f,
 		Color::White,
 		Vector2::Zero, Vector2::One
 	);
-	Number(Vector2(centerX, 50.0f), Vector2(100, 100), res.maxTime - res.time);
+	// 時間制限の描画（数値）
+	// ゲームのスタート
+	if (res.time < gameMode_->startTime_) {
+		Number(Vector2(centerX, 50.0f), Vector2(100, 100), gameMode_->startTime_ - res.time);
+	}
+	// ゲームのリザルト
+	else if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {
+		Number(Vector2(centerX, 50.0f), Vector2(100, 100), res.maxTime - res.time);
+	}
+	// ゲームモード
+	else {
+		Number(Vector2(centerX, 50.0f), Vector2(100, 100), res.maxTime - gameMode_->resultTime_ - res.time);
+	}
 
 	// スコアの描画
 	int idx = 0;										// インデックス
 	int maxMembers = res.clients.size();				// プレイヤー人数
 	for (auto &client : res.clients) {
-		int moveAttribute = client.moveAttributeType;
-		int attackAttribute = client.attackAttributeType;
-		//画像の関係上Attackをずらす
-		if (moveAttribute < attackAttribute) attackAttribute--;
-		float u = moveAttribute / 4.0f;
-		float v = attackAttribute / 12.0f;
-		Vector2 uv = Vector2(u, v + idx * 0.25f);
-		Vector2 uvScale = Vector2(0.25f, 1.0f / 12.0f);
+		//int moveAttribute = client.moveAttributeType;
+		//int attackAttribute = client.attackAttributeType;
+		////画像の関係上Attackをずらす
+		//if (moveAttribute < attackAttribute) attackAttribute--;
+		//float u = moveAttribute / 4.0f;
+		//float v = attackAttribute / 12.0f;
+		//Vector2 uv = Vector2(u, v + idx * 0.25f);
+		//Vector2 uvScale = Vector2(0.25f, 1.0f / 12.0f);
 
-		float center = (float)maxMembers * 0.5f - 0.5f;	// 中心のIdxを計算
-		float x = center - idx;							// X座標を計算
-		x *= -1;
-
-		uv = Vector2::Zero;
-		uvScale = Vector2::One;
+		Vector2 uv = Vector2::Zero;
+		Vector2 uvScale = Vector2::One;
 		Vector2 pos = CalcIconPosition(idx, maxMembers);
 		Vector2 scl = Vector2(200, 100);
 		DrawSprite(icon3,
@@ -198,15 +206,22 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		);
 		{
 			auto player = MultiPlayClient::clients[client.id];
+			// スキルポイント関連の取得
 			int curSkillOrb = player->skillPoint;
-			int lv = player->curMoveAttribute ? player->curMoveAttribute->GetLv() : 0;
 			int minSkillOrb = player->curMoveAttribute ? player->curMoveAttribute->GetLvMinSkillOrb() : 0;
 			int maxSkillOrb = player->curMoveAttribute ? player->curMoveAttribute->GetLvMaxSkillOrb() : 0;
+			// ゲージの割合を計算
 			float ratio = (float)(curSkillOrb - minSkillOrb) / (float)(maxSkillOrb - minSkillOrb);
+			if (ratio < 0.0f) ratio = 0.0f;
+			else if (ratio > 1.0f) ratio = 1.0f;
+			player->skillPointAnimation += (ratio - player->skillPointAnimation) * 1.0f;
+			// UV値
 			float t = MATH::Leap(0.25f, 0.98f, ratio);
+			
+
 			float x = pos.x - scl.x * 0.5f;
 			DrawSprite(icon2,
-				Vector2(x + scl.x * (t) * 0.5f, pos.y), 0.0f, Vector2(scl.x * t, scl.y),
+				Vector2(x + scl.x * t * 0.5f, pos.y), 0.0f, Vector2(scl.x * t, scl.y),
 				Color::White,
 				uv, Vector2(t, 1.0f)
 			);
@@ -217,7 +232,16 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 			uv, uvScale
 		);
 
-		Number(pos, Vector2(100, 100), client.skillPoint);
+		// スコア
+		float centerX = Graphical::GetWidth() * 0.5f;
+		float height = Graphical::GetHeight();
+		switch (idx) {
+		case 0: Number(Vector2(centerX - 175, 60), Vector2::One * 70.0f, client.score); break;
+		case 1: Number(Vector2(centerX - 70,  60), Vector2::One * 70.0f, client.score); break;
+		case 2: Number(Vector2(centerX + 70,  60), Vector2::One * 70.0f, client.score); break;
+		case 4: Number(Vector2(centerX + 175, 60), Vector2::One * 70.0f, client.score); break;
+		}
+		
 		idx++;
 	}
 }

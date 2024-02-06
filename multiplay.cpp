@@ -237,7 +237,7 @@ void MultiPlayServer::SendUpdate(void) {
 			player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
 			player->animType,
 			player->transform.position, player->velocity, player->attackVelocity, player->warpVelocity,
-			0, player->damageEffectAttributeType, player->skillPoint, 0 }
+			player->score, player->damageEffectAttributeType, player->skillPoint, 0 }
 		);
 	}
 
@@ -375,6 +375,21 @@ void MultiPlayServer::OpenTerminal(void) {
 					PlayerUpdate();
 				}
 				SendUpdate();
+
+				for (int i = 0; i < 10; i++) {
+					std::string vk = std::to_string(i);
+					if (GetAsyncKeyState(vk.c_str()[0])) {
+						auto iterator = clients_.find(i);
+						if (iterator == clients_.end()) continue;
+						if (GetAsyncKeyState(VK_UP)) {
+							iterator->second.player_->skillPoint++;
+						}
+						if (GetAsyncKeyState(VK_DOWN)) {
+							iterator->second.player_->skillPoint--;
+							if (iterator->second.player_->skillPoint < 0) iterator->second.player_->skillPoint = 0;
+						}
+					}
+				}
 			}
 		}
 
