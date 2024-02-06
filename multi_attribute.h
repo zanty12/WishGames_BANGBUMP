@@ -91,6 +91,8 @@ public:
 	virtual void Idle(void) { }
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	static ClientAttribute *Create(ClientPlayer *player, ATTRIBUTE_TYPE type);
+	AttributeState *GetState(void) { return state; }
+	AttributeState *GetState(int idx) { return &state_lv[idx]; }
 	void LevelUpdate(void);
 };
 

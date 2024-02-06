@@ -644,11 +644,11 @@ void ServerThunderAttack::KnockBack(ServerMovableGameObject *object) {
 
 void ClientThunderAttack::Loop(void) {
 	if (!isShow) return;
-	float localScale = 300;
+	float localScale = 150;
 
 	Vector2 pos = transform.position + velocity.Normalize() * localScale * 0.5f;
 	float rot = atan2f(-velocity.y, velocity.x);
-	Vector2 scl = Vector2(localScale, localScale * 0.25f);
+	Vector2 scl = Vector2(localScale, localScale);
 	Color col = Color::White;
 	anim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 
