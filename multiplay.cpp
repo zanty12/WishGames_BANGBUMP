@@ -5,6 +5,7 @@
 #include "multi_skillorb.h"
 #include "multi_enemy.h"
 #include "ini.h"
+#include "move_scene_anim.h"
 #include <windows.h>
 #include <thread>
 
@@ -423,6 +424,9 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// 受信用領域を確保する
 	recvTmpBuff = new char[MAX_BUFF];
+
+	// シーン遷移アニメーションの初期化
+	MoveScene::Initialize();
 }
 
 int MultiPlayClient::Register(std::string serverAddress) {
@@ -534,6 +538,10 @@ void MultiPlayClient::PlayerUpdate(void) {
 
 	// UIの描画
 	gameMode->DrawUI(res_);
+
+	// シーン遷移アニメーション
+	MoveScene::Loop();
+
 
 #ifdef DEBUG_LINK
 	if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;

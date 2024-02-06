@@ -75,11 +75,26 @@ protected:
 
 	int get_rank(std::list<CLIENT_DATA_CLIENT_SIDE> &ranking, int id) {
 		int rank = 0;
+		int addRank = 1;
 
 		// ƒ‰ƒ“ƒN‚ğ’²‚×‚é
 		for (auto &c : ranking) {
 			if (id == c.id) return rank;
 			else rank++;
+		}
+		// ƒ‰ƒ“ƒN‚ğ’²‚×‚é
+		auto preClient = *ranking.begin();
+		for (auto &client : ranking) {
+			if (id == client.id) return rank;
+			else {
+				if (client.score == preClient.score) addRank++;
+				else {
+					rank += addRank;
+					addRank = 1;
+				}
+			}
+
+			preClient = client;
 		}
 
 		return -1;

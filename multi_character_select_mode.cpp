@@ -1,6 +1,7 @@
 #include "multiplay.h"
 #include "multi_attribute.h"
 #include "multi_character_select_mode.h"
+#include "move_scene_anim.h"
 
 /***********************************************************
 	Server
@@ -190,6 +191,14 @@ void MultiPlayCharacterSelectModeClientSide::CharacterDraw(int idx, int maxIdx, 
 	DrawLine(vertices[1], vertices[3], Color::Black);
 	DrawLine(vertices[3], vertices[2], Color::Black);
 	DrawLine(vertices[2], vertices[0], Color::Black);
+}
+
+void MultiPlayCharacterSelectModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
+	MoveScene::Move(0.0f);
+}
+
+void MultiPlayCharacterSelectModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offset) {
+	MoveScene::Move(1.0f);
 }
 
 void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {

@@ -175,6 +175,7 @@
     <ClCompile Include="mapmngr.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="movableobj.cpp" />
+    <ClCompile Include="move_scene_anim.cpp" />
     <ClCompile Include="multiplay.cpp" />
     <ClCompile Include="multi_anim.cpp" />
     <ClCompile Include="multi_animenum.cpp" />
@@ -261,6 +262,7 @@
     <ClInclude Include="menu.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="mapmngr.h" />
+    <ClInclude Include="move_scene_anim.h" />
     <ClInclude Include="multiplay.h" />
     <ClInclude Include="multi_anim.h" />
     <ClInclude Include="multi_animenum.h" />
