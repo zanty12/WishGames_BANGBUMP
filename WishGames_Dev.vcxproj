@@ -361,6 +361,7 @@
     <Content Include="data\texture\wapuro-mincho.otf" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="data\multiplay.ini" />
     <None Include="data\property\attribute_lv1.ini" />
     <None Include="data\property\attribute_lv10.ini" />
     <None Include="data\property\attribute_lv2.ini" />

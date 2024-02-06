@@ -662,5 +662,8 @@
     <None Include="data\property\player.ini">
       <Filter>リソース ファイル</Filter>
     </None>
+    <None Include="data\multiplay.ini">
+      <Filter>リソース ファイル</Filter>
+    </None>
   </ItemGroup>
 </Project>
