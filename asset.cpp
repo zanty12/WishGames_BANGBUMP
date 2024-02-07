@@ -91,6 +91,7 @@ const std::map<textures, std::string> Asset::textures_ = {
      {textures::effect_dead,"data/texture/Effect/effect_dead.png"},
      {textures::effect_enemydead,"data/texture/Effect/effect_enemydead.png"},
      {textures::effect_spawn,"data/texture/Effect/effect_spawn.png"},
+     {textures::effect_water_indicator,"data/texture/Effect/UI_water_indicator.png"},
      {textures::effect_hit,"data/texture/Effect/HitEffect/effect_hit_all.png"},
      {textures::effect_hit_fire,"data/texture/Effect/HitEffect/effect_hit_fire.png"},
      {textures::effect_hit_dark,"data/texture/Effect/HitEffect/effect_hit_water.png"},

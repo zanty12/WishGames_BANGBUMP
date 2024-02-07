@@ -75,23 +75,8 @@ protected:
 	PlayerHitEffect* hit_effect_ = nullptr;
 
 public:
-	Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr)
-		:MovableObj(pos, rot, 0, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
-		dir_(Vector2(0.0f, 0.0f)), map_mangr_(map_mangr), clash_spike_(0), knock_back_dir_(0),
-		change_scene_(false), drop_point_(0),invincibility_time_(INVINCIBILITY_MAX_TIME_),
-		knockback_distance_(0.0f),knockback_time_(0.0f)
-	{
-		SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
-		int tex = LoadTexture("data/texture/player.png");
-		SetTexNo(tex);
-		GetAnimator()->SetTexNo(tex);
-		SetType(OBJ_PLAYER);
-
-		//表示優先度設定
-		GetAnimator()->SetDrawPriority(50);
-	}
-
-	~Player() { delete move_attribute_; delete attack_attribute_; }
+	Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr);
+	~Player();
 
 	void SetDir(Vector2 dir) { dir_ = dir; }	//向きのセット
 	Vector2 GetDir(void) const { return dir_; }	//向きのゲット
@@ -133,7 +118,7 @@ private:
 	//当たり判定（スキルポイント）
 	void CollisionSkillPoint(GameObject* obj);
 	//当たり判定（アタックアトリビュート）
-	void CollisionAttack(GameObject* obj);
+	//void CollisionAttack(GameObject* obj);
 	//当たり判定（トゲ）
 	void CollisionSpike(void);
 	//当たり判定（エネミー）

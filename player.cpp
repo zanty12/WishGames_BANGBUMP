@@ -37,6 +37,32 @@ const int Player::INITIAL_HP_ = 500;
 const float Player::INVINCIBILITY_MAX_TIME_ = 1 + (1.0f / 4);
 
 
+
+Player::Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr)
+	:MovableObj(pos, rot, 0, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
+	dir_(Vector2(0.0f, 0.0f)), map_mangr_(map_mangr), clash_spike_(0), knock_back_dir_(0),
+	change_scene_(false), drop_point_(0), invincibility_time_(INVINCIBILITY_MAX_TIME_),
+	knockback_distance_(0.0f), knockback_time_(0.0f)
+{
+	SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
+	int tex = LoadTexture("data/texture/player.png");
+	SetTexNo(tex);
+	GetAnimator()->SetTexNo(tex);
+	SetType(OBJ_PLAYER);
+
+	hit_effect_ = new PlayerHitEffect();
+	//表示優先度設定
+	GetAnimator()->SetDrawPriority(50);
+}
+
+Player::~Player()
+{
+	delete move_attribute_;
+	delete attack_attribute_;
+	delete hit_effect_;
+}
+
+
 void Player::Update(void)
 {
 
@@ -78,11 +104,7 @@ void Player::Update(void)
 		return;
 	}
 
-	//ヒットエフェクト作成
-	if (hit_effect_ == nullptr)
-	{
-		hit_effect_ = new PlayerHitEffect();
-	}
+	//ヒットエフェクトアップデート
 	if (hit_effect_)
 	{
 		hit_effect_->Update();
@@ -338,61 +360,61 @@ void Player::CollisionSkillPoint(GameObject* obj)
 //================================================================================
 // アトリビュートのアタックに当たった時のアクション
 //================================================================================
-void Player::CollisionAttack(GameObject* obj)
-{
-	//★アタッククラスができ次第★
-	GameObject* attack = obj;
-	//何かしらのアタッククラス* attack = dynamic_cast<何かしらのアタッククラス*>(obj)
-	//if (何かしらのアタッククラス == nullptr)
-	//{
-	//	return;
-	//}
-
-	hit_attack_attr = ATTRIBUTE_TYPE_FIRE; /*attack->GetAttribute()*/
-
-	//アタックオブジェクトのRotから自分が動くべき方向を割り出す
-	dir_.x = cosf(attack->GetRot());
-	dir_.y = sinf(attack->GetRot());
-
-	switch (hit_attack_attr)
-	{
-	case ATTRIBUTE_TYPE_FIRE:
-	{//1/3秒で2マス
-		knockback_distance_ = SIZE_ * 2;
-		knockback_time_ = 1.0f / 3;
-		break;
-	}
-	case ATTRIBUTE_TYPE_THUNDER:
-	{//3/4秒で3マス
-		knockback_distance_ = SIZE_ * 3;
-		knockback_time_ = 3.0f / 4;
-		break;
-	}
-	case ATTRIBUTE_TYPE_WIND:
-	{//1/4秒で1マス
-		knockback_distance_ = SIZE_ * 1;
-		knockback_time_ = 1.0f / 4;
-		break;
-	}
-	case ATTRIBUTE_TYPE_DARK:
-	{//1秒で1マス
-		knockback_distance_ = SIZE_ * 1;
-		knockback_time_ = 1.0f / 1;
-		break;
-	}
-	default:
-		break;
-	}
-
-	//エフェクトの表示
-	hit_effect_->Hit(GetPos());
-
-	knockback_start_ = GetPos();
-	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
-
-	SkillPointDown(0);	//実際に受けたダメージ分減らす
-	drop_point_ += 0;	//実際に受けたダメージを蓄積する
-}
+//void Player::CollisionAttack(GameObject* obj)
+//{
+//	//★アタッククラスができ次第★
+//	GameObject* attack = obj;
+//	//何かしらのアタッククラス* attack = dynamic_cast<何かしらのアタッククラス*>(obj)
+//	//if (何かしらのアタッククラス == nullptr)
+//	//{
+//	//	return;
+//	//}
+//
+//	hit_attack_attr = ATTRIBUTE_TYPE_FIRE; /*attack->GetAttribute()*/
+//
+//	//アタックオブジェクトのRotから自分が動くべき方向を割り出す
+//	dir_.x = cosf(attack->GetRot());
+//	dir_.y = sinf(attack->GetRot());
+//
+//	switch (hit_attack_attr)
+//	{
+//	case ATTRIBUTE_TYPE_FIRE:
+//	{//1/3秒で2マス
+//		knockback_distance_ = SIZE_ * 2;
+//		knockback_time_ = 1.0f / 3;
+//		break;
+//	}
+//	case ATTRIBUTE_TYPE_THUNDER:
+//	{//3/4秒で3マス
+//		knockback_distance_ = SIZE_ * 3;
+//		knockback_time_ = 3.0f / 4;
+//		break;
+//	}
+//	case ATTRIBUTE_TYPE_WIND:
+//	{//1/4秒で1マス
+//		knockback_distance_ = SIZE_ * 1;
+//		knockback_time_ = 1.0f / 4;
+//		break;
+//	}
+//	case ATTRIBUTE_TYPE_DARK:
+//	{//1秒で1マス
+//		knockback_distance_ = SIZE_ * 1;
+//		knockback_time_ = 1.0f / 1;
+//		break;
+//	}
+//	default:
+//		break;
+//	}
+//
+//	//エフェクトの表示
+//
+//
+//	knockback_start_ = GetPos();
+//	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+//
+//	SkillPointDown(0);	//実際に受けたダメージ分減らす
+//	drop_point_ += 0;	//実際に受けたダメージを蓄積する
+//}
 
 //================================================================================
 // トゲに当たった時のアクション
