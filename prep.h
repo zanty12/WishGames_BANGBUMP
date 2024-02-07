@@ -44,7 +44,8 @@ private:
     Video *video_;
 
     bool clockwise_ = true;
-    bool moving_ = false;
+    bool move_moving_ = false;
+    bool attack_moving_ = false;
 
     SceneMngr *scene_mngr_;
 
