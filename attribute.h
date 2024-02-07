@@ -1,4 +1,5 @@
 #pragma once
+#include "attribute_state.h"
 #include "lib/vector.h"
 #include "player.h"
 #include "attribute_type.h"
@@ -11,9 +12,21 @@ protected:
 	ATTRIBUTE_TYPE attributeType_;
 	Player *player_;
 
+	AttributeState* state_ = nullptr;
+	AttributeState state_lv_[10] = {};
+
 public:
 	Attribute() = delete;
-	Attribute(Player* player, ATTRIBUTE_TYPE attr) : player_(player), attributeType_(attr) {}
+	Attribute(Player* player, ATTRIBUTE_TYPE attr) : player_(player), attributeType_(attr)
+	{
+		int lv = 1;
+		for (auto& state : state_lv_)
+		{
+			state = AttributeState(GetAttributeString(attr), lv);
+			lv++;
+		}
+		state_ = state_lv_;
+	}
 
 	virtual ~Attribute() = default;
 
@@ -26,4 +39,21 @@ public:
 	Player* GetPlayer() { return player_; }
 
 	ATTRIBUTE_TYPE GetAttribute() { return attributeType_; }
+
+	static std::wstring GetAttributeString(ATTRIBUTE_TYPE attr)
+	{
+		switch (attr)
+		{
+		case ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_FIRE:
+			return L"Fire";
+		case ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_WIND:
+			return L"Wind";
+		case ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_THUNDER:
+			return L"Thunder";
+		case ATTRIBUTE_TYPE::ATTRIBUTE_TYPE_DARK:
+			return L"Water";
+		default:
+			return L"";
+		}
+	}
 };

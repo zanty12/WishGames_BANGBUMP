@@ -10,15 +10,17 @@
 
 using namespace Network;
 
+
+
 enum MULTI_MODE {
 	NONE = -1,
 	CHARACTER_SELECT = 0,
 	AREA_CAPTURE,
-	INTERMEDIATE_RESULT_1,
-	OBSTACLE_RACE,
-	INTERMEDIATE_RESULT_2,
+	//INTERMEDIATE_RESULT_1,
+	//OBSTACLE_RACE,
+	//INTERMEDIATE_RESULT_2,
 	ENEMY_RUSH,
-	INTERMEDIATE_RESULT_3,
+	//INTERMEDIATE_RESULT_3,
 	FINAL_BATTLE,
 };
 
@@ -48,12 +50,13 @@ struct CLIENT_DATA_CLIENT_SIDE {
 	int id = -1;												// ID
 	ATTRIBUTE_TYPE moveAttributeType = ATTRIBUTE_TYPE_FIRE;		// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType = ATTRIBUTE_TYPE_FIRE;	// 攻撃属性タイプ
-	MULTI_ANIMATION_TYPE animType;								// アニメーションタイプ
+	int animType;												// アニメーションタイプ
 	Vector2 position;											// 座標
 	Vector2 moveVelocity;										// 移動ベロシティ
 	Vector2 attackVelocity;										// 攻撃ベロシティ
 	Vector2 warpVelocity;										// ワープベロシティ
 	int score = 0;												// スコア
+	int damageEffectAttributeType = -1;							// ダメージ与えられた時の属性タイプ
 	int skillPoint = 0;											// スキルポイント
 	int previousSkillPoint = 0;									// 1ゲーム前のスキルポイント
 };
@@ -81,9 +84,10 @@ struct OBJECT_DATA_CLIENT_SIDE {
 
 
 
-	int id = -1;
-	int tag = NONE;
-	int anim = NONE;
+	int id = -1;												// ID
+	int tag = NONE;												// タグ
+	int anim = NONE;											// アニメーション
+	int damageEffectAttributeType = -1;							// ダメージ与えられた時の属性タイプ
 	Vector2 position;
 	Vector2 velocity;
 };
@@ -179,6 +183,7 @@ struct RESPONSE_PLAYER {
 				id,										// ID
 				gameObject->GetType(),					// tag
 				0,										// animation
+				gameObject->damageEffectAttributeType,	// damage
 				position,								// pos
 				velocity								// vel
 				}

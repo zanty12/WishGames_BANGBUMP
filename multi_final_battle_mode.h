@@ -9,10 +9,13 @@
 ********************************************************/
 class MultiPlayFinalBattleModeServerSide : public MultiPlayModeServerSide {
 public:
-	MultiPlayFinalBattleModeServerSide() : MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map4.csv"), L"FinalBattle") { maxTime_ = 500; }
+	MultiPlayFinalBattleModeServerSide() : MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map4.csv", MULTIPLAY_RUN_TYPE_SERVER), L"FinalBattle") { }
 
 	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override {
-
+		for (auto client : clients) {
+			auto player = client.second.player_;
+			player->score = player->skillPoint;
+		}
 	}
 
 	void CreateResponse(Storage &out) override { };
@@ -30,15 +33,13 @@ public:
 ********************************************************/
 class MultiPlayFinalBattleModeClientSide : public MultiPlayModeClientSide {
 public:
-	MultiPlayFinalBattleModeClientSide() : MultiPlayModeClientSide(new MultiMap(MAP_PATH + "MultiPlay_Map4.csv"), L"FinalBattle") {
+	MultiPlayFinalBattleModeClientSide() : MultiPlayModeClientSide(new MultiMap(MAP_PATH + "MultiPlay_Map4.csv", MULTIPLAY_RUN_TYPE_CLIENT), L"FinalBattle") {
 		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_back));
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_front));
 	}
 
 
 	void Draw(RESPONSE_PLAYER &players, Vector2 offset) override {
-		// クライアントの記録をする
-		if (beforeClients.size() == 0) beforeClients = players.clients;
 
 	}
 

@@ -25,7 +25,12 @@ GameObject::GameObject(Vector2 pos, float rot, int tex_number,bool movable)
 }
 
 
-void GameObject::Discard() { is_discard_ = true; animator_->Discard(); collider_->Discard(); }
+void GameObject::Discard()
+{
+    is_discard_ = true; 
+    if (animator_) animator_->Discard();
+    if (collider_) collider_->Discard();
+}
 
 void GameObject::DispUninit(void)
 {

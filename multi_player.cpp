@@ -6,33 +6,43 @@
 
 
 void ServerPlayer::Loop(void) {
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
 
 	// 落下させる
 	gravityVelocity += Vector2::Down * gravity;
 	if (-maxGravity >= gravityVelocity.y) gravityVelocity.y = -maxGravity;
 
-	// 属性
-	if (moveAttribute) moveAttribute->Move();
-	if (attackAttribute) attackAttribute->Attack();
+	// 吹き飛ばしの速度を減速させる
+	blownVelocity *= blownFriction;
+	velocity *= friction;
+
+	// 属性使用できるなら
+	if (attackAttribute->state->exNoAttributeTime <= exCoolTime.GetNowTime() * 0.001f) {
+		// 属性
+		if (moveAttribute) {
+			moveAttribute->LevelUpdate();
+			moveAttribute->Move();
+			moveAttribute->MpUpdate();
+		}
+		if (attackAttribute) {
+			attackAttribute->LevelUpdate();
+			attackAttribute->Attack();
+			attackAttribute->MpUpdate();
+		}
+	}
 
 	// 属性切り替えがっちゃんこ！！
-	if (0.75f < Input::GetTriggerLeft(0) && 0.75f < Input::GetTriggerRight(0)) {
-		if (attributeChange == false) {
+	if (attackAttribute->state->exCoolTime <= exCoolTime.GetNowTime() * 0.001f) {
+		if (0.75f < Input::GetTriggerLeft(0) && 0.75f < Input::GetTriggerRight(0)) {
 			ServerAttribute *tmp = attackAttribute;
 			attackAttribute = moveAttribute;
 			moveAttribute = tmp;
-			attributeChange = true;
+			SetPlayerAnimIdle(animType);
+
+			exCoolTime.Start();
 		}
 	}
-	else {
-		attributeChange = false;
-	}
-
-	// 移動させる
-	transform.position += velocity + blownVelocity + gravityVelocity;
-
-	// 吹き飛ばしの速度を減速させる
-	blownVelocity *= blownFriction;
 	if (blownVelocity.DistanceSq() < 1.0f) blownVelocity = Vector2::Zero;
 }
 
@@ -40,7 +50,13 @@ void ServerPlayer::Damage(AttackServerSide *attack) {
 	// 攻撃者が自分なら終了
 	if (attack->GetSelf() == this) return;
 
-	SkillOrbDrop(attack->atkDrop);
+	// ダメージエフェクト
+	damageEffectAttributeType = attack->GetType();
+
+	// スキルオーブのドロップ
+	if (MultiPlayServer::GetGameMode()->GetMode() == MULTI_MODE::FINAL_BATTLE || attack->GetType() == MULTI_OBJECT_TYPE::MULTI_ATTACK_ENEMY2) {
+		SkillOrbDrop(attack->atkDrop);
+	}
 
 	// ノックバックを与える
 	attack->KnockBack(this);
@@ -49,6 +65,7 @@ void ServerPlayer::Damage(AttackServerSide *attack) {
 void ServerPlayer::SkillOrbDrop(int drop) {
 	// マップがないなら終了
 	if (!map) return;
+
 
 	// ドロップする最大値を計算する
 	int maxDrop = skillPoint < drop ? skillPoint : drop;
@@ -63,9 +80,37 @@ void ServerPlayer::SkillOrbDrop(int drop) {
 
 ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform) :
 	ClientMovableGameObject(transform) {
+	// レベル範囲の読み込み
+	std::wstring lvStr = L"lv";
+	for (int i = 0; i < MAX_LV; i++) {
+		lvupPoint[i] = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", lvStr + std::to_wstring(i + 1), 0);
+	}
+
+
 	SetMoveAttribute(moveAttribute);
 	SetAttackAttribute(attackAttribute);
 	this->transform.scale = Vector2::One * 150;
+
+	preMoveAttributeType = moveAttributeType;
+	preAttackAttributeType = attackAttributeType;
+
+	// ダメージエフェクトのロード
+	fireDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_fire.png"), 5, 2, 0, 7, false);
+	waterDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_water.png"), 5, 2, 0, 7, false);
+	thunderDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_thunder.png"), 5, 2, 0, 7, false);
+	windDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_wind.png"), 5, 2, 0, 7, false);
+	// その他エフェクト
+	exEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_EX.png"), 5, 6, 0, 29, false);
+	lvUpEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_levelup.png"), 5, 6, 0, 29, false);
+
+	lvUpUI = MultiAnimator(LoadTexture("data/texture/UI/UI_levelup.png"), 5, 6, 0, 29, false);
+	lvDownUI = MultiAnimator(LoadTexture("data/texture/UI/UI_leveldown.png"), 5, 6, 0, 29, false);
+
+	exEffect.SetFrame(1000 / 42);
+	exEffect.MoveEnd();
+	lvUpEffect.MoveEnd();
+	lvUpUI.MoveEnd();
+	lvDownUI.MoveEnd();
 }
 
 void ClientPlayer::Loop(void) {
@@ -74,21 +119,84 @@ void ClientPlayer::Loop(void) {
 
 
 
-	// 入れ替わってない！？
-	if (moveAttribute->GetAttribute() == moveAttributeType && attackAttribute->GetAttribute() == attackAttributeType) {
-		Update(moveAttribute, attackAttribute, &anim);
+	// がっちゃんこアニメーション開始
+	if (preMoveAttributeType == attackAttributeType &&
+		preAttackAttributeType == moveAttributeType) {
+		exEffect.MoveBegin();
 	}
-	// 私たち入れ替わってる！？
-	else if (moveAttribute->GetAttribute() == attackAttributeType && attackAttribute->GetAttribute() == moveAttributeType) {
-		Update(attackAttribute, moveAttribute, &reverseAnim);
+
+	// アニメーションが開始されていないなら、現在発動している属性をそれぞれ指定する
+	if (18 < exEffect.GetIndex()) {
+		// 入れ替わってない！？
+		if (moveAttribute->GetAttribute() == moveAttributeType && attackAttribute->GetAttribute() == attackAttributeType) {
+			curMoveAttribute = moveAttribute, curAttackAttribute = attackAttribute;
+			curAnim = &anim;
+		}
+		// 私たち入れ替わってる！？
+		else if (moveAttribute->GetAttribute() == attackAttributeType && attackAttribute->GetAttribute() == moveAttributeType) {
+			curMoveAttribute = attackAttribute, curAttackAttribute = moveAttribute;
+			curAnim = &reverseAnim;
+		}
 	}
+
+	if (curAnim) Update(curMoveAttribute, curAttackAttribute, curAnim);
+
 
 
 	// アニメーションタイプの更新
 	preAnimType = animType;
+
+	exEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.8f, Color::White);
+	preMoveAttributeType = moveAttributeType;
+	preAttackAttributeType = attackAttributeType;
+
+	if (damageEffectAttributeType != -1) {
+		MultiAnimator *anim = &allDamageEffect;
+		if (damageEffectAttributeType == MULTI_ATTACK_FIRE) anim = &fireDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_WATER) anim = &waterDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_THUNDER) anim = &thunderDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_WIND) anim = &windDamageEffect;
+
+		// ダメージエフェクト
+		if (MultiPlayClient::GetGameMode())MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(
+			*anim,
+			transform.position,
+			0.0f,
+			Vector2::One * transform.scale.x,
+			Color::White
+		);
+	}
+}
+
+void ClientPlayer::ShowEntry() {
+	if (entryType == ENTRY) return;
+
+	timer.Start();
+	entryType = ENTRY;
+
+	// アニメーション
+	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_spawn.png"), 5, 3, 0, 9, false);
+	// 落雷を降らす
+	float height = 1000.0f;
+	Vector2 localPos = Vector2(0.0f, height * 0.15f);
+	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
+}
+void ClientPlayer::ShowExit() {
+	entryType = EXIT;
 }
 
 void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim) {
+	if (timer.GetNowTime() < 200ul && entryType == ENTRY || entryType == NONE) return;
+
+	// レベルを取得
+	lv = GetLv();
+
+	// プレイヤー反転
+	if (!isReverseXAttributeControl) {
+		if (0.0 < velocity.x) isReverseX = true;
+		else if (velocity.x < 0.0f) isReverseX = false;
+	}
+
 	// 待機アニメーション
 	if (moveAttribute) {
 		moveAttribute->Idle();
@@ -100,6 +208,7 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 	if (moveAttribute) {
 		if (moveAttribute->GetAttribute() == ATTRIBUTE_TYPE_FIRE) {
 			// 移動アニメーション
+			moveAttribute->LevelUpdate();
 			moveAttribute->Move();
 		}
 	}
@@ -107,6 +216,7 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 	if (attackAttribute) {
 		if (attackAttribute->GetAttribute() == ATTRIBUTE_TYPE_WIND) {
 			// 移動アニメーション
+			attackAttribute->LevelUpdate();
 			attackAttribute->Attack();
 		}
 	}
@@ -114,10 +224,6 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 
 	// アニメーションが切り替わった瞬間、アニメーションする位置を更新する
 	if (preAnimType != animType) MultiAnimator::GetPlayer(animType, moveAttribute->GetAttribute(), attackAttribute->GetAttribute(), anim);
-
-	// プレイヤー反転
-	if (0.0 < velocity.x) isReverseX = true;
-	else if (velocity.x < 0.0f) isReverseX = false;
 
 	// 描画する
 	anim->Draw(transform.position - MultiPlayClient::offset, transform.rotation, transform.scale, Color::White, isReverseX);
@@ -146,10 +252,17 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 
 
 
-
-
-
-
+	if (preLv < lv) {
+		lvUpEffect.MoveBegin();
+		lvUpUI.MoveBegin();
+	}
+	else if (lv < preLv) {
+		lvDownUI.MoveBegin();
+	}
+	lvUpEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
+	lvUpUI.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
+	lvDownUI.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
+	preLv = lv;
 }
 
 void ClientPlayer::SetMoveAttribute(ClientAttribute *moveAttribute) {
@@ -161,11 +274,11 @@ void ClientPlayer::SetMoveAttribute(ClientAttribute *moveAttribute) {
 	// 設定
 	this->moveAttribute = moveAttribute;
 	// 属性タイプの設定
-	moveAttributeType = moveAttribute->GetAttribute();
+	moveAttributeType = preMoveAttributeType = moveAttribute->GetAttribute();
 	// アニメーションの設定
 	if (attackAttribute) {
-		anim = MultiAnimator::GetPlayerInitialize(0, moveAttribute->GetAttribute(), attackAttribute->GetAttribute());
-		reverseAnim = MultiAnimator::GetPlayerInitialize(0, attackAttribute->GetAttribute(), moveAttribute->GetAttribute());
+		anim = MultiAnimator::GetPlayerInitialize(id % 4, moveAttribute->GetAttribute(), attackAttribute->GetAttribute());
+		reverseAnim = MultiAnimator::GetPlayerInitialize(id % 4, attackAttribute->GetAttribute(), moveAttribute->GetAttribute());
 	}
 }
 
@@ -178,11 +291,11 @@ void ClientPlayer::SetAttackAttribute(ClientAttribute *attackAttribute) {
 	// 設定
 	this->attackAttribute = attackAttribute;
 	// 属性タイプの設定
-	attackAttributeType = attackAttribute->GetAttribute();
+	attackAttributeType = preAttackAttributeType = attackAttribute->GetAttribute();
 	// アニメーションの設定
 	if (moveAttribute) {
-		anim = MultiAnimator::GetPlayerInitialize(0, moveAttribute->GetAttribute(), attackAttribute->GetAttribute());
-		reverseAnim = MultiAnimator::GetPlayerInitialize(0, attackAttribute->GetAttribute(), moveAttribute->GetAttribute());
+		anim = MultiAnimator::GetPlayerInitialize(id % 4, moveAttribute->GetAttribute(), attackAttribute->GetAttribute());
+		reverseAnim = MultiAnimator::GetPlayerInitialize(id % 4, attackAttribute->GetAttribute(), moveAttribute->GetAttribute());
 	}
 }
 

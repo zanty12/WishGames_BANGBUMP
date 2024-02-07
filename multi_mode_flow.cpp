@@ -1,5 +1,7 @@
 #include "multiplay.h"
 #include "multi_mode_flow.h"
+#include "load.h"
+#include "multi_ui.h"
 
 /***********************************************************
 	Server
@@ -11,11 +13,7 @@ MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 	{
 	case CHARACTER_SELECT: rstMode = new MultiPlayCharacterSelectModeServerSide(game_); break;
 	case AREA_CAPTURE: rstMode = new MultiPlayAreaCaptureModeServerSide(); break;
-	//case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeServerSide();
-	//case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeServerSide(game_);
-	//case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResult2ModeServerSide();
-	//case ENEMY_RUSH: return new MultiPlayEnemyRushModeServerSide(game_);
-	//case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResult3ModeServerSide();
+	case ENEMY_RUSH: return new MultiPlayEnemyRushModeServerSide();
 	case FINAL_BATTLE: rstMode = new MultiPlayFinalBattleModeServerSide(); break;
 	}
 
@@ -30,12 +28,11 @@ MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
 	// ゲームモードがないなら終了
 	if (gameMode_ == nullptr) return;
-
 	// 制限時間が来たなら、次のモードへ移行
 	if (gameMode_->maxTime_ < gameMode_->time_ || gameMode_->isSkip) {
 		// 現在のモードの取得
 		MULTI_MODE mode_ = GetMode();
-
+		isNowLoad = true;
 		// 現在のモードの削除
 		if (gameMode_) {
 			// 現在のモードのリリース関数を呼び出す
@@ -67,6 +64,8 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 				}
 			}
 		}
+
+		isNowLoad = false;
 	}
 	else {
 		// 時間の更新
@@ -74,8 +73,22 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 		gameMode_->time_ = deltaTime;
 
 
-
-		gameMode_->Update(clients);
+		// ゲームのスタートの更新
+		if (gameMode_->time_ < gameMode_->startTime_) {
+			gameMode_->mode = MultiPlayModeServerSide::START;
+			gameMode_->UpdateStart(clients);
+		}
+		// ゲームのリザルトの更新
+		else if (0.0f < gameMode_->time_ - gameMode_->maxTime_ + gameMode_->resultTime_) {
+			gameMode_->mode = MultiPlayModeServerSide::RESULT;
+			gameMode_->UpdateResult(clients);
+		}
+		// ゲームモードの更新
+		else {
+			gameMode_->mode = MultiPlayModeServerSide::PLAY;
+			gameMode_->Update(clients);
+		}
+		gameMode_->preMode = gameMode_->mode;
 	}
 }
 
@@ -97,18 +110,13 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 	{
 	case CHARACTER_SELECT: return new MultiPlayCharacterSelectModeClientSide(game_);
 	case AREA_CAPTURE: return new MultiPlayAreaCaptureModeClientSide();
-	//case INTERMEDIATE_RESULT_1: return new MultiPlayIntermediateResult1ModeClientSide();
-	//case OBSTACLE_RACE: return new MultiPlayObstacleRaceModeClientSide(game_);
-	//case INTERMEDIATE_RESULT_2: return new MultiPlayIntermediateResult2ModeClientSide();
-	//case ENEMY_RUSH: return new MultiPlayEnemyRushModeClientSide(game_);
-	//case INTERMEDIATE_RESULT_3: return new MultiPlayIntermediateResult3ModeClientSide();
+	case ENEMY_RUSH: return new MultiPlayEnemyRushModeClientSide();
 	case FINAL_BATTLE: return new MultiPlayFinalBattleModeClientSide();
 	}
 	return nullptr;
 }
 
 void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
-
 	// モードが切り替わったなら、次のモードへ移行
 	if (currentMode_ != res.mode) {
 		// 現在のモードの取得
@@ -135,47 +143,106 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		gameMode_->map_->Draw(offset);
 
 
-
+		// ゲームのスタートの画面
+		if (res.time < gameMode_->startTime_) {
+			gameMode_->DrawStart(res, offset);
+		}
 		// ゲームのリザルトの描画
-		if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {
+		else if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {
 			gameMode_->DrawResult(res, offset);
 		}
 		// ゲームモードの描画
 		else {
 			gameMode_->Draw(res, offset);
 		}
+	}
+}
 
+void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
+	float centerX = Graphical::GetWidth() * 0.5f;		// 画面の中央（X座標）
 
-		float centerX = Graphical::GetWidth() * 0.5f;		// 画面の中央（X座標）
+	// 時間制限の描画（UI）
+	DrawSprite(
+		timerTexNo,
+		CalcTimePosition(), 0.0f, Vector2(1000, 250) * 0.5f,
+		Color::White,
+		Vector2::Zero, Vector2::One
+	);
+	// 時間制限の描画（数値）
+	// ゲームのスタート
+	if (res.time < gameMode_->startTime_) {
+		Number(Vector2(centerX, 50.0f), Vector2(100, 100), gameMode_->startTime_ - res.time);
+	}
+	// ゲームのリザルト
+	else if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {
+		Number(Vector2(centerX, 50.0f), Vector2(100, 100), res.maxTime - res.time);
+	}
+	// ゲームモード
+	else {
+		Number(Vector2(centerX, 50.0f), Vector2(100, 100), res.maxTime - gameMode_->resultTime_ - res.time);
+	}
 
-		// 時間制限の描画
-		Number(Vector2(centerX, 100), Vector2(100, 100), res.maxTime - res.time);
+	// スコアの描画
+	int idx = 0;										// インデックス
+	int maxMembers = res.clients.size();				// プレイヤー人数
+	for (auto &client : res.clients) {
+		//int moveAttribute = client.moveAttributeType;
+		//int attackAttribute = client.attackAttributeType;
+		////画像の関係上Attackをずらす
+		//if (moveAttribute < attackAttribute) attackAttribute--;
+		//float u = moveAttribute / 4.0f;
+		//float v = attackAttribute / 12.0f;
+		//Vector2 uv = Vector2(u, v + idx * 0.25f);
+		//Vector2 uvScale = Vector2(0.25f, 1.0f / 12.0f);
 
-		// スコアの描画
-		int idx = 0;										// インデックス
-		int maxMembers = res.clients.size();				// プレイヤー人数
-		int width = 300;									// アイコンの幅
-		for (auto &client : res.clients) {
-			int moveAttribute = client.moveAttributeType;
-			int attackAttribute = client.attackAttributeType;
-			//画像の関係上Attackをずらす
-			if (moveAttribute < attackAttribute) attackAttribute--;
-			float u = moveAttribute / 4.0f;
-			float v = attackAttribute / 12.0f;
-			Vector2 uv = Vector2(u, v + idx * 0.25f);
+		Vector2 uv = Vector2::Zero;
+		Vector2 uvScale = Vector2::One;
+		Vector2 pos = CalcIconPosition(idx, maxMembers);
+		Vector2 scl = Vector2(200, 100);
+		DrawSprite(icon3,
+			CalcIconPosition(idx, maxMembers), 0.0f, scl,
+			Color::White,
+			uv, uvScale
+		);
+		{
+			auto player = MultiPlayClient::clients[client.id];
+			// スキルポイント関連の取得
+			int curSkillOrb = player->skillPoint;
+			int minSkillOrb = player ? player->GetLvMinSkillOrb() : 0;
+			int maxSkillOrb = player ? player->GetLvMaxSkillOrb() : 0;
+			// ゲージの割合を計算
+			float ratio = (float)(curSkillOrb - minSkillOrb) / (float)(maxSkillOrb - minSkillOrb);
+			if (ratio < 0.0f) ratio = 0.0f;
+			else if (ratio > 1.0f) ratio = 1.0f;
+			player->skillPointAnimation += (ratio - player->skillPointAnimation) * 1.0f;
+			// UV値
+			float t = MATH::Leap(0.25f, 0.98f, ratio);
+			
 
-			float center = (float)maxMembers * 0.5f - 0.5f;	// 中心のIdxを計算
-			float x = center - idx;							// X座標を計算
-
-			DrawSprite(icon,
-				Vector2(centerX + x * width, 100), 0.0f, Vector2(200, 100),
+			float x = pos.x - scl.x * 0.5f;
+			DrawSprite(icon2,
+				Vector2(x + scl.x * t * 0.5f, pos.y), 0.0f, Vector2(scl.x * t, scl.y),
 				Color::White,
-				uv, Vector2(0.25f, 1.0f / 12.0f)
-				);
+				uv, Vector2(t, 1.0f)
+			);
+		};
+		DrawSprite(icon,
+			pos, 0.0f, scl,
+			Color::White,
+			uv, uvScale
+		);
 
-			Number(Vector2(centerX + x * width, 200), Vector2(100, 100), client.skillPoint);
-			idx++;
+		// スコア
+		float centerX = Graphical::GetWidth() * 0.5f;
+		float height = Graphical::GetHeight();
+		switch (idx) {
+		case 0: Number(Vector2(centerX - 175, 60), Vector2::One * 70.0f, client.score); break;
+		case 1: Number(Vector2(centerX - 70,  60), Vector2::One * 70.0f, client.score); break;
+		case 2: Number(Vector2(centerX + 70,  60), Vector2::One * 70.0f, client.score); break;
+		case 4: Number(Vector2(centerX + 175, 60), Vector2::One * 70.0f, client.score); break;
 		}
+		
+		idx++;
 	}
 }
 

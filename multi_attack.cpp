@@ -1,13 +1,16 @@
 #include "multi_attack.h"
+#include "lib/collider2d.h"
 #include "lib/math.h"
+#include "sprite.h"
+#include "multiplay.h"
 
-bool AttackServerSide::Touch(GameObjectServerSide *object) {
+bool AttackServerSide::Touch(GameObjectServerSide *object, Vector2 localPosition) {
 	float maxRadius = object->radius + radius;									// 最大半径
 	float maxRadiusSq = maxRadius * maxRadius;									// 最大半径（平方）
 
 	// 円の判定
 	if (this->direction == Vector2::Zero) {
-		Vector2 direction = object->transform.position - transform.position;	// オブジェクトの向き
+		Vector2 direction = object->transform.position + localPosition - transform.position;	// オブジェクトの向き
 		float distanceSq = direction.DistanceSq();
 		return distanceSq <= maxRadiusSq;
 	}
@@ -17,12 +20,12 @@ bool AttackServerSide::Touch(GameObjectServerSide *object) {
 		Vector2 segNor = seg.Normalize();											// 線分の単位ベクトル
 		float segDistanceSq = seg.DistanceSq();										// 線分の長さ（平方）
 
-		Vector2 direction = object->transform.position - transform.position;		// オブジェクトの向き
+		Vector2 direction = object->transform.position + localPosition - transform.position;		// オブジェクトの向き
 		float horizontal = Vector2::Dot(segNor, direction);							// 線分を軸にしたX座標
 		float horizontalSq = horizontal * horizontal;								// オブジェクトの外積（平方）
 
 		// 線分の範囲内
-		if (0.0f < horizontalSq && horizontalSq < segDistanceSq) {
+		if (0.0f <= horizontal && 0.0f < horizontalSq && horizontalSq < segDistanceSq) {
 			float vertical = Vector2::Cross(segNor, direction);
 			return MATH::Abs(vertical) <= maxRadius;
 		}
@@ -32,8 +35,9 @@ bool AttackServerSide::Touch(GameObjectServerSide *object) {
 		}
 		// 終点
 		else {
-			Vector2 directionFromEnd = object->transform.position - (transform.position + this->direction);
+			Vector2 directionFromEnd = object->transform.position + localPosition - (transform.position + this->direction);
 			return directionFromEnd.DistanceSq() <= maxRadiusSq;
 		}
 	}
 }
+

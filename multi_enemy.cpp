@@ -2,8 +2,23 @@
 #include "multiplay.h"
 
 void EnemyServerSide::Damage(AttackServerSide *attack) {
+	if (GetType() == MULTI_ENEMY1 && attack->GetType() == MULTI_ATTACK_ENEMY2 ||
+		GetType() == MULTI_ENEMY2 && attack->GetType() == MULTI_ATTACK_ENEMY2 ||
+		GetType() == MULTI_ENEMY3 && attack->GetType() == MULTI_ATTACK_ENEMY2) return;
 	hp -= attack->atk;
-	if (hp <= 0) Destroy();
+	damageEffectAttributeType = attack->GetType();
+	if (hp <= 0) {
+		// スキルオーブをドロップさせる
+		map->DropSkillOrb(deathDrop, transform.position, 10.0f);
+		Destroy();
+
+		// 攻撃者がプレイヤーならスコアを加算する
+		auto attackerType = attack->GetSelf()->GetType();
+		if (attackerType == MULTI_PLAYER) {
+			auto player = attack->GetSelf()->Cast<ServerPlayer>();
+			player->score += score;
+		}
+	}
 }
 void EnemyServerSide::BlownPlayers(void) {
 	// エネミーに対するダメージ処理
@@ -15,12 +30,36 @@ void EnemyServerSide::BlownPlayers(void) {
 
 		// ダメージ
 		if (maxRadiusSq >= Vector2::DistanceSq(transform.position, player->transform.position)) {
+			// ドロップ
 			player->SkillOrbDrop(atkDrop);
 			// 吹き飛ばす
 			Vector2 direction = player->transform.position - transform.position;
-			player->blownVelocity = direction.Normalize() * 30.0f;
+			player->blownVelocity = direction.Normalize() * knockbackRate;
 		}
 	}
+}
+
+void EnemyClientSide::DamageEffectUpdate(void) {
+	if (damageEffectAttributeType != -1) {
+		MultiAnimator *anim = &allDamageEffect;
+		if (damageEffectAttributeType == MULTI_ATTACK_FIRE) anim = &fireDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_WATER) anim = &waterDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_THUNDER) anim = &thunderDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_WIND) anim = &windDamageEffect;
+
+		// ダメージエフェクト
+		if (MultiPlayClient::GetGameMode())MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(
+			*anim,
+			transform.position,
+			0.0f,
+			Vector2::One * radius,
+			Color::White
+		);
+	}
+}
+
+void EnemyClientSide::Release(void) {
+	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(deathAnim, transform.position, 0.0f, Vector2::One * radius * 1.5f);
 }
 
 
@@ -29,6 +68,9 @@ void EnemyServerSide::BlownPlayers(void) {
 
 
 void Enemy1ServerSide::Loop(void) {
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
+
 	// 移動
 	transform.position += velocity;
 	if (map->Collision(transform.position, radius) != -1) {
@@ -40,7 +82,8 @@ void Enemy1ServerSide::Loop(void) {
 }
 void Enemy1ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White, velocity.x > 0.0f);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White, velocity.x > 0.0f);
+	DamageEffectUpdate();
 	isShow = false;
 }
 
@@ -48,9 +91,36 @@ void Enemy1ClientSide::Loop(void) {
 
 
 void Enemy2ServerSide::Loop(void) {
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
+
 	// 攻撃する
 	if (coolTime < spawnTimer.GetNowTime() * 0.001f) {
-		map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
+		float minDistanceSq = -1.0f;
+		Vector2 targetPosition;
+		float searchRadiusSq = activeRadius * activeRadius;
+
+		// 最も近いプレイヤーを調べる
+		for (auto &client : MultiPlayServer::clients_) {
+			auto &player = client.second.player_;
+			// 距離の計算
+			float distanceSq = Vector2::DistanceSq(transform.position, player->transform.position);
+			float maxRadiusSq = radius + player->radius;
+			maxRadiusSq = maxRadiusSq * maxRadiusSq;
+
+			if (distanceSq <= searchRadiusSq) {
+				if (minDistanceSq < 0.0f || distanceSq < minDistanceSq) {
+					targetPosition = player->transform.position;
+				}
+			}
+		}
+
+		// 方向を決める
+		if (targetPosition != Vector2::Zero) {
+			auto bullet = map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
+			bullet->velocity = (targetPosition - transform.position).Normalize() * 10.0f;
+		}
+
 		spawnTimer.Start();
 	}
 
@@ -59,42 +129,23 @@ void Enemy2ServerSide::Loop(void) {
 }
 void Enemy2ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White);
+	DamageEffectUpdate();
 	isShow = false;
 }
-void AttackEnemy2ServerSide::Loop(void) {
-	float minDistanceSq = -1.0f;
-	Vector2 targetPosition;
-
-	// 最も近いプレイヤーを調べる
-	for (auto &client : MultiPlayServer::clients_) {
-		auto &player = client.second.player_;
-		// 距離の計算
-		float distanceSq = Vector2::DistanceSq(transform.position, player->transform.position);
-		float maxRadiusSq = radius + player->radius;
-		maxRadiusSq = maxRadiusSq * maxRadiusSq;
-
-		if (minDistanceSq < 0.0f || distanceSq < minDistanceSq) {
-			targetPosition = player->transform.position;
-		}
-
-		if (distanceSq <= maxRadiusSq) {
-			Destroy();
-			return;
-		}
-	}
-
-	// 方向を決める
-	velocity = (targetPosition - transform.position).Normalize() * 10.0f;
+void AttackEnemy2ServerSide::Loop(void) {	
 	// 移動
 	transform.position += velocity;
+
+	if (MultiPlayClient::GetGameMode())
+		if (MultiPlayClient::GetGameMode()->GetMap()->Collision(transform.position, radius) != -1) Destroy();
 }
 void AttackEnemy2ServerSide::KnockBack(ServerMovableGameObject *object) {
 	object->blownVelocity = (object->transform.position - transform.position) * knockbackRate;
 }
 void AttackEnemy2ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White);
 	isShow = false;
 }
 
@@ -103,6 +154,9 @@ void AttackEnemy2ClientSide::Loop(void) {
 
 
 void Enemy3ServerSide::Loop(void) {
+	// ダメージ処理初期化
+	damageEffectAttributeType = -1;
+
 	ServerPlayer *targetPlayer = nullptr;
 	float minDistanceSq = -1.0f;
 
@@ -128,6 +182,7 @@ void Enemy3ServerSide::Loop(void) {
 		velocity = velocity.Normalize() * speed;
 		this->velocity = velocity;
 	}
+	else velocity = Vector2::Zero;
 
 	// 移動
 	transform.position += velocity;
@@ -138,7 +193,7 @@ void Enemy3ServerSide::Loop(void) {
 }
 void Enemy3ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White, velocity.x > 0.0f);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White, velocity.x > 0.0f);
+	DamageEffectUpdate();
 	isShow = false;
 }
-

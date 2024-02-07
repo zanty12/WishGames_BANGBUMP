@@ -10,6 +10,7 @@ public:
 
 	Transform transform;
 	Vector2 velocity;
+	int damageEffectAttributeType = -1;					// ダメージ与えられた時の属性タイプ
 	float gravity = 0.0f;
 	float radius = 10.0f;
 	int id = MAX_ID++;
@@ -23,6 +24,7 @@ class GameObjectClientSide : public MultiBehavior {
 public:
 	Transform transform;
 	Vector2 velocity;
+	int damageEffectAttributeType = -1;					// ダメージ与えられた時の属性タイプ
 	float radius = 10.0f;
 	int texNo = -1;
 	int id = 0;
@@ -32,4 +34,5 @@ public:
 
 	GameObjectClientSide() = default;
 	GameObjectClientSide(Transform transform) : transform(transform) { };
+	virtual void Release(void) { };
 };

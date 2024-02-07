@@ -43,9 +43,15 @@ void Renderer::CheckDiscard()
     animators_.remove_if(
         [](Animator* animator)
         {
+            if (!animator)
+            {
+                delete animator;
+                return true;
+            }
             if (animator->GetDiscard())
             {
                 delete animator;
+                animator = nullptr;
                 return true;
             }
             return false;

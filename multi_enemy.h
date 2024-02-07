@@ -14,20 +14,50 @@ protected:
 public:
 	int hp = 5;
 	int atkDrop = 5;
+	int deathDrop = 5;
+	int score = 1;
+	float knockbackRate = 5.0f;
 
 
 
 public:
-	EnemyServerSide(Transform transform, MultiMap* map) : map(map), ServerMovableGameObject(transform) { }
+	EnemyServerSide(Transform transform, MultiMap* map, std::wstring enemyName) : map(map), ServerMovableGameObject(transform) {
+		hp = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"hp");
+		score = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"score");
+		radius = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"radius");
+		atkDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"atkDrop");
+		deathDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"drop");
+		knockbackRate = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"knockbackRate");
+	}
 	void Damage(AttackServerSide *attack) override;
 	void BlownPlayers(void);
 };
 class EnemyClientSide : public ClientMovableGameObject {
 protected:
 	MultiAnimator anim;
+	MultiAnimator deathAnim;
 
+	MultiAnimator allDamageEffect;							// ダメージエフェクト
+	MultiAnimator fireDamageEffect;							// 炎ダメージエフェクト
+	MultiAnimator waterDamageEffect;						// 水ダメージエフェクト
+	MultiAnimator thunderDamageEffect;						// 雷ダメージエフェクト
+	MultiAnimator windDamageEffect;							// 風ダメージエフェクト
 public:
-	EnemyClientSide(Transform transform) : ClientMovableGameObject(transform) { }
+
+	EnemyClientSide(Transform transform, std::wstring enemyName) : ClientMovableGameObject(transform) {
+		radius = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"radius");
+		transform.scale = Vector2::One * radius;
+		deathAnim = MultiAnimator(LoadTexture(Asset::GetAsset(textures::effect_enemydead)), 5, 8, 0, 36, false);
+
+		// ダメージエフェクト
+		fireDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_fire.png"), 5, 2, 0, 7, false);
+		waterDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_water.png"), 5, 2, 0, 7, false);
+		thunderDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_thunder.png"), 5, 2, 0, 7, false);
+		windDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_wind.png"), 5, 2, 0, 7, false);
+	}
+
+	void DamageEffectUpdate(void);
+	void Release(void) override;
 };
 
 
@@ -35,9 +65,8 @@ public:
 
 class Enemy1ServerSide : public EnemyServerSide {
 public:
-	Enemy1ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) {
+	Enemy1ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map, L"Enemy1") {
 		velocity = Vector2::Left * speed;
-		radius = 50.0f;
 	}
 
 	void Loop(void) override;
@@ -45,7 +74,7 @@ public:
 };
 class Enemy1ClientSide : public EnemyClientSide {
 public:
-	Enemy1ClientSide(Transform transform) : EnemyClientSide(transform) {
+	Enemy1ClientSide(Transform transform) : EnemyClientSide(transform, L"Enemy1") {
 		texNo = LoadTexture("data/texture/Enemy/enemy1_anim.png");
 		anim = MultiAnimator(texNo, 5, 4, 0, 17, true);
 	}
@@ -56,11 +85,12 @@ public:
 
 
 class Enemy2ServerSide : public EnemyServerSide {
-	float coolTime = 1.0f;
+	float activeRadius = 1000.0f;		// 検知範囲
+	float coolTime = 4.0f;
 	WIN::Time spawnTimer;
 
 public:
-	Enemy2ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) {
+	Enemy2ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map, L"Enemy2") {
 		spawnTimer.Start();
 	}
 
@@ -69,7 +99,7 @@ public:
 };
 class Enemy2ClientSide : public EnemyClientSide {
 public:
-	Enemy2ClientSide(Transform transform) : EnemyClientSide(transform) {
+	Enemy2ClientSide(Transform transform) : EnemyClientSide(transform, L"Enemy2") {
 		texNo = LoadTexture("data/texture/Enemy/enemy2_anim.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 	}
@@ -78,7 +108,7 @@ public:
 };
 class AttackEnemy2ServerSide : public AttackServerSide {
 public:
-	AttackEnemy2ServerSide(Enemy2ServerSide *self) : AttackServerSide(1, 5, 1.0f, 5, 100.0f, self) { transform.position = self->transform.position; }
+	AttackEnemy2ServerSide(Enemy2ServerSide *self) : AttackServerSide(1, 5, 1.0f, 2, 100.0f, self) { transform.position = self->transform.position; }
 
 	void Loop(void) override;
 	void KnockBack(ServerMovableGameObject *object) override;
@@ -90,6 +120,7 @@ public:
 	AttackEnemy2ClientSide(Transform transform) : AttackClientSide(transform) {
 		texNo = LoadTexture("data/texture/Effect/effect_enemy2_attack.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
+		radius = 100.0f;
 	}
 
 	void Loop(void) override;
@@ -102,7 +133,8 @@ public:
 class Enemy3ServerSide : public EnemyServerSide {
 public:
 	float activeRadius = 1000.0f;		// 検知範囲
-	Enemy3ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map) { }
+	Enemy3ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map, L"Enemy3") {
+	}
 
 	void Loop(void) override;
 	MULTI_OBJECT_TYPE GetType(void) { return MULTI_OBJECT_TYPE::MULTI_ENEMY3; }
@@ -116,7 +148,7 @@ public:
 
 
 public:
-	Enemy3ClientSide(Transform transform) : EnemyClientSide(transform) {
+	Enemy3ClientSide(Transform transform) : EnemyClientSide(transform, L"Enemy3") {
 		texNo = LoadTexture("data/texture/Enemy/enemy3_anim.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 	}

@@ -43,7 +43,6 @@ Vector2 Wind::Move(void)
 
     move_filter_.PassSignal(StickTrigger(stick, previousStick));
     int move = move_filter_.PredictNext();
-    std::cout<<move<<std::endl;
     // 移動中
     if (move)
     {
@@ -108,10 +107,13 @@ void Wind::Action(void)
 
     // 回転のスピードを取得
     float rotSpeed = Vector2::Cross(stick, previousStick);
-    std::cout<<StickTrigger(stick, previousStick);
+    
     attack_filter_.PassSignal(StickTrigger(stick, previousStick));
     int attack = attack_filter_.PredictNext();
-    std::cout<<attack<<std::endl;
+    
+    if (attack_)
+        attack_->Update();
+
     // 攻撃中
     if (attack)
     {
@@ -123,8 +125,13 @@ void Wind::Action(void)
     }
     else if (attack_ != nullptr)
     {
-        delete attack_;
-        attack_ = nullptr;
+        player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
+
+        if (!attack_->CheckHitEffect())
+        {
+            delete attack_;
+            attack_ = nullptr;
+        }
     }
 }
 
@@ -168,10 +175,13 @@ void WindAttack::Update()
                         SetTick(0.0f);
                         enemy->SetHp(enemy->GetHp() - GetDamage());
 
-                        //エフェクトの生成
-                        Vector2 pos = enemy->GetPos();
-                        Vector2 scale = enemy->GetScale();
-                        AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_wind, EFFECT_HIT_WIND_ANIM));
+                        //エフェクトの生成★エネミー３の位置とか色々バグっているので生成するとエラー
+                        if (!enemy->GetDiscard() && enemy->GetEnemyType() != TYPE__PHANTOM)
+                        {
+                            Vector2 pos = enemy->GetPos();
+                            Vector2 scale = enemy->GetScale();
+                            AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_wind, EFFECT_HIT_WIND_ANIM));
+                        }
                     }
                 }
             }

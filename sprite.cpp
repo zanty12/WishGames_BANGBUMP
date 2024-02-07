@@ -251,7 +251,39 @@ void DrawCollider(PHYSICS::VertexN vertex, Color color, Vector2 offset, float wi
 	}
 }
 
+void DrawResource(ID3D11ShaderResourceView* texture, Vector2 pos, Vector2 scale)
+{
+	using namespace DX;
+	using namespace DX::DX11;
 
+	// トポロジの設定
+	Device3D::SetTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	// テクスチャの設定
+	Device3D::SetResource(texture);
+
+	// アフィン変換
+	MATRIX translation, rotation, scaler, transform;
+	translation.SetTranslation(pos);
+	rotation.SetRotation(Vector3(0.0f, 0.0f, 0.0f));
+	scaler.SetScaling(scale);
+	transform = rotation * scaler;
+	transform = translation * transform;
+	g_WorldMatrix = transform;
+
+	// シェーダーの設定
+	ShaderManager::SetTextureMode();
+
+	// 定数バッファの設定
+	Device3D::UpdateConstantBuffer(&g_WorldMatrix, g_WorldBuffer);
+	Color color = Color::White;
+	Device3D::UpdateConstantBuffer(&color, g_ColorBuffer);
+
+	// 描画
+	Device3D::Draw(
+		g_Square.GetVertexBuffer(), g_Square.GetVertexCount(), g_Square.GetVertexStructByteSize(),
+		g_Square.GetIndexBuffer(), g_Square.GetIndexCount(), g_Square.GetIndexStructByteSize()
+	);
+}
 
 
 void DrawUICircle(int texNo, Vector2 pos, float rot, Vector2 scale, Color color, Vector2 uv, Vector2 uvWidth, float ratio) {

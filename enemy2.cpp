@@ -6,7 +6,7 @@
 #include "lib/collider2d.h"
 #include "time.h"
 
-#define RANGE (SIZE_ * 10.0f)                            //”ÍˆÍ
+#define RANGE (SIZE_ * 10.0f)                            //ç¯„å›²
 
 
 bool CheckEnemy2Length(Vector2 a, Vector2 b, float len);
@@ -14,25 +14,25 @@ bool CheckEnemy2Length(Vector2 a, Vector2 b, float len);
 
 void Enemy2::Update()
 {
-    //HP‚ª0‚É‚È‚Á‚½‚çÁ‚·
+    //HPãŒ0ã«ãªã£ãŸã‚‰æ¶ˆã™
     if (GetHp() <= 0)
     {
-        SetColor(Color(0, 0, 0, 0));    //“§–¾‚É‚·‚é
-        SetType(OBJ_VOID);  //“–‚½‚è”»’è‚ğÁ‚·
-        GetAnimator()->SetIsAnim(false);    //ƒAƒjƒ[ƒVƒ‡ƒ“‚ğ‚µ‚È‚¢
+        SetColor(Color(0, 0, 0, 0));    //é€æ˜ã«ã™ã‚‹
+        SetType(OBJ_VOID);  //å½“ãŸã‚Šåˆ¤å®šã‚’æ¶ˆã™
+        GetAnimator()->SetIsAnim(false);    //ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’ã—ãªã„
         if (dead_effect_ == nullptr)
         {
-            dead_effect_ = new EnemyDeadEffect(GetPos());   //ƒGƒtƒFƒNƒg¶¬
+            dead_effect_ = new EnemyDeadEffect(GetPos());   //ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆ
             dead_effect_->SetScale(GetScale());
         }
 
         DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_MID);
     }
 
-    //Á–ÅƒGƒtƒFƒNƒg
+    //æ¶ˆæ»…ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     if (dead_effect_)
     {
-        //ƒGƒtƒFƒNƒg‚ªI—¹‚µ‚½‚çDiscard
+        //ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒçµ‚äº†ã—ãŸã‚‰Discard
         if (dead_effect_->EffectEnd())
         {
             delete dead_effect_;
@@ -40,11 +40,11 @@ void Enemy2::Update()
             Discard();
         }
 
-        //ƒGƒlƒ~[‚É‚Í‰½‚à‚³‚¹‚È‚¢
+        //ã‚¨ãƒãƒŸãƒ¼ã«ã¯ä½•ã‚‚ã•ã›ãªã„
         return;
     }
 
-    float dt = Time::GetDeltaTime(); //‰Šú‰»‚ÌƒGƒ‰[‚ğ‰ñ”ğ‚·‚é
+    float dt = Time::GetDeltaTime(); //åˆæœŸåŒ–æ™‚ã®ã‚¨ãƒ©ãƒ¼ã‚’å›é¿ã™ã‚‹
     atk_time_ += Time::GetDeltaTime();
 
     std::list<Collider*> collisions = GetCollider()->GetCollision();
@@ -53,13 +53,6 @@ void Enemy2::Update()
         OBJECT_TYPE type = collision->GetParent()->GetType();
         switch (type)
         {
-        case OBJ_ATTACK:
-            {
-                PlayerAttack* attack = dynamic_cast<PlayerAttack*>(collision->GetParent());
-                if(attack != nullptr)
-                    SetHp(GetHp() - attack->GetDamage());
-            }
-            break;
             default:
                 break;
         }

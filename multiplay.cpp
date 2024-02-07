@@ -5,6 +5,7 @@
 #include "multi_skillorb.h"
 #include "multi_enemy.h"
 #include "ini.h"
+#include "move_scene_anim.h"
 #include <windows.h>
 #include <thread>
 
@@ -29,7 +30,7 @@ MultiPlayServer::MultiPlayServer() {
 
 int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
 	// ロック
-	lock_.Lock();
+	//lock_.Lock();
 #ifdef DEBUG_LOCKED
 	std::cout << "REGISTER LOCK";
 #endif
@@ -40,7 +41,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	Vector2 vel = Vector2::Zero;
 	ServerPlayer *player = new ServerPlayer();
 	player->SetMoveAttribute(new ServerFire(player));
-	player->SetAttackAttribute(new ServerWind(player));
+	player->SetAttackAttribute(new ServerWater(player));
 	if (gameMode->GetMap()->startPosition.size())
 		player->transform.position = *gameMode->GetMap()->startPosition.begin();
 
@@ -72,14 +73,14 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 #ifdef DEBUG_LOCKED
 	std::cout << " - REGISTER UNLOCK" << std::endl;
 #endif
-	lock_.Unlock();
+	//lock_.Unlock();
 
 	return maxID - 1;
 }
 
 void MultiPlayServer::Unregister(int id) {
 	// ロック
-	lock_.Lock();
+	//lock_.Lock();
 #ifdef DEBUG_LOCKED
 	std::cout << "UNREGISTER LOCK";
 #endif
@@ -103,7 +104,7 @@ void MultiPlayServer::Unregister(int id) {
 #ifdef DEBUG_LOCKED
 	std::cout << " - UNREGISTER UNLOCK" << std::endl;
 #endif
-	lock_.Unlock();
+	//lock_.Unlock();
 }
 
 void MultiPlayServer::AllUnregister(void) {
@@ -115,7 +116,7 @@ void MultiPlayServer::AllUnregister(void) {
 
 void MultiPlayServer::PlayerUpdate(void) {
 	// ロック
-	lock_.Lock();
+	//lock_.Lock();
 #ifdef DEBUG_LOCKED
 	std::cout << "UPD LOCK";
 #endif
@@ -130,8 +131,10 @@ void MultiPlayServer::PlayerUpdate(void) {
 			Input::SetPreviousState(0, client.previousInput);
 			player->map = gameMode->GetMap();
 			player->Loop();
-			gameMode->GetMap()->Collision(player->transform.position, player->radius, &player->gravityVelocity);
+			gameMode->GetMap()->Collision(player->transform.position, player->transform.scale, &player->velocity, &player->gravityVelocity);
 
+			// 移動させる
+			player->transform.position += player->velocity + player->blownVelocity + player->gravityVelocity;
 #ifdef DEBUG_INPUT
 			std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
 #endif
@@ -160,7 +163,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 #ifdef DEBUG_LOCKED
 	std::cout << " - UPD UNLOCK" << std::endl;
 #endif
-	lock_.Unlock();
+	//lock_.Unlock();
 }
 
 void MultiPlayServer::RecvUpdate(void) {
@@ -171,7 +174,7 @@ void MultiPlayServer::RecvUpdate(void) {
 
 
 	// ロック
-	lock_.Lock();
+	//lock_.Lock();
 #ifdef DEBUG_LOCKED
 	std::cout << "RCV LOCK";
 #endif
@@ -197,88 +200,88 @@ void MultiPlayServer::RecvUpdate(void) {
 #ifdef DEBUG_LOCKED
 	std::cout << " - RCV UNLOCK" << std::endl;
 #endif
-	lock_.Unlock();
+	//lock_.Unlock();
 }
 
 void MultiPlayServer::SendUpdate(void) {
-	DWORD startTime, currentTime, onceFrameTime;
-	startTime = currentTime = timeGetTime();
-	onceFrameTime = 1000 / 60;
+	//DWORD startTime, currentTime, onceFrameTime;
+	//startTime = currentTime = timeGetTime();
+	//onceFrameTime = 1000 / 60;
 
-	while (!isFinish) {
+	//while (!isFinish) {
 
-		currentTime = timeGetTime();
+		//currentTime = timeGetTime();
 
-		if (currentTime - startTime > onceFrameTime) {
-			startTime = currentTime;
+		//if (currentTime - startTime > onceFrameTime) {
+		//	startTime = currentTime;
 
-			// ロック
-			lock_.Lock();
+			//// ロック
+			//lock_.Lock();
 #ifdef DEBUG_LOCKED
-			std::cout << "SND LOCK";
+	std::cout << "SND LOCK";
 #endif
-			// レスポンスの作成
-			RESPONSE_PLAYER res;
+	// レスポンスの作成
+	RESPONSE_PLAYER res;
 
-			// レスポンス情報の登録
-			res.mode = gameMode->GetMode();
-			res.maxTime = gameMode->GetMaxTime();
-			res.time = gameMode->GetTime();
+	// レスポンス情報の登録
+	res.mode = gameMode->GetMode();
+	res.maxTime = gameMode->GetMaxTime();
+	res.time = gameMode->GetTime();
 
-			// クライアント情報の登録
-			for (auto &kvp : clients_) {
-				auto &client = kvp.second;
-				auto &player = client.player_;
-				res.clients.push_back({ 
-					client.header.id,
-					player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
-					player->animType,
-					player->transform.position, player->velocity, player->attackVelocity, player->warpVelocity,
-					0, player->skillPoint, 0}
-				);
-			}
+	// クライアント情報の登録
+	for (auto &kvp : clients_) {
+		auto &client = kvp.second;
+		auto &player = client.player_;
+		res.clients.push_back({
+			client.header.id,
+			player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
+			player->animType,
+			player->transform.position, player->velocity, player->attackVelocity, player->chargeVelocity,
+			player->score, player->damageEffectAttributeType, player->skillPoint, 0 }
+		);
+	}
 
-			// オブジェクト情報の登録
-			if (gameMode->GetMap()) {
-				res.AddObjects(gameMode->GetMap()->GetSkillOrbs());		// スキルオーブ
-				res.AddObjects(gameMode->GetMap()->GetEnemies());		// エネミー	
-				res.AddObjects(gameMode->GetMap()->GetAttacks());		// アタック
-			}
+	// オブジェクト情報の登録
+	if (gameMode->GetMap()) {
+		res.AddObjects(gameMode->GetMap()->GetSkillOrbs());		// スキルオーブ
+		res.AddObjects(gameMode->GetMap()->GetEnemies());		// エネミー	
+		res.AddObjects(gameMode->GetMap()->GetAttacks());		// アタック
+	}
 
-			// レスポンスの作成
-			sendBuff = nullptr;
-			res.CreateResponse(sendBuff, 0);
+	// レスポンスの作成
+	sendBuff = nullptr;
+	res.CreateResponse(sendBuff, 0);
 
-			// ゲームモードのレスポンス内容の結合
-			gameMode->CreateResponse(sendBuff);
+	// ゲームモードのレスポンス内容の結合
+	gameMode->CreateResponse(sendBuff);
 
-			// クライアント全員に送信する
-			for (auto &kvp : clients_) {
-				auto &client = kvp.second;
+	// クライアント全員に送信する
+	for (auto &kvp : clients_) {
+		auto &client = kvp.second;
 
-				// 登録されていないならスキップ
-				if (client.header.id < 0) continue;
+		// 登録されていないならスキップ
+		if (client.header.id < 0) continue;
 
-				HEADER header;
-				header.id = client.header.id;
-				header.command = HEADER::RESPONSE_UPDATE;
-				memcpy(&sendBuff[0], &header, sizeof(HEADER));
+		HEADER header;
+		header.id = client.header.id;
+		header.command = HEADER::RESPONSE_UPDATE;
+		memcpy(&sendBuff[0], &header, sizeof(HEADER));
 
 #ifdef DEBUG_SENDLEN
-				std::cout << "SENDBUFF : " << sendBuff.Length() << std::endl;
+		std::cout << "SENDBUFF : " << sendBuff.Length() << std::endl;
 #endif
 
-				// 送信
-				SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
-			}
-
-			// ロック解除
-#ifdef DEBUG_LOCKED
-			std::cout << " - SND UNLOCK" << std::endl;
-#endif
-			lock_.Unlock();
-		}
+		// 送信
+		SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
 	}
+
+	// ロック解除
+#ifdef DEBUG_LOCKED
+	std::cout << " - SND UNLOCK" << std::endl;
+#endif
+	//lock_.Unlock();
+//}
+//}
 }
 
 void MultiPlayServer::OpenTerminal(void) {
@@ -364,15 +367,34 @@ void MultiPlayServer::OpenTerminal(void) {
 
 		// 更新
 		{
-			if (clients_.size()) {
-				currentTime = timeGetTime();
-				if (currentTime - startTime > onceFrameTime) {
-					startTime = currentTime;
+			currentTime = timeGetTime();
+			if (currentTime - startTime > onceFrameTime) {
+				startTime = currentTime;
+				if (clients_.size()) {
 
 					PlayerUpdate();
 				}
+				SendUpdate();
+
+				// スキルオールチートシート
+				for (int i = 0; i < 10; i++) {
+					std::string vk = std::to_string(i);
+					if (GetAsyncKeyState(vk.c_str()[0])) {
+						auto iterator = clients_.find(i);
+						if (iterator == clients_.end()) continue;
+						if (GetAsyncKeyState(VK_UP)) {
+							iterator->second.player_->skillPoint++;
+						}
+						if (GetAsyncKeyState(VK_DOWN)) {
+							iterator->second.player_->skillPoint--;
+							if (iterator->second.player_->skillPoint < 0) iterator->second.player_->skillPoint = 0;
+						}
+					}
+				}
 			}
 		}
+
+
 
 		if (GetAsyncKeyState(VK_ESCAPE)) {
 			isFinish = true;
@@ -398,6 +420,10 @@ void MultiPlayServer::OpenTerminal(void) {
 
 
 int MultiPlayClient::id = -1;
+MultiPlayFlowClientSide *MultiPlayClient::gameMode = nullptr;
+std::unordered_map<int, ClientPlayer *> MultiPlayClient::clients;
+
+
 /*******************************************************
   Client
 ********************************************************/
@@ -414,6 +440,9 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// 受信用領域を確保する
 	recvTmpBuff = new char[MAX_BUFF];
+
+	// シーン遷移アニメーションの初期化
+	MoveScene::Initialize();
 }
 
 int MultiPlayClient::Register(std::string serverAddress) {
@@ -421,7 +450,8 @@ int MultiPlayClient::Register(std::string serverAddress) {
 
 	// IPV4アドレスの登録
 	if (serverAddress == "") {
-		serverAddress = ini::GetString(L"data/multiplay.ini", L"System", L"Addr");
+		std::wstring path = ROOT_PATH + L"multiplay.ini";
+		serverAddress = ini::GetString(path.c_str(), L"System", L"Addr");
 	}
 
 	// ソケット作成
@@ -474,8 +504,15 @@ void MultiPlayClient::Unregister(void) {
 
 void MultiPlayClient::PlayerUpdate(void) {
 	// カメラ座標の計算
-	if (res_.clients.size()) offset = Vector2(0.0f, res_.clients.begin()->position.y - Graphical::GetHeight() * 0.25f) + Vector2::Up * res_.clients.begin()->moveVelocity.y;
+	if (res_.clients.size()) {
+		float posY = res_.clients.begin()->position.y;		// プレイヤーのY座標
+		float centerY = Graphical::GetHeight() * 0.35f;		// 画面中心にするY座標
+		float velY = res_.clients.begin()->moveVelocity.y;	// 加算するY座標
 
+		float nextY = posY - centerY + velY * 10.0f;		// 移動先のY座標
+		float ratio = 0.85f;								// 滑らかにする倍率
+		offset += Vector2(0.0f, (nextY - offset.y) * ratio);
+	}
 	// ゲームモードの描画
 	gameMode->Draw(res_, offset);
 
@@ -491,6 +528,9 @@ void MultiPlayClient::PlayerUpdate(void) {
 
 			// イテレータを一つ前に戻す
 			iterator++;
+
+			// 削除時に呼び出す
+			delIterator->second->Release();
 
 			// データの削除
 			delete object;
@@ -509,8 +549,18 @@ void MultiPlayClient::PlayerUpdate(void) {
 	// プレイヤーの描画
 	for (auto &player : clients) player.second->Loop();
 
-	// エフェクト
+	// エフェクトの描画
+	if (gameMode->GetMap()) gameMode->GetMap()->GetEffects()->Draw(offset);
+
+	// ライトエフェクトの描画
 	lightEffect.Draw(offset);
+
+	// UIの描画
+	gameMode->DrawUI(res_);
+
+	// シーン遷移アニメーション
+	MoveScene::Loop();
+
 
 #ifdef DEBUG_LINK
 	if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
@@ -602,13 +652,15 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 			else {
 				auto &player = iterator->second;
 				player->isShow = true;
+				player->skillPoint = client.skillPoint;
 				player->transform.position = client.position;
 				player->velocity = client.moveVelocity;
 				player->attackVelocity = client.attackVelocity;
-				player->warpVelocity = client.warpVelocity;
+				player->chargeVelocity = client.warpVelocity;
 				player->animType = client.animType;
 				player->moveAttributeType = client.moveAttributeType;
 				player->attackAttributeType = client.attackAttributeType;
+				player->damageEffectAttributeType = client.damageEffectAttributeType;
 			}			
 		}
 
@@ -629,6 +681,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: pObject = new ClientSkillOrbMidium(); break;
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: pObject = new ClientSkillOrbBig(); break;
 				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER: pObject = new ClientThunderAttack(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2: pObject = new ClientThunder2Attack(Transform(object.position)); break;
 				}
 				if (pObject) objects[object.id] = pObject;
 			}
@@ -637,6 +690,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				obj->isShow = true;
 				obj->transform.position = object.position;
 				obj->velocity = object.velocity;
+				obj->damageEffectAttributeType = object.damageEffectAttributeType;
 			}
 		}
 

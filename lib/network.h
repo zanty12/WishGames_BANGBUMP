@@ -58,6 +58,10 @@ namespace Network {
 		TCP = SOCK_STREAM,
 		UDP = SOCK_DGRAM,
 	};
+
+	enum Option {
+		BROADCAST = SO_BROADCAST,
+	};
 }
 
 
@@ -126,6 +130,10 @@ namespace Network {
 		/// </summary>
 		/// <param name=""></param>
 		void Close(void) { closesocket(sockfd); sockfd = -1; }
+
+		void Option(int level, int opt, char* val, int len) {
+			setsockopt(sockfd, level, opt, val, len);
+		}
 
 		bool IsEmpty(void) { return sockfd <= 0; }
 

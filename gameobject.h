@@ -68,7 +68,6 @@ public:
 
     virtual ~GameObject()
     {
-        DispUninit();
         if (animator_)animator_->Discard();
         if (collider_)collider_->Discard();
     }

@@ -32,6 +32,8 @@ public:
 	}
 	//エフェクトアップデート
 	void HitEffectUpdate();
+	//エフェクトが存在してるかどうか
+	bool CheckHitEffect(void) { return hit_effects_.size(); }
 
 private:
 	void RemoveEffect(void);
@@ -54,15 +56,15 @@ public:
 		GetAnimator()->SetDrawPriority(75);
 		SetPos(pos);
 		SetScale(scale);
+		draw_ = true;
 	}
 
-	bool GetDraw(void) { return draw_; }
+	bool GetDraw(void) const { return draw_; }
 
 	void Update(void) override {
 		if (draw_) {
 			time_ += Time::GetDeltaTime();
 			if (time_ > 0.3f) {
-				time_ = 0.0f;
 				draw_ = false;
 				Discard();
 			}

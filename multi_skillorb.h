@@ -1,6 +1,7 @@
 #pragma once
 #include "asset.h"
 #include "multi_object.h"
+#include "multi_anim.h"
 #include "lib/win_time.h"
 
 /*******************************************************
@@ -49,6 +50,9 @@ public:
   Client
 ********************************************************/
 class ClientSkillOrb : public GameObjectClientSide {
+protected:
+	MultiAnimator anim;
+
 public:
 	ClientSkillOrb(Vector2 scale);
 
@@ -56,14 +60,15 @@ public:
 };
 class ClientSkillOrbSmall : public ClientSkillOrb {
 public:
-	ClientSkillOrbSmall() : ClientSkillOrb(Vector2::One * 10) { };
+	ClientSkillOrbSmall();
 };
 class ClientSkillOrbMidium : public ClientSkillOrb {
 public:
-	ClientSkillOrbMidium() : ClientSkillOrb(Vector2::One * 50) { };
+	ClientSkillOrbMidium();
 };
 class ClientSkillOrbBig : public ClientSkillOrb {
 public:
-	ClientSkillOrbBig() : ClientSkillOrb(Vector2::One * 80) { };
+	ClientSkillOrbBig();
 };
 
+	

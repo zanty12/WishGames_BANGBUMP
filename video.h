@@ -3,6 +3,7 @@
 #include <thread>
 
 #include "graphical.h"
+#include "sprite.h"
 #include "time.h"
 #include "lib/video_reader.hpp"
 
@@ -177,7 +178,10 @@ public:
         //ImGui::Text("time: %.2f, pts: %.2f", time_, pts_);
         ImGui::Image((void*)texture_view_, ImVec2(size_.x * scale_, size_.y * scale_));
         ImGui::End();
+    }
 
+    void DrawAsResource(){
+        DrawResource(texture_view_, window_pos_, size_* scale_);
     }
 
     void SetScale(float scale)

@@ -1,4 +1,6 @@
 #pragma once
+#include <windows.h>
+#include "load.h"
 
 class StorageLock {
 private:
@@ -9,7 +11,9 @@ public:
 	void Lock(void) {
 		int id = currentID;
 		currentID++;
-		while (id != sentinelID);
+		while (id != sentinelID) {
+			if (isNowLoad) Sleep(1);
+		}
 	}
 
 	void Unlock() {
