@@ -16,38 +16,34 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 
 	// はじめのみ
 	if (preMode != mode && GetMode() != MULTI_MODE::CHARACTER_SELECT) {
-		int maxScore = -1;
+		// ランキング
+		std::list<ServerPlayer *> ranking;
+		for (auto &kvp : MultiPlayServer::clients_) ranking.push_back(kvp.second.player_);
+
+		// ソート
+		ranking.sort([](ServerPlayer *a, ServerPlayer *b) {
+			return a->score > b->score;
+			}
+		);
+
+
 		int rank = 0;
 		int preScore = -1;
-		for (int i = 0; i < clients.size(); i++) {
-			int score = maxScore;
-			ServerPlayer *editPlayer = nullptr;
+		int addRank = 1;
+		for (auto player : ranking) {
+			if (player->score == preScore) addRank++;
+			else addRank = 1;
 
-			// 加算されていないクライアントで最大スコアの検索
-			for (auto &client : clients) {
-				if (client.second.player_->score <= score || score == -1) {
-					score = client.second.player_->score;
-					editPlayer = client.second.player_;
-				}
+			int expRange = player->GetLvMaxSkillOrb() - player->GetLvMinSkillOrb();
+			switch (rank) {
+			case 0: player->skillPoint += expRange * 0.7f; break;
+			case 1: player->skillPoint += expRange * 0.5f; break;
+			case 2: player->skillPoint += expRange * 0.2f; break;
+			case 3: player->skillPoint += expRange * 0.0f; break;
 			}
 
-			if (editPlayer) {
-				if (preScore != editPlayer->score) {
-					rank = i;
-				}
-
-				int expRange = editPlayer->GetLvMaxSkillOrb() - editPlayer->GetLvMinSkillOrb();
-				switch (rank) {
-				case 0: editPlayer->skillPoint += expRange * 0.7f; break;
-				case 1: editPlayer->skillPoint += expRange * 0.5f; break;
-				case 2: editPlayer->skillPoint += expRange * 0.2f; break;
-				case 3: editPlayer->skillPoint += expRange * 0.0f; break;
-				}
-				
-				preScore = editPlayer->score;
-			}
-
-			maxScore = score;
+			rank += addRank;
+			preScore = player->score;
 		}
 	}
 }
