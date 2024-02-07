@@ -715,7 +715,7 @@ void ServerThunder::Attack(void) {
 					attack->direction = direction.Normalize() * state->atkDistance;
 					attack->velocity = CalcVector(direction) * state->powerAttackRatio;
 					attack->atk = state->atk;
-					attack->atkDrop = state->atkDistance;
+					attack->atkDrop = state->atkDrop;
 					attack->knockbackRate = state->knockbackRate;
 				}
 			}

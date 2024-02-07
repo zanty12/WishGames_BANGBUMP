@@ -133,7 +133,7 @@ void MultiPlayCharacterSelectModeClientSide::CharacterDraw(int id, int maxIdx, f
 	const float SCREEN_HEIGHT = Graphical::GetHeight();					// 画面の高さ
 	const float center = (float)maxIdx - (float)maxIdx * 0.5f - 0.5f;	// 中央
 
-	float x = (SCREEN_WIDTH * 0.5f) - (id - center) * (width + gap);
+	float x = (SCREEN_WIDTH * 0.5f) - (center - id) * (width + gap);
 	float y = (SCREEN_HEIGHT * 0.5f);
 
 	float scaleMoveAttributeRate = MATH::Abs(moveAttribute - moveAttributeSmooth) + 1.0f;
@@ -182,7 +182,7 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 		characters[id].uAttackAnim.update();
 
 		// アニメーションの描画
-		float width = 150.0f;
+		float width = 500.0f;
 		float height = 900.0f;
 		float gap = 50.0f;
 		CharacterDraw(
