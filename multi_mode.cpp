@@ -100,9 +100,15 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 
 	// ドロップアニメーション
 	else if (time <= DROP_ANIMATION) {
+		// ランキング
+		std::list<ServerPlayer *> ranking;
+		for (auto &kvp : MultiPlayServer::clients_) ranking.push_back(kvp.second.player_);
 
-		// ランキングソート
-		auto sortPlayers = MultiPlayClient::clients;
+		// ソート
+		ranking.sort([](ServerPlayer *a, ServerPlayer *b) {
+			return a->score > b->score;
+			}
+		);
 
 		// ドロップ関数
 		auto dropOrb = [&](int rank, int dropNum, float velocity) {
@@ -110,26 +116,34 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 				float rad = MATH::Rand(-MATH::PI, MATH::PI);
 				rstSkillOrb.push_back(ResultSkillOrb(
 					CalcTimePosition(),
-					CalcIconPosition(rank, sortPlayers.size()),
+					CalcIconPosition(rank, ranking.size()),
 					Vector2(std::sin(rad), std::cosf(rad) * velocity)));
 			}
-			};
+		};
 
 		// 0.5秒ごとにスキルオーブをドロップ
 		if (100 < dropSkillOrbCoolTimer.GetNowTime()) {
-			for (auto &kvp : sortPlayers) {
-				auto client = kvp.second;
-				int id = client->id;
-				int rank = get_rank(sortPlayers, id);
+			for (auto &kvp : ranking) {
+				int rank = 0;
+				int preScore = -1;
+				int addRank = 1;
 				int dropNum = 5;
-				int dropRate = (1.0f - (float)(rank) / (float)players.clients.size());
-				switch (rank) {
-				case 0: dropOrb(rank, dropNum * 1.0f, 30.0f); break;
-				case 1: dropOrb(rank, dropNum * 0.5f, 30.0f); break;
-				case 2: dropOrb(rank, dropNum * 0.25f, 30.0f); break;
-				case 3: dropOrb(rank, dropNum * 0.0f, 30.0f); break;
+				for (auto player : ranking) {
+					if (player->score == preScore) addRank++;
+					else addRank = 1;
+
+					int expRange = player->GetLvMaxSkillOrb() - player->GetLvMinSkillOrb();
+					switch (rank) {
+						switch (rank) {
+						case 0: dropOrb(rank, dropNum * 1.0f, 30.0f); break;
+						case 1: dropOrb(rank, dropNum * 0.5f, 30.0f); break;
+						case 2: dropOrb(rank, dropNum * 0.25f, 30.0f); break;
+						case 3: dropOrb(rank, dropNum * 0.0f, 30.0f); break;
+						}
+					}
+					rank += addRank;
+					preScore = player->score;
 				}
-				
 			}
 			dropSkillOrbCoolTimer.Start();
 		}
