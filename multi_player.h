@@ -126,6 +126,7 @@ private:
 	MultiAnimator windDamageEffect;							// 風ダメージエフェクト
 	MultiAnimator exEffect;									// がっちゃんこエフェクト
 	MultiAnimator lvUpEffect;								// レベルアップエフェクト
+	MultiAnimator lvDownEffect;								// レベルダウンエフェクト
 	MultiAnimator lvUpUI;									// レベルアップUIエフェクト
 	MultiAnimator lvDownUI;									// レベルダウンUIエフェクト
 

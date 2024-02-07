@@ -62,30 +62,6 @@ ServerAttribute *ServerAttribute::Create(ServerPlayer *player, ATTRIBUTE_TYPE ty
 	}
 	return nullptr;
 }
-ClientAttribute *ClientAttribute::Create(ClientPlayer*player, ATTRIBUTE_TYPE type) {
-	switch (type) {
-	case ATTRIBUTE_TYPE_FIRE: return new ClientFire(player);
-	case ATTRIBUTE_TYPE_DARK: return new ClientWater(player);
-	case ATTRIBUTE_TYPE_THUNDER: return new ClientThunder(player);
-	case ATTRIBUTE_TYPE_WIND: return new ClientWind(player);
-	}
-	return nullptr;
-}
-void ClientAttribute::LevelUpdate(void) {
-	int lv = MAX_LV - 1;
-	// レベルが上限の場合
-	if (player->lvupPoint[lv] <= player->skillPoint) {
-		state = &state_lv[lv];
-	}
-
-	// レベルの調整
-	for (lv = 0; lv < MAX_LV - 1; lv++) {
-		if (player->lvupPoint[lv] <= player->skillPoint && player->skillPoint < player->lvupPoint[lv + 1]) {
-			state = &state_lv[lv];
-			return;
-		}
-	}
-}
 void ServerAttribute::AddPower(void) {
 	power += state->addPower;
 	if (state->maxPower < power) power = state->maxPower;
@@ -109,6 +85,30 @@ void ServerAttribute::Friction(void) {
 }
 Vector2 ServerAttribute::CalcVector(Vector2 stick) {
 	return stick * power;
+}
+ClientAttribute *ClientAttribute::Create(ClientPlayer*player, ATTRIBUTE_TYPE type) {
+	switch (type) {
+	case ATTRIBUTE_TYPE_FIRE: return new ClientFire(player);
+	case ATTRIBUTE_TYPE_DARK: return new ClientWater(player);
+	case ATTRIBUTE_TYPE_THUNDER: return new ClientThunder(player);
+	case ATTRIBUTE_TYPE_WIND: return new ClientWind(player);
+	}
+	return nullptr;
+}
+void ClientAttribute::LevelUpdate(void) {
+	int lv = MAX_LV - 1;
+	// レベルが上限の場合
+	if (player->lvupPoint[lv] <= player->skillPoint) {
+		state = &state_lv[lv];
+	}
+
+	// レベルの調整
+	for (lv = 0; lv < MAX_LV - 1; lv++) {
+		if (player->lvupPoint[lv] <= player->skillPoint && player->skillPoint < player->lvupPoint[lv + 1]) {
+			state = &state_lv[lv];
+			return;
+		}
+	}
 }
 
 

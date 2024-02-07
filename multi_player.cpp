@@ -105,6 +105,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	// その他エフェクト
 	exEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_EX.png"), 5, 6, 0, 29, false);
 	lvUpEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_levelup.png"), 5, 6, 0, 29, false);
+	lvDownEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_leveldown.png"), 5, 6, 0, 29, false);
 
 	lvUpUI = MultiAnimator(LoadTexture("data/texture/UI/UI_levelup.png"), 5, 6, 0, 29, false);
 	lvDownUI = MultiAnimator(LoadTexture("data/texture/UI/UI_leveldown.png"), 5, 6, 0, 29, false);
@@ -112,6 +113,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	exEffect.SetFrame(1000 / 42);
 	exEffect.MoveEnd();
 	lvUpEffect.MoveEnd();
+	lvDownEffect.MoveEnd();
 	lvUpUI.MoveEnd();
 	lvDownUI.MoveEnd();
 }
@@ -263,9 +265,11 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 		lvUpUI.MoveBegin();
 	}
 	else if (lv < preLv) {
+		lvDownEffect.MoveBegin();
 		lvDownUI.MoveBegin();
 	}
 	lvUpEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
+	lvDownEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
 	lvUpUI.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
 	lvDownUI.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
 	preLv = lv;
