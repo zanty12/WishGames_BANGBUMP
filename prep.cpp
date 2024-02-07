@@ -251,7 +251,7 @@ void Prep::Update()
     }
 
     video_->Update();
-    if (Input::GetKeyDown(0, Input::North))	//Aボタン
+    if (Input::GetKeyDown(0, Input::A))	//Aボタン
     {
         {
             std::string message;

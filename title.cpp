@@ -3,13 +3,13 @@
 #include "asset.h"
 #include "sound.h"
 
-static int	g_TextureNo = 0;
+static int	bg_tex_ = 0;
 static int g_BGM = 0;
 
 Title::Title(SceneMngr* scene_mngr)
 	:scene_mngr_(scene_mngr)
 {
-	g_TextureNo = LoadTexture((char*)"data/TEXTURE/title.webp");
+	bg_tex_ = LoadTexture((char*)"data/TEXTURE/title.webp");
 	g_BGM = LoadSound(Asset::GetAsset(SE_1).c_str());
 	PlaySound(g_BGM, -1);
 }
@@ -31,7 +31,7 @@ void Title::Draw()
 {
 	const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
 	const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
-	DrawSprite(g_TextureNo, Vector2(Graphical::GetWidth()/2, Graphical::GetHeight()/2), 0.0f, Vector2(1920.0f*scale_x, 1080.0f*scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
+	DrawSprite(bg_tex_, Vector2(Graphical::GetWidth()/2, Graphical::GetHeight()/2), 0.0f, Vector2(1920.0f*scale_x, 1080.0f*scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 void Title::DebugMenu()
