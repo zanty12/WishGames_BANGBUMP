@@ -5,7 +5,7 @@
 #include "lib/collider2d.h"
 #include "time.h"
 
-#define RANGE (SIZE_ * 20.0f)                            //”ÍˆÍ
+#define RANGE (SIZE_ * 20.0f)                            //ç¯„å›²
 
 
 bool CheckEnemy3Length(Vector2 a, Vector2 b, float len);
@@ -13,23 +13,23 @@ bool CheckPlayerLength(Vector2 a, Vector2 b, float len);
 
 void Enemy3::Update()
 {
-    //HP‚ª0‚É‚È‚Á‚½‚çÁ‚·
+    //HPãŒ0ã«ãªã£ãŸã‚‰æ¶ˆã™
     if (GetHp() <= 0)
     {
         DispUninit();
         if (dead_effect_ == nullptr)
         {
-            dead_effect_ = new EnemyDeadEffect(GetPos());   //ƒGƒtƒFƒNƒg¶¬
+            dead_effect_ = new EnemyDeadEffect(GetPos());   //ã‚¨ãƒ•ã‚§ã‚¯ãƒˆç”Ÿæˆ
             dead_effect_->SetScale(GetScale());
         }
 
         DropSkillOrb(GetPos(), SKILLORB_SIZE_TYPE_BIG);
     }
 
-    //Á–ÅƒGƒtƒFƒNƒg
+    //æ¶ˆæ»…ã‚¨ãƒ•ã‚§ã‚¯ãƒˆ
     if (dead_effect_)
     {
-        //ƒGƒtƒFƒNƒg‚ªI—¹‚µ‚½‚çDiscard
+        //ã‚¨ãƒ•ã‚§ã‚¯ãƒˆãŒçµ‚äº†ã—ãŸã‚‰Discard
         if (dead_effect_->EffectEnd())
         {
             delete dead_effect_;
@@ -37,7 +37,7 @@ void Enemy3::Update()
             Discard();
         }
 
-        //ƒGƒlƒ~[‚É‚Í‰½‚à‚³‚¹‚È‚¢
+        //ã‚¨ãƒãƒŸãƒ¼ã«ã¯ä½•ã‚‚ã•ã›ãªã„
         return;
     }
 
@@ -45,10 +45,10 @@ void Enemy3::Update()
 
     GetAnimator()->SetIsAnim(true);
 
-    float dt = Time::GetDeltaTime(); //‰Šú‰»‚ÌƒGƒ‰[‚ğ‰ñ”ğ‚·‚é
+    float dt = Time::GetDeltaTime(); //åˆæœŸåŒ–æ™‚ã®ã‚¨ãƒ©ãƒ¼ã‚’å›é¿ã™ã‚‹
 
 
-    //ƒvƒŒƒCƒ„[’Ç]
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼è¿½å¾“
     std::list<Player*> players = GetEnemyMngr()->GetMapMngr()->GetGame()->GetPlayers();
 
     float Spos_now = 0.0f;
@@ -74,7 +74,7 @@ void Enemy3::Update()
 
         if (cheakRange_Player_ == true)
         {
-            if (CheckEnemy3Length(GetPos(), startPosition, RANGE))//‰¼
+            if (CheckEnemy3Length(GetPos(), startPosition, RANGE))//ä»®
             {
                 if (cheakRange_Enemy_ == true)
                 {
@@ -123,11 +123,6 @@ void Enemy3::CollisionAction(void)
         case OBJ_SPIKE:
             CollisionSpike();
             break;
-        case OBJ_ATTACK:
-            {
-
-            }
-            break;
         default:
             break;
         }
@@ -135,7 +130,7 @@ void Enemy3::CollisionAction(void)
 }
 
 //================================================================================
-// ƒgƒQ‚É“–‚½‚Á‚½‚ÌƒAƒNƒVƒ‡ƒ“
+// ãƒˆã‚²ã«å½“ãŸã£ãŸæ™‚ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
 //================================================================================
 void Enemy3::CollisionSpike(void)
 {
@@ -148,12 +143,12 @@ void Enemy3::CollisionSpike(void)
         if (GetVel().y != 0.0f)
             SetVel(Vector2(GetVel().x, 0.0f));
 
-        //knockback_end_‚ªƒoƒO‚é‚Ì‚Å‚»‚Ì‚Ü‚Ü
+        //knockback_end_ãŒãƒã‚°ã‚‹ã®ã§ãã®ã¾ã¾
         knockback_start_ = GetPos();
         knockback_end_ = GetPos();
         return;
     }
-    dir_ *= -1;	//”½“]‚³‚¹‚é
+    dir_ *= -1;	//åè»¢ã•ã›ã‚‹
 
     HpDown(6);
 
@@ -187,7 +182,7 @@ bool CheckPlayerLength(Vector2 a, Vector2 b, float len)
 
 void Enemy3::RangeEnemy(float a, float b, float c, float d)
 {
-    // ‰~‚Ìî•ñ
+    // å††ã®æƒ…å ±
     float x = a;
     float y = b;
     float radius_0 = RANGE;
@@ -208,7 +203,7 @@ void Enemy3::RangeEnemy(float a, float b, float c, float d)
 }
 void Enemy3::RangePlayer(float a, float b, float c, float d)
 {
-    // ‰~‚Ìî•ñ
+    // å††ã®æƒ…å ±
     float x = a;
     float y = b;
     float radius_0 = RANGE;

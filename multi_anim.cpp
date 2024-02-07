@@ -153,6 +153,6 @@ void MultiAnimator::GetPlayer(int animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE 
 	}
 	// ATTACKiThunderj
 	if (IsPlayerAnimAttack(animType) && attack == ATTRIBUTE_TYPE_THUNDER) {
-		anim->isLoop = false;
+		anim->isLoop = true;
 	}
 }

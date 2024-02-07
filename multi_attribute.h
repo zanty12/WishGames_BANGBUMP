@@ -2,6 +2,7 @@
 #include <list>
 #include "lib/vector.h"
 #include "lib/get_set.h"
+#include "asset.h"
 #include "multi_anim.h"
 #include "multi_player.h"
 #include "multi_movable_object.h"
@@ -10,6 +11,7 @@
 #include "lib/collider2d.h"
 #include "attribute_type.h"
 #include "attribute_state.h"
+#define MAX_LV 10
 
 /*******************************************************
   属性
@@ -20,7 +22,6 @@ class ServerMovableGameObject;
 class ClientMovableGameObject;
 class ServerAttribute {
 public:
-	static const int MAX_LV = 10;
 	ServerPlayer *player = nullptr;
 	WIN::Time coolTimer;
 	WIN::Time atkCoolTimer;
@@ -29,12 +30,11 @@ public:
 	AttackServerSide *attack_ = nullptr;
 
 public:
-	float power = 0.0f;						// パワー
+	float power = 0.0f;									// パワー
 	int mp = 0;
-	int lv = 0;								// レベル
-	AttributeState *state = nullptr;		// 現在のステータス
-	AttributeState state_lv[MAX_LV] = {};	// ステータス
-	int lvupPoint[MAX_LV] = {};				// レベルアップに必要なポイント
+	int lv = 0;											// レベル
+	AttributeState *state = nullptr;					// 現在のステータス
+	AttributeState state_lv[MAX_LV] = {};				// ステータス
 
 
 public:
@@ -43,7 +43,6 @@ public:
 		std::wstring lvStr = L"lv";
 		for (int i = 0; i < MAX_LV; i++) {
 			state_lv[i] = AttributeState(attributeName, i + 1);
-			lvupPoint[i] = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", lvStr + std::to_wstring(i + 1), 0);
 		}
 		// レベル1のステータスにする
 		state = state_lv;
@@ -68,31 +67,18 @@ public:
 	void FrictionPower(void);
 	void Friction(void);
 	Vector2 CalcVector(Vector2 stick);
-	int GetLv(void) {
-		if (state) return (state - state_lv);
-		else return 0;
-	}
-	int GetLvMinSkillOrb(void) {
-		int lv = GetLv();
-		int min = lvupPoint[lv];
-		return min;
-	}
-	int GetLvMaxSkillOrb(void) {
-		int lv = GetLv();
-		int max = lv < MAX_LV - 1 ? lvupPoint[lv + 1] : -1;
-		return max;
-	}
 };
 class ClientAttribute {
 protected:
-	static const int MAX_LV = 10;
 	ClientPlayer *player = nullptr;
 	MultiAnimator attackAnim;
 	MultiAnimator moveAnim;
+	int attackTexNo = -1;
+	int attack2TexNo = -1;
+	int moveTexNo = -1;
 
 	AttributeState *state = nullptr;		// 現在のステータス
 	AttributeState state_lv[MAX_LV] = {};	// ステータス
-	int lvupPoint[MAX_LV] = {};				// レベルアップに必要なポイント
 
 public:
 	ClientAttribute(ClientPlayer *player, std::wstring attributeName) : player(player) {
@@ -100,7 +86,6 @@ public:
 		std::wstring lvStr = L"lv";
 		for (int i = 0; i < MAX_LV; i++) {
 			state_lv[i] = AttributeState(attributeName, i + 1);
-			lvupPoint[i] = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", lvStr + std::to_wstring(i + 1), 0);
 		}
 		// レベル1のステータスにする
 		state = state_lv;
@@ -110,21 +95,9 @@ public:
 	virtual void Idle(void) { }
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	static ClientAttribute *Create(ClientPlayer *player, ATTRIBUTE_TYPE type);
+	AttributeState *GetState(void) { return state; }
+	AttributeState *GetState(int idx) { return &state_lv[idx]; }
 	void LevelUpdate(void);
-	int GetLv(void) {
-		if (state) return (state - state_lv);
-		else return 0;
-	}
-	int GetLvMinSkillOrb(void) {
-		int lv = GetLv();
-		int min = lvupPoint[lv];
-		return min;
-	}
-	int GetLvMaxSkillOrb(void) {
-		int lv = GetLv();
-		int max = lv < MAX_LV - 1 ? lvupPoint[lv + 1] : -1;
-		return max;
-	}
 };
 
 
@@ -155,8 +128,6 @@ private:
 		Vector2 scl;
 		MultiAnimator anim;
 	};
-	int moveTexNo = -1;
-	int attackTexNo = -1;
 	std::list<Animator> moveAnims;
 	DWORD startTime = 0;
 
@@ -164,8 +135,9 @@ public:
 
 
 	ClientFire(ClientPlayer *player) : ClientAttribute(player, L"Fire") {
-		moveTexNo = LoadTexture("data/texture/Effect/effect_fire_move.png");
-		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
+		moveTexNo = LoadTexture(Asset::GetAsset(textures::fire_move));
+		attackTexNo = LoadTexture(Asset::GetAsset(textures::fire_attack));
+		attack2TexNo = LoadTexture("data/texture/Attack/effect_fire_attack2.png");
 
 		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true);
 		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true);
@@ -216,12 +188,20 @@ public:
 
 
 	ClientWater(ClientPlayer *player) : ClientAttribute(player, L"Water") {
-		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_move.png"), 5, 3, 0, 14, false);
-		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_attack.png"), 5, 6, 0, 29, true);
-		moveChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_move_charge.png"), 5, 10, 0, 47, true);
-		attackChargeAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_attack_charge.png"), 5, 10, 0, 47, true);
-		idle = MultiAnimator(LoadTexture("data/texture/Effect/effect_water_idle.png"), 5, 6, 0, 29, true);
-		indicator = MultiAnimator(LoadTexture("data/texture/Effect/UI_water_indicator.png"), 5, 4, 0, 18, true);
+		moveTexNo = LoadTexture(Asset::GetAsset(textures::dark_move));
+		attackTexNo = LoadTexture(Asset::GetAsset(textures::dark_attack));
+		attack2TexNo = LoadTexture("data/texture/Attack/effect_water_attack2.png");
+		int moveChargeTexNo = LoadTexture(Asset::GetAsset(textures::dark_move_charge));
+		int attackChargeTexNo = LoadTexture("data/texture/Effect/effect_water_attack_charge.png");
+		int idleTexNo = LoadTexture(Asset::GetAsset(textures::dark_idle));
+		int indicatorTexNo = LoadTexture("data/texture/Effect/UI_water_indicator.png");
+
+		moveAnim = MultiAnimator(moveTexNo, 5, 3, 0, 14, false);
+		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true);
+		moveChargeAnim = MultiAnimator(moveChargeTexNo, 5, 10, 0, 47, true);
+		attackChargeAnim = MultiAnimator(attackChargeTexNo, 5, 10, 0, 47, true);
+		idle = MultiAnimator(idleTexNo, 5, 6, 0, 29, true);
+		indicator = MultiAnimator(indicatorTexNo, 5, 4, 0, 18, true);
 
 		moveAnim.MoveEnd();
 	}
@@ -257,9 +237,11 @@ public:
 class ServerThunder : public ServerAttribute {
 private:
 	float brakeFriction = 0.50f;		// 摩擦係数（ブレーキ）
+	WIN::Time chargeToAttackTimer;		// チャージアニメーションから攻撃アニメーションに切り替わったときの時間
+	float friction = 0.0f;
 
 public:
-	ServerThunder(ServerPlayer *player) : ServerAttribute(player, L"Thunder") { }
+	ServerThunder(ServerPlayer *player) : ServerAttribute(player, L"Thunder") { chargeToAttackTimer.Start(); }
 	bool StickTrigger(Vector2 stick, Vector2 previousStick) override;
 	void Move(void) override;
 	void Attack(void) override;
@@ -267,19 +249,13 @@ public:
 	ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_THUNDER; };
 };
 class ClientThunder : public ClientAttribute {
-private:
-	int moveTexNo = -1;
-	int attackTexNo = -1;
-
 public:
+	MultiAnimator chargeAttackAnim;
 
 
 	ClientThunder(ClientPlayer *player) : ClientAttribute(player, L"Thunder") {
-		moveTexNo = LoadTexture("data/texture/Effect/effect_fire_move.png");
-		attackTexNo = LoadTexture("data/texture/Effect/effect_fire_attack.png");
-
-		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true);
-		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true);
+		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_move.png"), 5, 3, 0, 14, false);
+		chargeAttackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_charge.png"), 5, 3, 0, 14, true);
 	}
 
 	void Move(void) override;
@@ -301,19 +277,46 @@ public:
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER; }
 };
+class ServerThunder2Attack : public ServerThunderAttack {
+public:
+	float gravity = 0.0f;
+
+	ServerThunder2Attack(GameObjectServerSide *self, ServerAttribute *attribute) :
+		ServerThunderAttack(self, attribute) {
+		transform.position = self->transform.position;
+	}
+
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER; }
+};
 class ClientThunderAttack : public AttackClientSide {
 public:
 	float gravity = 0.0f;
 	MultiAnimator anim;
+	MultiAnimator deathAnim;
 
 	ClientThunderAttack(Transform transform) : AttackClientSide(transform) {
-		texNo = LoadTexture("data/texture/Effect/effect_thunder_arrow.png");
-		anim = MultiAnimator(texNo, 5, 2, 0, 9, true);
+		texNo = LoadTexture("data/texture/Attack/effect_thunder_arrow.png");
+		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
+		deathAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_lost.png"), 5, 2, 0, 4, false);
+		this->transform.scale = Vector2::One * 150.0f;
 	}
 
 	void Loop(void) override;
+	void Release(void) override;
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER; }
+};
+class ClientThunder2Attack : public ClientThunderAttack {
+public:
+	float gravity = 0.0f;
+	MultiAnimator anim;
+
+	ClientThunder2Attack(Transform transform) : ClientThunderAttack(transform) {
+		texNo = LoadTexture("data/texture/Attack/effect_thunder_arrow2.png");
+		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
+	}
+
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2; }
 };
 
 
@@ -343,6 +346,10 @@ public:
 	Vector2 prevPosition;			// ワープ前の座標
 
 	ClientWind(ClientPlayer *player) : ClientAttribute(player, L"Wind") {
+		moveTexNo = LoadTexture(Asset::GetAsset(textures::wind_move));
+		attackTexNo = LoadTexture(Asset::GetAsset(textures::wind_attack));
+		attack2TexNo = LoadTexture("data/texture/Attack/effect_wind_attack2.png");
+
 		attackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_attack.png"), 5, 6, 0, 29, true);
 		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_move.png"), 5, 6, 0, 29, false);
 		idle = MultiAnimator(LoadTexture("data/texture/Effect/effect_wind_idle.png"), 5, 6, 0, 29, true);

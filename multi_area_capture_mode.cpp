@@ -132,8 +132,6 @@ void MultiPlayAreaCaptureModeServerSide::CreateResponse(Storage &out) {
 	Client
 ************************************************************/
 void MultiPlayAreaCaptureModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {
-	// クライアントの記録をする
-	if (beforeClients.size() == 0) beforeClients = players.clients;
 
 	// エリアの描画
 	for (auto &area : res.areas) {

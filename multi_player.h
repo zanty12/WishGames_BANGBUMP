@@ -9,6 +9,7 @@
 #include "multi_animenum.h"
 #include "multi_path.h"
 #include "ini.h"
+#define MAX_LV 10
 
 /*******************************************************
   Server
@@ -27,14 +28,20 @@ public:
 	int score = 0;										// スコア
 	int animType = ANIMATION_TYPE_IDLE;					// アニメーション
 	MultiMap *map = nullptr;							// マップ
-	Vector2 attackVelocity;								// 攻撃のベクトル
-	Vector2 warpVelocity;								// ワープベクトル
+	Vector2 attackVelocity;								// 攻撃のベロシティ
+	Vector2 chargeVelocity;								// チャージベロシティ
 	bool isAttributeChange = false;						// 属性チェンジ
 	WIN::Time exStartTime;								// がっちゃんこ開始タイマー
 
+	int lvupPoint[MAX_LV] = {};							// レベルアップに必要なポイント
 
 public:
-	ServerPlayer() { 
+	ServerPlayer() {
+		std::wstring lvStr = L"lv";
+		for (int i = 0; i < MAX_LV; i++) {
+			lvupPoint[i] = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", lvStr + std::to_wstring(i + 1), 0);
+		}
+
 		radius = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"radius", 10.0f);
 		gravity = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"gravity", 0.01f);
 		maxGravity = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"maxGravity", 0.5f);
@@ -57,6 +64,30 @@ public:
 	ServerAttribute *GetMoveAttribute(void) { return moveAttribute; }
 	ServerAttribute *GetAttackAttribute(void) { return attackAttribute; }
 
+	int GetLv(void) {
+		int lv = MAX_LV - 1;
+		// レベルが上限の場合
+		if (lvupPoint[lv] <= skillPoint) {
+			return lv;
+		}
+
+		// レベルの調整
+		for (lv = 0; lv < MAX_LV - 1; lv++) {
+			if (lvupPoint[lv] <= skillPoint && skillPoint < lvupPoint[lv + 1]) {
+				return lv;
+			}
+		}
+	}
+	int GetLvMinSkillOrb(void) {
+		int lv = GetLv();
+		int min = lvupPoint[lv];
+		return min;
+	}
+	int GetLvMaxSkillOrb(void) {
+		int lv = GetLv();
+		int max = lv < MAX_LV - 1 ? lvupPoint[lv + 1] : -1;
+		return max;
+	}
 	void Loop(void) override;
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_PLAYER; }
 };
@@ -94,23 +125,31 @@ private:
 	MultiAnimator thunderDamageEffect;						// 雷ダメージエフェクト
 	MultiAnimator windDamageEffect;							// 風ダメージエフェクト
 	MultiAnimator exEffect;									// がっちゃんこエフェクト
+	MultiAnimator lvUpEffect;								// レベルアップエフェクト
+	MultiAnimator lvUpUI;									// レベルアップUIエフェクト
+	MultiAnimator lvDownUI;									// レベルダウンUIエフェクト
 
 public:
 	int skillPoint = 0;										// スキルポイント
 	int animType = ANIMATION_TYPE_IDLE;						// アニメーションタイプ
 	int preAnimType = ANIMATION_TYPE_IDLE;					// アニメーション（1フレーム前）
+	int lv = 0;												// レベル
+	int preLv = 0;											// レベル（1フレーム前）
 	ATTRIBUTE_TYPE moveAttributeType;						// 移動属性タイプ
 	ATTRIBUTE_TYPE attackAttributeType;						// 攻撃属性タイプ
 	ATTRIBUTE_TYPE preMoveAttributeType;					// 移動属性タイプ
 	ATTRIBUTE_TYPE preAttackAttributeType;					// 攻撃属性タイプ
+	bool isReverseXAttributeControl = false;				// 横軸の向きを属性側でコントロールするか否か
 	bool isReverseX = false;								// 横軸の向き
 	Vector2 attackVelocity;									// 攻撃のベロシティ
-	Vector2 warpVelocity;									// ワープベロシティ
+	Vector2 chargeVelocity;									// チャージベロシティ
 	ClientAttribute *moveAttribute = nullptr;				// 移動属性
 	ClientAttribute *attackAttribute = nullptr;				// 攻撃属性
 	ClientAttribute *curMoveAttribute = nullptr;			// 移動属性（現在）
 	ClientAttribute *curAttackAttribute = nullptr;			// 攻撃属性（現在）
+	float skillPointAnimation = 0.0f;						// スキルポイント獲得時のゲージのアニメーションで使用する
 
+	int lvupPoint[MAX_LV] = {};								// レベルアップに必要なポイント
 
 
 public:
@@ -126,6 +165,31 @@ public:
 	void SetAttribute(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute) {
 		SetMoveAttribute(moveAttribute);
 		SetAttackAttribute(attackAttribute);
+	}
+
+	int GetLv(void) {
+		int lv = MAX_LV - 1;
+		// レベルが上限の場合
+		if (lvupPoint[lv] <= skillPoint) {
+			return lv;
+		}
+
+		// レベルの調整
+		for (lv = 0; lv < MAX_LV - 1; lv++) {
+			if (lvupPoint[lv] <= skillPoint && skillPoint < lvupPoint[lv + 1]) {
+				return lv;
+			}
+		}
+	}
+	int GetLvMinSkillOrb(void) {
+		int lv = GetLv();
+		int min = lvupPoint[lv];
+		return min;
+	}
+	int GetLvMaxSkillOrb(void) {
+		int lv = GetLv();
+		int max = lv < MAX_LV - 1 ? lvupPoint[lv + 1] : -1;
+		return max;
 	}
 	ClientAttribute *GetMoveAttribute(void) { return moveAttribute; }
 	ClientAttribute *GetAttackAttribute(void) { return attackAttribute; }

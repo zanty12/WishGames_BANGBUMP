@@ -85,11 +85,6 @@ void Enemy1::CollisionAction(void)
 		case OBJ_SPIKE:
 			CollisionSpike();
 			break;
-		case OBJ_ATTACK:
-			{
-
-			}
-			break;
 		default:
 			break;
 		}

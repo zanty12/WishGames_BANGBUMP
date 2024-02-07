@@ -100,6 +100,8 @@ public:
 		delete video;
 	}
 
+	void DrawStart(RESPONSE_PLAYER &players, Vector2 offset) override;
+	void DrawResult(RESPONSE_PLAYER &players, Vector2 offset) override;
 	void Draw(RESPONSE_PLAYER &players, Vector2 offset) override;
 	void ParseResponse(Storage &in) override;
 	void Release(RESPONSE_PLAYER &players) override;

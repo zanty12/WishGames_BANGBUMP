@@ -1,102 +1,90 @@
-#include "graphical.h"
+ï»¿#include "graphical.h"
 #include "sprite.h"
 #include <iostream>
 #include <thread>
 
-#include "DebugUI.h"
+//#include "DebugUI.h"
 #include "xinput.h"
 #include "multiplay.h"
+#include "asset.h"
+//#include "mapmngr.h"
+//#include "scenemngr.h"
+//#include "text.h"
 #include "time.h"
-#include "sound.h"
+//#include "video.h"
+#include "multi_map.h"
 
-bool debug_mode = true;
-//#define SERVER
 
-int main()
-{
+
+int main() {
+    int mode = 0;
+    std::cin >> mode;
+
+    MSG msg;
+    Graphical::Initialize(1600, 900);
+    DebugUI::Initialize();
     Time::Initialize();
+    Text::CreateResources();
     srand(time(NULL));
 
-#ifdef SERVER
-    MultiPlayServer server;
-    server.OpenTerminal();
-#else
-    MSG msg;
-    Graphical::Initialize(1920, 1080);
-    DebugUI::Initialize();
-    Text::CreateResources();
-    WIN::Window window = Graphical::GetHwnd();
-    const HWND hWnd = window.GetHwnd();
-    InitSound(hWnd);
-    SceneMngr* scene_mngr = new SceneMngr(SCENE_TITLE);
-    while (true)
-    {
-        // ƒƒbƒZ[ƒW
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-        {
-            if (msg.message == WM_QUIT)
+    //MultiMap map;
+    //ServerPlayer player;
+    //map.Initialize();
+    //map.Load("data/map/MultiPlay_Map1.csv");
+    //player.transform.position = *map.startPosition.begin() * map.cellSize;
+
+    if (mode == 0) {
+        MultiPlayServer server;
+        server.OpenTerminal();
+    }
+    else {
+        MultiPlayClient client;
+        client.Register();
+        //int texNo = LoadTexture(Asset::textures_.at(textures::player));
+        while (!client.isFinish) {
+            // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
             {
-                break;
-            }
-            else
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
-        }
-        else
-        {
-            //WTF?
-            Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
-
-            //update
-            Input::Update();
-            Time::Update();
-            scene_mngr->Update();
-
-            //draw
-            DebugUI::BeginDraw();
-            //ƒfƒoƒbƒOƒ‚[ƒh
-            { if (GetKeyState(VK_F1) & 0x8000)
-                debug_mode = !debug_mode;
-
-                if (debug_mode)
+                if (msg.message == WM_QUIT)
                 {
-                    //bool show_demo_window = true;
-                    //ImGui::ShowDemoWindow(&show_demo_window);
-                    ImGuiIO& io = ImGui::GetIO();
-                    ImGui::Begin("Main System");
-                    ImGui::Text("FPS:%.1f", io.Framerate);
-
-
-                    //test controller
-                    ImGui::Text(u8"ƒRƒ“ƒgƒ[ƒ‰[");
-                    ImGui::Text("Left Stick");
-                    ImGui::Text("X:%.2f, Y:%.2f", Input::GetStickLeft(0).x,Input::GetStickLeft(0).y);
-                    ImGui::Text("Right Stick");
-                    ImGui::Text("X:%.2f, Y:%.2f", Input::GetStickRight(0).x, Input::GetStickRight(0).y);
-
-                    //Time
-                    ImGui::Text("DeltaTime:%.4f", Time::GetDeltaTime());
-                    ImGui::End();
-
-                    scene_mngr->DebugMenu();
+                    break;
+                }
+                else
+                {
+                    TranslateMessage(&msg);
+                    DispatchMessage(&msg);
                 }
             }
-            Text::TextStart();
-            scene_mngr->Draw();
-            Text::TextEnd();
-            DebugUI::EndDraw();
-            Graphical::Present();
+
+
+            //Input::Update();
+            //Graphical::Clear(Color::White);
+
+            //map.Draw(Vector2::Zero);
+            //player.velocity = Input::GetStickLeft(0) * 10;
+            //Vector2 normal;
+            //int id = map.Collision(player.transform.position, 10, &normal);
+            //player.transform.position += player.velocity;
+            //DrawSprite(texNo, player.transform.position, 0.0, player.transform.scale * 100, Color::White);
+
+            //
+            //Graphical::Present();
+            //static float x = 0;
+            //static float y = 0;
+            //x += (GetAsyncKeyState('A') - GetAsyncKeyState('D')) * 0.001f;
+            //y += (GetAsyncKeyState('S') - GetAsyncKeyState('W')) * 0.001f;
+
+            //Graphical::Clear(Color::White);
+            //map.Draw(Vector2(x, y));
+            //Graphical::Present();
         }
+        client.Unregister();
     }
-    UninitSound();
-    delete scene_mngr;
+
+    Time::Release();
     Text::DiscardResources();
     DebugUI::Release();
     Graphical::Release();
-#endif
 
-    Time::Release();
-    std::cout << "END\n"; //Šî–{
+    std::cout << "Hello World!\n"; //åŸºæœ¬
 }

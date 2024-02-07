@@ -42,23 +42,19 @@ Vector2 Fire::Move()
         move_effect_->Update();
 
         Vector2 dir = stick.Normalize();
-        Vector2 vel = dir * speed * Time::GetDeltaTime();
+        Vector2 vel = dir * state_->maxPower * GameObject::SIZE_ * Time::GetDeltaTime();
 
         player_->SetGravityState(GRAVITY_NONE);
         return vel;
     }
     else
     {
-        if (move_effect_)   //操作をやめたら非表示
+        if (move_effect_) //操作をやめたら非表示
         {
             move_effect_->SetColor(Color(1, 1, 1, 0));
         }
 
-        player_->SetGravityState(GRAVITY_FULL);
-        if (player_->GetVel().Distance() > Player::GRAVITY_SCALE_ * Time::GetDeltaTime())
-            return player_->GetVel() * friction;
-        else
-            return player_->GetVel();
+        return player_->GetVel() * state_->friction;
     }
 };
 
@@ -67,7 +63,7 @@ void Fire::Action()
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
     stick.y *= -1;
-    if(attack_ != nullptr)
+    if (attack_ != nullptr)
         attack_->Update();
 
     if (stick.x > 0.0f)
@@ -169,12 +165,12 @@ void FireAttack::Update()
         }
     }
 
-    HitEffectUpdate();  //エフェクトのアップデート
+    HitEffectUpdate(); //エフェクトのアップデート
 }
 
 FireEffect::FireEffect(Fire* parent)
-    :MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(fire_move)), Vector2::Zero),
-    parent_(parent)
+    : MovableObj(parent->GetPlayer()->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(fire_move)), Vector2::Zero),
+      parent_(parent)
 {
     SetType(OBJ_VOID);
     GetCollider()->Discard();
