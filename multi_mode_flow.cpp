@@ -183,7 +183,6 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	}
 
 	// スコアの描画
-	int idx = 0;										// インデックス
 	int maxMembers = res.clients.size();				// プレイヤー人数
 	for (auto &client : res.clients) {
 		//int moveAttribute = client.moveAttributeType;
@@ -195,6 +194,7 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		//Vector2 uv = Vector2(u, v + idx * 0.25f);
 		//Vector2 uvScale = Vector2(0.25f, 1.0f / 12.0f);
 
+		int idx = client.id;
 		Vector2 uv = Vector2::Zero;
 		Vector2 uvScale = Vector2::One;
 		Vector2 pos = CalcIconPosition(idx, maxMembers);
@@ -241,8 +241,6 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		case 2: Number(Vector2(centerX + 70,  60), Vector2::One * 70.0f, client.score); break;
 		case 4: Number(Vector2(centerX + 175, 60), Vector2::One * 70.0f, client.score); break;
 		}
-		
-		idx++;
 	}
 }
 

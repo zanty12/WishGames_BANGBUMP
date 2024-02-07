@@ -194,11 +194,11 @@ void MultiPlayCharacterSelectModeClientSide::CharacterDraw(int idx, int maxIdx, 
 }
 
 void MultiPlayCharacterSelectModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
-	MoveScene::Move(0.0f);
+	MoveScene::Move(Color::White * 0.0f);
 }
 
 void MultiPlayCharacterSelectModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offset) {
-	MoveScene::Move(1.0f);
+	MoveScene::Move(Color::White * 1.0f);
 }
 
 void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {

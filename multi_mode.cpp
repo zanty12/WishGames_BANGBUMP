@@ -57,7 +57,7 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 	const float SPAWN_ANIMATION_TIME = 3.0f;
 	float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
 	// スポーンさせる
-	if (MoveScene::Move(0.0f) && spawnSpanTime * clientSpawnCount <= time) {
+	if (MoveScene::Move(Color::White * 0.0f) && spawnSpanTime * clientSpawnCount <= time) {
 
 		// イテレータ
 		auto iterator = players.clients.begin();
@@ -81,7 +81,9 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 	// 時間がマイナスなら終了（まだ中間リザルトではない）
 	if (time < 0.0f) return;
 
-	const float DROP_ANIMATION = 5.0f;
+	const float FADE_ANIMATION = 0.5f;
+	const float DROP_ANIMATION = 2.5f;
+	const float STAY_ANIMATION = 7.5f;
 
 
 
@@ -90,9 +92,12 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 			return skillorb.isDestroy;
 		}
 	);
+	if (time <= FADE_ANIMATION) {
+		MoveScene::Move(Color::Black * 0.5f);
+	}
 
 	// ドロップアニメーション
-	if (time <= DROP_ANIMATION) {
+	else if (time <= DROP_ANIMATION) {
 
 		// ランキングソート
 		auto sortPlayers = MultiPlayClient::clients;
@@ -109,12 +114,12 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 			};
 
 		// 0.5秒ごとにスキルオーブをドロップ
-		if (500 < dropSkillOrbCoolTimer.GetNowTime()) {
+		if (100 < dropSkillOrbCoolTimer.GetNowTime()) {
 			for (auto &kvp : sortPlayers) {
 				auto client = kvp.second;
 				int id = client->id;
 				int rank = get_rank(sortPlayers, id);
-				int dropNum = client->GetLvMaxSkillOrb() - client->GetLvMinSkillOrb();
+				int dropNum = 5;
 				int dropRate = (1.0f - (float)(rank) / (float)players.clients.size());
 				switch (rank) {
 				case 0: dropOrb(rank, dropNum * 1.0f, 30.0f); break;
@@ -127,8 +132,11 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 			dropSkillOrbCoolTimer.Start();
 		}
 	}
+	else if (time <= STAY_ANIMATION) {
+		
+	}
 	else {
-		MoveScene::Move(1.0f);
+		MoveScene::Move(Color::White * 1.0f);
 	}
 
 	for (auto &skillOrb : rstSkillOrb) {

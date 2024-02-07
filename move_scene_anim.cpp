@@ -2,8 +2,8 @@
 #include "texture.h"
 #include "sprite.h"
 
-float MoveScene::rate = 0.0f;
-float MoveScene::dstRate = 0.0f;
+Color MoveScene::rate = Color(0.0f,0.0f, 0.0f, 0.0f);
+Color MoveScene::dstRate = Color(0.0f, 0.0f, 0.0f, 0.0f);
 int MoveScene::sceneTexNo = 0;
 
 
@@ -12,9 +12,10 @@ void MoveScene::Initialize(void) {
 }
 void MoveScene::Loop(void) {
 	float amountRate = 0.1f;
-	float direction = dstRate - rate;
-	float amount = direction * amountRate;
-	if (MATH::Abs(direction) <= 0.05f) {
+	Color direction = dstRate - rate;
+	Color amount = direction * amountRate;
+	float distance = direction.r * direction.r + direction.g * direction.g + direction.b * direction.b + direction.a * direction.a;
+	if (distance <= 0.05f) {
 		rate = dstRate;
 	}
 	else {
@@ -26,13 +27,13 @@ void MoveScene::Loop(void) {
 	float height = Graphical::GetHeight();
 	Vector2 pos = Vector2(width, height) * 0.5f;
 	Vector2 scl = Vector2(width, height);
-	Color col = Color(1.0f, 1.0f, 1.0f, rate);
-	DrawSprite(sceneTexNo, pos, 0.0f, scl, col);
+	DrawSprite(sceneTexNo, pos, 0.0f, scl, rate);
 }
-bool MoveScene::Move(float dstRate) {
+bool MoveScene::Move(Color dstRate) {
 	MoveScene::dstRate = dstRate;
 
-	float direction = MoveScene::dstRate - rate;
-	if (MATH::Abs(direction) <= 0.05f) return true;
+	Color direction = MoveScene::dstRate - rate;
+	float distance = direction.r * direction.r + direction.g * direction.g + direction.b * direction.b + direction.a * direction.a;
+	if (distance <= 0.05f) return true;
 	else return false;
 }
