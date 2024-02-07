@@ -91,7 +91,7 @@ void MultiPlayAreaCaptureModeServerSide::DestroyUpdate(void) {
 }
 
 MultiPlayAreaCaptureModeServerSide::MultiPlayAreaCaptureModeServerSide()
-	: MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map1.csv", MULTIPLAY_RUN_TYPE_SERVER), L"AreaCapture") {
+	: MultiPlayModeServerSide(L"AreaCapture") {
 	// è—Ìƒf[ƒ^‚ðŽæ“¾
 	for (auto &areaPosition : GetMap()->GetAreaCaptures()) {
 		areas.push_back(Area(areaPosition));

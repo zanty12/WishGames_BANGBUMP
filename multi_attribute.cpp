@@ -248,7 +248,7 @@ void ClientFire::Move(void) {
 		moveAnims.push_front({ pos, rot, scl, moveAnim });
 
 		// óvëfÇ™ëΩÇ¢Ç»ÇÁçÌèú
-		if (5 < moveAnims.size()) {
+		if (2 < moveAnims.size()) {
 			moveAnims.pop_back();
 		}
 	}
@@ -508,21 +508,54 @@ void ClientWater::Attack(void) {
 
 	// çUåÇ
 	if (IsPlayerAnimAttack(player->animType)) {
-		// ï`âÊÇ∑ÇÈ
-		attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
+
+		// âÒì]
+		player->transform.rotation = rot;
 
 		// ÉLÉÉÉâÇîΩì]Ç≥ÇπÇÈ
 		player->isReverseXAttributeControl = true;
-		if (direction.x < 0.0f) player->isReverseX = false;
-		else if (direction.x > 0.0f) player->isReverseX = true;
+		player->isRotationAttributeControl = true;
+		if (direction.x < 0.0f) {
+			player->isReverseX = false;
+			player->transform.rotation += MATH::Deg2Rad * 90.0f;
+		}
+		else if (direction.x > 0.0f) {
+			player->isReverseX = true;
+			player->transform.rotation -= MATH::Deg2Rad * 90.0f;
+		}
+
+
+
+		// ï`âÊÇ∑ÇÈ
+		attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
 
 		// îΩì]ÇµÇΩäGÇ…çáÇÌÇπÇƒà íuÇ‡îΩì]
 		if (player->isReverseX) localPos.x *= -1.0f;
+
+
 
 		attackChargeAnim.MoveBegin();
 	}
 	// ÇΩÇﬂçUåÇ
 	else if (IsPlayerAnimAttackCharge(player->animType)) {
+
+		// âÒì]
+		player->transform.rotation = rot;
+
+		// ÉLÉÉÉâÇîΩì]Ç≥ÇπÇÈ
+		player->isReverseXAttributeControl = true;
+		player->isRotationAttributeControl = true;
+		if (direction.x < 0.0f) {
+			player->isReverseX = false;
+			player->transform.rotation += MATH::Deg2Rad * 90.0f;
+		}
+		else if (direction.x > 0.0f) {
+			player->isReverseX = true;
+			player->transform.rotation -= MATH::Deg2Rad * 90.0f;
+		}
+
+
+
 		// ï`âÊÇ∑ÇÈ
 		rot = atan2f(-direction.y, direction.x);
 
@@ -539,6 +572,7 @@ void ClientWater::Attack(void) {
 	// ÇªÇÃëº
 	else {
 		player->isReverseXAttributeControl = false;
+		player->isRotationAttributeControl = false;
 	}
 }
 void ClientWater::Idle(void) {
@@ -713,12 +747,29 @@ AttackServerSide *ServerThunder::CreateAttack(void) {
 };
 
 void ClientThunder::Move(void) {
+	if (!IsPlayerAnimMove(player->animType) && !IsPlayerAnimMoveCharge(player->animType)) {
+		player->isRotationAttributeControl = false;
+		return;
+	}
+	player->isRotationAttributeControl = true;
+
 	// à⁄ìÆäJén
 	if (!IsPlayerAnimMove(player->preAnimType) && IsPlayerAnimMove(player->animType)) {
 		float distance = player->velocity.Distance();
 		Vector2 pos = player->transform.position + player->velocity * 0.5f;
 		float rot = std::atan2(player->velocity.y, -player->velocity.x);
 		Vector2 scl = Vector2(distance * 7.0f, player->transform.scale.x * 0.75f);
+
+		// âÒì]
+		player->isRotationAttributeControl = true;
+		player->transform.rotation = rot;
+
+		// ÉLÉÉÉâÇîΩì]Ç≥ÇπÇÈ
+		if (player->velocity.x < 0.0f) {
+		}
+		else if (player->velocity.x > 0.0f) {
+			player->transform.rotation += MATH::Deg2Rad * 180.0f;
+		}
 
 		MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(moveAnim, pos, rot, scl);
 	}
@@ -731,6 +782,7 @@ void ClientThunder::Move(void) {
 void ClientThunder::Attack(void) {
 	if (!IsPlayerAnimAttack(player->animType) && !IsPlayerAnimAttackCharge(player->animType)) {
 		player->isReverseXAttributeControl = false;
+		player->isRotationAttributeControl = false;
 		return;
 	}
 
@@ -739,10 +791,27 @@ void ClientThunder::Attack(void) {
 	Vector2 direction = player->chargeVelocity;
 
 	// ëÆê´ë§Ç≈ÉRÉìÉgÉçÅ[ÉãÇ∑ÇÈÇ©åàÇﬂÇÈ
-	player->isReverseXAttributeControl = direction != Vector2::Zero;
+	player->isRotationAttributeControl = player->isReverseXAttributeControl = direction != Vector2::Zero;
 
 	// ÉLÉÉÉâÇîΩì]Ç≥ÇπÇÈ
 	if (player->isReverseXAttributeControl) {
+		float rot = std::atan2(direction.x, direction.y);
+
+		// âÒì]
+		player->transform.rotation = rot;
+
+		// ÉLÉÉÉâÇîΩì]Ç≥ÇπÇÈ
+		player->isRotationAttributeControl = true;
+		if (direction.x < 0.0f) {
+			player->isReverseX = false;
+			player->transform.rotation += MATH::Deg2Rad * 90.0f;
+		}
+		else if (direction.x > 0.0f) {
+			player->isReverseX = true;
+			player->transform.rotation -= MATH::Deg2Rad * 90.0f;
+		}
+
+
 		if (direction.x < 0.0f) player->isReverseX = false;
 		else if (direction.x > 0.0f) player->isReverseX = true;
 	}

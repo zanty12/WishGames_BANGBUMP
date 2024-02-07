@@ -28,6 +28,7 @@ public:
 	MultiPlayEnemyRushModeClientSide() :
 		MultiPlayModeClientSide(new MultiMap(MAP_PATH + "MultiPlay_Map2.csv", MULTIPLAY_RUN_TYPE_CLIENT), L"EnemyRush") {
 		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_back));
+		map_->middleBGTexNo = LoadTexture("data/texture/BG/BG_stage2_middle.png");
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_front));
 	};
 

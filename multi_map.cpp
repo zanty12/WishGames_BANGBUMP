@@ -132,6 +132,14 @@ void MultiMap::Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType) {
 	file.close();
 }	
 
+void MultiMap::DrawBG(int bgTexNo, Vector2 offset, float aspectRatio) {
+	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());                        // 画面のサイズ
+	float maxY = height * cellSize;
+	float t = offset.y / maxY;
+	float y = MATH::Leap(maxY, 0.0f, t) - maxY * 0.5f;
+	DrawSprite(bgTexNo, Vector2(screen.x * 0.5f, y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
+}
+
 void MultiMap::Draw(Vector2 offset) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());                        // 画面のサイズ
 	Vector2Int leftBottomIdx = ToIndex(offset);                                                     // 左下のインデックス
@@ -140,11 +148,16 @@ void MultiMap::Draw(Vector2 offset) {
 	leftBottomIdx.y--;
 
 	// 描画（背景）
-	float aspectRatio = 3600.0f / 1280.0f;
-	float maxY = height * cellSize;
-	float t = offset.y / maxY;
-	float y = MATH::Leap(maxY, 0.0f, t) - maxY * 0.5f;
-	DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
+	DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, screen.y * 0.5f), 0.0f, Vector2(screen.x, screen.y), Color::White);
+	DrawBG(middleBGTexNo, offset, 1620.0f / 1920.0f);
+	DrawBG(frontBGTexNo, offset, 5400.0f / 1920.0f);
+	//float aspectRatio = 1620.0f / 1920.0f;
+	//DrawSprite(midleBGTexNo, Vector2(screen.x * 0.5f, screen.y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
+	//float aspectRatio = 3600.0f / 1280.0f;
+	//float maxY = height * cellSize;
+	//float t = offset.y / maxY;
+	//float y = MATH::Leap(maxY, 0.0f, t) - maxY * 0.5f;
+	//DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
 
 	// 描画（ブロック）
 	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
