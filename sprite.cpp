@@ -87,7 +87,7 @@ void DrawSpriteBoxEffectLeftToRight(int texNo, Vector2 pos, Vector2 scale, Color
 void DrawSpriteBoxEffectBottomToUp(int texNo, Vector2 pos, Vector2 scale, Color color, float ratio) {
 	pos.y = -pos.y + Graphical::GetHeight();
 
-	float len = MATH::Leap(-scale.y, +scale.y, ratio);
+	float len = MATH::Leap(+scale.y, -scale.y, ratio);
 	Vector2 vertices[] = {
 		Vector2(-scale.x,	+len	) + pos,
 		Vector2(+scale.x,	+len	) + pos,

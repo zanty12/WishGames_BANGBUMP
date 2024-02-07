@@ -842,10 +842,10 @@ void ClientThunder::DrawUI(void) {
 
 	int num = mp;
 	int maxNum = state->maxMp;
-	int width = 25.0f;
+	int width = 50.0f;
 	for (int i = 0; i < maxNum; i++) {
-		if (i < num) DrawSprite(uiTexNo, pos + localPos + Vector2(-width, 0.0f) * i, 0.0f, Vector2::One * 100.0f, Color::White);
-		else DrawSprite(frameUITexNo, pos + localPos + Vector2(-width, 0.0f) * i, 0.0f, Vector2::One * 100.0f, Color::White);
+		if (i < num) DrawSprite(uiTexNo, pos + localPos + Vector2(-width, 0.0f) * i, 0.0f, Vector2::One * 50.0f, Color::White);
+		else DrawSprite(frameUITexNo, pos + localPos + Vector2(-width, 0.0f) * i, 0.0f, Vector2::One * 50.0f, Color::White);
 	}
 }
 
