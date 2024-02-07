@@ -53,13 +53,6 @@ void Enemy2::Update()
         OBJECT_TYPE type = collision->GetParent()->GetType();
         switch (type)
         {
-        case OBJ_ATTACK:
-            {
-                PlayerAttack* attack = dynamic_cast<PlayerAttack*>(collision->GetParent());
-                if(attack != nullptr)
-                    SetHp(GetHp() - attack->GetDamage());
-            }
-            break;
             default:
                 break;
         }
