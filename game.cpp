@@ -17,8 +17,9 @@ Game::Game(SceneMngr* scene_mngr)
     projectile_mngr_ = new ProjectileMngr();
     orb_mngr_ = new SkillOrbMngr();
     players_ = std::list<Player *>();
-    mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_2).c_str(), this);
-    text_format_ = Text::MakeTextFormat(L"ƒ[ƒvƒ–¾’©", 50, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL);
+    mapmngr_ = new MapMngr(Asset::GetAsset(practices_stage).c_str(), this);
+
+    text_format_ = Text::MakeTextFormat(L"ãƒ¯ãƒ¼ãƒ—ãƒ­æ˜Žæœ", 50, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL);
     brush_ = Text::MakeBrush(Color(1.0f, 1.0f, 1.0f, 1.0f));
     timer_tex_ = LoadTexture(Asset::GetAsset(timer));
     //int playertex = LoadTexture("data/texture/player.png");
@@ -58,22 +59,22 @@ void Game::DebugMenu()
     auto player_ = GetPlayer();
     player_->DebugMenu();
     ImGui::Begin("Game");
-    ImGui::Text(u8"ƒvƒŒƒCƒ„[À•W");
+    ImGui::Text(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼åº§æ¨™");
     ImGui::Text("x:%f, y: %f", player_->GetPos().x, player_->GetPos().y);
-    ImGui::Text(u8"ƒvƒŒƒCƒ„[ƒXƒs[ƒh");
+    ImGui::Text(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¹ãƒ”ãƒ¼ãƒ‰");
     ImGui::Text("x:%f, y: %f", player_->GetVel().x, player_->GetVel().y);
-    ImGui::Text(u8"ƒvƒŒƒCƒ„[ó‘Ô");
+    ImGui::Text(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼çŠ¶æ…‹");
     ImGui::Text("%d", player_->GetPlayerState());
-    ImGui::Text(u8"ƒJƒƒ‰À•W");
+    ImGui::Text(u8"ã‚«ãƒ¡ãƒ©åº§æ¨™");
     ImGui::Text("x:%f, y: %f", camera_->GetPos().x, camera_->GetPos().y);
-    static std::string preview = u8"–³‘®«";
-    static std::string preview_atk = u8"–³‘®«";
+    static std::string preview = u8"ç„¡å±žæ€§";
+    static std::string preview_atk = u8"ç„¡å±žæ€§";
     if (player_->GetAttribute() == nullptr)
-        preview = u8"–³‘®«";
+        preview = u8"ç„¡å±žæ€§";
     if (player_->GetAttackAttribute() == nullptr)
-        preview_atk = u8"–³‘®«";
+        preview_atk = u8"ç„¡å±žæ€§";
 
-    if (ImGui::BeginCombo(u8"ƒvƒŒƒCƒ„[ˆÚ“®‘®«", preview.c_str()))
+    if (ImGui::BeginCombo(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç§»å‹•å±žæ€§", preview.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
         {
@@ -97,7 +98,7 @@ void Game::DebugMenu()
         }
         ImGui::EndCombo();
     }
-    if (ImGui::BeginCombo(u8"ƒvƒŒƒCƒ„[UŒ‚‘®«", preview_atk.c_str()))
+    if (ImGui::BeginCombo(u8"ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ”»æ’ƒå±žæ€§", preview_atk.c_str()))
     {
         if (ImGui::Selectable("Fire", false))
         {
@@ -128,7 +129,7 @@ void Game::DebugMenu()
         delete mapmngr_;
         coll_mngr_->CheckDiscard();
         renderer_->CheckDiscard();
-        mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
+        mapmngr_ = new MapMngr("data/map/Boss_Map.csv", this);
     }
     if (ImGui::Button("clear"))
         SetChangeScene(1);
@@ -146,7 +147,7 @@ void Game::UpdateNormal()
 {
     if(first_update_)
     {
-        //ˆ——Ž‚¿‰ñ”ð‚Ì‚½‚ßˆê‰ñ–Ú‚ÌXV‚ðƒXƒLƒbƒv‚·‚é
+        //å‡¦ç†è½ã¡å›žé¿ã®ãŸã‚ä¸€å›žç›®ã®æ›´æ–°ã‚’ã‚¹ã‚­ãƒƒãƒ—ã™ã‚‹
         first_update_ = false;
         return;
     }
@@ -200,7 +201,7 @@ void Game::UpdateNormal()
         coll_mngr_->CheckDiscard();
         renderer_->CheckDiscard();
         mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_2).c_str(), this);
-        timer_ = 120.0f;
+        timer_ = 500.0f;
         GetPlayer()->SetPos(mapmngr_->GetPlayerSpawn());
         GetPlayer()->SetMapMngr(mapmngr_);
         delete camera_;

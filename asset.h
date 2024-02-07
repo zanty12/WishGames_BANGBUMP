@@ -140,6 +140,7 @@ enum maps
     test2,
     single_stage_1,
     single_stage_2,
+    practices_stage,
 };
 
 enum fonts

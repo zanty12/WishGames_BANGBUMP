@@ -14,6 +14,8 @@ bool CheckEnemy2Length(Vector2 a, Vector2 b, float len);
 
 void Enemy2::Update()
 {
+    SetHp(100);
+
     //HPが0になったら消す
     if (GetHp() <= 0)
     {

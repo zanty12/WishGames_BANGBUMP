@@ -5,7 +5,7 @@ const float Enemy::BLLINKING_MAX_TIME_ = 1 + (1.0f / 4);
 
 void Enemy::DropSkillOrb(Vector2 pos, SKILLORB_SIZE_TYPE sizeType)
 {
-	enemy_mngr_->GetMapMngr()->GetGame()->GetSkillOrbMngr()->Pop(pos, sizeType,true);
+	//enemy_mngr_->GetMapMngr()->GetGame()->GetSkillOrbMngr()->Pop(pos, sizeType,true);
 }
 
 void Enemy::blinking(void)

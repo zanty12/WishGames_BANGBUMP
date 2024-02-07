@@ -25,6 +25,7 @@ public:
         SetHp(30);
         atk_time_ = 0;
         SetType(OBJ_ENEMY);
+        SetEnemyType(TYPE__HAMMERBRO);
 
         //アニメーター設定
         SetTexNo(LoadTexture(Asset::GetAsset(enemy2_anim)));
