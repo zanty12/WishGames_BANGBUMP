@@ -11,7 +11,7 @@ class SpikeServerSide : public AttackServerSide {
 public:
 	Vector2 blownVelocity;
 	SpikeServerSide(Transform transform, Vector2 blownVelocity) : 
-		blownVelocity(blownVelocity), AttackServerSide(0, 5, 1.0f, 25.0f, MultiMap::cellSize * 0.5f, this) { 
+		blownVelocity(blownVelocity), AttackServerSide(0, 5, 0.0f, 40.0f, MultiMap::cellSize * 0.5f, this) { 
 		this->transform.position = transform.position;
 	}
 

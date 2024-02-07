@@ -39,7 +39,7 @@ public:
 	void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override;
 
 	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override;
-
+	void UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override;
 	void CreateResponse(Storage &out) override;
 
 	bool IsPlayerMove(void) const override { return false; }

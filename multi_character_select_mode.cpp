@@ -78,6 +78,9 @@ void MultiPlayCharacterSelectModeServerSide::Release(std::map<int, CLIENT_DATA_S
 		auto &client = kvp.second;
 		auto &player = client.player_;
 
+		if (client.moveAttributeType == client.attackAttributeType) {
+			client.attackAttributeType = (ATTRIBUTE_TYPE)((client.attackAttributeType + 1) % ATTRIBUTE_TYPE_NUM);
+		}
 		// ˆÚ“®‘®«XV
 		{
 			ServerAttribute *moveAttribute = CreateAttribute(client.moveAttributeType, player);
@@ -93,6 +96,10 @@ void MultiPlayCharacterSelectModeServerSide::Release(std::map<int, CLIENT_DATA_S
 
 void MultiPlayCharacterSelectModeServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
 	PlayerUpdate(clients);
+
+}
+
+void MultiPlayCharacterSelectModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
 
 }
 
