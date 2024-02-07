@@ -293,6 +293,10 @@ void Prep::Update()
             if (scene_mngr_) scene_mngr_->ChangeScene(SCENE_GAME, message);
         }
     }
+    if (Input::GetKeyDown(0, Input::B))
+    {
+        scene_mngr_->ChangeScene(SCENE_MENU);
+    }
 }
 
 void Prep::Draw()

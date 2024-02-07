@@ -123,7 +123,7 @@ void DrawCollider(PHYSICS::Vertex2 vertex, Color color, Vector2 offset, float wi
 void DrawCollider(PHYSICS::Vertex4 vertex, Color color, Vector2 offset, float width = 10.0f);
 void DrawCollider(PHYSICS::VertexN vertex, Color color, Vector2 offset, float width = 10.0f);
 
-void DrawResource(ID3D11ShaderResourceView* texture, Vector2 pos, Vector2 scale);
+void DrawResource(ID3D11ShaderResourceView* texture, Vector2 pos, Vector2 scale,Color color);
 
 void ViewUpdate(Vector2 pos);
 void ProjectionUpdate(int screenWidth, int screenHeight);

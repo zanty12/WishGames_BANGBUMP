@@ -9,6 +9,7 @@ Title::Title(SceneMngr* scene_mngr)
     title_video_ = new Video("data/video/title.mp4");
     logo_tex_ = LoadTexture("data/texture/UI/team_logo.png");
     press_button_tex_ = LoadTexture("data/texture/UI/pressanybutton.png");
+    title_tex_ = LoadTexture("data/texture/UI/team_logo.png");
     title_video_->SetLoop(true);
     title_video_->SetWindowPos(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2));
     title_video_->SetSize(Vector2(Graphical::GetWidth(), Graphical::GetHeight()));
@@ -34,7 +35,7 @@ void Title::Update()
             logo_ = false;
         }
     }
-    else
+    else if (!logo_ && fade_alpha_ <= 0.0f && video_wait_ <= 0.0f)
     {
         title_video_->Update();
     }
@@ -56,38 +57,57 @@ void Title::Update()
     }
 }
 
-    void Title::Draw()
+void Title::Draw()
+{
+    const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
+    const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
+    if (logo_)
     {
-        const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
-        const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
-        if (logo_)
-        {
-            Graphical::Clear(Color::White);
-            DrawSprite(logo_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2), 0.0f,
-                       Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, logo_alpha_));
-        }
-        else
-        {
-            title_video_->DrawAsResource();
-            DrawSprite(press_button_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3), 0.0f,
-                       Vector2(999 * scale_x, 100.3 * scale_y), Color(1.0f, 1.0f, 1.0f, AlphaAnimation()));
-        }
+        Graphical::Clear(Color::White);
+        DrawSprite(logo_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2), 0.0f,
+                   Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, logo_alpha_));
     }
-
-    void Title::DebugMenu()
+    else
     {
-        ImGui::Begin(u8"タイトル");
-        if (ImGui::Button(u8"ゲームスタート"))
+        //draw fade in
+        if (fade_alpha_ > 0.0f)
         {
-            scene_mngr_->ChangeScene(SCENE_MENU);
+            //divide by max time
+            fade_alpha_ -= Time::GetDeltaTime() / 0.3f;
+            Graphical::Clear(Color(fade_alpha_, fade_alpha_, fade_alpha_, 1.0f));
+            return;
         }
-        ImGui::End();
+        if(video_wait_ > 0.0f)
+        {
+            video_wait_ -= Time::GetDeltaTime();
+            Graphical::Clear(Color::Black);
+            DrawSprite(title_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
+                   Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, logo_alpha_));
+            return;
+        }
+        if (video_fade_ < 1.0f)
+            video_fade_ += Time::GetDeltaTime() / 1.5f;
+        title_video_->DrawAsResource(Color(1.0f, 1.0f, 1.0f, video_fade_));
+        DrawSprite(title_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
+                   Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, logo_alpha_));
+        DrawSprite(press_button_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3), 0.0f,
+                   Vector2(999 * scale_x, 100.3 * scale_y), Color(1.0f, 1.0f, 1.0f, AlphaAnimation()));
     }
+}
 
-    float Title::AlphaAnimation()
+void Title::DebugMenu()
+{
+    ImGui::Begin(u8"タイトル");
+    if (ImGui::Button(u8"ゲームスタート"))
     {
-        static float time;
-        time += Time::GetDeltaTime();
-        return (sinf(time) + 1.0f) / 2.0f;
+        scene_mngr_->ChangeScene(SCENE_MENU);
     }
+    ImGui::End();
+}
 
+float Title::AlphaAnimation()
+{
+    static float time;
+    time += Time::GetDeltaTime();
+    return (sinf(time) + 1.0f) / 2.0f;
+}

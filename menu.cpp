@@ -17,13 +17,13 @@ Menu::~Menu()
 
 void Menu::Update()
 {
-    if (Input::GetStickLeft(0).x > 0.0f && multi_) //solo
+    if (Input::GetStickLeft(0).x > 0.2f && multi_) //solo
     {
         multi_ = false;
         lerp_timer_.Start();
     }
     //コントローラーを接続しないとずっとタイトルに行くよ(^^♪
-    else if (Input::GetStickLeft(0).x < 0.0f && !multi_) //multi
+    else if (Input::GetStickLeft(0).x < -0.2f && !multi_) //multi
     {
         multi_ = true;
         lerp_timer_.Start();
@@ -51,17 +51,17 @@ void Menu::Draw()
                Vector2(1920.0f * scale_x, 1080.0f * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
     if (multi_)
     {
-        DrawSprite(multi_tex_, Vector2(Graphical::GetWidth() / 4, Graphical::GetHeight() / 2.5), 0.0f,
-                   Vector2(750.0f * scale_x, 750.0f * scale_y) * LerpScale(1.0f,1.067,lerp_percent), Color(1.0f, 1.0f, 1.0f, 1.0f));
-        DrawSprite(solo_tex_, Vector2(Graphical::GetWidth() / 4 * 3, Graphical::GetHeight() / 2.5), 0.0f,
-                   Vector2(750.0f * scale_x, 750.0f * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
+        DrawSprite(multi_tex_, Vector2(Graphical::GetWidth() / 4, Graphical::GetHeight() / 2), 0.0f,
+                   Vector2(650.0f * scale_x, 650.0f * scale_y) * LerpScale(1.0f,1.23,lerp_percent), Color(1.0f, 1.0f, 1.0f, 1.0f));
+        DrawSprite(solo_tex_, Vector2(Graphical::GetWidth() / 4 * 3, Graphical::GetHeight() / 2), 0.0f,
+                   Vector2(650.0f * scale_x, 650.0f * scale_y), Color(0.5f, 0.5f, 0.5f, 1.0f));
     }
     else
     {
-        DrawSprite(multi_tex_, Vector2(Graphical::GetWidth() / 4, Graphical::GetHeight() / 2.5), 0.0f,
-                   Vector2(750.0f * scale_x, 750.0f * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
-        DrawSprite(solo_tex_, Vector2(Graphical::GetWidth() / 4 * 3, Graphical::GetHeight() / 2.5), 0.0f,
-                   Vector2(750.0f * scale_x, 750.0f * scale_y)* LerpScale(1.0f,1.067,lerp_percent), Color(1.0f, 1.0f, 1.0f, 1.0f));
+        DrawSprite(multi_tex_, Vector2(Graphical::GetWidth() / 4, Graphical::GetHeight() / 2), 0.0f,
+                   Vector2(650.0f * scale_x, 650.0f * scale_y), Color(0.5f, 0.5f, 0.5f, 1.0f));
+        DrawSprite(solo_tex_, Vector2(Graphical::GetWidth() / 4 * 3, Graphical::GetHeight() / 2), 0.0f,
+                   Vector2(650.0f * scale_x, 650.0f * scale_y)* LerpScale(1.0f,1.23,lerp_percent), Color(1.0f, 1.0f, 1.0f, 1.0f));
     }
 }
 

@@ -251,7 +251,7 @@ void DrawCollider(PHYSICS::VertexN vertex, Color color, Vector2 offset, float wi
 	}
 }
 
-void DrawResource(ID3D11ShaderResourceView* texture, Vector2 pos, Vector2 scale)
+void DrawResource(ID3D11ShaderResourceView* texture, Vector2 pos, Vector2 scale,Color color = Color::White)
 {
 	using namespace DX;
 	using namespace DX::DX11;
@@ -275,7 +275,6 @@ void DrawResource(ID3D11ShaderResourceView* texture, Vector2 pos, Vector2 scale)
 
 	// 定数バッファの設定
 	Device3D::UpdateConstantBuffer(&g_WorldMatrix, g_WorldBuffer);
-	Color color = Color::White;
 	Device3D::UpdateConstantBuffer(&color, g_ColorBuffer);
 
 	// 描画

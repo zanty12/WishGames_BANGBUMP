@@ -11,9 +11,15 @@ private:
 	Video* title_video_;
 	int logo_tex_;
 	int press_button_tex_;
+	int title_tex_;
 	bool logo_ = true;
 	float logo_time_ = 3.0f;
 	float logo_alpha_ = 0.0f;
+	float fade_alpha_ = 1.0f;
+	float video_fade_ = 0.0f;
+	float video_wait_ = 2.0f;
+
+
 public:
 	Title(SceneMngr* scene_mngr);
 	~Title();

@@ -180,8 +180,8 @@ public:
         ImGui::End();
     }
 
-    void DrawAsResource(){
-        DrawResource(texture_view_, window_pos_, size_* scale_);
+    void DrawAsResource(Color color = Color::White){
+        DrawResource(texture_view_, window_pos_, size_* scale_,color);
     }
 
     void SetScale(float scale)
