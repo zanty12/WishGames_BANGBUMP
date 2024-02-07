@@ -90,7 +90,7 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
 void Prep::Update()
 {
     //キー入力
-    if (Input::GetKeyUp(0, Input::Left) && !moving_)
+    if (Input::GetStickLeft(0).x < -0.2 && !moving_)
     {
         clockwise_ = true;
         if (is_move_)
@@ -102,7 +102,7 @@ void Prep::Update()
             attack_next_ = attack_list.back().attribute;
         }
     }
-    if (Input::GetKeyUp(0, Input::Right) && !moving_)
+    if (Input::GetStickLeft(0).x > 0.2 && !moving_)
     {
         clockwise_ = false;
         if (is_move_)
@@ -120,7 +120,7 @@ void Prep::Update()
 
         }
     }
-    if (Input::GetKeyUp(0, Input::Up))
+    if (Input::GetStickLeft(0).y > 0.2)
     {
         if (is_move_)
         {
@@ -130,7 +130,7 @@ void Prep::Update()
         }
     }
 
-    if (Input::GetKeyUp(0, Input::Down))
+    if (Input::GetStickLeft(0).y < -0.2)
     {
         if (!is_move_)
         {
@@ -251,7 +251,7 @@ void Prep::Update()
     }
 
     video_->Update();
-    if (Input::GetKeyDown(0, Input::North))	//Aボタン
+    if (Input::GetKeyDown(0, Input::A))	//Aボタン
     {
         {
             std::string message;

@@ -7,6 +7,10 @@ class Menu :public Scene
 {
 private:
 	SceneMngr* scene_mngr_;
+	int bg_tex_;
+	int multi_tex_;
+	int solo_tex_;
+	bool multi_;
 public:
 	Menu(SceneMngr* scene_mngr);
 	~Menu() override;
