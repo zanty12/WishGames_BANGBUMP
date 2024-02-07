@@ -650,8 +650,8 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				player->moveAttributeType = client.moveAttributeType;
 				player->attackAttributeType = client.attackAttributeType;
 				player->damageEffectAttributeType = client.damageEffectAttributeType;
-				if (player->moveAttribute) player->moveAttribute->mp = client.moveMp;
-				if (player->attackAttribute) player->attackAttribute->mp = client.attackMp;
+				if (player->curMoveAttribute) player->curMoveAttribute->mp = client.moveMp;
+				if (player->curAttackAttribute) player->curAttackAttribute->mp = client.attackMp;
 			}			
 		}
 
