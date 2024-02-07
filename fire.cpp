@@ -116,8 +116,7 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);
-    SetMaxTick(0.01);
-    SetDamage(50);
+    SetDamage(parent->GetState()->atk);
 
     //アニメーション設定
     GetAnimator()->SetTexenum(fire_attack);
@@ -127,7 +126,8 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
 
 void FireAttack::Update()
 {
-    UpdateTick();
+    if(cd_timer_ > 0.0f)
+        cd_timer_ -= Time::GetDeltaTime();
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
@@ -139,9 +139,9 @@ void FireAttack::Update()
                 Enemy* enemy = dynamic_cast<Enemy*>(collision->GetParent());
                 if (enemy != nullptr)
                 {
-                    if (GetTick() > GetMaxTick())
+                    if (cd_timer_ < 0)
                     {
-                        SetTick(0.0f);
+                        cd_timer_ = damage_cd_;
                         enemy->SetHp(enemy->GetHp() - GetDamage());
 
                         //エフェクトの生成

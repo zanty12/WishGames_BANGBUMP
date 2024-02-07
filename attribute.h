@@ -40,6 +40,8 @@ public:
 
 	ATTRIBUTE_TYPE GetAttribute() { return attributeType_; }
 
+	AttributeState* GetState() { return state_; }
+
 	static std::wstring GetAttributeString(ATTRIBUTE_TYPE attr)
 	{
 		switch (attr)
