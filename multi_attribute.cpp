@@ -308,7 +308,7 @@ void ClientFire::DrawUI(void) {
 
 	float ratio = (float)mp / (float)state->maxMp;
 	DrawSpriteBoxEffectLeftToRight(frameUITexNo, pos + localPos, Vector2::One * 100.0f, Color::White, 1.0f);
-	DrawSpriteBoxEffectLeftToRight(uiTexNo, pos + localPos, Vector2::One * 100.0f, Color::White, ratio);
+	DrawSpriteBoxEffectLeftToRight(uiTexNo, pos + localPos, Vector2::One * 100.0f, Color::White, 1.0f - ratio);
 }
 
 void ServerFireAttack::Loop(void) {
@@ -317,6 +317,7 @@ void ServerFireAttack::Loop(void) {
 void ServerFireAttack::KnockBack(ServerMovableGameObject *object) {
 	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * knockbackRate;
 }
+
 
 
 
@@ -614,6 +615,7 @@ void ServerWaterAttack::Loop(void) {
 void ServerWaterAttack::KnockBack(ServerMovableGameObject *object) {
 	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * knockbackRate;
 }
+
 
 
 
