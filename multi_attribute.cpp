@@ -253,8 +253,10 @@ void ClientFire::Move(void) {
 }
 void ClientFire::Attack(void) {
 	// 攻撃アニメーションではないなら終了
-	if (!IsPlayerAnimAttack(player->animType)) return;
-
+	if (!IsPlayerAnimAttack(player->animType)) {
+		player->isReverseXAttributeControl = false;
+		return;
+	}
 
 
 	// レベルによってテクスチャの変更
@@ -284,7 +286,7 @@ void ClientFire::Attack(void) {
 	}
 
 	// 手に移動
-	Vector2 localPos = Vector2(-12.0f, 45.0f);
+	Vector2 localPos = Vector2(-2.5f, 40.0f);
 
 	// トランスフォーマー
 	Vector2 pos = player->transform.position;
@@ -605,6 +607,11 @@ void ServerThunder::Move(void) {
 		friction -= 0.001f;
 		if (friction < 0.0f) friction = 0.0f;
 	}
+	// 何もしていないのにチャージエフェクトになる現象を解消（ゆっくりスティックを戻すことで攻撃トリガーが発動されない）
+	if (IsPlayerAnimMoveCharge(player->animType) && stick == Vector2::Zero) {
+		// アニメーションの指定
+		SetPlayerAnimNoMove(player->animType);
+	}
 
 	// 移動
 	if (StickTrigger(stick, previousStick)) {
@@ -710,8 +717,13 @@ void ClientThunder::Move(void) {
 		Vector2 pos = player->transform.position + player->velocity * 0.5f;
 		float rot = std::atan2(player->velocity.y, -player->velocity.x);
 		Vector2 scl = Vector2(distance * 7.0f, player->transform.scale.x * 0.75f);
-		
+
 		MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(moveAnim, pos, rot, scl);
+	}
+
+	if (IsPlayerAnimMoveCharge(player->preAnimType)) {
+		// チャージ描画
+		chargeAttackAnim.Draw(player->transform.position - MultiPlayClient::offset, 0.0f, player->transform.scale * 1.2f, Color::White);
 	}
 }
 void ClientThunder::Attack(void) {
@@ -733,9 +745,6 @@ void ClientThunder::Attack(void) {
 		else if (direction.x > 0.0f) player->isReverseX = true;
 	}
 
-
-	// チャージ描画
-	chargeAttackAnim.Draw(player->transform.position - MultiPlayClient::offset, 0.0f, player->transform.scale * 1.5f, Color::White);
 }
 
 void ServerThunderAttack::Loop(void) {

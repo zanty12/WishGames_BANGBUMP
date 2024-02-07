@@ -24,7 +24,7 @@ public:
 	EnemyServerSide(Transform transform, MultiMap* map, std::wstring enemyName) : map(map), ServerMovableGameObject(transform) {
 		hp = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"hp");
 		score = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"score");
-		radius = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"radius");
+		radius = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"radius") * 0.25f;
 		atkDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"atkDrop");
 		deathDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"drop");
 		knockbackRate = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"knockbackRate");
@@ -50,6 +50,7 @@ public:
 		deathAnim = MultiAnimator(LoadTexture(Asset::GetAsset(textures::effect_enemydead)), 5, 8, 0, 36, false);
 
 		// ダメージエフェクト
+		allDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_all.png"), 5, 2, 0, 7, false);
 		fireDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_fire.png"), 5, 2, 0, 7, false);
 		waterDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_water.png"), 5, 2, 0, 7, false);
 		thunderDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_thunder.png"), 5, 2, 0, 7, false);
@@ -77,6 +78,7 @@ public:
 	Enemy1ClientSide(Transform transform) : EnemyClientSide(transform, L"Enemy1") {
 		texNo = LoadTexture("data/texture/Enemy/enemy1_anim.png");
 		anim = MultiAnimator(texNo, 5, 4, 0, 17, true);
+		anim.SetFrame(1000 / 42);
 	}
 
 	void Loop(void) override;
@@ -102,13 +104,14 @@ public:
 	Enemy2ClientSide(Transform transform) : EnemyClientSide(transform, L"Enemy2") {
 		texNo = LoadTexture("data/texture/Enemy/enemy2_anim.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
+		anim.SetFrame(1000 / 42);
 	}
 
 	void Loop(void) override;
 };
 class AttackEnemy2ServerSide : public AttackServerSide {
 public:
-	AttackEnemy2ServerSide(Enemy2ServerSide *self) : AttackServerSide(1, 5, 1.0f, 2, 100.0f, self) { transform.position = self->transform.position; }
+	AttackEnemy2ServerSide(Enemy2ServerSide *self) : AttackServerSide(1, self->atkDrop, 0.0f, self->blownFriction,50.0f, self) { transform.position = self->transform.position; }
 
 	void Loop(void) override;
 	void KnockBack(ServerMovableGameObject *object) override;
@@ -151,6 +154,7 @@ public:
 	Enemy3ClientSide(Transform transform) : EnemyClientSide(transform, L"Enemy3") {
 		texNo = LoadTexture("data/texture/Enemy/enemy3_anim.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
+		anim.SetFrame(1000 / 42);
 	}
 
 	void Loop(void) override;

@@ -95,6 +95,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	preAttackAttributeType = attackAttributeType;
 
 	// ダメージエフェクトのロード
+	allDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_all.png"), 5, 2, 0, 7, false);
 	fireDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_fire.png"), 5, 2, 0, 7, false);
 	waterDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_water.png"), 5, 2, 0, 7, false);
 	thunderDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_thunder.png"), 5, 2, 0, 7, false);
@@ -156,6 +157,7 @@ void ClientPlayer::Loop(void) {
 		else if (damageEffectAttributeType == MULTI_ATTACK_WATER) anim = &waterDamageEffect;
 		else if (damageEffectAttributeType == MULTI_ATTACK_THUNDER) anim = &thunderDamageEffect;
 		else if (damageEffectAttributeType == MULTI_ATTACK_WIND) anim = &windDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_ENEMY2) anim = &allDamageEffect;
 
 		// ダメージエフェクト
 		if (MultiPlayClient::GetGameMode())MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(

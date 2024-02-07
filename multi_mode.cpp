@@ -95,8 +95,7 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 	if (time <= DROP_ANIMATION) {
 
 		// ランキングソート
-		auto sortPlayers = players.clients;
-		sort(sortPlayers);
+		auto sortPlayers = MultiPlayClient::clients;
 
 		// ドロップ関数
 		auto dropOrb = [&](int rank, int dropNum, float velocity) {
@@ -111,12 +110,19 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 
 		// 0.5秒ごとにスキルオーブをドロップ
 		if (500 < dropSkillOrbCoolTimer.GetNowTime()) {
-			for (auto &client : sortPlayers) {
-				int id = client.id;
+			for (auto &kvp : sortPlayers) {
+				auto client = kvp.second;
+				int id = client->id;
 				int rank = get_rank(sortPlayers, id);
+				int dropNum = client->GetLvMaxSkillOrb() - client->GetLvMinSkillOrb();
 				int dropRate = (1.0f - (float)(rank) / (float)players.clients.size());
-				dropOrb(rank, 20 * dropRate, 30.0f);
-				std::cout << dropRate << std::endl;
+				switch (rank) {
+				case 0: dropOrb(rank, dropNum * 1.0f, 30.0f); break;
+				case 1: dropOrb(rank, dropNum * 0.75f, 30.0f); break;
+				case 2: dropOrb(rank, dropNum * 0.5f, 30.0f); break;
+				case 3: dropOrb(rank, dropNum * 0.2f, 30.0f); break;
+				}
+				
 			}
 			dropSkillOrbCoolTimer.Start();
 		}

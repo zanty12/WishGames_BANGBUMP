@@ -224,7 +224,7 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 	return id;
 }
 
-int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vector2 *gravityVelocity) {
+int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vector2 *blownVelocity, Vector2 *gravityVelocity) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());						// 画面のサイズ
 	Vector2Int leftBottomIdx = ToIndex(position - scale);											// 左下のインデックス
 	Vector2Int rightTopIdx = ToIndex(position + scale);												// 右上のインデックス
@@ -266,7 +266,7 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 
 				// 触れているなら
 				if (Collider2D::Touch(playerCollision, cellCollision)) {
-					Vector2 direction = position - cellPos - Vector2(cellSize, cellSize + cellSize*0.5) * 0.5f;
+					Vector2 direction = position - cellPos - Vector2(cellSize, cellSize + cellSize * 0.5) * 0.5f;
 					position += direction.Normalize() * velocity->Distance();
 
 					if (0.0f < direction.y) {
@@ -274,9 +274,15 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 					}
 
 					// 縦の壁なら
-					if (up != -1 || down != -1) direction.x = 0.0f;
+					if (up != -1 || down != -1) {
+						direction.x = 0.0f;
+						blownVelocity->x = 0.0f;
+					}
 					// 横の壁なら
-					if (left != -1 || right != -1) direction.y = 0.0f;
+					if (left != -1 || right != -1) {
+						direction.y = 0.0f;
+						blownVelocity->y = 0.0f;
+					}
 				}
 			}
 		}

@@ -131,6 +131,7 @@ private:
 
 public:
 	int skillPoint = 0;										// スキルポイント
+	int score = 0;											// スコア
 	int animType = ANIMATION_TYPE_IDLE;						// アニメーションタイプ
 	int preAnimType = ANIMATION_TYPE_IDLE;					// アニメーション（1フレーム前）
 	int lv = 0;												// レベル
@@ -148,7 +149,6 @@ public:
 	ClientAttribute *curMoveAttribute = nullptr;			// 移動属性（現在）
 	ClientAttribute *curAttackAttribute = nullptr;			// 攻撃属性（現在）
 	float skillPointAnimation = 0.0f;						// スキルポイント獲得時のゲージのアニメーションで使用する
-
 	int lvupPoint[MAX_LV] = {};								// レベルアップに必要なポイント
 
 

@@ -131,7 +131,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 			Input::SetPreviousState(0, client.previousInput);
 			player->map = gameMode->GetMap();
 			player->Loop();
-			gameMode->GetMap()->Collision(player->transform.position, player->transform.scale, &player->velocity, &player->gravityVelocity);
+			gameMode->GetMap()->Collision(player->transform.position, player->transform.scale, &player->velocity, &player->blownVelocity, &player->gravityVelocity);
 
 			// 移動させる
 			player->transform.position += player->velocity + player->blownVelocity + player->gravityVelocity;
@@ -653,6 +653,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				auto &player = iterator->second;
 				player->isShow = true;
 				player->skillPoint = client.skillPoint;
+				player->score = client.score;
 				player->transform.position = client.position;
 				player->velocity = client.moveVelocity;
 				player->attackVelocity = client.attackVelocity;

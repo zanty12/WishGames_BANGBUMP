@@ -43,7 +43,7 @@ public:
 	void Draw(Vector2 offset);
 	void AttackUpdate(void);
 	int Collision(Vector2 &position, float radius, Vector2 *velocity = nullptr);
-	int Collision(Vector2 &position, Vector2 scale, Vector2 *velocity = nullptr, Vector2 *gravityVelocity = nullptr);
+	int Collision(Vector2 &position, Vector2 scale, Vector2 *velocity = nullptr, Vector2 *blownVelocity = nullptr, Vector2 *gravityVelocity = nullptr);
 	int &GetMap(int x, int y) { return map[x + y * width]; }
 	int &GetColliderMap(int x, int y) { return collMap[x + y * width]; }
 	MultiBehavior *GetSkillOrbs(void) { return skillOrbs; }

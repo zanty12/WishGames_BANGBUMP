@@ -99,8 +99,10 @@ void MultiAnimator::GetPlayer(int animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE 
 		anim->end = 29;
 		anim->loopBegin = 0;
 		anim->loopEnd = 29;
-		anim->isLoop = true;
 		anim->idx = anim->begin;
+		anim->isLoop = true;
+		anim->isEndShow = true;
+		anim->frameTime = 30 / 1000;
 	}
 
 
@@ -127,8 +129,10 @@ void MultiAnimator::GetPlayer(int animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE 
 		anim->end = begin + attackIdxWidth - 1;
 		anim->loopBegin = begin;
 		anim->loopEnd = begin + attackIdxWidth - 1;
-		anim->isLoop = true;
 		anim->idx = anim->begin;
+		anim->isLoop = true;
+		anim->isEndShow = true;
+		anim->frameTime = 30 / 1000;
 	}
 	// MOVE
 	if (animType == ANIMATION_TYPE_MOVE) {
@@ -137,22 +141,39 @@ void MultiAnimator::GetPlayer(int animType, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE 
 		anim->end = begin + moveIdxWidth - 1;
 		anim->loopBegin = begin;
 		anim->loopEnd = begin + moveIdxWidth - 1;
-		anim->isLoop = true;
 		anim->idx = anim->begin;
+		anim->isLoop = true;
+		anim->isEndShow = true;
+		anim->frameTime = 30 / 1000;
 	}
-	// CHARGE（Thunder）
+	// ATTACK CHARGE（Thunder）
 	if (IsPlayerAnimAttackCharge(animType) && attack == ATTRIBUTE_TYPE_THUNDER) {
 		int begin = idleIdxWidth + attackIdxWidth + moveIdxWidth;
 		anim->begin = begin;
 		anim->end = begin + 4;
 		anim->loopBegin = begin;
 		anim->loopEnd = begin + 4;
-		anim->isLoop = false;
 		anim->idx = anim->begin;
+		anim->isLoop = true;
 		anim->isEndShow = true;
+		anim->frameTime = 32 / 1000;
+	}
+	// MOVE CHARGE（Thunder）
+	if (IsPlayerAnimMoveCharge(animType) && move == ATTRIBUTE_TYPE_THUNDER) {
+		int begin = idleIdxWidth + attackIdxWidth + moveIdxWidth;
+		anim->begin = begin;
+		anim->end = begin + 2;
+		anim->loopBegin = begin;
+		anim->loopEnd = begin + 2;
+		anim->idx = anim->begin;
+		anim->isLoop = true;
+		anim->isEndShow = true;
+		anim->frameTime = 32 / 1000;
 	}
 	// ATTACK（Thunder）
 	if (IsPlayerAnimAttack(animType) && attack == ATTRIBUTE_TYPE_THUNDER) {
-		anim->isLoop = true;
+		anim->isLoop = false;
+		anim->isEndShow = true;
+		anim->frameTime = 30 / 1000;
 	}
 }

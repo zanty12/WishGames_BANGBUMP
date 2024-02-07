@@ -72,21 +72,25 @@ protected:
 		);
 	}
 
-	int get_rank(std::list<CLIENT_DATA_CLIENT_SIDE> &ranking, int id) {
+	int get_rank(std::unordered_map<int, ClientPlayer*> &ranking, int id) {
 		int rank = 0;
 		int addRank = 1;
+		
+		std::list<ClientPlayer *> sortClients;
+		for (auto &kvp : ranking) sortClients.push_back(kvp.second);
 
-		// ランクを調べる
-		for (auto &c : ranking) {
-			if (id == c.id) return rank;
-			else rank++;
-		}
-		// ランクを調べる
-		auto preClient = *ranking.begin();
-		for (auto &client : ranking) {
-			if (id == client.id) return rank;
+		// ソート
+		sortClients.sort(
+			[](ClientPlayer *a, ClientPlayer *b) {
+				return a->score > b->score;
+			}
+		);
+
+		auto preClient = ranking.begin()->second;
+		for (auto &client : sortClients) {
+			if (id == client->id) return rank;
 			else {
-				if (client.score == preClient.score) addRank++;
+				if (client->score == preClient->score) addRank++;
 				else {
 					rank += addRank;
 					addRank = 1;
