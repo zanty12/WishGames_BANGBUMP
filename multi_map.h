@@ -25,7 +25,7 @@ private:
 
 public:
 	Vector2 position;
-	float cellSize = 53;
+	const static int cellSize = 53;
 	std::list<Vector2> startPosition;
 	int frontBGTexNo = -1, backBGTexNo = -1;
 

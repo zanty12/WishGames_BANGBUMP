@@ -115,10 +115,10 @@ void MultiMap::Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType) {
 				// “o˜^
 				else {
 					if (multiplayType == MULTIPLAY_RUN_TYPE_SERVER) {
-						if (multiplayType == MAP_READ_SPIKE_UP) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Up);
-						else if (multiplayType == MAP_READ_SPIKE_DOWN) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Down);
-						else if (multiplayType == MAP_READ_SPIKE_RIGHT) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Right);
-						else if (multiplayType == MAP_READ_SPIKE_LEFT) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Left);
+						if (id == MAP_READ_SPIKE_UP) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Up);
+						else if (id == MAP_READ_SPIKE_DOWN) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Down);
+						else if (id == MAP_READ_SPIKE_RIGHT) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Right);
+						else if (id == MAP_READ_SPIKE_LEFT) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Left);
 						GetColliderMap(x, y) = id;
 					}
 					if (multiplayType == MULTIPLAY_RUN_TYPE_CLIENT) GetMap(x, y) = id;
@@ -283,12 +283,12 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 					// c‚Ì•Ç‚È‚ç
 					if (up != -1 || down != -1) {
 						direction.x = 0.0f;
-						blownVelocity->x = 0.0f;
+						//blownVelocity->x = 0.0f;
 					}
 					// ‰¡‚Ì•Ç‚È‚ç
 					if (left != -1 || right != -1) {
 						direction.y = 0.0f;
-						blownVelocity->y = 0.0f;
+						//blownVelocity->y = 0.0f;
 					}
 				}
 			}

@@ -54,7 +54,9 @@ void ServerPlayer::Damage(AttackServerSide *attack) {
 	damageEffectAttributeType = attack->GetType();
 
 	// スキルオーブのドロップ
-	if (MultiPlayServer::GetGameMode()->GetMode() == MULTI_MODE::FINAL_BATTLE || attack->GetType() == MULTI_OBJECT_TYPE::MULTI_ATTACK_ENEMY2) {
+	if (MultiPlayServer::GetGameMode()->GetMode() == MULTI_MODE::FINAL_BATTLE ||
+		attack->GetType() == MULTI_OBJECT_TYPE::MULTI_ATTACK_ENEMY2 ||
+		attack->GetType() == MULTI_OBJECT_TYPE::MULTI_SPIKE) {
 		SkillOrbDrop(attack->atkDrop);
 	}
 
