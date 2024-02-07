@@ -20,8 +20,8 @@ void Menu::Update()
 	{
 		scene_mngr_->ChangeScene(SCENE_MULTI_SERVER_SELECT);
 	}
-	//コントローラーを接続しないとずっとタイトルに行くよ(^^♪
-	else if(Input::GetStickLeft(0).x < 0.0f) //ソロ
+	
+	if(Input::GetStickLeft(0).x < 0.0f) //ソロ
 	{
 		scene_mngr_->ChangeScene(SCENE_PREP);
 	}

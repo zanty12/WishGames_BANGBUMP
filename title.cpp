@@ -10,7 +10,7 @@ Title::Title(SceneMngr* scene_mngr)
 	:scene_mngr_(scene_mngr)
 {
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/title.webp");
-	g_BGM = LoadSound(Asset::GetAsset(SE_1).c_str());
+	g_BGM = LoadSound(Asset::GetAsset(TitleBGM).c_str());
 	PlaySound(g_BGM, -1);
 }
 
@@ -23,6 +23,7 @@ void Title::Update()
 {
 	if (Input::GetKeyDown(0, Input::North))	//Aƒ{ƒ^ƒ“
 	{
+
 		scene_mngr_->ChangeScene(SCENE_MENU);
 	}
 }
