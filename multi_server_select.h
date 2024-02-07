@@ -19,20 +19,21 @@ public:
     Multi_Server_Select(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
     {
         bg_tex_ = LoadTexture("data/texture/UI/multi_server_select.png");
+        font_ = ImGui::GetIO().Fonts->Fonts[1];
     }
 
     ~Multi_Server_Select() override = default;
 
     void Update() override
     {
-        if(connect_ && !start_)
+        if (connect_ && !start_)
         {
             //stop scenemngr and go to multiplay client
             MultiPlayClient client;
             std::string ip = ip_;
             client.Register(ip);
             MSG msg;
-            while(!client.isFinish)
+            while (!client.isFinish)
             {
                 // メッセージ
                 if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -51,8 +52,16 @@ public:
             client.Unregister();
             start_ = true;
         }
-        if(start_)
+        if (start_)
             scene_mngr_->ChangeScene(SCENE_MENU);
+        if (Input::GetKeyDown(0, Input::A))
+        {
+            connect_ = true;
+        }
+        if (Input::GetKeyDown(0, Input::B))
+        {
+            scene_mngr_->ChangeScene(SCENE_MENU);
+        }
     }
 
     void Draw() override
@@ -63,22 +72,28 @@ public:
         ImGuiWindowFlags window_flags = 0;
         window_flags |= ImGuiWindowFlags_NoBackground;
         window_flags |= ImGuiWindowFlags_NoTitleBar;
+        window_flags |= ImGuiWindowFlags_NoResize;
         bool open = true;
-        font_ = ImGui::GetFont();
-        font_->Scale *= 2;
-        ImGui::SetNextWindowPos(ImVec2(0 , Graphical::GetHeight() / 2));
+        float textbox_width = 140 * 7.7;
+        ImGui::SetNextWindowPos(ImVec2((Graphical::GetWidth() - textbox_width) / 2, Graphical::GetHeight() / 2 - 100));
+        //ImGui::SetNextWindowSize(ImVec2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 4));
         // Draw the texture with ImGui
         ImGui::PushFont(font_);
         ImGui::Begin(u8"接続", &open, window_flags);
+        ImGui::PushItemWidth(textbox_width);
         ImGui::InputText("##", ip_, 16);
-        if (ImGui::Button("Link Start"))
+        ImGui::PopItemWidth();
+        /*if (ImGui::Button("Link Start"))
         {
             //stop scenemngr and go to multiplay client
             connect_ = true;
-        }
-        ImGui::GetFont()->Scale /=2;
+        }*/
+        //ImGui::GetFont()->Scale /=2;
         ImGui::PopFont();
         ImGui::End();
     }
-    void DebugMenu() override{}
+
+    void DebugMenu() override
+    {
+    }
 };
