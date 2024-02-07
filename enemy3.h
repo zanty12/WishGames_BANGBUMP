@@ -26,6 +26,7 @@ public:
         SetAtk(15);
         SetHp(60);
         SetType(OBJ_ENEMY);
+        SetEnemyType(TYPE__PHANTOM);
 
         //アニメーター設定
         SetTexNo(LoadTexture(Asset::GetAsset(enemy3_anim)));
