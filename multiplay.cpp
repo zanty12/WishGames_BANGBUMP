@@ -204,22 +204,6 @@ void MultiPlayServer::RecvUpdate(void) {
 }
 
 void MultiPlayServer::SendUpdate(void) {
-	//DWORD startTime, currentTime, onceFrameTime;
-	//startTime = currentTime = timeGetTime();
-	//onceFrameTime = 1000 / 60;
-
-	//while (!isFinish) {
-
-		//currentTime = timeGetTime();
-
-		//if (currentTime - startTime > onceFrameTime) {
-		//	startTime = currentTime;
-
-			//// ロック
-			//lock_.Lock();
-#ifdef DEBUG_LOCKED
-	std::cout << "SND LOCK";
-#endif
 	// レスポンスの作成
 	RESPONSE_PLAYER res;
 
@@ -237,7 +221,8 @@ void MultiPlayServer::SendUpdate(void) {
 			player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
 			player->animType,
 			player->transform.position, player->velocity, player->attackVelocity, player->chargeVelocity,
-			player->score, player->damageEffectAttributeType, player->skillPoint, 0 }
+			player->score, player->damageEffectAttributeType, player->skillPoint,
+			player->GetMoveAttribute()->mp, player->GetAttackAttribute()->mp }
 		);
 	}
 
@@ -558,6 +543,9 @@ void MultiPlayClient::PlayerUpdate(void) {
 	// UIの描画
 	gameMode->DrawUI(res_);
 
+	// プレイヤーUIの描画
+	for (auto kvp : MultiPlayClient::clients) kvp.second->DrawUI();
+
 	// シーン遷移アニメーション
 	MoveScene::Loop();
 
@@ -662,6 +650,8 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				player->moveAttributeType = client.moveAttributeType;
 				player->attackAttributeType = client.attackAttributeType;
 				player->damageEffectAttributeType = client.damageEffectAttributeType;
+				if (player->moveAttribute) player->moveAttribute->mp = client.moveMp;
+				if (player->attackAttribute) player->attackAttribute->mp = client.attackMp;
 			}			
 		}
 

@@ -16,11 +16,7 @@ enum MULTI_MODE {
 	NONE = -1,
 	CHARACTER_SELECT = 0,
 	AREA_CAPTURE,
-	//INTERMEDIATE_RESULT_1,
-	//OBSTACLE_RACE,
-	//INTERMEDIATE_RESULT_2,
 	ENEMY_RUSH,
-	//INTERMEDIATE_RESULT_3,
 	FINAL_BATTLE,
 };
 
@@ -58,7 +54,8 @@ struct CLIENT_DATA_CLIENT_SIDE {
 	int score = 0;												// スコア
 	int damageEffectAttributeType = -1;							// ダメージ与えられた時の属性タイプ
 	int skillPoint = 0;											// スキルポイント
-	int previousSkillPoint = 0;									// 1ゲーム前のスキルポイント
+	int moveMp = 0;												// 魔力
+	int attackMp = 0;											// 魔力
 };
 // クライアントデータ（サーバー側）
 struct CLIENT_DATA_SERVER_SIDE {

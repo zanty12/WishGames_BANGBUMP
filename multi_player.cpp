@@ -193,6 +193,9 @@ void ClientPlayer::ShowEntry() {
 void ClientPlayer::ShowExit() {
 	entryType = EXIT;
 }
+void ClientPlayer::DrawUI(void) {
+	if (attackAttribute) attackAttribute->DrawUI();
+}
 
 void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim) {
 	if (timer.GetNowTime() < 200ul && entryType == ENTRY || entryType == NONE) return;

@@ -160,6 +160,7 @@ public:
 	void Loop(void) override;
 	void ShowEntry();
 	void ShowExit();
+	void DrawUI();
 
 	void Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim);
 	void SetMoveAttribute(ClientAttribute *moveAttribute);
