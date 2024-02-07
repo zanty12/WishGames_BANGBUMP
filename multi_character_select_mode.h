@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include "multiplay.h"
 #include "multi_mode.h"
 #include "multi_runenum.h"
 #include "lib/math.h"
@@ -32,7 +33,7 @@ private:
 
 public:
 	MultiPlayCharacterSelectModeServerSide(MultiPlayServer *game)
-		: MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map0.csv", MULTIPLAY_RUN_TYPE_SERVER), L"CharacterSelect"), game_(game) {
+		: MultiPlayModeServerSide(L"CharacterSelect"), game_(game) {
 	}
 
 	void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override;
@@ -79,14 +80,35 @@ private:
 	int charsTexNo = LoadTexture("data/texture/player1_11_22_33_44.png");
 	MultiPlayClient *game_ = nullptr;
 	Video *video = nullptr;
+	int bootTexNo[ATTRIBUTE_TYPE_NUM] = {};
+	int handTexNo[ATTRIBUTE_TYPE_NUM] = {};
+	int playerTexNo[4] = {};
 
 private:
-	void CharacterDraw(int idx, int maxIdx, float protrude, float gap, float showAttribute, float showRateMin, float showRateMax);
+	void CharacterDraw(int id, int maxIdx, float width, float height, float gap, int moveAttribute, int attackAttribute, float moveAttributeSmooth, float attackAttributeSmooth);
 
 public:
-	MultiPlayCharacterSelectModeClientSide(MultiPlayClient * game) : MultiPlayModeClientSide(new MultiMap(MAP_PATH + "MultiPlay_Map0.csv", MULTIPLAY_RUN_TYPE_CLIENT), L"CharacterSelect"), game_(game) {
+	MultiPlayCharacterSelectModeClientSide(MultiPlayClient * game) : MultiPlayModeClientSide(L"CharacterSelect"), game_(game) {
 		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
+
+		// プレイヤーテクスチャの取得
+		bootTexNo[0] = LoadTexture("data/texture/UI/player_boot1.png");
+		bootTexNo[1] = LoadTexture("data/texture/UI/player_boot2.png");
+		bootTexNo[2] = LoadTexture("data/texture/UI/player_boot3.png");
+		bootTexNo[3] = LoadTexture("data/texture/UI/player_boot4.png");
+		handTexNo[0] = LoadTexture("data/texture/UI/player_hand1.png");
+		handTexNo[1] = LoadTexture("data/texture/UI/player_hand2.png");
+		handTexNo[2] = LoadTexture("data/texture/UI/player_hand3.png");
+		handTexNo[3] = LoadTexture("data/texture/UI/player_hand4.png");
+		playerTexNo[0] = LoadTexture("data/texture/UI/player1_base.png");
+		playerTexNo[1] = LoadTexture("data/texture/UI/player2_base.png");
+		playerTexNo[2] = LoadTexture("data/texture/UI/player3_base.png");
+		playerTexNo[3] = LoadTexture("data/texture/UI/player4_base.png");
+
+
+
+
 		video = new Video("./data/video/fire_move.mp4");
 
 		video->SetSize(Vector2(853.3 * static_cast<float>(Graphical::GetWidth()) / 1920,

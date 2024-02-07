@@ -142,6 +142,7 @@ public:
 	ATTRIBUTE_TYPE preMoveAttributeType;					// 移動属性タイプ
 	ATTRIBUTE_TYPE preAttackAttributeType;					// 攻撃属性タイプ
 	bool isReverseXAttributeControl = false;				// 横軸の向きを属性側でコントロールするか否か
+	bool isRotationAttributeControl = false;				// 向きを属性側でコントロールするか否か
 	bool isReverseX = false;								// 横軸の向き
 	Vector2 attackVelocity;									// 攻撃のベロシティ
 	Vector2 chargeVelocity;									// チャージベロシティ

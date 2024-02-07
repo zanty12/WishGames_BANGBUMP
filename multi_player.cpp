@@ -122,6 +122,9 @@ void ClientPlayer::Loop(void) {
 	// 属性がないなら消す
 	if (!moveAttribute || !attackAttribute) return;
 
+	// 回転リセット
+	if (!isRotationAttributeControl) transform.rotation = 0.0f;
+
 
 
 	// がっちゃんこアニメーション開始

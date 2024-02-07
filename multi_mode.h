@@ -25,11 +25,13 @@ protected:
 public:
 	int mode = NONE;
 	int preMode = NONE;
-	MultiPlayModeServerSide(MultiMap *map, std::wstring modeName) : map_(map) {
+	MultiPlayModeServerSide(std::wstring modeName) {
 		startTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"startTime");
 		resultTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"resultTime");
 		maxTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"timeLimit") + startTime_ + resultTime_;
 
+		std::string mapPath = ini::GetString(PARAM_PATH + L"mode.ini", modeName.c_str(), L"path");
+		map_ = new MultiMap(MAP_PATH + mapPath, MULTIPLAY_RUN_TYPE_SERVER);
 	}
 	~MultiPlayModeServerSide() { if (map_) delete map_; }
 	virtual void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
@@ -104,10 +106,13 @@ protected:
 	}
 
 public:
-	MultiPlayModeClientSide(MultiMap* map, std::wstring modeName) : map_(map) {
+	MultiPlayModeClientSide(std::wstring modeName) {
 		startTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"startTime");
 		resultTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"resultTime");
 		dropSkillOrbCoolTimer.Start();
+
+		std::string mapPath = ini::GetString(PARAM_PATH + L"mode.ini", modeName.c_str(), L"path");
+		map_ = new MultiMap(MAP_PATH + mapPath, MULTIPLAY_RUN_TYPE_CLIENT);
 	};
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 
