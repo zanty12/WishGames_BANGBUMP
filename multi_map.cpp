@@ -9,6 +9,7 @@
 #include "multi_skillorb.h"
 #include "multi_attack.h"
 #include "multi_enemy.h"
+#include "multi_spike.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -113,7 +114,13 @@ void MultiMap::Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType) {
 				}
 				// “o˜^
 				else {
-					if (multiplayType == MULTIPLAY_RUN_TYPE_SERVER) GetColliderMap(x, y) = id;
+					if (multiplayType == MULTIPLAY_RUN_TYPE_SERVER) {
+						if (multiplayType == MAP_READ_SPIKE_UP) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Up);
+						else if (multiplayType == MAP_READ_SPIKE_DOWN) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Down);
+						else if (multiplayType == MAP_READ_SPIKE_RIGHT) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Right);
+						else if (multiplayType == MAP_READ_SPIKE_LEFT) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Left);
+						GetColliderMap(x, y) = id;
+					}
 					if (multiplayType == MULTIPLAY_RUN_TYPE_CLIENT) GetMap(x, y) = id;
 				}
 			}
