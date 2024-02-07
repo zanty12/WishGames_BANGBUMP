@@ -37,7 +37,13 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 				}
 
 				int expRange = editPlayer->GetLvMaxSkillOrb() - editPlayer->GetLvMinSkillOrb();
-				editPlayer->skillPoint += expRange * (1.0f - (float)rank / (float)clients.size());
+				switch (rank) {
+				case 0: editPlayer->skillPoint += expRange * 0.7f; break;
+				case 1: editPlayer->skillPoint += expRange * 0.5f; break;
+				case 2: editPlayer->skillPoint += expRange * 0.2f; break;
+				case 3: editPlayer->skillPoint += expRange * 0.0f; break;
+				}
+				
 				preScore = editPlayer->score;
 			}
 
@@ -123,9 +129,9 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 				int dropRate = (1.0f - (float)(rank) / (float)players.clients.size());
 				switch (rank) {
 				case 0: dropOrb(rank, dropNum * 1.0f, 30.0f); break;
-				case 1: dropOrb(rank, dropNum * 0.75f, 30.0f); break;
-				case 2: dropOrb(rank, dropNum * 0.5f, 30.0f); break;
-				case 3: dropOrb(rank, dropNum * 0.2f, 30.0f); break;
+				case 1: dropOrb(rank, dropNum * 0.5f, 30.0f); break;
+				case 2: dropOrb(rank, dropNum * 0.25f, 30.0f); break;
+				case 3: dropOrb(rank, dropNum * 0.0f, 30.0f); break;
 				}
 				
 			}
