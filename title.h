@@ -21,5 +21,8 @@ public:
 	void Draw()override;
 
 	void DebugMenu() override;
+
+private:
+	float AlphaAnimation();
 };
 
