@@ -301,6 +301,9 @@ void ClientFire::Attack(void) {
 	// •`‰æ‚·‚é
 	attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
 }
+void ClientFire::DrawUI(void) {
+
+}
 
 void ServerFireAttack::Loop(void) {
 

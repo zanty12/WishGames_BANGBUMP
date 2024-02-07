@@ -76,6 +76,8 @@ protected:
 	int attackTexNo = -1;
 	int attack2TexNo = -1;
 	int moveTexNo = -1;
+	int frameUITexNo = -1;
+	int uiTexNo = -1;
 
 	AttributeState *state = nullptr;		// 現在のステータス
 	AttributeState state_lv[MAX_LV] = {};	// ステータス
@@ -93,6 +95,7 @@ public:
 	virtual void Move(void) = 0;
 	virtual void Attack(void) = 0;
 	virtual void Idle(void) { }
+	virtual void DrawUI(void) { };
 	virtual ATTRIBUTE_TYPE GetAttribute(void) = 0;
 	static ClientAttribute *Create(ClientPlayer *player, ATTRIBUTE_TYPE type);
 	AttributeState *GetState(void) { return state; }
@@ -138,6 +141,8 @@ public:
 		moveTexNo = LoadTexture(Asset::GetAsset(textures::fire_move));
 		attackTexNo = LoadTexture(Asset::GetAsset(textures::fire_attack));
 		attack2TexNo = LoadTexture("data/texture/Attack/effect_fire_attack2.png");
+		frameUITexNo = LoadTexture("data/texture/UI/UI_fire_cooldown.png");
+		uiTexNo = LoadTexture("data/texture/UI/UI_fire_cooldown2.png");
 
 		moveAnim = MultiAnimator(moveTexNo, 5, 6, 0, 25, true);
 		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 25, true);
@@ -146,6 +151,7 @@ public:
 
 	void Move(void) override;
 	void Attack(void) override;
+	void DrawUI(void) override;
 	virtual ATTRIBUTE_TYPE GetAttribute(void) override { return ATTRIBUTE_TYPE_FIRE; };
 };
 
