@@ -282,13 +282,15 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 
 					// c‚Ì•Ç‚È‚ç
 					if (up != -1 || down != -1) {
+						if (direction.x > 0.0f && blownVelocity->x < 0.0f ||
+							direction.x < 0.0f && blownVelocity->x > 0.0f) blownVelocity->x = 0.0f;
 						direction.x = 0.0f;
-						//blownVelocity->x = 0.0f;
 					}
 					// ‰¡‚Ì•Ç‚È‚ç
 					if (left != -1 || right != -1) {
+						if (direction.y > 0.0f && blownVelocity->y < 0.0f ||
+							direction.y < 0.0f && blownVelocity->y > 0.0f) blownVelocity->y = 0.0f;
 						direction.y = 0.0f;
-						//blownVelocity->y = 0.0f;
 					}
 				}
 			}
