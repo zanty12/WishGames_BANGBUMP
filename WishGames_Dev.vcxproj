@@ -176,6 +176,7 @@
     <ClCompile Include="mapmngr.cpp" />
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="movableobj.cpp" />
+    <ClCompile Include="move_scene_anim.cpp" />
     <ClCompile Include="multiplay.cpp" />
     <ClCompile Include="multi_anim.cpp" />
     <ClCompile Include="multi_animenum.cpp" />
@@ -265,6 +266,7 @@
     <ClInclude Include="menu.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="mapmngr.h" />
+    <ClInclude Include="move_scene_anim.h" />
     <ClInclude Include="multiplay.h" />
     <ClInclude Include="multi_anim.h" />
     <ClInclude Include="multi_animenum.h" />
@@ -275,7 +277,6 @@
     <ClInclude Include="multi_character_select_mode.h" />
     <ClInclude Include="multi_client_gameobject.h" />
     <ClInclude Include="multi_connect_renderer.h" />
-    <ClInclude Include="multi_effect.h" />
     <ClInclude Include="multi_enemy.h" />
     <ClInclude Include="multi_enemy_rush_mode.h" />
     <ClInclude Include="multi_final_battle_mode.h" />
@@ -291,7 +292,6 @@
     <ClInclude Include="multi_path.h" />
     <ClInclude Include="multi_player.h" />
     <ClInclude Include="multi_result_skillorb.h" />
-    <ClInclude Include="multi_runenum.h" />
     <ClInclude Include="multi_server_select.h" />
     <ClInclude Include="multi_skillorb.h" />
     <ClInclude Include="multi_transform.h" />

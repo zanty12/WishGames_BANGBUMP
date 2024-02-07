@@ -12,8 +12,11 @@ struct AttributeState {
 	float friction = 0.98f;			// –€CŒW”
 	float brakeFriction = 0.98f;	// –€CŒW”i‹}’â~j
 	float powerFriction = 1.00f;	// ƒpƒ[‚Ì–€CŒW”
+	float powerMoveRatio = 1.0f;	// ƒpƒ[‚ªˆÚ“®‚É—^‚¦‚éŠ„‡
+	float powerAttackRatio = 1.0f;	// ƒpƒ[‚ªUŒ‚‚É—^‚¦‚éŠ„‡
 
 	// Ø‚è‘Ö‚¦
+	float exNoAttributeTime = 1.5f;	// ‚ª‚Á‚¿‚á‚ñ‚±‚µ‚Ä‘®«UŒ‚‚Ìg—p‚Å‚«‚È‚¢ŠÔ
 	float exCoolTime = 1.5f;		// ‚ª‚Á‚¿‚á‚ñ‚±ƒN[ƒ‹ƒ^ƒCƒ€
 
 	// –‚—Í
@@ -55,8 +58,11 @@ struct AttributeState {
 		friction = ini::GetFloat(PARAM_PATH + path, attributeName, L"friction", -1.0f);
 		brakeFriction = ini::GetFloat(PARAM_PATH + path, attributeName, L"brakeFriction", -1.0f);
 		powerFriction = ini::GetFloat(PARAM_PATH + path, attributeName, L"powerFriction", -1.0f);
+		powerMoveRatio = ini::GetFloat(PARAM_PATH + path, attributeName, L"powerMoveRatio", -1.0f);
+		powerAttackRatio = ini::GetFloat(PARAM_PATH + path, attributeName, L"powerAttackRatio", -1.0f);
 
 		// Ø‚è‘Ö‚¦
+		exNoAttributeTime = ini::GetFloat(PARAM_PATH + path, attributeName, L"exNoAttributeTime", -1.0f);
 		exCoolTime = ini::GetFloat(PARAM_PATH + path, attributeName, L"exCoolTime", -1.0f);
 
 		// –‚—Í
@@ -97,8 +103,11 @@ struct AttributeState {
 		influence_state(friction);
 		influence_state(brakeFriction);
 		influence_state(powerFriction);
+		influence_state(powerMoveRatio);
+		influence_state(powerAttackRatio);
 
 		// Ø‚è‘Ö‚¦
+		influence_state(exNoAttributeTime);
 		influence_state(exCoolTime);
 
 		// –‚—Í

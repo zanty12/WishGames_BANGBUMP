@@ -53,7 +53,6 @@ class MultiPlayModeClientSide {
 protected:
 	float startTime_ = 15.0f;							// 開始までの時間
 	float resultTime_ = 15.0f;							// 中間リザルトの時間
-	std::list<CLIENT_DATA_CLIENT_SIDE> beforeClients;	// ゲーム開始直後のクライアントデータ
 	MultiMap *map_;
 	int clientSpawnCount = 0;							// クライアントのスポーンカウント
 	std::list<ResultSkillOrb> rstSkillOrb;				// リザルト時のスキルオーブ
@@ -75,11 +74,26 @@ protected:
 
 	int get_rank(std::list<CLIENT_DATA_CLIENT_SIDE> &ranking, int id) {
 		int rank = 0;
+		int addRank = 1;
 
 		// ランクを調べる
 		for (auto &c : ranking) {
 			if (id == c.id) return rank;
 			else rank++;
+		}
+		// ランクを調べる
+		auto preClient = *ranking.begin();
+		for (auto &client : ranking) {
+			if (id == client.id) return rank;
+			else {
+				if (client.score == preClient.score) addRank++;
+				else {
+					rank += addRank;
+					addRank = 1;
+				}
+			}
+
+			preClient = client;
 		}
 
 		return -1;

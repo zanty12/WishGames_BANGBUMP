@@ -39,6 +39,29 @@ void EnemyServerSide::BlownPlayers(void) {
 	}
 }
 
+void EnemyClientSide::DamageEffectUpdate(void) {
+	if (damageEffectAttributeType != -1) {
+		MultiAnimator *anim = &allDamageEffect;
+		if (damageEffectAttributeType == MULTI_ATTACK_FIRE) anim = &fireDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_WATER) anim = &waterDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_THUNDER) anim = &thunderDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_WIND) anim = &windDamageEffect;
+
+		// ダメージエフェクト
+		if (MultiPlayClient::GetGameMode())MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(
+			*anim,
+			transform.position,
+			0.0f,
+			Vector2::One * radius,
+			Color::White
+		);
+	}
+}
+
+void EnemyClientSide::Release(void) {
+	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(deathAnim, transform.position, 0.0f, Vector2::One * radius * 1.5f);
+}
+
 
 
 
@@ -59,7 +82,8 @@ void Enemy1ServerSide::Loop(void) {
 }
 void Enemy1ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White, velocity.x > 0.0f);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White, velocity.x > 0.0f);
+	DamageEffectUpdate();
 	isShow = false;
 }
 
@@ -74,7 +98,6 @@ void Enemy2ServerSide::Loop(void) {
 	if (coolTime < spawnTimer.GetNowTime() * 0.001f) {
 		float minDistanceSq = -1.0f;
 		Vector2 targetPosition;
-		auto bullet = map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
 		float searchRadiusSq = activeRadius * activeRadius;
 
 		// 最も近いプレイヤーを調べる
@@ -93,8 +116,10 @@ void Enemy2ServerSide::Loop(void) {
 		}
 
 		// 方向を決める
-		if (targetPosition != Vector2::Zero) bullet->velocity = (targetPosition - transform.position).Normalize() * 10.0f;
-		else bullet->velocity = Vector2::Down * 10.0f;
+		if (targetPosition != Vector2::Zero) {
+			auto bullet = map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
+			bullet->velocity = (targetPosition - transform.position).Normalize() * 10.0f;
+		}
 
 		spawnTimer.Start();
 	}
@@ -104,7 +129,8 @@ void Enemy2ServerSide::Loop(void) {
 }
 void Enemy2ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White);
+	DamageEffectUpdate();
 	isShow = false;
 }
 void AttackEnemy2ServerSide::Loop(void) {	
@@ -119,7 +145,7 @@ void AttackEnemy2ServerSide::KnockBack(ServerMovableGameObject *object) {
 }
 void AttackEnemy2ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White);
 	isShow = false;
 }
 
@@ -167,9 +193,7 @@ void Enemy3ServerSide::Loop(void) {
 }
 void Enemy3ClientSide::Loop(void) {
 	if (!isShow) return;
-	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * 100, Color::White, velocity.x > 0.0f);
+	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, Vector2::One * radius, Color::White, velocity.x > 0.0f);
+	DamageEffectUpdate();
 	isShow = false;
 }
-
-
-

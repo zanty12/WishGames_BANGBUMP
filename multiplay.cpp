@@ -5,6 +5,7 @@
 #include "multi_skillorb.h"
 #include "multi_enemy.h"
 #include "ini.h"
+#include "move_scene_anim.h"
 #include <windows.h>
 #include <thread>
 
@@ -235,8 +236,8 @@ void MultiPlayServer::SendUpdate(void) {
 			client.header.id,
 			player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
 			player->animType,
-			player->transform.position, player->velocity, player->attackVelocity, player->warpVelocity,
-			0, player->damageEffectAttributeType, player->skillPoint, 0 }
+			player->transform.position, player->velocity, player->attackVelocity, player->chargeVelocity,
+			player->score, player->damageEffectAttributeType, player->skillPoint, 0 }
 		);
 	}
 
@@ -374,6 +375,22 @@ void MultiPlayServer::OpenTerminal(void) {
 					PlayerUpdate();
 				}
 				SendUpdate();
+
+				// スキルオールチートシート
+				for (int i = 0; i < 10; i++) {
+					std::string vk = std::to_string(i);
+					if (GetAsyncKeyState(vk.c_str()[0])) {
+						auto iterator = clients_.find(i);
+						if (iterator == clients_.end()) continue;
+						if (GetAsyncKeyState(VK_UP)) {
+							iterator->second.player_->skillPoint++;
+						}
+						if (GetAsyncKeyState(VK_DOWN)) {
+							iterator->second.player_->skillPoint--;
+							if (iterator->second.player_->skillPoint < 0) iterator->second.player_->skillPoint = 0;
+						}
+					}
+				}
 			}
 		}
 
@@ -423,6 +440,9 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// 受信用領域を確保する
 	recvTmpBuff = new char[MAX_BUFF];
+
+	// シーン遷移アニメーションの初期化
+	MoveScene::Initialize();
 }
 
 int MultiPlayClient::Register(std::string serverAddress) {
@@ -509,6 +529,9 @@ void MultiPlayClient::PlayerUpdate(void) {
 			// イテレータを一つ前に戻す
 			iterator++;
 
+			// 削除時に呼び出す
+			delIterator->second->Release();
+
 			// データの削除
 			delete object;
 
@@ -534,6 +557,10 @@ void MultiPlayClient::PlayerUpdate(void) {
 
 	// UIの描画
 	gameMode->DrawUI(res_);
+
+	// シーン遷移アニメーション
+	MoveScene::Loop();
+
 
 #ifdef DEBUG_LINK
 	if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
@@ -629,7 +656,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				player->transform.position = client.position;
 				player->velocity = client.moveVelocity;
 				player->attackVelocity = client.attackVelocity;
-				player->warpVelocity = client.warpVelocity;
+				player->chargeVelocity = client.warpVelocity;
 				player->animType = client.animType;
 				player->moveAttributeType = client.moveAttributeType;
 				player->attackAttributeType = client.attackAttributeType;
@@ -654,6 +681,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: pObject = new ClientSkillOrbMidium(); break;
 				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: pObject = new ClientSkillOrbBig(); break;
 				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER: pObject = new ClientThunderAttack(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2: pObject = new ClientThunder2Attack(Transform(object.position)); break;
 				}
 				if (pObject) objects[object.id] = pObject;
 			}

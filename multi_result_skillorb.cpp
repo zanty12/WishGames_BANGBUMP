@@ -7,8 +7,8 @@ void ResultSkillOrb::Loop(void) {
 	// ベロシティ
 	velocity += direction * moveAmount;
 
-	// ターゲットないなら削除する
-	if (direction.DistanceSq() <= destroyDistance * destroyDistance) {
+	// ターゲットに近いなら削除する
+	if (direction.DistanceSq() <= destroyDistance * destroyDistance || 0.0f <= direction.y) {
 		isDestroy = true;
 	}
 
