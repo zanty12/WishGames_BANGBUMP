@@ -32,6 +32,7 @@ void ServerAttribute::LevelUpdate(void) {
 		if (player->lvupPoint[lv] <= player->skillPoint && player->skillPoint < player->lvupPoint[lv + 1]) {
 			state = &state_lv[lv];
 			this->lv = lv;
+			return;
 		}
 	}
 }
@@ -81,6 +82,7 @@ void ClientAttribute::LevelUpdate(void) {
 	for (lv = 0; lv < MAX_LV - 1; lv++) {
 		if (player->lvupPoint[lv] <= player->skillPoint && player->skillPoint < player->lvupPoint[lv + 1]) {
 			state = &state_lv[lv];
+			return;
 		}
 	}
 }

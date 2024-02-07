@@ -240,6 +240,7 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 			moveAttribute->GetAttribute() == ATTRIBUTE_TYPE_THUNDER ||
 			moveAttribute->GetAttribute() == ATTRIBUTE_TYPE_WIND) {
 			// 移動アニメーション
+			moveAttribute->LevelUpdate();
 			moveAttribute->Move();
 		}
 	}
@@ -249,6 +250,7 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 			attackAttribute->GetAttribute() == ATTRIBUTE_TYPE_DARK ||
 			attackAttribute->GetAttribute() == ATTRIBUTE_TYPE_THUNDER) {
 			// 移動アニメーション
+			attackAttribute->LevelUpdate();
 			attackAttribute->Attack();
 		}
 	}

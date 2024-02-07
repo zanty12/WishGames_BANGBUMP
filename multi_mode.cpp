@@ -111,39 +111,35 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 		);
 
 		// ドロップ関数
-		auto dropOrb = [&](int rank, int dropNum, float velocity) {
+		auto dropOrb = [&](int idx, int dropNum, float velocity) {
 			for (int i = 0; i < dropNum; i++) {
 				float rad = MATH::Rand(-MATH::PI, MATH::PI);
 				rstSkillOrb.push_back(ResultSkillOrb(
 					CalcTimePosition(),
-					CalcIconPosition(rank, ranking.size()),
+					CalcIconPosition(idx, ranking.size()),
 					Vector2(std::sin(rad), std::cosf(rad) * velocity)));
 			}
 		};
 
 		// 0.5秒ごとにスキルオーブをドロップ
 		if (100 < dropSkillOrbCoolTimer.GetNowTime()) {
-			for (auto &kvp : ranking) {
-				int rank = 0;
-				int preScore = -1;
-				int addRank = 1;
-				int dropNum = 5;
-				for (auto player : ranking) {
-					if (player->score == preScore) addRank++;
-					else addRank = 1;
+			int rank = 0;
+			int preScore = -1;
+			int addRank = 1;
+			int dropNum = 5;
+			for (auto player : ranking) {
+				if (player->score == preScore) addRank++;
+				else addRank = 1;
 
-					int expRange = player->GetLvMaxSkillOrb() - player->GetLvMinSkillOrb();
-					switch (rank) {
-						switch (rank) {
-						case 0: dropOrb(rank, dropNum * 1.5f, 30.0f); break;
-						case 1: dropOrb(rank, dropNum * 0.5f, 30.0f); break;
-						case 2: dropOrb(rank, dropNum * 0.25f, 30.0f); break;
-						case 3: dropOrb(rank, dropNum * 0.0f, 30.0f); break;
-						}
-					}
-					rank += addRank;
-					preScore = player->score;
+				int expRange = player->GetLvMaxSkillOrb() - player->GetLvMinSkillOrb();
+				switch (rank) {
+				case 0: dropOrb(player->id, dropNum * 1.5f, 30.0f); break;
+				case 1: dropOrb(player->id, dropNum * 0.5f, 30.0f); break;
+				case 2: dropOrb(player->id, dropNum * 0.25f, 30.0f); break;
+				case 3: dropOrb(player->id, dropNum * 0.0f, 30.0f); break;
 				}
+				rank += addRank;
+				preScore = player->score;
 			}
 			dropSkillOrbCoolTimer.Start();
 		}
