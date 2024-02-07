@@ -8,6 +8,7 @@ Title::Title(SceneMngr* scene_mngr)
 {
     title_video_ = new Video("data/video/title.mp4");
     logo_tex_ = LoadTexture("data/texture/UI/team_logo.png");
+    press_button_tex_ = LoadTexture("data/texture/UI/pressanybutton.png");
     title_video_->SetLoop(true);
     title_video_->SetWindowPos(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2));
     title_video_->SetSize(Vector2(Graphical::GetWidth(), Graphical::GetHeight()));
@@ -47,10 +48,11 @@ void Title::Update()
 
 void Title::Draw()
 {
+    const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
+    const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
     if (logo_)
     {
-        const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
-        const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
+
         Graphical::Clear(Color::White);
         DrawSprite(logo_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2), 0.0f,
                    Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f,1.0f,1.0f,logo_alpha_));
@@ -58,6 +60,8 @@ void Title::Draw()
     else
     {
         title_video_->DrawAsResource();
+        DrawSprite(press_button_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3), 0.0f,
+                   Vector2(999 * scale_x, 100.3 * scale_y), Color(1.0f,1.0f,1.0f,1.0f));
     }
 }
 
