@@ -68,6 +68,7 @@ void Animator::InitDictionary(void)
     DICTIONARY_[EFFECT_DEAD_ANIM] = ANIM_DATA(effect_dead);
     DICTIONARY_[EFFECT_ENEMYDEAD_ANIM] = ANIM_DATA(effect_enemydead);
     DICTIONARY_[EFFECT_SPAWN_ANIM] = ANIM_DATA(effect_spawn);
+    DICTIONARY_[EFFECT_WATER_INDICATOR] = ANIM_DATA(effect_water_indicator);
     DICTIONARY_[EFFECT_HIT_ANIM] = ANIM_DATA(effect_hit);
     DICTIONARY_[EFFECT_HIT_FIRE_ANIM] = ANIM_DATA(effect_hit_fire);
     DICTIONARY_[EFFECT_HIT_DARK_ANIM] = ANIM_DATA(effect_hit_dark);
