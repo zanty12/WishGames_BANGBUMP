@@ -9,6 +9,8 @@ bool CheckLength(Vector2 a, Vector2 b, float len);
 
 void Enemy1::Update()
 {
+	SetHp(100);
+
 	//HPが0になったら消す
 	if (GetHp() <= 0)
 	{

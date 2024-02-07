@@ -152,7 +152,7 @@ void Player::Update(void)
 		SetVel(Vector2(next_vel.x, next_vel.y));
 	}
 
-
+	invincibility_time_ += Time::GetDeltaTime();
 
 	UpdateDir();
 
@@ -360,61 +360,17 @@ void Player::CollisionSkillPoint(GameObject* obj)
 //================================================================================
 // アトリビュートのアタックに当たった時のアクション
 //================================================================================
-//void Player::CollisionAttack(GameObject* obj)
-//{
-//	//★アタッククラスができ次第★
-//	GameObject* attack = obj;
-//	//何かしらのアタッククラス* attack = dynamic_cast<何かしらのアタッククラス*>(obj)
-//	//if (何かしらのアタッククラス == nullptr)
-//	//{
-//	//	return;
-//	//}
-//
-//	hit_attack_attr = ATTRIBUTE_TYPE_FIRE; /*attack->GetAttribute()*/
-//
-//	//アタックオブジェクトのRotから自分が動くべき方向を割り出す
-//	dir_.x = cosf(attack->GetRot());
-//	dir_.y = sinf(attack->GetRot());
-//
-//	switch (hit_attack_attr)
-//	{
-//	case ATTRIBUTE_TYPE_FIRE:
-//	{//1/3秒で2マス
-//		knockback_distance_ = SIZE_ * 2;
-//		knockback_time_ = 1.0f / 3;
-//		break;
-//	}
-//	case ATTRIBUTE_TYPE_THUNDER:
-//	{//3/4秒で3マス
-//		knockback_distance_ = SIZE_ * 3;
-//		knockback_time_ = 3.0f / 4;
-//		break;
-//	}
-//	case ATTRIBUTE_TYPE_WIND:
-//	{//1/4秒で1マス
-//		knockback_distance_ = SIZE_ * 1;
-//		knockback_time_ = 1.0f / 4;
-//		break;
-//	}
-//	case ATTRIBUTE_TYPE_DARK:
-//	{//1秒で1マス
-//		knockback_distance_ = SIZE_ * 1;
-//		knockback_time_ = 1.0f / 1;
-//		break;
-//	}
-//	default:
-//		break;
-//	}
-//
-//	//エフェクトの表示
-//
-//
-//	knockback_start_ = GetPos();
-//	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
-//
-//	SkillPointDown(0);	//実際に受けたダメージ分減らす
-//	drop_point_ += 0;	//実際に受けたダメージを蓄積する
-//}
+void Player::CollisionAttack(GameObject* obj)
+{
+	//エフェクトの表示
+
+
+	knockback_start_ = GetPos();
+	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+
+	SkillPointDown(0);	//実際に受けたダメージ分減らす
+	drop_point_ += 0;	//実際に受けたダメージを蓄積する
+}
 
 //================================================================================
 // トゲに当たった時のアクション
@@ -484,7 +440,6 @@ void Player::CollisionEnemy(GameObject* obj)
 	{
 		dir_ = -enemy->GetVel().Normalize();
 	}
-	dir_ *= -1;	//反転させる
 
 	SkillPointDown(enemy->GetAtk());
 
@@ -498,6 +453,9 @@ void Player::CollisionEnemy(GameObject* obj)
 	case TYPE__HAMMERBRO:
 		knockback_time_ = 1.0f / 4;
 		knockback_distance_ = SIZE_;
+		dir_ = GetPos() - enemy->GetPos();
+		dir_ = dir_.Normalize();
+		dir_ *= -1;
 		break;
 	case TYPE__PHANTOM:
 		knockback_time_ = 1.0f / 4;
@@ -507,8 +465,16 @@ void Player::CollisionEnemy(GameObject* obj)
 		break;
 	}
 
-	knockback_start_ = GetPos();
-	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+	if (dir_ != Vector2::Zero)
+	{
+		knockback_start_ = GetPos();
+		knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+	}
+	else
+	{
+		knockback_start_ = GetPos();
+		knockback_end_ = GetPos();
+	}
 
 	//エフェクトの表示
 	hit_effect_->Hit(GetPos());
@@ -538,14 +504,23 @@ void Player::CollisionBullet(GameObject* obj)
 	{
 		dir_ = bullet->GetVel().Normalize();
 	}
+	dir_ *= -1;
 
 	SkillPointDown(bullet->GetAtk());
 
 	knockback_time_ = 1.0f / 4;
 	knockback_distance_ = SIZE_;
 
-	knockback_start_ = GetPos();
-	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+	if (dir_ != Vector2::Zero)
+	{
+		knockback_start_ = GetPos();
+		knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+	}
+	else
+	{
+		knockback_start_ = GetPos();
+		knockback_end_ = GetPos();
+	}
 
 	//エフェクトの表示
 	hit_effect_->Hit(GetPos());

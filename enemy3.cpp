@@ -13,6 +13,8 @@ bool CheckPlayerLength(Vector2 a, Vector2 b, float len);
 
 void Enemy3::Update()
 {
+    SetHp(100);
+
     //HPが0になったら消す
     if (GetHp() <= 0)
     {
@@ -79,7 +81,10 @@ void Enemy3::Update()
                 if (cheakRange_Enemy_ == true)
                 {
                     Vector2 v = startPosition - GetPos();
-                    SetVel(v.Normalize() * spd_ * dt);
+                    if (v != Vector2::Zero)
+                    {
+                        SetVel(v.Normalize() * spd_ * dt);
+                    }
                 }
             }
             else
@@ -88,14 +93,20 @@ void Enemy3::Update()
                 {
 
                     Vector2 v = player->GetPos() - GetPos();
-                    SetVel(v.Normalize() * spd_ * dt);
+                    if (v != Vector2::Zero)
+                    {
+                        SetVel(v.Normalize() * spd_ * dt);
+                    }
                 }
             }
         }
         else
         {
             Vector2 v = startPosition - GetPos();
-            SetVel(v.Normalize() * spd_ * dt);
+            if (v != Vector2::Zero)
+            {
+                SetVel(v.Normalize() * spd_ * dt);
+            }
         }
     }
 

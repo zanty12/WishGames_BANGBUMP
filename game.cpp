@@ -17,7 +17,7 @@ Game::Game(SceneMngr* scene_mngr)
     projectile_mngr_ = new ProjectileMngr();
     orb_mngr_ = new SkillOrbMngr();
     players_ = std::list<Player *>();
-    mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_1).c_str(), this);
+    mapmngr_ = new MapMngr(Asset::GetAsset(practices_stage).c_str(), this);
     text_format_ = Text::MakeTextFormat(L"ƒ[ƒvƒ–¾’©", 50, DWRITE_FONT_WEIGHT_BOLD, DWRITE_FONT_STYLE_NORMAL);
     brush_ = Text::MakeBrush(Color(1.0f, 1.0f, 1.0f, 1.0f));
     timer_tex_ = LoadTexture(Asset::GetAsset(timer));
@@ -128,7 +128,7 @@ void Game::DebugMenu()
         delete mapmngr_;
         coll_mngr_->CheckDiscard();
         renderer_->CheckDiscard();
-        mapmngr_ = new MapMngr("data/map/stage1_test.csv", this);
+        mapmngr_ = new MapMngr("data/map/Boss_Map.csv", this);
     }
     if (ImGui::Button("clear"))
         SetChangeScene(1);
@@ -200,7 +200,7 @@ void Game::UpdateNormal()
         coll_mngr_->CheckDiscard();
         renderer_->CheckDiscard();
         mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_2).c_str(), this);
-        timer_ = 120.0f;
+        timer_ = 500.0f;
         GetPlayer()->SetPos(mapmngr_->GetPlayerSpawn());
         GetPlayer()->SetMapMngr(mapmngr_);
         delete camera_;

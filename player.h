@@ -118,7 +118,7 @@ private:
 	//当たり判定（スキルポイント）
 	void CollisionSkillPoint(GameObject* obj);
 	//当たり判定（アタックアトリビュート）
-	//void CollisionAttack(GameObject* obj);
+	void CollisionAttack(GameObject* obj);
 	//当たり判定（トゲ）
 	void CollisionSpike(void);
 	//当たり判定（エネミー）

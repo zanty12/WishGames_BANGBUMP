@@ -271,6 +271,11 @@ void ThunderAttack::Update()
 {
     HitEffectUpdate();  //エフェクトのアップデート
 
+    if (GetDiscard())
+    {
+        return;
+    }
+
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
