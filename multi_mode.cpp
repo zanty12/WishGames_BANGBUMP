@@ -101,11 +101,11 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 	// ドロップアニメーション
 	else if (time <= DROP_ANIMATION) {
 		// ランキング
-		std::list<ServerPlayer *> ranking;
-		for (auto &kvp : MultiPlayServer::clients_) ranking.push_back(kvp.second.player_);
+		std::list<ClientPlayer *> ranking;
+		for (auto &kvp : MultiPlayClient::clients) ranking.push_back(kvp.second);
 
 		// ソート
-		ranking.sort([](ServerPlayer *a, ServerPlayer *b) {
+		ranking.sort([](ClientPlayer *a, ClientPlayer *b) {
 			return a->score > b->score;
 			}
 		);
