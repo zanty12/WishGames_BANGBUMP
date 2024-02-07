@@ -154,17 +154,8 @@ void MultiPlayCharacterSelectModeClientSide::DrawResult(RESPONSE_PLAYER &players
 }
 
 void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {
-	//DebugUI::BeginDraw();
-	//Text::TextStart();
-	//prep.Update();
-	//prep.Draw();
-	//game_->move_ = (ATTRIBUTE_TYPE)((int)prep.GetMove() * 0.5f);
-	//game_->action_ = (ATTRIBUTE_TYPE)((int)prep.GetAttack() * 0.5f);
-	//Text::TextEnd();
-	//DebugUI::EndDraw();
 	ATTRIBUTE_TYPE moveAttributeType, attackAttributeType;
 
-	int idx = 0;
 	for (auto &character : res.characters) {
 		int id = character.id;
 		if (characters.find(id) == characters.end()) characters[id] = AnimData();
@@ -189,7 +180,6 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 			id, res.characters.size(), 
 			width, height, gap,
 			character.moveAttributeType, character.attackAttributeType, characters[id].uMoveAnim, characters[id].uAttackAnim);
-		idx++;
 	}
 
 	// “®‰æ‚Ì•`‰æ
