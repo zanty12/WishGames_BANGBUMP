@@ -4,6 +4,7 @@
 #include "lib/collider2d.h"
 #include "xinput.h"
 #include "time.h"
+#include "multi_ui.h"
 
 
 AttackServerSide *ServerAttribute::CreateAttack(void) {
@@ -302,7 +303,12 @@ void ClientFire::Attack(void) {
 	attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
 }
 void ClientFire::DrawUI(void) {
+	Vector2 localPos = Vector2(0.0f, 75.0f);
+	Vector2 pos = CalcIconPosition(player->id, MultiPlayClient::clients.size());
 
+	float ratio = (float)mp / (float)state->maxMp;
+	DrawSpriteBoxEffectLeftToRight(frameUITexNo, pos + localPos, Vector2::One * 100.0f, Color::White, 1.0f);
+	DrawSpriteBoxEffectLeftToRight(uiTexNo, pos + localPos, Vector2::One * 100.0f, Color::White, ratio);
 }
 
 void ServerFireAttack::Loop(void) {
@@ -592,6 +598,16 @@ void ClientWater::Idle(void) {
 		idle.Draw(pos + Vector2(0.0f, -73.0f), rot, scl, col);
 	}
 }
+void ClientWater::DrawUI(void) {
+	Vector2 localPos = Vector2(0.0f, 75.0f);
+	Vector2 pos = CalcIconPosition(player->id, MultiPlayClient::clients.size());
+	Color col = Color::White;
+
+	float ratio = (float)mp / (float)state->maxMp;
+	if (ratio < 1.0f) col *= 0.25f;
+	DrawSpriteBoxEffectBottomToUp(frameUITexNo, pos + localPos, Vector2::One * 100.0f, Color::White, 1.0f);
+	DrawSpriteBoxEffectBottomToUp(uiTexNo, pos + localPos, Vector2::One * 100.0f, col, ratio);
+}
 
 void ServerWaterAttack::Loop(void) {
 }
@@ -820,6 +836,18 @@ void ClientThunder::Attack(void) {
 	}
 
 }
+void ClientThunder::DrawUI(void) {
+	Vector2 localPos = Vector2(-50.0f, 75.0f);
+	Vector2 pos = CalcIconPosition(player->id, MultiPlayClient::clients.size());
+
+	int num = mp;
+	int maxNum = state->maxMp;
+	int width = 25.0f;
+	for (int i = 0; i < maxNum; i++) {
+		if (i < num) DrawSprite(uiTexNo, pos + localPos + Vector2(-width, 0.0f) * i, 0.0f, Vector2::One * 100.0f, Color::White);
+		else DrawSprite(frameUITexNo, pos + localPos + Vector2(-width, 0.0f) * i, 0.0f, Vector2::One * 100.0f, Color::White);
+	}
+}
 
 void ServerThunderAttack::Loop(void) {
 	// d—Í
@@ -847,7 +875,6 @@ void ClientThunderAttack::Loop(void) {
 
 	isShow = false;
 }
-
 void ClientThunderAttack::Release(void) {
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(deathAnim, transform.position, 0.0f, transform.scale);
 }
@@ -1053,6 +1080,14 @@ void ClientWind::Idle(void) {
 	if (player->animType == ANIMATION_TYPE_IDLE) {
 		idle.Draw(pos + Vector2(0.0f, -70.0f), rot, scl, col);
 	}
+}
+void ClientWind::DrawUI(void) {
+	Vector2 localPos = Vector2(0.0f, 75.0f);
+	Vector2 pos = CalcIconPosition(player->id, MultiPlayClient::clients.size());
+
+	float ratio = (float)mp / (float)state->maxMp;
+	DrawSpriteCircleEffect(frameUITexNo, pos + localPos, 0.0f, Vector2::One * 100.0f, Color::White, Vector2::Zero, Vector2::One, 1.0f);
+	DrawSpriteCircleEffect(uiTexNo, pos + localPos, 0.0f, Vector2::One * 100.0f, Color::White, Vector2::Zero, Vector2::One, ratio);
 }
 
 void ServerWindAttack::Loop(void) {
