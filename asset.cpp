@@ -119,27 +119,32 @@ const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::strin
     {sounds::BGM_6,"data/sound/music_06.wav"},
     {sounds::BGM_7,"data/sound/music_07.wav"},
 
-    {sounds::SE_1,"data/sound/enemy_damage_1.wav"},
-    {sounds::SE_2,"data/sound/enemy_damage_2.wav"},
-    {sounds::SE_3,"data/sound/enemy_atk.wav"},
-    {sounds::SE_4,"data/sound/enemy_destroy.wav"},
+    {sounds::SE_1,"data/sound/fire_atk.wav"},
+    {sounds::SE_2,"data/sound/fire_move.wav"},
+    {sounds::SE_3,"data/sound/MIZU_attack.wav"},
+    {sounds::SE_4,"data/sound/mizu_move.wav"},
+    {sounds::SE_5,"data/sound/LITENING_attack.wav"},
+    {sounds::SE_6,"data/sound/thunder_move.wav"},
+    {sounds::SE_7,"data/sound/wind_atk.wav"},
+    {sounds::SE_8,"data/sound/wind_move.wav"},
 
-    {sounds::SE_5,"data/sound/fire_atk.wav"},
-    {sounds::SE_6,"data/sound/fire_move.wav"},
+    {sounds::SE_9,"data/sound/enemy_damage_1.wav"},
+    {sounds::SE_10,"data/sound/enemy_damage_2.wav"},
+    {sounds::SE_11,"data/sound/enemy_atk.wav"},
+    {sounds::SE_12,"data/sound/enemy_destroy.wav"},
 
-    {sounds::SE_7,"data/sound/MIZU_attack.wav"},
-    {sounds::SE_8,"data/sound/LITENING_attack.wav"},
+    {sounds::SE_13,"data/sound/game_start.wav"},
+    {sounds::SE_14,"data/sound/gameover.wav"},
 
-    {sounds::SE_9,"data/sound/game_start.wav"},
+    {sounds::SE_15,"data/sound/button_selection.wav"},
+    {sounds::SE_16,"data/sound/attribute.wav"},
 
-    {sounds::SE_10,"data/sound/get_point.wav"},
-    {sounds::SE_11,"data/sound/point_falling_1.wav"},
-    {sounds::SE_12,"data/sound/point_falling_2.wav"},
+    {sounds::SE_17,"data/sound/get_point.wav"},
+    {sounds::SE_18,"data/sound/point_falling_1.wav"},
+    {sounds::SE_19,"data/sound/point_falling_2.wav"},
 
-    {sounds::SE_13,"data/sound/button_selection.wav"},
-    {sounds::SE_14,"data/sound/attribute.wav"},
-    {sounds::SE_15,"data/sound/block.wav"},
-    {sounds::SE_16,"data/sound/block2.wav"},
+    {sounds::SE_20,"data/sound/block.wav"},
+    {sounds::SE_21,"data/sound/block2.wav"},
 };
 
 const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{

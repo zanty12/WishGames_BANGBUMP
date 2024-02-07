@@ -149,6 +149,10 @@ enum sounds
     SE_15,
     SE_16,
     SE_17,
+    SE_18,
+    SE_19,
+    SE_20,
+    SE_21,
 
 };
 
