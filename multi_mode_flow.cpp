@@ -200,7 +200,7 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		Vector2 pos = CalcIconPosition(idx, maxMembers);
 		Vector2 scl = Vector2(200, 100);
 		DrawSprite(icon3,
-			CalcIconPosition(idx, maxMembers), 0.0f, scl,
+			pos, 0.0f, scl,
 			Color::White,
 			uv, uvScale
 		);
@@ -239,7 +239,7 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		case 0: Number(Vector2(centerX - 175, 60), Vector2::One * 70.0f, client.score); break;
 		case 1: Number(Vector2(centerX - 70,  60), Vector2::One * 70.0f, client.score); break;
 		case 2: Number(Vector2(centerX + 70,  60), Vector2::One * 70.0f, client.score); break;
-		case 4: Number(Vector2(centerX + 175, 60), Vector2::One * 70.0f, client.score); break;
+		case 3: Number(Vector2(centerX + 175, 60), Vector2::One * 70.0f, client.score); break;
 		}
 	}
 }
