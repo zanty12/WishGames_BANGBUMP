@@ -124,6 +124,13 @@ enum textures
 enum sounds
 {
     //bgm
+    BGM_1,
+    BGM_2,
+    BGM_3,
+    BGM_4,
+    BGM_5,
+    BGM_6,
+    BGM_7,
     //se
     SE_1,
     SE_2,
@@ -131,6 +138,17 @@ enum sounds
     SE_4,
     SE_5,
     SE_6,
+    SE_7,
+    SE_8,
+    SE_9,
+    SE_10,
+    SE_11,
+    SE_12,
+    SE_13,
+    SE_14,
+    SE_15,
+    SE_16,
+    SE_17,
 
 };
 

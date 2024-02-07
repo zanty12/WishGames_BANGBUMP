@@ -111,12 +111,35 @@ const std::map<textures, std::string> Asset::textures_ = {
 };
 
 const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::string>{
+    {sounds::BGM_1,"data/sound/music_01.wav"},
+    {sounds::BGM_2,"data/sound/music_02.wav"},
+    {sounds::BGM_3,"data/sound/music_03.wav"},
+    {sounds::BGM_4,"data/sound/music_04.wav"},
+    {sounds::BGM_5,"data/sound/music_05.wav"},
+    {sounds::BGM_6,"data/sound/music_06.wav"},
+    {sounds::BGM_7,"data/sound/music_07.wav"},
+
     {sounds::SE_1,"data/sound/enemy_damage_1.wav"},
     {sounds::SE_2,"data/sound/enemy_damage_2.wav"},
     {sounds::SE_3,"data/sound/enemy_atk.wav"},
     {sounds::SE_4,"data/sound/enemy_destroy.wav"},
-    {sounds::SE_5,"data/sound/point_falling_1.wav"},
-    {sounds::SE_6,"data/sound/point_falling_2.wav"},
+
+    {sounds::SE_5,"data/sound/fire_atk.wav"},
+    {sounds::SE_6,"data/sound/fire_move.wav"},
+
+    {sounds::SE_7,"data/sound/MIZU_attack.wav"},
+    {sounds::SE_8,"data/sound/LITENING_attack.wav"},
+
+    {sounds::SE_9,"data/sound/game_start.wav"},
+
+    {sounds::SE_10,"data/sound/get_point.wav"},
+    {sounds::SE_11,"data/sound/point_falling_1.wav"},
+    {sounds::SE_12,"data/sound/point_falling_2.wav"},
+
+    {sounds::SE_13,"data/sound/button_selection.wav"},
+    {sounds::SE_14,"data/sound/attribute.wav"},
+    {sounds::SE_15,"data/sound/block.wav"},
+    {sounds::SE_16,"data/sound/block2.wav"},
 };
 
 const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{
