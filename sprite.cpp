@@ -89,16 +89,16 @@ void DrawSpriteBoxEffectBottomToUp(int texNo, Vector2 pos, Vector2 scale, Color 
 
 	float len = MATH::Leap(-scale.y, +scale.y, ratio);
 	Vector2 vertices[] = {
-		Vector2(-scale.x,	+len	) + pos,
-		Vector2(+scale.x,	+len	) + pos,
-		Vector2(-scale.x,	-scale.y) + pos,
-		Vector2(+scale.x,	-scale.y) + pos,
+		Vector2(+scale.x,	-len	) + pos,
+		Vector2(-scale.x,	-len	) + pos,
+		Vector2(+scale.x,	+scale.y) + pos,
+		Vector2(-scale.x,	+scale.y) + pos,
 	};
 	Vector2 uvs[] = {
 		Vector2(0.0f	,	1.0f - ratio),
 		Vector2(1.0f	,	1.0f - ratio),
-		Vector2(0.0f	,	0.0f),
-		Vector2(1.0f	,	0.0f),
+		Vector2(0.0f	,	1.0f),
+		Vector2(1.0f	,	1.0f),
 	};
 
 
