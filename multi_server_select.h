@@ -66,7 +66,7 @@ public:
         bool open = true;
         font_ = ImGui::GetFont();
         font_->Scale *= 2;
-        ImGui::SetNextWindowPos(ImVec2(Graphical::GetWidth() /2 , Graphical::GetHeight() / 2));
+        ImGui::SetNextWindowPos(ImVec2(0 , Graphical::GetHeight() / 2));
         // Draw the texture with ImGui
         ImGui::PushFont(font_);
         ImGui::Begin(u8"ê⁄ë±", &open, window_flags);

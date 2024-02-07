@@ -141,6 +141,8 @@ WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPl
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);
+    damage_cd_ = parent->GetState()->atkCoolTime;
+    damage_ = parent->GetState()->atk;
 
     //アニメーション設定
     GetAnimator()->SetTexenum(wind_attack);
@@ -150,7 +152,10 @@ WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPl
 
 void WindAttack::Update()
 {
-    UpdateTick();
+    if(cd_timer_ > 0.0f)
+    {
+        cd_timer_ -= Time::GetDeltaTime();
+    }
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
@@ -162,9 +167,9 @@ void WindAttack::Update()
                 Enemy* enemy = dynamic_cast<Enemy*>(collision->GetParent());
                 if (enemy != nullptr)
                 {
-                    if (GetTick() > GetMaxTick())
+                    if (cd_timer_ <= 0.0f)
                     {
-                        SetTick(0.0f);
+                        cd_timer_ = damage_cd_;
                         enemy->SetHp(enemy->GetHp() - GetDamage());
 
                         //エフェクトの生成

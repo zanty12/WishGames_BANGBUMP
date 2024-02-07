@@ -255,6 +255,7 @@ ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range
 
     float rot = GetRot();
     SetRot(rot + (3.14f / 2));
+    damage_ = parent_->GetState()->atk;
 
     //アニメーション設定
     SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));

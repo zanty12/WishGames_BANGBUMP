@@ -117,6 +117,7 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
     SetScale(size_);
     SetType(OBJ_ATTACK);
     SetDamage(parent->GetState()->atk);
+    damage_cd_ = parent->GetState()->atkCoolTime;
 
     //アニメーション設定
     GetAnimator()->SetTexenum(fire_attack);
@@ -139,7 +140,7 @@ void FireAttack::Update()
                 Enemy* enemy = dynamic_cast<Enemy*>(collision->GetParent());
                 if (enemy != nullptr)
                 {
-                    if (cd_timer_ < 0)
+                    if (cd_timer_ <= 0)
                     {
                         cd_timer_ = damage_cd_;
                         enemy->SetHp(enemy->GetHp() - GetDamage());

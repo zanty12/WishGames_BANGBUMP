@@ -97,6 +97,10 @@ void Dark::Action()
     Vector2 stick = Input::GetStickRight(0);
     stick.y *= -1;
     //float distance = stick.Distance();
+    if(attack_ != nullptr)
+    {
+        attack_->Update();
+    }
     if (stick != Vector2::Zero)
     {
         if (attack_indicator_ == nullptr)
@@ -172,6 +176,8 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
 {
     SetScale(size_);
     SetType(OBJ_ATTACK);
+    SetDamage(parent->GetState()->atk);
+    damage_cd_ = parent->GetState()->atkCoolTime;
 
     //アニメーション設定
     GetAnimator()->SetTexenum(dark_attack);
@@ -181,7 +187,10 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
 
 void DarkAttack::Update()
 {
-    UpdateTick();
+    if(cd_timer_ > 0.0f)
+    {
+        cd_timer_ -= Time::GetDeltaTime();
+    }
     std::list<Collider*> collisions = GetCollider()->GetCollision();
     for (auto collision : collisions)
     {
@@ -193,9 +202,9 @@ void DarkAttack::Update()
                 Enemy* enemy = dynamic_cast<Enemy*>(collision->GetParent());
                 if (enemy != nullptr)
                 {
-                    if (GetTick() > GetMaxTick())
+                    if (cd_timer_ <= 0.0f)
                     {
-                        SetTick(0.0f);
+                        cd_timer_ = damage_cd_;
                         enemy->SetHp(enemy->GetHp() - GetDamage());
 
                         //エフェクトの生成
