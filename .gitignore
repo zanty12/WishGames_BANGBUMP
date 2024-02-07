@@ -373,3 +373,4 @@ imgui.ini
 
 #ffmpeg doc
 ./lib/ffmpeg/doc/
+/data/multiplay.ini
