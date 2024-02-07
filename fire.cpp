@@ -93,8 +93,13 @@ void Fire::Action()
     {
         if (attack_ != nullptr)
         {
-            delete attack_;
-            attack_ = nullptr;
+            player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
+
+            if (!attack_->CheckHitEffect())
+            {
+                delete attack_;
+                attack_ = nullptr;
+            }
         }
     }
 }
@@ -144,10 +149,13 @@ void FireAttack::Update()
                         SetTick(0.0f);
                         enemy->SetHp(enemy->GetHp() - GetDamage());
 
-                        //エフェクトの生成
-                        Vector2 pos = enemy->GetPos();
-                        Vector2 scale = enemy->GetScale();
-                        AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_fire, EFFECT_HIT_FIRE_ANIM));
+                        //エフェクトの生成★エネミー３の位置とか色々バグっているので生成するとエラー
+                        if (!enemy->GetDiscard() && enemy->GetEnemyType() != TYPE__PHANTOM)
+                        {
+                            Vector2 pos = enemy->GetPos();
+                            Vector2 scale = enemy->GetScale();
+                            AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_fire, EFFECT_HIT_FIRE_ANIM));
+                        }
                     }
                 }
             }
