@@ -145,6 +145,11 @@ const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::strin
 
     {sounds::SE_20,"data/sound/block.wav"},
     {sounds::SE_21,"data/sound/block2.wav"},
+
+    {sounds::SE_22,"data/sound/player_damage1.wav"},
+    {sounds::SE_23,"data/sound/player_damage2.wav"},
+    {sounds::SE_24,"data/sound/player_damage3.wav"},
+ 
 };
 
 const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{
