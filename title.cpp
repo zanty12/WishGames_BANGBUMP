@@ -35,7 +35,7 @@ void Title::Update()
             logo_ = false;
         }
     }
-    else if (!logo_ && fade_alpha_ <= 0.0f && video_wait_ <= 0.0f)
+    else if (!logo_ && fade_alpha_ <= 0.0f)
     {
         title_video_->Update();
     }
@@ -72,25 +72,23 @@ void Title::Draw()
         //draw fade in
         if (fade_alpha_ > 0.0f)
         {
-            //divide by max time
+            //because alpha is 0.0f to 1.0f, we just use alpha as time
             fade_alpha_ -= Time::GetDeltaTime() / 0.3f;
             Graphical::Clear(Color(fade_alpha_, fade_alpha_, fade_alpha_, 1.0f));
             return;
         }
-        if(video_wait_ > 0.0f)
-        {
-            video_wait_ -= Time::GetDeltaTime();
-            Graphical::Clear(Color::Black);
-            DrawSprite(title_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
-                   Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, logo_alpha_));
-            return;
-        }
         if (video_fade_ < 1.0f)
-            video_fade_ += Time::GetDeltaTime() / 1.5f;
+            video_fade_ += Time::GetDeltaTime() / 0.5f;
         title_video_->DrawAsResource(Color(1.0f, 1.0f, 1.0f, video_fade_));
+        if(title_scale_ > 1.0f)
+            title_scale_ -= (title_scale_start_ / 0.5f) * Time::GetDeltaTime();
+        if(title_scale_ < 1.0f)
+            title_scale_ = 1.0f;
+
         DrawSprite(title_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
-                   Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, logo_alpha_));
-        DrawSprite(press_button_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3), 0.0f,
+                   Vector2(1088 * scale_x, 177 * scale_y) * title_scale_, Color(1.0f, 1.0f, 1.0f, logo_alpha_));
+        if(title_scale_ <= 1.0f)
+            DrawSprite(press_button_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3), 0.0f,
                    Vector2(999 * scale_x, 100.3 * scale_y), Color(1.0f, 1.0f, 1.0f, AlphaAnimation()));
     }
 }
