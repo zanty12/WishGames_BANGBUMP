@@ -135,7 +135,7 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 					int expRange = player->GetLvMaxSkillOrb() - player->GetLvMinSkillOrb();
 					switch (rank) {
 						switch (rank) {
-						case 0: dropOrb(rank, dropNum * 1.0f, 30.0f); break;
+						case 0: dropOrb(rank, dropNum * 1.5f, 30.0f); break;
 						case 1: dropOrb(rank, dropNum * 0.5f, 30.0f); break;
 						case 2: dropOrb(rank, dropNum * 0.25f, 30.0f); break;
 						case 3: dropOrb(rank, dropNum * 0.0f, 30.0f); break;
