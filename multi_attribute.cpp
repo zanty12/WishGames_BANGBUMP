@@ -606,8 +606,8 @@ void ClientWater::DrawUI(void) {
 
 	float ratio = (float)mp / (float)state->maxMp;
 	if (ratio < 1.0f) col *= 0.25f;
-	DrawSpriteBoxEffectBottomToUp(frameUITexNo, pos + localPos, Vector2::One * 100.0f, Color::White, 1.0f);
-	DrawSpriteBoxEffectBottomToUp(uiTexNo, pos + localPos, Vector2::One * 100.0f, col, ratio);
+	DrawSpriteBoxEffectBottomToUp(frameUITexNo, pos + localPos, Vector2::One * 50.0f, Color::White, 1.0f);
+	DrawSpriteBoxEffectBottomToUp(uiTexNo, pos + localPos, Vector2::One * 50.0f, col, ratio);
 }
 
 void ServerWaterAttack::Loop(void) {
