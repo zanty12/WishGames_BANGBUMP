@@ -78,6 +78,7 @@ protected:
 
 public:
 	int soNo = -1;										// BGM
+	int stageNameTexNo = -1;							// ステージ名テクスチャ
 
 
 protected:

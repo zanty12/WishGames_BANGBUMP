@@ -929,7 +929,7 @@ void ServerThunderAttack::Loop(void) {
 		Destroy();
 }
 void ServerThunderAttack::KnockBack(ServerMovableGameObject *object) {
-	object->blownVelocity = (object->transform.position - transform.position) * knockbackRate;
+	object->blownVelocity = (object->transform.position - transform.position).Normalize() * knockbackRate;
 }
 
 void ClientThunderAttack::Loop(void) {
