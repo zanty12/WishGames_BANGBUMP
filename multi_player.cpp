@@ -119,7 +119,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	lvDownUI.MoveEnd();
 
 	std::ostringstream path;
-	path << "data/texture/UI/" << (id + 1) % 4 << "p.png";
+	path << "data/texture/UI/" << (id % 4) + 1 << "p.png";
 	iconTexNo = LoadTexture(path.str());
 }
 
@@ -128,7 +128,7 @@ void ClientPlayer::Loop(void) {
 	if (!moveAttribute || !attackAttribute) return;
 
 	// 表示状態
-	entryType = SHOW;
+	//entryType = SHOW;
 
 	// 回転リセット
 	if (!isRotationAttributeControl) transform.rotation = 0.0f;
