@@ -10,4 +10,5 @@ public:
 	static void Release(void);
 	static void BeginDraw(void);
 	static void EndDraw(void);
+
 };

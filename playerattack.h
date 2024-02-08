@@ -8,23 +8,18 @@ class AttackHitEffect;
 
 class PlayerAttack
 {
-private:
+protected:
     float damage_;
-    float max_tick_ = 0.1f; //max time for each damage tick
-    float tick_ = 0.0f; //time for each damage tick
+    float damage_cd_ = 0.1f; //max time for each damage tick
+    float cd_timer_ = 0.0f; //time for each damage tick
 protected:
 	std::list< AttackHitEffect*> hit_effects_;
 
 public:
     PlayerAttack(float damage) : damage_(damage) {}
-    virtual ~PlayerAttack() = default;
+    virtual ~PlayerAttack();
     void SetDamage(float damage) { damage_ = damage; }
     float GetDamage() const { return damage_; }
-    void SetTick(float tick) { tick_ = tick; }
-    float GetTick() const { return tick_; }
-    void SetMaxTick(float max_tick) { max_tick_ = max_tick; }
-    float GetMaxTick() const { return max_tick_; }
-    void UpdateTick() { tick_ += Time::GetDeltaTime(); }
 
 	//エフェクト追加
 	void AttachHitEffect(AttackHitEffect* hit_effect) {
@@ -32,6 +27,8 @@ public:
 	}
 	//エフェクトアップデート
 	void HitEffectUpdate();
+	//エフェクトが存在してるかどうか
+	bool CheckHitEffect(void) { return hit_effects_.size(); }
 
 private:
 	void RemoveEffect(void);
@@ -54,15 +51,15 @@ public:
 		GetAnimator()->SetDrawPriority(75);
 		SetPos(pos);
 		SetScale(scale);
+		draw_ = true;
 	}
 
-	bool GetDraw(void) { return draw_; }
+	bool GetDraw(void) const { return draw_; }
 
 	void Update(void) override {
 		if (draw_) {
 			time_ += Time::GetDeltaTime();
 			if (time_ > 0.3f) {
-				time_ = 0.0f;
 				draw_ = false;
 				Discard();
 			}

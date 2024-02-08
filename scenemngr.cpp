@@ -3,6 +3,7 @@
 #include <future>
 
 #include "dark.h"
+#include "fade.h"
 #include "fire.h"
 #include "game.h"
 #include "prep.h"
@@ -12,6 +13,7 @@
 #include "result.h"
 #include "thunder.h"
 #include "wind.h"
+#include "lib/imgui/imgui_internal.h"
 
 std::map<std::string, int> attribute_dict = {
     {"FIRE", 0},
@@ -45,7 +47,6 @@ SceneMngr::SceneMngr(SCENE scene)
     default:
         break;
     }
-    loading_tex_ = LoadTexture("data/texture/UI/loading.png");
 }
 
 void SceneMngr::ChangeScene(SCENE scene)
@@ -55,25 +56,22 @@ void SceneMngr::ChangeScene(SCENE scene)
         delete scene_;
         scene_ = nullptr;
     }
-    LoadScene(scene);
-    /*Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
-    DrawSprite(loading_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2),
-                       0.0f, Vector2(1920.0f, 1080.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
-    Graphical::Present();
+    Fade::StartFadeIn(5.0f);
     std::future<void> loadSceneFuture = std::async(std::launch::async, &SceneMngr::LoadScene, this, scene);
-
     auto start = std::chrono::high_resolution_clock::now();
     loading_ = true;
-    while(true)
+    while (true)
     {
         auto now = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - start);
-        if(loadSceneFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready && duration.count() >= 2)
+        Fade::Update();
+        Fade::Draw();
+        if (loadSceneFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready && Fade::Finished())
         {
             break;
         }
     }
-    loading_ = false;*/
+    loading_ = false;
 }
 
 void SceneMngr::DebugMenu()
@@ -123,21 +121,25 @@ void SceneMngr::ChangeScene(SCENE scene, const std::string& message)
         scene_ = nullptr;
     }
     std::future<void> loadSceneFuture = std::async(std::launch::async, &SceneMngr::LoadScene, this, scene);
-    Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
+    Load::LoadStart();
+    /*Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
     const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
     const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
     DrawSprite(loading_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2),
                0.0f, Vector2(1920.0f * scale_x, 1080.0f * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
-    Graphical::Present();
+    Graphical::Present();*/
     auto start = std::chrono::high_resolution_clock::now();
     loading_ = true;
     while (true)
     {
         auto now = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(now - start);
+        Load::Update();
+        Load::Draw();
         if (loadSceneFuture.wait_for(std::chrono::milliseconds(0)) == std::future_status::ready && duration.count() >=
             2)
         {
+            Load::LoadStop();
             break;
         }
     }

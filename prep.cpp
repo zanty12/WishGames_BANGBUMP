@@ -1,5 +1,6 @@
 #include "prep.h"
 
+#include "sound.h"
 #include "xinput.h"
 
 std::map<ATTRIBUTE_ACTION, std::string> video_file_map =
@@ -26,11 +27,11 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
     SetNewVideo(move_);
     SetNewVideo(attack_);
     //通常テキスチャー
-    character_ = LoadTexture("data/texture/UI/player.png");
+    character_ = LoadTexture("data/texture/UI/practice_prep/player1_base.png");
     move_list = {
         {
             FIRE_MOVE, 1, (1 + 2) % 4 * M_PI_2, (1 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/fire_move.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_boot1.png"),
             Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius,
                     1080 / 2 + (sin(((1 + 2) % 4) * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos(((1 + 2) % 4) * M_PI_2) * x_radius,
@@ -38,19 +39,19 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
         },
         {
             WIND_MOVE, 2, (2 + 2) % 4 * M_PI_2, (2 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/wind_move.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_boot4.png"),
             Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             THUNDER_MOVE, 3, (3 + 2) % 4 * M_PI_2, (3 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/thunder_move.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_boot3.png"),
             Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             DARK_MOVE, 4, (4 + 2) % 4 * M_PI_2, (4 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/dark_move.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_boot2.png"),
             Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
         }
@@ -58,69 +59,79 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
     attack_list = {
         {
             FIRE_ATTACK, 1, (1 + 2) % 4 * M_PI_2, (1 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/fire_attack.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_hand1.png"),
             Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             WIND_ATTACK, 2, (2 + 2) % 4 * M_PI_2, (2 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/wind_attack.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_hand4.png"),
             Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             THUNDER_ATTACK, 3, (3 + 2) % 4 * M_PI_2, (3 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/thunder_attack.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_hand3.png"),
             Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             DARK_ATTACK, 4, (4 + 2) % 4 * M_PI_2, (4 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/dark_attack.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_hand2.png"),
             Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
         }
     };
 
     //uiテキスチャー
-    tex_bg_ = LoadTexture("data/texture/UI/prep_bg.png");
-    tex_select_arrow_ = LoadTexture("data/texture/UI/select_arrow.png");
+    tex_bg_ = LoadTexture("data/texture/UI/practice_prep/prep_bg.png");
+    //tex_select_arrow_ = LoadTexture("data/texture/UI/practice_prep/select_arrow.png");
+
+    //sound
+    select_se_= LoadSound("data/sound/se/attribute_select.wav");
+    back_se_ = LoadSound("data/sound/se/back.wav");
 }
 
 void Prep::Update()
 {
     //キー入力
-    if (Input::GetKeyUp(0, Input::Left) && !moving_)
+    if (Input::GetStickLeft(0).x < -0.8)
     {
         clockwise_ = true;
-        if (is_move_)
+        if (is_move_ && !move_moving_)
         {
+            move_moving_ = true;
+            PlaySound(select_se_,0);
             move_next_ = move_list.back().attribute;
         }
-        else
+        else if (!is_move_ && !attack_moving_)
         {
+            PlaySound(select_se_,0);
             attack_next_ = attack_list.back().attribute;
+            attack_moving_ = true;
         }
     }
-    if (Input::GetKeyUp(0, Input::Right) && !moving_)
+    if (Input::GetStickLeft(0).x > 0.8)
     {
         clockwise_ = false;
-        if (is_move_)
+        if (is_move_ && !move_moving_)
         {
+            move_moving_ = true;
+            PlaySound(select_se_,0);
             std::list<attribute_select>::iterator it = move_list.begin();
             ++it;
             move_next_ = (*it).attribute;
-
         }
-        else
+        else if (!is_move_ && !attack_moving_)
         {
+            PlaySound(select_se_,0);
             std::list<attribute_select>::iterator it = attack_list.begin();
             ++it;
             attack_next_ = (*it).attribute;
-
+            attack_moving_ = true;
         }
     }
-    if (Input::GetKeyUp(0, Input::Up))
+    if (Input::GetStickLeft(0).y > 0.9)
     {
         if (is_move_)
         {
@@ -130,7 +141,7 @@ void Prep::Update()
         }
     }
 
-    if (Input::GetKeyUp(0, Input::Down))
+    if (Input::GetStickLeft(0).y < -0.9)
     {
         if (!is_move_)
         {
@@ -146,7 +157,7 @@ void Prep::Update()
         move_ = move_next_;
         while (move_list.front().attribute != move_)
         {
-            for (auto &move : move_list)
+            for (auto& move : move_list)
             {
                 move.order -= 1;
                 if (move.order == 0)
@@ -197,7 +208,7 @@ void Prep::Update()
     {
         if (move.rot < move.target_rot - 0.02f || move.rot > move.target_rot + 0.02f)
         {
-            moving_ = true;
+            move_moving_ = true;
             if (clockwise_)
             {
                 move.rot += M_PI_2 * Time::GetDeltaTime();
@@ -218,14 +229,14 @@ void Prep::Update()
         }
         else
         {
-            moving_ = false;
+            move_moving_ = false;
         }
     }
     for (auto& attack : attack_list)
     {
         if (attack.rot < attack.target_rot - 0.02f || attack.rot > attack.target_rot + 0.02f)
         {
-            moving_ = true;
+            attack_moving_ = true;
             if (clockwise_)
             {
                 attack.rot += M_PI_2 * Time::GetDeltaTime();
@@ -246,12 +257,12 @@ void Prep::Update()
         }
         else
         {
-            moving_ = false;
+            attack_moving_ = false;
         }
     }
 
     video_->Update();
-    if (Input::GetKeyDown(0, Input::North))	//Aボタン
+    if (Input::GetKeyDown(0, Input::A)) //Aボタン
     {
         {
             std::string message;
@@ -292,6 +303,11 @@ void Prep::Update()
             }
             if (scene_mngr_) scene_mngr_->ChangeScene(SCENE_GAME, message);
         }
+    }
+    if (Input::GetKeyDown(0, Input::B))
+    {
+        PlaySound(back_se_, 0);
+        scene_mngr_->ChangeScene(SCENE_MENU);
     }
 }
 

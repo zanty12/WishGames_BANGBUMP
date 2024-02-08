@@ -37,6 +37,32 @@ const int Player::INITIAL_HP_ = 500;
 const float Player::INVINCIBILITY_MAX_TIME_ = 1 + (1.0f / 4);
 
 
+
+Player::Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr)
+	:MovableObj(pos, rot, 0, vel), hp_(INITIAL_HP_), skillpt_(0), lv_(1),
+	dir_(Vector2(0.0f, 0.0f)), map_mangr_(map_mangr), clash_spike_(0), knock_back_dir_(0),
+	change_scene_(false), drop_point_(0), invincibility_time_(INVINCIBILITY_MAX_TIME_),
+	knockback_distance_(0.0f), knockback_time_(0.0f)
+{
+	SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
+	int tex = LoadTexture("data/texture/player.png");
+	SetTexNo(tex);
+	GetAnimator()->SetTexNo(tex);
+	SetType(OBJ_PLAYER);
+
+	hit_effect_ = new PlayerHitEffect();
+	//表示優先度設定
+	GetAnimator()->SetDrawPriority(50);
+}
+
+Player::~Player()
+{
+	delete move_attribute_;
+	delete attack_attribute_;
+	delete hit_effect_;
+}
+
+
 void Player::Update(void)
 {
 
@@ -78,11 +104,7 @@ void Player::Update(void)
 		return;
 	}
 
-	//ヒットエフェクト作成
-	if (hit_effect_ == nullptr)
-	{
-		hit_effect_ = new PlayerHitEffect();
-	}
+	//ヒットエフェクトアップデート
 	if (hit_effect_)
 	{
 		hit_effect_->Update();
@@ -130,7 +152,7 @@ void Player::Update(void)
 		SetVel(Vector2(next_vel.x, next_vel.y));
 	}
 
-
+	invincibility_time_ += Time::GetDeltaTime();
 
 	UpdateDir();
 
@@ -151,6 +173,27 @@ void Player::Update(void)
 	else if (GetVel().y < 0.0f)
 	{
 		player_state_ = FALL;
+	}
+
+	//revolve
+	if(revolve_cd_ > 0.0f)
+	{
+		revolve_cd_ -= Time::GetDeltaTime();
+	}
+	if(Input::GetStickLeft(0).x > 0.8f && Input::GetStickRight(0).x < -0.8f)
+	{
+		revolve_cd_ -= Time::GetDeltaTime();
+		if(revolve_cd_ <= 0)
+		{
+			Revolve();
+			revolve_cd_ = 2.0f;
+			//revolve_effect_ = new RevolveEffect(this);
+		}
+	}
+
+	if (revolve_effect_)
+	{
+		revolve_effect_->Update();
 	}
 
 	//limit player pos
@@ -340,52 +383,8 @@ void Player::CollisionSkillPoint(GameObject* obj)
 //================================================================================
 void Player::CollisionAttack(GameObject* obj)
 {
-	//★アタッククラスができ次第★
-	GameObject* attack = obj;
-	//何かしらのアタッククラス* attack = dynamic_cast<何かしらのアタッククラス*>(obj)
-	//if (何かしらのアタッククラス == nullptr)
-	//{
-	//	return;
-	//}
-
-	hit_attack_attr = ATTRIBUTE_TYPE_FIRE; /*attack->GetAttribute()*/
-
-	//アタックオブジェクトのRotから自分が動くべき方向を割り出す
-	dir_.x = cosf(attack->GetRot());
-	dir_.y = sinf(attack->GetRot());
-
-	switch (hit_attack_attr)
-	{
-	case ATTRIBUTE_TYPE_FIRE:
-	{//1/3秒で2マス
-		knockback_distance_ = SIZE_ * 2;
-		knockback_time_ = 1.0f / 3;
-		break;
-	}
-	case ATTRIBUTE_TYPE_THUNDER:
-	{//3/4秒で3マス
-		knockback_distance_ = SIZE_ * 3;
-		knockback_time_ = 3.0f / 4;
-		break;
-	}
-	case ATTRIBUTE_TYPE_WIND:
-	{//1/4秒で1マス
-		knockback_distance_ = SIZE_ * 1;
-		knockback_time_ = 1.0f / 4;
-		break;
-	}
-	case ATTRIBUTE_TYPE_DARK:
-	{//1秒で1マス
-		knockback_distance_ = SIZE_ * 1;
-		knockback_time_ = 1.0f / 1;
-		break;
-	}
-	default:
-		break;
-	}
-
 	//エフェクトの表示
-	hit_effect_->Hit(GetPos());
+
 
 	knockback_start_ = GetPos();
 	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
@@ -462,7 +461,6 @@ void Player::CollisionEnemy(GameObject* obj)
 	{
 		dir_ = -enemy->GetVel().Normalize();
 	}
-	dir_ *= -1;	//反転させる
 
 	SkillPointDown(enemy->GetAtk());
 
@@ -476,6 +474,9 @@ void Player::CollisionEnemy(GameObject* obj)
 	case TYPE__HAMMERBRO:
 		knockback_time_ = 1.0f / 4;
 		knockback_distance_ = SIZE_;
+		dir_ = GetPos() - enemy->GetPos();
+		dir_ = dir_.Normalize();
+		dir_ *= -1;
 		break;
 	case TYPE__PHANTOM:
 		knockback_time_ = 1.0f / 4;
@@ -485,8 +486,16 @@ void Player::CollisionEnemy(GameObject* obj)
 		break;
 	}
 
-	knockback_start_ = GetPos();
-	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+	if (dir_ != Vector2::Zero)
+	{
+		knockback_start_ = GetPos();
+		knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+	}
+	else
+	{
+		knockback_start_ = GetPos();
+		knockback_end_ = GetPos();
+	}
 
 	//エフェクトの表示
 	hit_effect_->Hit(GetPos());
@@ -516,14 +525,23 @@ void Player::CollisionBullet(GameObject* obj)
 	{
 		dir_ = bullet->GetVel().Normalize();
 	}
+	dir_ *= -1;
 
 	SkillPointDown(bullet->GetAtk());
 
 	knockback_time_ = 1.0f / 4;
 	knockback_distance_ = SIZE_;
 
-	knockback_start_ = GetPos();
-	knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+	if (dir_ != Vector2::Zero)
+	{
+		knockback_start_ = GetPos();
+		knockback_end_ = GetPos() - (dir_ * knockback_distance_);
+	}
+	else
+	{
+		knockback_start_ = GetPos();
+		knockback_end_ = GetPos();
+	}
 
 	//エフェクトの表示
 	hit_effect_->Hit(GetPos());
@@ -610,6 +628,83 @@ void Player::HpMaxUp(void)
 		hp_ = (int)(INITIAL_HP_ * (1 + (0.1f * lv_)));
 	}
 
+}
+
+void Player::Revolve()
+{
+	Attribute* temp = move_attribute_;
+	move_attribute_ = attack_attribute_;
+	attack_attribute_ = temp;
+	//load texture
+	switch (this->GetAttackAttribute()->GetAttribute())
+    {
+    case ATTRIBUTE_TYPE_FIRE:
+        switch (this->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_DARK:
+            this->GetAnimator()->SetTexenum(player1_12);
+            break;
+        case ATTRIBUTE_TYPE_WIND:
+            this->GetAnimator()->SetTexenum(player1_14);
+            break;
+        case ATTRIBUTE_TYPE_THUNDER:
+            this->GetAnimator()->SetTexenum(player1_13);
+            break;
+        default:
+            break;
+        }
+        break;
+    case ATTRIBUTE_TYPE_DARK:
+        switch (this->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_FIRE:
+            this->GetAnimator()->SetTexenum(player1_21);
+            break;
+        case ATTRIBUTE_TYPE_WIND:
+            this->GetAnimator()->SetTexenum(player1_24);
+            break;
+        case ATTRIBUTE_TYPE_THUNDER:
+            this->GetAnimator()->SetTexenum(player1_23);
+            break;
+        default:
+            break;
+        }
+        break;
+    case ATTRIBUTE_TYPE_WIND:
+        switch (this->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_FIRE:
+            this->GetAnimator()->SetTexenum(player1_41);
+            break;
+        case ATTRIBUTE_TYPE_DARK:
+            this->GetAnimator()->SetTexenum(player1_42);
+            break;
+        case ATTRIBUTE_TYPE_THUNDER:
+            this->GetAnimator()->SetTexenum(player1_43);
+            break;
+        default:
+            break;
+        }
+        break;
+    case ATTRIBUTE_TYPE_THUNDER:
+        switch (this->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_FIRE:
+            this->GetAnimator()->SetTexenum(player1_31);
+            break;
+        case ATTRIBUTE_TYPE_DARK:
+            this->GetAnimator()->SetTexenum(player1_32);
+            break;
+        case ATTRIBUTE_TYPE_WIND:
+            this->GetAnimator()->SetTexenum(player1_34);
+            break;
+        default:
+            break;
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 

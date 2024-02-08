@@ -13,7 +13,6 @@ private:
     bool captured_;
 
     bool loading_ = false;
-    int loading_tex_ = 0;
 
 public:
     SceneMngr() = delete;
@@ -34,11 +33,6 @@ public:
     {
         if (!loading_)
             scene_->Draw();
-        else
-        {
-            DrawSprite(loading_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2),
-                       0.0f, Vector2(1.0f, 1.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
-        }
     }
 
     void ChangeScene(SCENE scene);

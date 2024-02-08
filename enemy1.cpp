@@ -9,6 +9,8 @@ bool CheckLength(Vector2 a, Vector2 b, float len);
 
 void Enemy1::Update()
 {
+	SetHp(100);
+
 	//HPが0になったら消す
 	if (GetHp() <= 0)
 	{
@@ -84,13 +86,6 @@ void Enemy1::CollisionAction(void)
 		}
 		case OBJ_SPIKE:
 			CollisionSpike();
-			break;
-		case OBJ_ATTACK:
-			{
-				PlayerAttack* attack = dynamic_cast<PlayerAttack*>(collision->GetParent());
-				if(attack != nullptr)
-					SetHp(GetHp() - attack->GetDamage());
-			}
 			break;
 		default:
 			break;

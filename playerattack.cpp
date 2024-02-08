@@ -1,5 +1,13 @@
 #include "playerattack.h"
 
+PlayerAttack::~PlayerAttack()
+{
+	for (auto effect : hit_effects_)
+	{
+		delete effect;
+	}
+}
+
 void PlayerAttack::HitEffectUpdate()
 {
 	RemoveEffect();

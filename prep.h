@@ -7,6 +7,7 @@
 #pragma once
 #include "scene.h"
 #include "player.h"
+#include "sound.h"
 #include "video.h"
 
 enum ATTRIBUTE_ACTION
@@ -44,7 +45,8 @@ private:
     Video *video_;
 
     bool clockwise_ = true;
-    bool moving_ = false;
+    bool move_moving_ = false;
+    bool attack_moving_ = false;
 
     SceneMngr *scene_mngr_;
 
@@ -63,6 +65,11 @@ private:
     //uiテキスチャー
     int tex_bg_;
     int tex_select_arrow_;
+    //sound
+    int bgm_;
+    int select_se_;
+    int confirm_se_;
+    int back_se_;
 
 public:
     Prep() = delete;
@@ -71,6 +78,7 @@ public:
     ~Prep() override
     {
         delete video_;
+        StopSound(bgm_);
     }
 
     void Update() override;

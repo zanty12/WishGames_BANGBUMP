@@ -100,11 +100,13 @@ enum textures
     effect_dead,
     effect_enemydead,
     effect_spawn,
+    effect_water_indicator,
     effect_hit,
     effect_hit_fire,
     effect_hit_dark,
     effect_hit_thunder,
     effect_hit_wind,
+    effect_EX,
 
     //block
     skill_orb,
@@ -139,6 +141,7 @@ enum maps
     test2,
     single_stage_1,
     single_stage_2,
+    practices_stage,
 };
 
 enum fonts
