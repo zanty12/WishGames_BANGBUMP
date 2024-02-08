@@ -3,6 +3,7 @@
 #include "sprite.h"
 #include "multiplay.h"
 #include "multi_skillorb.h"
+#include "multiplay.h"
 #include "sound.h"
 
 
@@ -119,7 +120,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	lvDownUI.MoveEnd();
 
 	std::ostringstream path;
-	path << "data/texture/UI/" << (id % 4) + 1 << "p.png";
+	path << "data/texture/UI/" << (MultiPlayClient::GetID() % 4) + 1 << "p.png";
 	iconTexNo = LoadTexture(path.str());
 }
 

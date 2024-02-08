@@ -470,9 +470,23 @@ int MultiPlayClient::Register(std::string serverAddress) {
 	SendTo(sockfd_, (char *)&header, sizeof(HEADER), 0, serverAddr);
 
 	// 受信
+	WIN::Time timer;
+	timer.Start();
 	while (true) {
-		Recv(sockfd_, (char *)&header, sizeof(HEADER), 0);
-		if (header.command = HEADER::RESPONSE_LOGIN) break;
+		// ファイルディスクリプタ
+		FD tmp;
+		memcpy(&tmp, &readfd_, sizeof(FD));
+		Select(&tmp, nullptr, nullptr, 0, 1);
+
+		if (tmp.Contains(sockfd_)) {
+			Recv(sockfd_, (char *)&header, sizeof(HEADER), 0);
+			if (header.command = HEADER::RESPONSE_LOGIN) break;
+		}
+		// 10秒間入出できないなら強制終了
+		else if (10000ul < timer.GetNowTime()) {
+			Unregister();
+			return -1;
+		}
 	}
 
 	// IDを記録
@@ -480,6 +494,11 @@ int MultiPlayClient::Register(std::string serverAddress) {
 
 	std::cout << "Res << ID:" << header.id << " Login" << std::endl;
 	std::cout << header.id << "番目に登録しました。" << std::endl;
+
+	// 終了
+	if (id == -1) {
+		Unregister();
+	}
 
 	return header.id;
 }
@@ -499,9 +518,12 @@ void MultiPlayClient::Unregister(void) {
 	std::cout << id << "を解除しました。" << std::endl;
 
 	sockfd_.Close();
+
+	isFinish = true;
 }
 
 void MultiPlayClient::PlayerUpdate(void) {
+
 	// カメラ座標の計算
 	if (res_.clients.size()) {
 		float posY = res_.clients.begin()->position.y;		// プレイヤーのY座標

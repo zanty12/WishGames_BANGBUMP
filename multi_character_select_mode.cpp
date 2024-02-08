@@ -202,19 +202,19 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 void MultiPlayCharacterSelectModeClientSide::DrawUI(RESPONSE_PLAYER &players) {
 
 	//戻る
-	DrawSprite(return_tex_, Vector2(((Graphical::GetWidth() - 100)), 80), 0.0f,
+	DrawSprite(return_tex_, Vector2(((Graphical::GetWidth() - 100)), 70), 0.0f,
 		Vector2(80.0f, 80.0f), Color::White);
-	DrawSprite(b_tex_, Vector2(((Graphical::GetWidth() - 160)), 80), 0.0f,
+	DrawSprite(b_tex_, Vector2(((Graphical::GetWidth() - 160)), 70), 0.0f,
 		Vector2(100.0f, 100.0f), Color::White);
 	//決定
-	DrawSprite(confirm_tex_, Vector2(((Graphical::GetWidth() - 240)), 80), 0.0f,
+	DrawSprite(confirm_tex_, Vector2(((Graphical::GetWidth() - 240)), 70), 0.0f,
 		Vector2(80.0f, 80.0f), Color::White);
-	DrawSprite(a_tex_, Vector2(((Graphical::GetWidth() - 305)), 80), 0.0f,
+	DrawSprite(a_tex_, Vector2(((Graphical::GetWidth() - 305)), 70), 0.0f,
 		Vector2(100.0f, 100.0f), Color::White);
 	//選択
-	DrawSprite(select_tex_, Vector2(((Graphical::GetWidth() - 390)), 80), 0.0f,
+	DrawSprite(select_tex_, Vector2(((Graphical::GetWidth() - 390)), 70), 0.0f,
 		Vector2(80.0f, 80.0f), Color::White);
-	DrawSprite(stick_tex_, Vector2(((Graphical::GetWidth() - 475)), 82), 0.0f,
+	DrawSprite(stick_tex_, Vector2(((Graphical::GetWidth() - 475)), 72), 0.0f,
 		Vector2(115.0f, 118.0f), Color::White);
 	// マッチング
 	DrawSprite(match_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() - 70), 0.0f, // arbirary value of the texture
