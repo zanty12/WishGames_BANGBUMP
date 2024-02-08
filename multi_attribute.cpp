@@ -4,6 +4,7 @@
 #include "lib/collider2d.h"
 #include "xinput.h"
 #include "time.h"
+#include "multi_ui.h"
 
 
 AttackServerSide *ServerAttribute::CreateAttack(void) {
@@ -32,6 +33,7 @@ void ServerAttribute::LevelUpdate(void) {
 		if (player->lvupPoint[lv] <= player->skillPoint && player->skillPoint < player->lvupPoint[lv + 1]) {
 			state = &state_lv[lv];
 			this->lv = lv;
+			return;
 		}
 	}
 }
@@ -61,29 +63,6 @@ ServerAttribute *ServerAttribute::Create(ServerPlayer *player, ATTRIBUTE_TYPE ty
 	}
 	return nullptr;
 }
-ClientAttribute *ClientAttribute::Create(ClientPlayer*player, ATTRIBUTE_TYPE type) {
-	switch (type) {
-	case ATTRIBUTE_TYPE_FIRE: return new ClientFire(player);
-	case ATTRIBUTE_TYPE_DARK: return new ClientWater(player);
-	case ATTRIBUTE_TYPE_THUNDER: return new ClientThunder(player);
-	case ATTRIBUTE_TYPE_WIND: return new ClientWind(player);
-	}
-	return nullptr;
-}
-void ClientAttribute::LevelUpdate(void) {
-	int lv = MAX_LV - 1;
-	// レベルが上限の場合
-	if (player->lvupPoint[lv] <= player->skillPoint) {
-		state = &state_lv[lv];
-	}
-
-	// レベルの調整
-	for (lv = 0; lv < MAX_LV - 1; lv++) {
-		if (player->lvupPoint[lv] <= player->skillPoint && player->skillPoint < player->lvupPoint[lv + 1]) {
-			state = &state_lv[lv];
-		}
-	}
-}
 void ServerAttribute::AddPower(void) {
 	power += state->addPower;
 	if (state->maxPower < power) power = state->maxPower;
@@ -107,6 +86,30 @@ void ServerAttribute::Friction(void) {
 }
 Vector2 ServerAttribute::CalcVector(Vector2 stick) {
 	return stick * power;
+}
+ClientAttribute *ClientAttribute::Create(ClientPlayer*player, ATTRIBUTE_TYPE type) {
+	switch (type) {
+	case ATTRIBUTE_TYPE_FIRE: return new ClientFire(player);
+	case ATTRIBUTE_TYPE_DARK: return new ClientWater(player);
+	case ATTRIBUTE_TYPE_THUNDER: return new ClientThunder(player);
+	case ATTRIBUTE_TYPE_WIND: return new ClientWind(player);
+	}
+	return nullptr;
+}
+void ClientAttribute::LevelUpdate(void) {
+	int lv = MAX_LV - 1;
+	// レベルが上限の場合
+	if (player->lvupPoint[lv] <= player->skillPoint) {
+		state = &state_lv[lv];
+	}
+
+	// レベルの調整
+	for (lv = 0; lv < MAX_LV - 1; lv++) {
+		if (player->lvupPoint[lv] <= player->skillPoint && player->skillPoint < player->lvupPoint[lv + 1]) {
+			state = &state_lv[lv];
+			return;
+		}
+	}
 }
 
 
@@ -246,15 +249,17 @@ void ClientFire::Move(void) {
 		moveAnims.push_front({ pos, rot, scl, moveAnim });
 
 		// 要素が多いなら削除
-		if (5 < moveAnims.size()) {
+		if (2 < moveAnims.size()) {
 			moveAnims.pop_back();
 		}
 	}
 }
 void ClientFire::Attack(void) {
 	// 攻撃アニメーションではないなら終了
-	if (!IsPlayerAnimAttack(player->animType)) return;
-
+	if (!IsPlayerAnimAttack(player->animType)) {
+		player->isReverseXAttributeControl = false;
+		return;
+	}
 
 
 	// レベルによってテクスチャの変更
@@ -284,7 +289,7 @@ void ClientFire::Attack(void) {
 	}
 
 	// 手に移動
-	Vector2 localPos = Vector2(-12.0f, 45.0f);
+	Vector2 localPos = Vector2(-2.5f, 40.0f);
 
 	// トランスフォーマー
 	Vector2 pos = player->transform.position;
@@ -297,6 +302,15 @@ void ClientFire::Attack(void) {
 	// 描画する
 	attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
 }
+void ClientFire::DrawUI(void) {
+	Vector2 localPos = Vector2(0.0f, player->transform.scale.y * 0.5f);
+	Vector2 pos = player->transform.position - MultiPlayClient::offset;
+	Vector2 scl = Vector2::One * 30.0f;
+
+	float ratio = (float)mp / (float)state->maxMp;
+	DrawSpriteBoxEffectLeftToRight(frameUITexNo, pos + localPos, scl, Color::White, 1.0f);
+	DrawSpriteBoxEffectLeftToRight(uiTexNo, pos + localPos, scl, Color::White, ratio);
+}
 
 void ServerFireAttack::Loop(void) {
 
@@ -304,6 +318,7 @@ void ServerFireAttack::Loop(void) {
 void ServerFireAttack::KnockBack(ServerMovableGameObject *object) {
 	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * knockbackRate;
 }
+
 
 
 
@@ -466,13 +481,26 @@ void ClientWater::Move(void) {
 	moveAnim.Draw(player->transform.position - MultiPlayClient::offset + Vector2(0.0f, state->showMoveY * 0.5f), rot, scl * 2.0f, col);
 }
 void ClientWater::Attack(void) {
+	// インジケーター
+	if (player->id == MultiPlayClient::GetID()) {
+		Vector2 stick = Input::GetStickRight(0);
+		if (stick != Vector2::Zero) {
+			Vector2 localPos = stick.Normalize() * 100.0f;
+			Vector2 pos = player->transform.position - MultiPlayClient::offset;
+			float rot = atan2f(-localPos.y, localPos.x);
+			Vector2 scl = Vector2::One * 100.0f;
+			Color col = Color::White;
+
+			attackIndicator.Draw(pos + localPos, rot, scl, col);
+		}
+	}
+
+
+
+
+
 	// 攻撃の向き
 	Vector2 direction = player->attackVelocity.Normalize() * state->showAttackY * 0.5f;
-
-
-
-
-
 
 	// レベルによってテクスチャの変更
 	if (player->GetLv() < 6) {
@@ -504,21 +532,60 @@ void ClientWater::Attack(void) {
 
 	// 攻撃
 	if (IsPlayerAnimAttack(player->animType)) {
-		// 描画する
-		attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
+
+		// 回転
+		player->transform.rotation = rot;
 
 		// キャラを反転させる
 		player->isReverseXAttributeControl = true;
-		if (direction.x < 0.0f) player->isReverseX = false;
-		else if (direction.x > 0.0f) player->isReverseX = true;
+		player->isRotationAttributeControl = true;
+		if (direction.x < 0.0f) {
+			player->isReverseX = false;
+			player->transform.rotation += MATH::Deg2Rad * 90.0f;
+		}
+		else if (direction.x > 0.0f) {
+			player->isReverseX = true;
+			player->transform.rotation -= MATH::Deg2Rad * 90.0f;
+		}
+
+
+
+		// 描画する
+		attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
+		attackSplashAnim.Draw(
+			pos + direction.Normalize() * state->showAttackX * 0.08 + localPos - MultiPlayClient::offset,
+			rot,
+			Vector2::One * state->showAttackX * 0.5f,
+			Color::White
+		);
 
 		// 反転した絵に合わせて位置も反転
 		if (player->isReverseX) localPos.x *= -1.0f;
+
+
 
 		attackChargeAnim.MoveBegin();
 	}
 	// ため攻撃
 	else if (IsPlayerAnimAttackCharge(player->animType)) {
+
+		// 回転
+		player->transform.rotation = rot;
+
+		// キャラを反転させる
+		player->isReverseXAttributeControl = true;
+		player->isRotationAttributeControl = true;
+		if (direction.x < 0.0f) {
+			player->isReverseX = false;
+			player->transform.rotation += MATH::Deg2Rad * 90.0f;
+		}
+		else if (direction.x > 0.0f) {
+			player->isReverseX = true;
+			player->transform.rotation -= MATH::Deg2Rad * 90.0f;
+		}
+
+
+
 		// 描画する
 		rot = atan2f(-direction.y, direction.x);
 
@@ -535,6 +602,7 @@ void ClientWater::Attack(void) {
 	// その他
 	else {
 		player->isReverseXAttributeControl = false;
+		player->isRotationAttributeControl = false;
 	}
 }
 void ClientWater::Idle(void) {
@@ -551,12 +619,24 @@ void ClientWater::Idle(void) {
 		idle.Draw(pos + Vector2(0.0f, -73.0f), rot, scl, col);
 	}
 }
+void ClientWater::DrawUI(void) {
+	Vector2 localPos = Vector2(0.0f, player->transform.scale.y * 0.5f);
+	Vector2 pos = player->transform.position - MultiPlayClient::offset;
+	Vector2 scl = Vector2::One * 20.0f;
+	Color col = Color::White;
+
+	float ratio = (float)mp / (float)state->maxMp;
+	if (ratio < 1.0f) col *= 0.25f;
+	DrawSpriteBoxEffectBottomToUp(frameUITexNo, pos + localPos, scl, Color::White, 1.0f);
+	DrawSpriteBoxEffectBottomToUp(uiTexNo, pos + localPos, scl, col, ratio);
+}
 
 void ServerWaterAttack::Loop(void) {
 }
 void ServerWaterAttack::KnockBack(ServerMovableGameObject *object) {
 	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * knockbackRate;
 }
+
 
 
 
@@ -590,6 +670,8 @@ void ServerThunder::Move(void) {
 	if (stick != Vector2::Zero && 0.0f < power) {
 		// アニメーションの指定
 		SetPlayerAnimMove(player->animType, true);
+
+		player->chargeVelocity = -stick;
 	}
 	// 移動が終わったら（移動終了）
 	else if (IsPlayerAnimMove(player->animType) && player->velocity.DistanceSq() < 25.0f) {
@@ -604,6 +686,11 @@ void ServerThunder::Move(void) {
 		// 摩擦抵抗の加算
 		friction -= 0.001f;
 		if (friction < 0.0f) friction = 0.0f;
+	}
+	// 何もしていないのにチャージエフェクトになる現象を解消（ゆっくりスティックを戻すことで攻撃トリガーが発動されない）
+	if (IsPlayerAnimMoveCharge(player->animType) && stick == Vector2::Zero) {
+		// アニメーションの指定
+		SetPlayerAnimNoMove(player->animType);
 	}
 
 	// 移動
@@ -667,12 +754,14 @@ void ServerThunder::Attack(void) {
 
 				// アタック移動
 				if (attack) {
-					Vector2 localPos = Vector2(0.0f, 10.0f);
+					Vector2 localPos = direction.Normal().Normalize() * 40.0f;
+					if (0.0f > localPos.y) localPos *= -1.0f;
+
 					attack->transform.position = player->transform.position + localPos;
 					attack->direction = direction.Normalize() * state->atkDistance;
 					attack->velocity = CalcVector(direction) * state->powerAttackRatio;
 					attack->atk = state->atk;
-					attack->atkDrop = state->atkDistance;
+					attack->atkDrop = state->atkDrop;
 					attack->knockbackRate = state->knockbackRate;
 				}
 			}
@@ -704,19 +793,60 @@ AttackServerSide *ServerThunder::CreateAttack(void) {
 };
 
 void ClientThunder::Move(void) {
+	// インジケーター
+	if (player->id == MultiPlayClient::GetID()) {
+		Vector2 stick = Input::GetStickLeft(0);
+		if (stick != Vector2::Zero) {
+			Vector2 localPos = -stick.Normalize() * 100.0f;
+			Vector2 pos = player->transform.position - MultiPlayClient::offset;
+			float rot = atan2f(-localPos.y, localPos.x);
+			Vector2 scl = Vector2::One * 100.0f;
+			Color col = Color::White;
+
+			indicator.Draw(pos + localPos, rot, scl, col);
+		}
+	}
+
+
+
+
+
+	if (!IsPlayerAnimMove(player->animType) && !IsPlayerAnimMoveCharge(player->animType)) {
+		player->isRotationAttributeControl = false;
+		return;
+	}
+	player->isRotationAttributeControl = true;
+
 	// 移動開始
 	if (!IsPlayerAnimMove(player->preAnimType) && IsPlayerAnimMove(player->animType)) {
 		float distance = player->velocity.Distance();
 		Vector2 pos = player->transform.position + player->velocity * 0.5f;
 		float rot = std::atan2(player->velocity.y, -player->velocity.x);
 		Vector2 scl = Vector2(distance * 7.0f, player->transform.scale.x * 0.75f);
-		
+
+		// 回転
+		player->isRotationAttributeControl = true;
+		player->transform.rotation = rot;
+
+		// キャラを反転させる
+		if (player->velocity.x < 0.0f) {
+		}
+		else if (player->velocity.x > 0.0f) {
+			player->transform.rotation += MATH::Deg2Rad * 180.0f;
+		}
+
 		MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(moveAnim, pos, rot, scl);
+	}
+
+	if (IsPlayerAnimMoveCharge(player->preAnimType)) {
+		// チャージ描画
+		chargeAttackAnim.Draw(player->transform.position - MultiPlayClient::offset, 0.0f, player->transform.scale * 1.2f, Color::White);
 	}
 }
 void ClientThunder::Attack(void) {
 	if (!IsPlayerAnimAttack(player->animType) && !IsPlayerAnimAttackCharge(player->animType)) {
 		player->isReverseXAttributeControl = false;
+		player->isRotationAttributeControl = false;
 		return;
 	}
 
@@ -725,17 +855,66 @@ void ClientThunder::Attack(void) {
 	Vector2 direction = player->chargeVelocity;
 
 	// 属性側でコントロールするか決める
-	player->isReverseXAttributeControl = direction != Vector2::Zero;
+	player->isRotationAttributeControl = player->isReverseXAttributeControl = direction != Vector2::Zero;
 
 	// キャラを反転させる
 	if (player->isReverseXAttributeControl) {
+		float rot = std::atan2(direction.x, direction.y);
+
+		// 回転
+		player->transform.rotation = rot;
+
+		// キャラを反転させる
+		player->isRotationAttributeControl = true;
+		if (direction.x < 0.0f) {
+			player->isReverseX = false;
+			player->transform.rotation += MATH::Deg2Rad * 90.0f;
+		}
+		else if (direction.x > 0.0f) {
+			player->isReverseX = true;
+			player->transform.rotation -= MATH::Deg2Rad * 90.0f;
+		}
+
+
 		if (direction.x < 0.0f) player->isReverseX = false;
 		else if (direction.x > 0.0f) player->isReverseX = true;
 	}
 
+	// チャージ中
+	if (IsPlayerAnimAttackCharge(player->animType)) {
+		Vector2 localPos = direction.Normal().Normalize() * 40.0f;
+		Vector2 pos = player->transform.position - MultiPlayClient::offset;
+		float rot = atan2f(direction.x, direction.y);
+		Vector2 scl = Vector2::One * 150.0f;
+		Color col = Color::White;
 
-	// チャージ描画
-	chargeAttackAnim.Draw(player->transform.position - MultiPlayClient::offset, 0.0f, player->transform.scale * 1.5f, Color::White);
+		if (player->isReverseX) localPos *= -1.0f;
+
+		// レベルによってテクスチャの変更
+		if (player->GetLv() < 6) {
+			attackAnim.texNo = attackTexNo;
+		}
+		else {
+			attackAnim.texNo = attack2TexNo;
+			rot += 90.0f * MATH::Deg2Rad;
+		}
+
+		attackAnim.Draw(pos + localPos, rot, scl, col);
+	}
+}
+void ClientThunder::DrawUI(void) {
+	Vector2 localPos = Vector2(-10.0f, player->transform.scale.y * 0.55f);
+	Vector2 pos = player->transform.position - MultiPlayClient::offset;
+	Vector2 scl = Vector2::One * 15.0f;
+
+	int num = mp;
+	int maxNum = state->maxMp;
+	int width = 8.0f;
+	
+	for (int i = 0; i < maxNum; i++) {
+		if (i < num) DrawSprite(uiTexNo, pos + localPos + Vector2(width, 0.0f) * i, 0.0f, scl, Color::White);
+		else DrawSprite(frameUITexNo, pos + localPos + Vector2(width, 0.0f) * i, 0.0f, scl, Color::White);
+	}
 }
 
 void ServerThunderAttack::Loop(void) {
@@ -756,17 +935,27 @@ void ServerThunderAttack::KnockBack(ServerMovableGameObject *object) {
 void ClientThunderAttack::Loop(void) {
 	if (!isShow) return;
 
-	Vector2 pos = transform.position + velocity.Normalize() * transform.scale.x * 0.5f;
+	Vector2 pos = transform.position;
 	float rot = atan2f(velocity.x, velocity.y);
-	Vector2 scl = transform.scale;
+	Vector2 scl = Vector2::One * 150.0f;
 	Color col = Color::White;
 	anim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 
 	isShow = false;
 }
-
 void ClientThunderAttack::Release(void) {
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(deathAnim, transform.position, 0.0f, transform.scale);
+}
+void ClientThunder2Attack::Loop(void) {
+	if (!isShow) return;
+
+	Vector2 pos = transform.position;
+	float rot = atan2f(velocity.y, -velocity.x);
+	Vector2 scl = Vector2::One * 150.0f;
+	Color col = Color::White;
+	anim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
+
+	isShow = false;
 }
 
 
@@ -970,6 +1159,15 @@ void ClientWind::Idle(void) {
 	if (player->animType == ANIMATION_TYPE_IDLE) {
 		idle.Draw(pos + Vector2(0.0f, -70.0f), rot, scl, col);
 	}
+}
+void ClientWind::DrawUI(void) {
+	Vector2 localPos = Vector2(0.0f, player->transform.scale.y * 0.5f);
+	Vector2 pos = player->transform.position - MultiPlayClient::offset;
+	Vector2 scl = Vector2::One * 20.0f;
+
+	float ratio = (float)mp / (float)state->maxMp;
+	DrawSpriteCircleEffect(frameUITexNo, pos + localPos, 0.0f, scl, Color::White, Vector2::Zero, Vector2::One, 1.0f);
+	DrawSpriteCircleEffect(uiTexNo, pos + localPos, 0.0f, scl, Color::White, Vector2::Zero, Vector2::One, ratio);
 }
 
 void ServerWindAttack::Loop(void) {

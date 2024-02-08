@@ -2,12 +2,13 @@
 #include "multi_mode_flow.h"
 #include "load.h"
 #include "multi_ui.h"
+#include "sound.h"
 
 /***********************************************************
 	Server
 ************************************************************/
 MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
-	startTime = timeGetTime();
+	preTime = timeGetTime();
 	MultiPlayModeServerSide *rstMode = nullptr;
 	switch (mode)
 	{
@@ -15,6 +16,7 @@ MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 	case AREA_CAPTURE: rstMode = new MultiPlayAreaCaptureModeServerSide(); break;
 	case ENEMY_RUSH: return new MultiPlayEnemyRushModeServerSide();
 	case FINAL_BATTLE: rstMode = new MultiPlayFinalBattleModeServerSide(); break;
+	case LAST_RESULT: rstMode = new MultiPlayLastResultModeServerSide(); break;
 	}
 
 	// 現在いるマップの更新
@@ -29,10 +31,10 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 	// ゲームモードがないなら終了
 	if (gameMode_ == nullptr) return;
 	// 制限時間が来たなら、次のモードへ移行
-	if (gameMode_->maxTime_ < gameMode_->time_ || gameMode_->isSkip) {
+	if (gameMode_->maxTime_ < gameMode_->time_) {
 		// 現在のモードの取得
 		MULTI_MODE mode_ = GetMode();
-		isNowLoad = true;
+
 		// 現在のモードの削除
 		if (gameMode_) {
 			// 現在のモードのリリース関数を呼び出す
@@ -64,13 +66,12 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 				}
 			}
 		}
-
-		isNowLoad = false;
 	}
 	else {
 		// 時間の更新
-		float deltaTime = (timeGetTime() - startTime) * 0.001f;
-		gameMode_->time_ = deltaTime;
+		float deltaTime = (timeGetTime() - preTime) * 0.001f;
+		if (gameMode_->startTime_ <= gameMode_->time_ && gameMode_->playTime_ < 0.0f && !gameMode_->isSkip) deltaTime = 0.0f;
+		gameMode_->time_ += deltaTime;
 
 
 		// ゲームのスタートの更新
@@ -89,6 +90,7 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 			gameMode_->Update(clients);
 		}
 		gameMode_->preMode = gameMode_->mode;
+		preTime = timeGetTime();
 	}
 }
 
@@ -112,6 +114,7 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 	case AREA_CAPTURE: return new MultiPlayAreaCaptureModeClientSide();
 	case ENEMY_RUSH: return new MultiPlayEnemyRushModeClientSide();
 	case FINAL_BATTLE: return new MultiPlayFinalBattleModeClientSide();
+	case LAST_RESULT: return new MultiPlayLastResultModeClientSide();
 	}
 	return nullptr;
 }
@@ -124,6 +127,9 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 
 		// 現在のモードの削除
 		if (gameMode_) {
+			// BGMを流す
+			if (gameMode_->soNo != -1) StopSound(gameMode_->soNo);
+
 			// 現在のモードのリリース関数を呼び出す
 			gameMode_->Release(res);
 			
@@ -135,6 +141,9 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 
 		// 次のモードの取得
 		currentMode_ = GetMode();
+
+		// BGMを流す
+		if (gameMode_->soNo != -1) PlaySound(gameMode_->soNo, true);
 	}
 	// モードの実行
 	else if (gameMode_) {
@@ -142,6 +151,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		// マップの描画
 		gameMode_->map_->Draw(offset);
 
+		std::cout << res.time << std::endl;
 
 		// ゲームのスタートの画面
 		if (res.time < gameMode_->startTime_) {
@@ -159,6 +169,10 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 }
 
 void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
+	if (gameMode_->playTime_ < 0.0f) return;
+
+
+
 	float centerX = Graphical::GetWidth() * 0.5f;		// 画面の中央（X座標）
 
 	// 時間制限の描画（UI）
@@ -183,24 +197,15 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	}
 
 	// スコアの描画
-	int idx = 0;										// インデックス
 	int maxMembers = res.clients.size();				// プレイヤー人数
 	for (auto &client : res.clients) {
-		//int moveAttribute = client.moveAttributeType;
-		//int attackAttribute = client.attackAttributeType;
-		////画像の関係上Attackをずらす
-		//if (moveAttribute < attackAttribute) attackAttribute--;
-		//float u = moveAttribute / 4.0f;
-		//float v = attackAttribute / 12.0f;
-		//Vector2 uv = Vector2(u, v + idx * 0.25f);
-		//Vector2 uvScale = Vector2(0.25f, 1.0f / 12.0f);
-
+		int idx = client.id;
 		Vector2 uv = Vector2::Zero;
 		Vector2 uvScale = Vector2::One;
 		Vector2 pos = CalcIconPosition(idx, maxMembers);
 		Vector2 scl = Vector2(200, 100);
 		DrawSprite(icon3,
-			CalcIconPosition(idx, maxMembers), 0.0f, scl,
+			pos, 0.0f, scl,
 			Color::White,
 			uv, uvScale
 		);
@@ -239,10 +244,8 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		case 0: Number(Vector2(centerX - 175, 60), Vector2::One * 70.0f, client.score); break;
 		case 1: Number(Vector2(centerX - 70,  60), Vector2::One * 70.0f, client.score); break;
 		case 2: Number(Vector2(centerX + 70,  60), Vector2::One * 70.0f, client.score); break;
-		case 4: Number(Vector2(centerX + 175, 60), Vector2::One * 70.0f, client.score); break;
+		case 3: Number(Vector2(centerX + 175, 60), Vector2::One * 70.0f, client.score); break;
 		}
-		
-		idx++;
 	}
 }
 

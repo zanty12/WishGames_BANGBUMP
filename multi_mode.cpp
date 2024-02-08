@@ -4,7 +4,10 @@
 #include "move_scene_anim.h"
 
 void MultiPlayModeServerSide::UpdateStart(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
+	// 開始の経過時間を計算
+	float time = time_;
 
+	isPlayerMove = 5.0f < time;
 }
 
 void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
@@ -14,34 +17,39 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 	// 時間がマイナスなら終了（まだ中間リザルトではない）
 	if (time < 0.0f) return;
 
+	// 移動できないようにする
+	isPlayerMove = false;
+
 	// はじめのみ
 	if (preMode != mode && GetMode() != MULTI_MODE::CHARACTER_SELECT) {
-		int maxScore = -1;
+		// ランキング
+		std::list<ServerPlayer *> ranking;
+		for (auto &kvp : MultiPlayServer::clients_) ranking.push_back(kvp.second.player_);
+
+		// ソート
+		ranking.sort([](ServerPlayer *a, ServerPlayer *b) {
+			return a->score > b->score;
+			}
+		);
+
+
 		int rank = 0;
 		int preScore = -1;
-		for (int i = 0; i < clients.size(); i++) {
-			int score = maxScore;
-			ServerPlayer *editPlayer = nullptr;
+		int addRank = 1;
+		for (auto player : ranking) {
+			if (player->score == preScore) addRank++;
+			else addRank = 1;
 
-			// 加算されていないクライアントで最大スコアの検索
-			for (auto &client : clients) {
-				if (client.second.player_->score <= score || score == -1) {
-					score = client.second.player_->score;
-					editPlayer = client.second.player_;
-				}
+			int expRange = player->GetLvMaxSkillOrb() - player->GetLvMinSkillOrb();
+			switch (rank) {
+			case 0: player->skillPoint += expRange * 0.7f; break;
+			case 1: player->skillPoint += expRange * 0.5f; break;
+			case 2: player->skillPoint += expRange * 0.2f; break;
+			case 3: player->skillPoint += expRange * 0.0f; break;
 			}
 
-			if (editPlayer) {
-				if (preScore != editPlayer->score) {
-					rank = i;
-				}
-
-				int expRange = editPlayer->GetLvMaxSkillOrb() - editPlayer->GetLvMinSkillOrb();
-				editPlayer->skillPoint += expRange * (1.0f - (float)rank / (float)clients.size());
-				preScore = editPlayer->score;
-			}
-
-			maxScore = score;
+			rank += addRank;
+			preScore = player->score;
 		}
 	}
 }
@@ -49,15 +57,13 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
 	float time = players.time;
 
-	// シーン遷移アニメーション
-	
 
-
-	const float SPAWN_ANIMATION_START_TIME = 5.0f;
+	const float SPAWN_ANIMATION_START_TIME = 2.0f;
 	const float SPAWN_ANIMATION_TIME = 3.0f;
 	float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
+
 	// スポーンさせる
-	if (MoveScene::Move(0.0f) && spawnSpanTime * clientSpawnCount <= time) {
+	if (MoveScene::Move(Color::White * 0.0f) && SPAWN_ANIMATION_START_TIME + spawnSpanTime * clientSpawnCount <= time) {
 
 		// イテレータ
 		auto iterator = players.clients.begin();
@@ -81,7 +87,10 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 	// 時間がマイナスなら終了（まだ中間リザルトではない）
 	if (time < 0.0f) return;
 
-	const float DROP_ANIMATION = 5.0f;
+	const float FADE_ANIMATION = 0.5f;
+	const float DROP_ANIMATION = 2.5f;
+	const float STAY_ANIMATION = 3.5f;
+	const float WARP_ANIMATION = 9.5f;
 
 
 
@@ -90,39 +99,85 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 			return skillorb.isDestroy;
 		}
 	);
+	if (time <= FADE_ANIMATION) {
+		MoveScene::Move(Color::Black * 0.5f);
+		clientSpawnCount = 0;
+	}
 
 	// ドロップアニメーション
-	if (time <= DROP_ANIMATION) {
+	else if (time <= DROP_ANIMATION) {
+		// ランキング
+		std::list<ClientPlayer *> ranking;
+		for (auto &kvp : MultiPlayClient::clients) ranking.push_back(kvp.second);
 
-		// ランキングソート
-		auto sortPlayers = players.clients;
-		sort(sortPlayers);
+		// ソート
+		ranking.sort([](ClientPlayer *a, ClientPlayer *b) {
+			return a->score > b->score;
+			}
+		);
 
 		// ドロップ関数
-		auto dropOrb = [&](int rank, int dropNum, float velocity) {
+		auto dropOrb = [&](int idx, int dropNum, float velocity) {
 			for (int i = 0; i < dropNum; i++) {
 				float rad = MATH::Rand(-MATH::PI, MATH::PI);
 				rstSkillOrb.push_back(ResultSkillOrb(
 					CalcTimePosition(),
-					CalcIconPosition(rank, sortPlayers.size()),
+					CalcIconPosition(idx, ranking.size()),
 					Vector2(std::sin(rad), std::cosf(rad) * velocity)));
 			}
-			};
+		};
 
 		// 0.5秒ごとにスキルオーブをドロップ
-		if (500 < dropSkillOrbCoolTimer.GetNowTime()) {
-			for (auto &client : sortPlayers) {
-				int id = client.id;
-				int rank = get_rank(sortPlayers, id);
-				int dropRate = (1.0f - (float)(rank) / (float)players.clients.size());
-				dropOrb(rank, 20 * dropRate, 30.0f);
-				std::cout << dropRate << std::endl;
+		if (100 < dropSkillOrbCoolTimer.GetNowTime()) {
+			int rank = 0;
+			int preScore = -1;
+			int addRank = 1;
+			int dropNum = 5;
+			for (auto player : ranking) {
+				if (player->score == preScore) addRank++;
+				else addRank = 1;
+
+				int expRange = player->GetLvMaxSkillOrb() - player->GetLvMinSkillOrb();
+				switch (rank) {
+				case 0: dropOrb(player->id, dropNum * 1.5f, 30.0f); break;
+				case 1: dropOrb(player->id, dropNum * 0.5f, 30.0f); break;
+				case 2: dropOrb(player->id, dropNum * 0.25f, 30.0f); break;
+				case 3: dropOrb(player->id, dropNum * 0.0f, 30.0f); break;
+				}
+				rank += addRank;
+				preScore = player->score;
 			}
 			dropSkillOrbCoolTimer.Start();
 		}
 	}
+	else if (time <= STAY_ANIMATION) {
+	}
+	else if (time <= WARP_ANIMATION) {
+		float time = players.time;
+
+
+		const float SPAWN_ANIMATION_TIME = 3.0f;
+		float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
+
+		// スポーンさせる
+		if (spawnSpanTime * clientSpawnCount <= time) {
+
+			// イテレータ
+			auto iterator = players.clients.begin();
+
+			// アニメーションするプレイヤーのイテレータ
+			for (int i = 0; i < clientSpawnCount && iterator != players.clients.end(); i++) iterator++;
+
+			// イテレータが存在するなら
+			if (iterator != players.clients.end()) {
+				// アニメーションする
+				MultiPlayClient::clients[iterator->id]->ShowExit();
+			}
+			clientSpawnCount++;
+		}
+	}
 	else {
-		MoveScene::Move(1.0f);
+		MoveScene::Move(Color::White * 1.0f);
 	}
 
 	for (auto &skillOrb : rstSkillOrb) {

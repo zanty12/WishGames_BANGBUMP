@@ -16,7 +16,7 @@
 extern std::wstring ParamPath;
 #define MAX_MEMBER (4)
 #define PORT (8080)
-#define MAX_BUFF (1024 * 16)
+#define MAX_BUFF (1024 * 10)
 
 
 
@@ -28,6 +28,7 @@ using namespace Network;
 class MultiPlayServer {
 private:
 	static MultiPlayFlowServerSide *gameMode;				// ゲームモード
+	std::list<int> unregistersID;							// 抜けたときのID
 	int maxID = 0;											// IDの最大値				
 	Socket sockfd_;											// ソケット
 	Storage sendBuff = Storage(1024);						// 送信バッファ

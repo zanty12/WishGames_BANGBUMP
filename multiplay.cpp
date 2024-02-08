@@ -6,6 +6,7 @@
 #include "multi_enemy.h"
 #include "ini.h"
 #include "move_scene_anim.h"
+#include "load.h"
 #include <windows.h>
 #include <thread>
 
@@ -45,9 +46,19 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	if (gameMode->GetMap()->startPosition.size())
 		player->transform.position = *gameMode->GetMap()->startPosition.begin();
 
+	int id = -1;
+	if (unregistersID.size()) {
+		id = unregistersID.front();
+		unregistersID.pop_front();
+	}
+	else {
+		id = maxID;
+		maxID++;
+	}
+
 	// ヘッダーの更新
 	header.command = HEADER::RESPONSE_LOGIN;
-	header.id = maxID++;
+	header.id = id;
 
 	// クライアントデータの作成
 	CLIENT_DATA_SERVER_SIDE clientData = {
@@ -65,7 +76,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	// 送信
 	header.command = HEADER::RESPONSE_LOGIN;
 	SendTo(this->sockfd_, (char *)&header, sizeof(HEADER), 0, clientAddr);
-	std::cout << "Res >> ID:" << (maxID - 1) << " Login" << std::endl;
+	std::cout << "Res >> ID:" << id << " Login" << std::endl;
 
 
 
@@ -75,7 +86,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 #endif
 	//lock_.Unlock();
 
-	return maxID - 1;
+	return id;
 }
 
 void MultiPlayServer::Unregister(int id) {
@@ -89,6 +100,9 @@ void MultiPlayServer::Unregister(int id) {
 	// 解除
 	clients_[id].header.command = HEADER::RESPONSE_LOGOUT;
 	clients_[id].sockfd_.Close();
+
+	// 無効IDの登録
+	unregistersID.push_back(id);
 
 	// 送信
 	SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
@@ -131,7 +145,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 			Input::SetPreviousState(0, client.previousInput);
 			player->map = gameMode->GetMap();
 			player->Loop();
-			gameMode->GetMap()->Collision(player->transform.position, player->transform.scale, &player->velocity, &player->gravityVelocity);
+			gameMode->GetMap()->Collision(player->transform.position, player->transform.scale, &player->velocity, &player->blownVelocity, &player->gravityVelocity);
 
 			// 移動させる
 			player->transform.position += player->velocity + player->blownVelocity + player->gravityVelocity;
@@ -204,22 +218,6 @@ void MultiPlayServer::RecvUpdate(void) {
 }
 
 void MultiPlayServer::SendUpdate(void) {
-	//DWORD startTime, currentTime, onceFrameTime;
-	//startTime = currentTime = timeGetTime();
-	//onceFrameTime = 1000 / 60;
-
-	//while (!isFinish) {
-
-		//currentTime = timeGetTime();
-
-		//if (currentTime - startTime > onceFrameTime) {
-		//	startTime = currentTime;
-
-			//// ロック
-			//lock_.Lock();
-#ifdef DEBUG_LOCKED
-	std::cout << "SND LOCK";
-#endif
 	// レスポンスの作成
 	RESPONSE_PLAYER res;
 
@@ -237,7 +235,8 @@ void MultiPlayServer::SendUpdate(void) {
 			player->GetMoveAttribute()->GetAttribute(), player->GetAttackAttribute()->GetAttribute(),
 			player->animType,
 			player->transform.position, player->velocity, player->attackVelocity, player->chargeVelocity,
-			player->score, player->damageEffectAttributeType, player->skillPoint, 0 }
+			player->score, player->damageEffectAttributeType, player->skillPoint,
+			player->GetMoveAttribute()->mp, player->GetAttackAttribute()->mp }
 		);
 	}
 
@@ -510,7 +509,7 @@ void MultiPlayClient::PlayerUpdate(void) {
 		float velY = res_.clients.begin()->moveVelocity.y;	// 加算するY座標
 
 		float nextY = posY - centerY + velY * 10.0f;		// 移動先のY座標
-		float ratio = 0.85f;								// 滑らかにする倍率
+		float ratio = 0.5f;									// 滑らかにする倍率
 		offset += Vector2(0.0f, (nextY - offset.y) * ratio);
 	}
 	// ゲームモードの描画
@@ -557,6 +556,9 @@ void MultiPlayClient::PlayerUpdate(void) {
 
 	// UIの描画
 	gameMode->DrawUI(res_);
+
+	// プレイヤーUIの描画
+	for (auto kvp : MultiPlayClient::clients) kvp.second->DrawUI();
 
 	// シーン遷移アニメーション
 	MoveScene::Loop();
@@ -643,25 +645,30 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 			// IDを検索する
 			auto iterator = clients.find(client.id);
 
+			ClientPlayer *player = nullptr;
+
 			// オブジェクトが作成されていないなら作成する
 			if (iterator == clients.end()) {
-				auto player = new ClientPlayer(client.moveAttributeType, client.attackAttributeType, Transform(client.position));
+				player = new ClientPlayer(client.moveAttributeType, client.attackAttributeType, Transform(client.position));
 				player->id = client.id;
 				clients[client.id] = player;
 			}
 			else {
-				auto &player = iterator->second;
-				player->isShow = true;
-				player->skillPoint = client.skillPoint;
-				player->transform.position = client.position;
-				player->velocity = client.moveVelocity;
-				player->attackVelocity = client.attackVelocity;
-				player->chargeVelocity = client.warpVelocity;
-				player->animType = client.animType;
-				player->moveAttributeType = client.moveAttributeType;
-				player->attackAttributeType = client.attackAttributeType;
-				player->damageEffectAttributeType = client.damageEffectAttributeType;
-			}			
+				player = iterator->second;
+			}
+			player->isShow = true;
+			player->skillPoint = client.skillPoint;
+			player->score = client.score;
+			player->transform.position = client.position;
+			player->velocity = client.moveVelocity;
+			player->attackVelocity = client.attackVelocity;
+			player->chargeVelocity = client.warpVelocity;
+			player->animType = client.animType;
+			player->moveAttributeType = client.moveAttributeType;
+			player->attackAttributeType = client.attackAttributeType;
+			player->damageEffectAttributeType = client.damageEffectAttributeType;
+			if (player->curMoveAttribute) player->curMoveAttribute->mp = client.moveMp;
+			if (player->curAttackAttribute) player->curAttackAttribute->mp = client.attackMp;
 		}
 
 		// オブジェクト更新
@@ -670,23 +677,26 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 			auto iterator = objects.find(object.id);
 
 			// オブジェクトが作成されていないなら作成する
+			GameObjectClientSide *obj = nullptr;
 			if (iterator == objects.end()) {
-				GameObjectClientSide *pObject = nullptr;
 				switch (object.tag) {
-				case MULTI_OBJECT_TYPE::MULTI_ENEMY1: pObject = new Enemy1ClientSide(Transform(object.position)); break;
-				case MULTI_OBJECT_TYPE::MULTI_ENEMY2: pObject = new Enemy2ClientSide(Transform(object.position)); break;
-				case MULTI_OBJECT_TYPE::MULTI_ENEMY3: pObject = new Enemy3ClientSide(Transform(object.position)); break;
-				case MULTI_OBJECT_TYPE::MULTI_ATTACK_ENEMY2: pObject = new AttackEnemy2ClientSide(Transform(object.position)); break;
-				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_SMALL: pObject = new ClientSkillOrbSmall(); break;
-				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: pObject = new ClientSkillOrbMidium(); break;
-				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: pObject = new ClientSkillOrbBig(); break;
-				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER: pObject = new ClientThunderAttack(Transform(object.position)); break;
-				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2: pObject = new ClientThunder2Attack(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ENEMY1: obj = new Enemy1ClientSide(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ENEMY2: obj = new Enemy2ClientSide(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ENEMY3: obj = new Enemy3ClientSide(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ATTACK_ENEMY2: obj = new AttackEnemy2ClientSide(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_SMALL: obj = new ClientSkillOrbSmall(); break;
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: obj = new ClientSkillOrbMidium(); break;
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: obj = new ClientSkillOrbBig(); break;
+				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER: obj = new ClientThunderAttack(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2: obj = new ClientThunder2Attack(Transform(object.position)); break;
 				}
-				if (pObject) objects[object.id] = pObject;
+				if (obj) objects[object.id] = obj;
 			}
 			else {
-				auto &obj = iterator->second;
+				obj = iterator->second;
+			}
+
+			if (obj) {
 				obj->isShow = true;
 				obj->transform.position = object.position;
 				obj->velocity = object.velocity;
@@ -717,8 +727,10 @@ void MultiPlayClient::Update() {
 		Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
 		Time::Update();
 		RecvUpdate(1);
-		PlayerUpdate();
-		Graphical::Present();
+		if (!LoadClientSide::isNowLoad) {
+			PlayerUpdate();
+			Graphical::Present();
+		}
 		recvBuff = nullptr;
 	}
 }

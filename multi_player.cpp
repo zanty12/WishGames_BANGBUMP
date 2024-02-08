@@ -3,6 +3,7 @@
 #include "sprite.h"
 #include "multiplay.h"
 #include "multi_skillorb.h"
+#include "sound.h"
 
 
 void ServerPlayer::Loop(void) {
@@ -54,7 +55,9 @@ void ServerPlayer::Damage(AttackServerSide *attack) {
 	damageEffectAttributeType = attack->GetType();
 
 	// スキルオーブのドロップ
-	if (MultiPlayServer::GetGameMode()->GetMode() == MULTI_MODE::FINAL_BATTLE || attack->GetType() == MULTI_OBJECT_TYPE::MULTI_ATTACK_ENEMY2) {
+	if (MultiPlayServer::GetGameMode()->GetMode() == MULTI_MODE::FINAL_BATTLE ||
+		attack->GetType() == MULTI_OBJECT_TYPE::MULTI_ATTACK_ENEMY2 ||
+		attack->GetType() == MULTI_OBJECT_TYPE::MULTI_SPIKE) {
 		SkillOrbDrop(attack->atkDrop);
 	}
 
@@ -95,6 +98,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	preAttackAttributeType = attackAttributeType;
 
 	// ダメージエフェクトのロード
+	allDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_all.png"), 5, 2, 0, 7, false);
 	fireDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_fire.png"), 5, 2, 0, 7, false);
 	waterDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_water.png"), 5, 2, 0, 7, false);
 	thunderDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_thunder.png"), 5, 2, 0, 7, false);
@@ -102,6 +106,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	// その他エフェクト
 	exEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_EX.png"), 5, 6, 0, 29, false);
 	lvUpEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_levelup.png"), 5, 6, 0, 29, false);
+	lvDownEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_leveldown.png"), 5, 6, 0, 29, false);
 
 	lvUpUI = MultiAnimator(LoadTexture("data/texture/UI/UI_levelup.png"), 5, 6, 0, 29, false);
 	lvDownUI = MultiAnimator(LoadTexture("data/texture/UI/UI_leveldown.png"), 5, 6, 0, 29, false);
@@ -109,6 +114,7 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	exEffect.SetFrame(1000 / 42);
 	exEffect.MoveEnd();
 	lvUpEffect.MoveEnd();
+	lvDownEffect.MoveEnd();
 	lvUpUI.MoveEnd();
 	lvDownUI.MoveEnd();
 }
@@ -116,6 +122,9 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 void ClientPlayer::Loop(void) {
 	// 属性がないなら消す
 	if (!moveAttribute || !attackAttribute) return;
+
+	// 回転リセット
+	if (!isRotationAttributeControl) transform.rotation = 0.0f;
 
 
 
@@ -156,6 +165,7 @@ void ClientPlayer::Loop(void) {
 		else if (damageEffectAttributeType == MULTI_ATTACK_WATER) anim = &waterDamageEffect;
 		else if (damageEffectAttributeType == MULTI_ATTACK_THUNDER) anim = &thunderDamageEffect;
 		else if (damageEffectAttributeType == MULTI_ATTACK_WIND) anim = &windDamageEffect;
+		else if (damageEffectAttributeType == MULTI_ATTACK_ENEMY2) anim = &allDamageEffect;
 
 		// ダメージエフェクト
 		if (MultiPlayClient::GetGameMode())MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(
@@ -180,13 +190,31 @@ void ClientPlayer::ShowEntry() {
 	float height = 1000.0f;
 	Vector2 localPos = Vector2(0.0f, height * 0.15f);
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
+
+	PlaySound(LoadSound("data/sound/SE/player_entry.wav"), false);
 }
 void ClientPlayer::ShowExit() {
+	if (entryType == EXIT) return;
+
+	timer.Start();
 	entryType = EXIT;
+
+
+	// アニメーション
+	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_transfer.png"), 5, 6, 0, 25, false);
+	// 落雷を降らす
+	float height = 1000.0f;
+	Vector2 localPos = Vector2(0.0f, height * 0.15f);
+	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
+}
+void ClientPlayer::DrawUI(void) {
+	if (curAttackAttribute) curAttackAttribute->DrawUI();
 }
 
 void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim) {
-	if (timer.GetNowTime() < 200ul && entryType == ENTRY || entryType == NONE) return;
+	if (timer.GetNowTime() < 200ul && entryType == ENTRY ||
+		timer.GetNowTime() > 50ul && entryType == EXIT ||
+		entryType == NONE) return;
 
 	// レベルを取得
 	lv = GetLv();
@@ -236,6 +264,7 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 			moveAttribute->GetAttribute() == ATTRIBUTE_TYPE_THUNDER ||
 			moveAttribute->GetAttribute() == ATTRIBUTE_TYPE_WIND) {
 			// 移動アニメーション
+			moveAttribute->LevelUpdate();
 			moveAttribute->Move();
 		}
 	}
@@ -245,6 +274,7 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 			attackAttribute->GetAttribute() == ATTRIBUTE_TYPE_DARK ||
 			attackAttribute->GetAttribute() == ATTRIBUTE_TYPE_THUNDER) {
 			// 移動アニメーション
+			attackAttribute->LevelUpdate();
 			attackAttribute->Attack();
 		}
 	}
@@ -257,9 +287,11 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 		lvUpUI.MoveBegin();
 	}
 	else if (lv < preLv) {
+		lvDownEffect.MoveBegin();
 		lvDownUI.MoveBegin();
 	}
 	lvUpEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
+	lvDownEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
 	lvUpUI.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
 	lvDownUI.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
 	preLv = lv;

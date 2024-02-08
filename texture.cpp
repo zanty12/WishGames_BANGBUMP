@@ -21,6 +21,7 @@ int LoadTexture(std::string path) {
 	tex.texture = new Texture;
 	// “Ç‚İ‚Ş
 	HRESULT hr = tex.texture->Load(path.c_str());
+	if (hr != S_OK) std::cout << path << std::endl;
 	// “o˜^‚·‚é
 	g_texture.Add(tex);
 

@@ -2,11 +2,11 @@
 #include "multiplay.h"
 
 void EnemyServerSide::Damage(AttackServerSide *attack) {
-	if (GetType() == MULTI_ENEMY1 && attack->GetType() == MULTI_ATTACK_ENEMY2 ||
-		GetType() == MULTI_ENEMY2 && attack->GetType() == MULTI_ATTACK_ENEMY2 ||
-		GetType() == MULTI_ENEMY3 && attack->GetType() == MULTI_ATTACK_ENEMY2) return;
+	if (attack->GetType() == MULTI_ATTACK_ENEMY2) {
+		damageEffectAttributeType = -1;
+		return;
+	}
 	hp -= attack->atk;
-	damageEffectAttributeType = attack->GetType();
 	if (hp <= 0) {
 		// スキルオーブをドロップさせる
 		map->DropSkillOrb(deathDrop, transform.position, 10.0f);
@@ -118,7 +118,7 @@ void Enemy2ServerSide::Loop(void) {
 		// 方向を決める
 		if (targetPosition != Vector2::Zero) {
 			auto bullet = map->GetAttacks()->Add<AttackEnemy2ServerSide>(this);
-			bullet->velocity = (targetPosition - transform.position).Normalize() * 10.0f;
+			bullet->velocity = (targetPosition - transform.position).Normalize() * 7.0f;
 		}
 
 		spawnTimer.Start();

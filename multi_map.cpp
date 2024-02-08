@@ -9,6 +9,7 @@
 #include "multi_skillorb.h"
 #include "multi_attack.h"
 #include "multi_enemy.h"
+#include "multi_spike.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -111,9 +112,26 @@ void MultiMap::Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType) {
 				else if (id == MAP_READ_MULTI_AREA_CAPTURE) {
 					areaCaptures.push_front(position);
 				}
+				// 初期のエリアの登録
+				else if (id == MAP_READ_START_AREA) {
+					if (isLoadStartAreaCount == 0) startAreaRightTop= position;
+					else if (isLoadStartAreaCount == 1) startAreaLeftBottom = position;
+					if (multiplayType == MULTIPLAY_RUN_TYPE_CLIENT) {
+						if (x == 0 || y == 0 || x == width - 1 || y == height - 1) {
+							GetMap(x, y) = MAP_READ_WALL;
+						}
+					}
+					isLoadStartAreaCount++;
+				}
 				// 登録
 				else {
-					if (multiplayType == MULTIPLAY_RUN_TYPE_SERVER) GetColliderMap(x, y) = id;
+					if (multiplayType == MULTIPLAY_RUN_TYPE_SERVER) {
+						if (id == MAP_READ_SPIKE_UP) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Up);
+						else if (id == MAP_READ_SPIKE_DOWN) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Down);
+						else if (id == MAP_READ_SPIKE_RIGHT) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Right);
+						else if (id == MAP_READ_SPIKE_LEFT) attacks->Add<SpikeServerSide>(Transform(position), Vector2::Left);
+						GetColliderMap(x, y) = id;
+					}
 					if (multiplayType == MULTIPLAY_RUN_TYPE_CLIENT) GetMap(x, y) = id;
 				}
 			}
@@ -125,6 +143,14 @@ void MultiMap::Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType) {
 	file.close();
 }	
 
+void MultiMap::DrawBG(int bgTexNo, Vector2 offset, float aspectRatio) {
+	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());                        // 画面のサイズ
+	float maxY = height * cellSize;
+	float t = offset.y / maxY;
+	float y = MATH::Leap(maxY, 0.0f, t) - maxY * 0.5f;
+	DrawSprite(bgTexNo, Vector2(screen.x * 0.5f, y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
+}
+
 void MultiMap::Draw(Vector2 offset) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());                        // 画面のサイズ
 	Vector2Int leftBottomIdx = ToIndex(offset);                                                     // 左下のインデックス
@@ -133,11 +159,9 @@ void MultiMap::Draw(Vector2 offset) {
 	leftBottomIdx.y--;
 
 	// 描画（背景）
-	float aspectRatio = 3600.0f / 1280.0f;
-	float maxY = height * cellSize;
-	float t = offset.y / maxY;
-	float y = MATH::Leap(maxY, 0.0f, t) - maxY * 0.5f;
-	DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
+	DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, screen.y * 0.5f), 0.0f, Vector2(screen.x, screen.y), Color::White);
+	DrawBG(middleBGTexNo, offset, 1620.0f / 1920.0f);
+	DrawBG(frontBGTexNo, offset, 5400.0f / 1920.0f);
 
 	// 描画（ブロック）
 	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
@@ -155,7 +179,13 @@ void MultiMap::Draw(Vector2 offset) {
 				if (id != -1) {
 					int texNo = texNumbers[id];
 					Vector2 pos = ToPosition({ x, y }) - offset;
-					DrawSprite(texNo, pos, 0.0f, Vector2::One * cellSize, Color::White);
+
+					// ゴメンメンドクナッタ
+					// 棘の場合
+					if (id == MAP_READ_SPIKE_DOWN) DrawSprite(texNo, pos, 180.0f * MATH::Deg2Rad, Vector2::One * cellSize, Color::White);
+					else if (id == MAP_READ_SPIKE_RIGHT) DrawSprite(texNo, pos, 270.0f * MATH::Deg2Rad, Vector2::One * cellSize, Color::White);
+					else if (id == MAP_READ_SPIKE_LEFT) DrawSprite(texNo, pos, 90.0f * MATH::Deg2Rad, Vector2::One * cellSize, Color::White);
+					else DrawSprite(texNo, pos, 0.0f, Vector2::One * cellSize, Color::White);
 				}
 			}
 		}
@@ -224,7 +254,7 @@ int MultiMap::Collision(Vector2 &position, float radius, Vector2 *velocity) {
 	return id;
 }
 
-int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vector2 *gravityVelocity) {
+int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vector2 *blownVelocity, Vector2 *gravityVelocity) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());						// 画面のサイズ
 	Vector2Int leftBottomIdx = ToIndex(position - scale);											// 左下のインデックス
 	Vector2Int rightTopIdx = ToIndex(position + scale);												// 右上のインデックス
@@ -266,7 +296,7 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 
 				// 触れているなら
 				if (Collider2D::Touch(playerCollision, cellCollision)) {
-					Vector2 direction = position - cellPos - Vector2(cellSize, cellSize + cellSize*0.5) * 0.5f;
+					Vector2 direction = position - cellPos - Vector2(cellSize, cellSize + cellSize * 0.5) * 0.5f;
 					position += direction.Normalize() * velocity->Distance();
 
 					if (0.0f < direction.y) {
@@ -274,9 +304,17 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 					}
 
 					// 縦の壁なら
-					if (up != -1 || down != -1) direction.x = 0.0f;
+					if (up != -1 || down != -1) {
+						if (direction.x > 0.0f && blownVelocity->x < 0.0f ||
+							direction.x < 0.0f && blownVelocity->x > 0.0f) blownVelocity->x = 0.0f;
+						direction.x = 0.0f;
+					}
 					// 横の壁なら
-					if (left != -1 || right != -1) direction.y = 0.0f;
+					if (left != -1 || right != -1) {
+						if (direction.y > 0.0f && blownVelocity->y < 0.0f ||
+							direction.y < 0.0f && blownVelocity->y > 0.0f) blownVelocity->y = 0.0f;
+						direction.y = 0.0f;
+					}
 				}
 			}
 		}
@@ -287,6 +325,13 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 	else if (cellSize * width - cellSize * 0.5f < position.x) position.x = cellSize * width - cellSize * 2.0f;
 	if (position.y < cellSize * 0.5f) position.y = cellSize * 2.0f;
 	else if (cellSize * height - cellSize * 0.5f < position.y) position.y = cellSize * height - cellSize * 2.0f;
+	if (MultiPlayServer::GetGameMode()->GetGame()->mode == MultiPlayModeServerSide::START && 2 <= isLoadStartAreaCount) {
+	std::cout << startAreaLeftBottom.x << ", " << startAreaLeftBottom.y << " ~ " << startAreaRightTop.x << ", " << startAreaRightTop.y << std::endl;
+		if (position.x < startAreaLeftBottom.x + cellSize * 0.5f) position.x = startAreaLeftBottom.x + cellSize * 0.5f;
+		else if (startAreaRightTop.x - cellSize * 0.5f < position.x) position.x = startAreaRightTop.x - cellSize * 0.5f;
+		if (position.y < startAreaLeftBottom.y + cellSize * 0.5f) position.y = startAreaLeftBottom.y + cellSize * 0.5f;
+		else if (startAreaRightTop.y - cellSize * 0.5f < position.y) position.y = startAreaRightTop.y - cellSize * 0.5f;
+	}
 
 	return id;
 }
@@ -355,6 +400,12 @@ void MultiMap::AttackUpdate(void) {
 			// ダメージ
 			if (attack->Touch(player)) {
 				player->Damage(attack);
+				// アタックが発射物なら削除
+				if (attack->isProjectile) {
+					attack->Destroy();
+
+					std::cout << "DAMAGE" << std::endl;
+				}
 			}
 		}
 
@@ -382,6 +433,11 @@ void MultiMap::AttackUpdate(void) {
 			if (attack->Touch(enemy)) {
 				enemy->damageEffectAttributeType = attack->GetType();
 				enemy->Damage(attack);
+				// アタックが発射物なら削除
+				if (attack->isProjectile) {
+					attack->Destroy();
+					std::cout << "DAMAGE" << std::endl;
+				}
 			}
 		}
 	}

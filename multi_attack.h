@@ -16,6 +16,7 @@ public:
 	int atkDrop = 0;
 	float spanTime = 1.0f;
 	float knockbackRate = 10.0f;
+	bool isProjectile = false;
 	std::map<GameObjectServerSide*, WIN::Time> touchGameObjects;
 	Vector2 direction;
 

@@ -116,7 +116,7 @@ private:
 	MultiAnimator reverseAnim;								// 反転アニメーション
 	MultiAnimator *curAnim = nullptr;						// アニメーション（現在）
 	WIN::Time timer;										// スポーン開始時からの時間計測
-	ENTRY_TYPE entryType = NONE;							// 入場演出
+	ENTRY_TYPE entryType = NONE;							// 入場演出タイプ
 
 
 	MultiAnimator allDamageEffect;							// ダメージエフェクト
@@ -126,11 +126,13 @@ private:
 	MultiAnimator windDamageEffect;							// 風ダメージエフェクト
 	MultiAnimator exEffect;									// がっちゃんこエフェクト
 	MultiAnimator lvUpEffect;								// レベルアップエフェクト
+	MultiAnimator lvDownEffect;								// レベルダウンエフェクト
 	MultiAnimator lvUpUI;									// レベルアップUIエフェクト
 	MultiAnimator lvDownUI;									// レベルダウンUIエフェクト
 
 public:
 	int skillPoint = 0;										// スキルポイント
+	int score = 0;											// スコア
 	int animType = ANIMATION_TYPE_IDLE;						// アニメーションタイプ
 	int preAnimType = ANIMATION_TYPE_IDLE;					// アニメーション（1フレーム前）
 	int lv = 0;												// レベル
@@ -140,6 +142,7 @@ public:
 	ATTRIBUTE_TYPE preMoveAttributeType;					// 移動属性タイプ
 	ATTRIBUTE_TYPE preAttackAttributeType;					// 攻撃属性タイプ
 	bool isReverseXAttributeControl = false;				// 横軸の向きを属性側でコントロールするか否か
+	bool isRotationAttributeControl = false;				// 向きを属性側でコントロールするか否か
 	bool isReverseX = false;								// 横軸の向き
 	Vector2 attackVelocity;									// 攻撃のベロシティ
 	Vector2 chargeVelocity;									// チャージベロシティ
@@ -148,7 +151,6 @@ public:
 	ClientAttribute *curMoveAttribute = nullptr;			// 移動属性（現在）
 	ClientAttribute *curAttackAttribute = nullptr;			// 攻撃属性（現在）
 	float skillPointAnimation = 0.0f;						// スキルポイント獲得時のゲージのアニメーションで使用する
-
 	int lvupPoint[MAX_LV] = {};								// レベルアップに必要なポイント
 
 
@@ -158,6 +160,7 @@ public:
 	void Loop(void) override;
 	void ShowEntry();
 	void ShowExit();
+	void DrawUI();
 
 	void Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim);
 	void SetMoveAttribute(ClientAttribute *moveAttribute);

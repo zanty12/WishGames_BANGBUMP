@@ -9,7 +9,7 @@
 ********************************************************/
 class MultiPlayFinalBattleModeServerSide : public MultiPlayModeServerSide {
 public:
-	MultiPlayFinalBattleModeServerSide() : MultiPlayModeServerSide(new MultiMap(MAP_PATH + "MultiPlay_Map4.csv", MULTIPLAY_RUN_TYPE_SERVER), L"FinalBattle") { }
+	MultiPlayFinalBattleModeServerSide() : MultiPlayModeServerSide(L"FinalBattle") { }
 
 	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override {
 		for (auto client : clients) {
@@ -33,9 +33,11 @@ public:
 ********************************************************/
 class MultiPlayFinalBattleModeClientSide : public MultiPlayModeClientSide {
 public:
-	MultiPlayFinalBattleModeClientSide() : MultiPlayModeClientSide(new MultiMap(MAP_PATH + "MultiPlay_Map4.csv", MULTIPLAY_RUN_TYPE_CLIENT), L"FinalBattle") {
-		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_back));
-		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_front));
+	MultiPlayFinalBattleModeClientSide() : MultiPlayModeClientSide(L"FinalBattle") {
+		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage3_back));
+		map_->middleBGTexNo = LoadTexture("data/texture/BG/BG_stage3_middle.png");
+		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage3_front));
+		soNo = LoadSound("data/sound/BGM/stage3_BGM.wav");
 	}
 
 
