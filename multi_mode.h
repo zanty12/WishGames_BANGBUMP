@@ -3,16 +3,21 @@
 #include "multi_runenum.h"
 #include "multi_map.h"
 #include "multi_result_skillorb.h"
+#include "sound.h"
 #include "time.h"
 
+/***********************************************************
+	Server
+************************************************************/
 class MultiPlayFlowServerSide;
 class MultiPlayModeServerSide {
 protected:
 	float maxTime_ = 60.0f;
 	float time_ = 0.0f;
 	float startTime_ = 15.0f;			// 開始までの時間
+	float playTime_ = 15.0f;			// プレイの時間
 	float resultTime_ = 15.0f;			// 中間リザルトの時間
-	bool isSkip = false;
+	bool isSkip = false;				// スキップ
 	bool isPlayerMove = false;			// プレイヤーの移動制限
 	MultiMap *map_ = nullptr;
 	friend MultiPlayFlowServerSide;
@@ -27,10 +32,12 @@ public:
 
 	int mode = NONE;
 	int preMode = NONE;
+
 	MultiPlayModeServerSide(std::wstring modeName) {
 		startTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"startTime");
 		resultTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"resultTime");
-		maxTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"timeLimit") + startTime_ + resultTime_;
+		playTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"playTime");
+		maxTime_ = (0.0f < playTime_ ? playTime_ : 1.0f) + startTime_ + resultTime_;
 
 		std::string mapPath = ini::GetString(PARAM_PATH + L"mode.ini", modeName.c_str(), L"path");
 		map_ = new MultiMap(MAP_PATH + mapPath, MULTIPLAY_RUN_TYPE_SERVER);
@@ -52,10 +59,14 @@ public:
 
 
 
+/***********************************************************
+	Client
+************************************************************/
 class MultiPlayFlowClientSide;
 class MultiPlayModeClientSide {
 protected:
 	float startTime_ = 15.0f;							// 開始までの時間
+	float playTime_ = 15.0f;							// プレイの時間
 	float resultTime_ = 15.0f;							// 中間リザルトの時間
 	MultiMap *map_;
 	int clientSpawnCount = 0;							// クライアントのスポーンカウント
@@ -63,6 +74,8 @@ protected:
 	WIN::Time dropSkillOrbCoolTimer;					// リザルト時のスキルオーブドロップアニメーションで使うタイマー
 	friend MultiPlayFlowClientSide;
 
+public:
+	int soNo = -1;										// BGM
 
 
 protected:
@@ -111,6 +124,7 @@ public:
 	MultiPlayModeClientSide(std::wstring modeName) {
 		startTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"startTime");
 		resultTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"resultTime");
+		playTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"playTime");
 		dropSkillOrbCoolTimer.Start();
 
 		std::string mapPath = ini::GetString(PARAM_PATH + L"mode.ini", modeName.c_str(), L"path");

@@ -12,6 +12,7 @@
 //#include "text.h"
 #include "time.h"
 //#include "video.h"
+#include "sound.h"
 #include "multi_map.h"
 
 
@@ -39,6 +40,8 @@ int main() {
     }
     else {
         MultiPlayClient client;
+        auto hwnd = Graphical::GetHwnd();
+        InitSound(hwnd);
         client.Register();
         //int texNo = LoadTexture(Asset::textures_.at(textures::player));
         while (!client.isFinish) {
@@ -79,6 +82,7 @@ int main() {
             //Graphical::Present();
         }
         client.Unregister();
+        UninitSound();
     }
 
     Time::Release();

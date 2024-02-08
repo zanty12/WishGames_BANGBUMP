@@ -44,6 +44,9 @@
     <Filter Include="Multiplay\head">
       <UniqueIdentifier>{bcf02db6-6494-416b-a67e-27e8bfe25edd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Multiplay\head\mode">
+      <UniqueIdentifier>{9e82936f-cffd-4d1f-834e-2e2190009d17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -286,6 +289,9 @@
     <ClCompile Include="load.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
+    <ClCompile Include="multi_spike.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphical.h">
@@ -513,9 +519,6 @@
     <ClInclude Include="multi_animenum.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
-    <ClInclude Include="multi_area_capture_mode.h">
-      <Filter>Multiplay\head</Filter>
-    </ClInclude>
     <ClInclude Include="multi_attack.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
@@ -523,9 +526,6 @@
       <Filter>Multiplay\head</Filter>
     </ClInclude>
     <ClInclude Include="multi_behavior.h">
-      <Filter>Multiplay\head</Filter>
-    </ClInclude>
-    <ClInclude Include="multi_character_select_mode.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
     <ClInclude Include="multi_client_gameobject.h">
@@ -537,12 +537,6 @@
     <ClInclude Include="multi_enemy.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
-    <ClInclude Include="multi_enemy_rush_mode.h">
-      <Filter>Multiplay\head</Filter>
-    </ClInclude>
-    <ClInclude Include="multi_final_battle_mode.h">
-      <Filter>Multiplay\head</Filter>
-    </ClInclude>
     <ClInclude Include="multi_header.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
@@ -550,12 +544,6 @@
       <Filter>Multiplay\head</Filter>
     </ClInclude>
     <ClInclude Include="multi_map.h">
-      <Filter>Multiplay\head</Filter>
-    </ClInclude>
-    <ClInclude Include="multi_mode.h">
-      <Filter>Multiplay\head</Filter>
-    </ClInclude>
-    <ClInclude Include="multi_mode_flow.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
     <ClInclude Include="multi_movable_object.h">
@@ -599,6 +587,30 @@
     </ClInclude>
     <ClInclude Include="load.h">
       <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_spike.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_character_select_mode.h">
+      <Filter>Multiplay\head\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_final_battle_mode.h">
+      <Filter>Multiplay\head\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_enemy_rush_mode.h">
+      <Filter>Multiplay\head\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_area_capture_mode.h">
+      <Filter>Multiplay\head\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_mode_flow.h">
+      <Filter>Multiplay\head\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_mode.h">
+      <Filter>Multiplay\head\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_last_result_mode.h">
+      <Filter>Multiplay\head\mode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

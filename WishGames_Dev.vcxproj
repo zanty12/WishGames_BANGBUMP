@@ -291,6 +291,7 @@
     <ClInclude Include="multi_obstacle_race_mode.h" />
     <ClInclude Include="multi_path.h" />
     <ClInclude Include="multi_player.h" />
+    <ClInclude Include="multi_last_result_mode.h" />
     <ClInclude Include="multi_result_skillorb.h" />
     <ClInclude Include="multi_server_select.h" />
     <ClInclude Include="multi_skillorb.h" />

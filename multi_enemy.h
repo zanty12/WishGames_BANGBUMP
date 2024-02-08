@@ -88,11 +88,12 @@ public:
 
 class Enemy2ServerSide : public EnemyServerSide {
 	float activeRadius = 1000.0f;		// ŒŸ’m”ÍˆÍ
-	float coolTime = 4.0f;
+	float coolTime = 5.0f;
 	WIN::Time spawnTimer;
 
 public:
 	Enemy2ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map, L"Enemy2") {
+		coolTime = MATH::Rand(4.0f, 6.0f);
 		spawnTimer.Start();
 	}
 
@@ -111,7 +112,7 @@ public:
 };
 class AttackEnemy2ServerSide : public AttackServerSide {
 public:
-	AttackEnemy2ServerSide(Enemy2ServerSide *self) : AttackServerSide(1, self->atkDrop, 0.0f, self->blownFriction,50.0f, self) { transform.position = self->transform.position; }
+	AttackEnemy2ServerSide(Enemy2ServerSide *self) : AttackServerSide(1, self->atkDrop, 0.0f, self->blownFriction, 50.0f, self) { transform.position = self->transform.position; isProjectile = true; }
 
 	void Loop(void) override;
 	void KnockBack(ServerMovableGameObject *object) override;

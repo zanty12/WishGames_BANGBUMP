@@ -71,6 +71,7 @@ public:
 		map_->middleBGTexNo = LoadTexture("data/texture/BG/BG_stage1_middle.png");
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_front));
 		anim = MultiAnimator(areaTexNo, 1, 1, 0, 0);
+		soNo = LoadSound("data/sound/BGM/stage1_BGM.wav");
 	}
 
 	void Draw(RESPONSE_PLAYER &players, Vector2 offset) override;

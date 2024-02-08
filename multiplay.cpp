@@ -6,6 +6,7 @@
 #include "multi_enemy.h"
 #include "ini.h"
 #include "move_scene_anim.h"
+#include "load.h"
 #include <windows.h>
 #include <thread>
 
@@ -714,7 +715,7 @@ void MultiPlayClient::Update() {
 		Time::Update();
 		RecvUpdate(1);
 		PlayerUpdate();
-		Graphical::Present();
+		if (!isNowLoad) Graphical::Present();
 		recvBuff = nullptr;
 	}
 }

@@ -106,6 +106,7 @@ public:
 		playerTexNo[2] = LoadTexture("data/texture/UI/player3_base.png");
 		playerTexNo[3] = LoadTexture("data/texture/UI/player4_base.png");
 
+		soNo = LoadSound("data/sound/BGM/select_element_BGM.wav");
 
 
 
