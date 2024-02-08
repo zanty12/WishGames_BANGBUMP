@@ -119,9 +119,13 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	lvUpUI.MoveEnd();
 	lvDownUI.MoveEnd();
 
-	std::ostringstream path;
-	path << "data/texture/UI/" << (MultiPlayClient::GetID() % 4) + 1 << "p.png";
-	iconTexNo = LoadTexture(path.str());
+	std::ostringstream iconPath;
+	iconPath << "data/texture/UI/" << (MultiPlayClient::GetID() % 4) + 1 << "p.png";
+	iconTexNo = LoadTexture(iconPath.str());
+
+	std::ostringstream cursorPath;
+	cursorPath << "data/texture/UI/UI_pointer_player" << (MultiPlayClient::GetID() % 4) + 1 << ".png";
+	cursorTexNo = LoadTexture(cursorPath.str());;
 }
 
 void ClientPlayer::Loop(void) {

@@ -82,6 +82,7 @@ public:
 	int countDownTexNo = -1;							// カウントダウンテクスチャ
 
 
+
 protected:
 	void sort(std::list<CLIENT_DATA_CLIENT_SIDE> &ranking) {
 		// ランキングでソート

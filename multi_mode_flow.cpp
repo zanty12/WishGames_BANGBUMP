@@ -3,6 +3,7 @@
 #include "load.h"
 #include "multi_ui.h"
 #include "sound.h"
+#include "lib/collider2d.h"
 
 /***********************************************************
 	Server
@@ -175,8 +176,41 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 
 	// ゲームモードの描画（UI）
 	gameMode_->DrawUI(res);
-	
+
+	// プレイ時間がない（キャラ選択 or リザルト）
 	if (gameMode_->playTime_ < 0.0f) return;
+
+
+
+
+	// cursor
+	auto player = MultiPlayClient::clients[MultiPlayClient::GetID()];
+	using namespace PHYSICS;
+	for (auto kvp : MultiPlayClient::clients) {
+		auto other = kvp.second;
+
+		// 自分自身ならカーソルいらない
+		if (other->id == player->id) break;
+
+		Vector2 leftBottom = MultiPlayClient::offset;
+		Vertex2 downerScreenFrame(leftBottom, Vector2(Graphical::GetWidth(), 0.0f) + leftBottom);
+		Vertex2 upperScreenFrame(Vector2(0.0f, Graphical::GetHeight()) + leftBottom, Vector2(Graphical::GetWidth(), Graphical::GetHeight()) + leftBottom);
+		Vertex2 direction(player->transform.position, other->transform.position);
+		RayHit hit;
+
+		if (Collider2D::Touch(upperScreenFrame, direction, &hit)) {
+			float rot = std::atan2(hit.tilt.y, hit.tilt.x);
+			Vector2 scl = Vector2(500, 500);
+			DrawSprite(other->cursorTexNo, hit.position, rot, scl, Color::White);
+		}
+		else if (Collider2D::Touch(downerScreenFrame, direction, &hit)) {
+			float rot = std::atan2(hit.tilt.y, hit.tilt.x);
+			Vector2 scl = Vector2(500, 500);
+			DrawSprite(other->cursorTexNo, hit.position, rot, scl, Color::White);
+		}
+	}
+
+
 
 
 

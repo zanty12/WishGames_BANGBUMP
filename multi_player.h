@@ -153,6 +153,7 @@ public:
 	float skillPointAnimation = 0.0f;						// スキルポイント獲得時のゲージのアニメーションで使用する
 	int lvupPoint[MAX_LV] = {};								// レベルアップに必要なポイント
 	int iconTexNo = -1;										// 1P,2P,3P,4P
+	int cursorTexNo = -1;									// カーソル
 
 
 public:
