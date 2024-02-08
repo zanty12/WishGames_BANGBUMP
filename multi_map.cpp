@@ -112,6 +112,17 @@ void MultiMap::Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType) {
 				else if (id == MAP_READ_MULTI_AREA_CAPTURE) {
 					areaCaptures.push_front(position);
 				}
+				// èâä˙ÇÃÉGÉäÉAÇÃìoò^
+				else if (id == MAP_READ_START_AREA) {
+					if (isLoadStartAreaCount == 0) startAreaRightTop= position;
+					else if (isLoadStartAreaCount == 1) startAreaLeftBottom = position;
+					if (multiplayType == MULTIPLAY_RUN_TYPE_CLIENT) {
+						if (x == 0 || y == 0 || x == width - 1 || y == height - 1) {
+							GetMap(x, y) = MAP_READ_WALL;
+						}
+					}
+					isLoadStartAreaCount++;
+				}
 				// ìoò^
 				else {
 					if (multiplayType == MULTIPLAY_RUN_TYPE_SERVER) {
@@ -315,6 +326,13 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 	else if (cellSize * width - cellSize * 0.5f < position.x) position.x = cellSize * width - cellSize * 2.0f;
 	if (position.y < cellSize * 0.5f) position.y = cellSize * 2.0f;
 	else if (cellSize * height - cellSize * 0.5f < position.y) position.y = cellSize * height - cellSize * 2.0f;
+	if (MultiPlayServer::GetGameMode()->GetGame()->mode == MultiPlayModeServerSide::START && 2 <= isLoadStartAreaCount) {
+	std::cout << startAreaLeftBottom.x << ", " << startAreaLeftBottom.y << " ~ " << startAreaRightTop.x << ", " << startAreaRightTop.y << std::endl;
+		if (position.x < startAreaLeftBottom.x + cellSize * 0.5f) position.x = startAreaLeftBottom.x + cellSize * 0.5f;
+		else if (startAreaRightTop.x - cellSize * 0.5f < position.x) position.x = startAreaRightTop.x - cellSize * 0.5f;
+		if (position.y < startAreaLeftBottom.y + cellSize * 0.5f) position.y = startAreaLeftBottom.y + cellSize * 0.5f;
+		else if (startAreaRightTop.y - cellSize * 0.5f < position.y) position.y = startAreaRightTop.y - cellSize * 0.5f;
+	}
 
 	return id;
 }

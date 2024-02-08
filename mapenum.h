@@ -14,6 +14,7 @@
  * @brief Mapに配置できるさまざまなタイプのセルを表す列挙型。
  */
 typedef enum {
+    MAP_READ_START_AREA = -1, ///< マルチの占領エリアを表します。
     MAP_READ_NONE, ///< 空のセルを表します。
     MAP_READ_WALL, ///< 壁セルを表します。
     MAP_READ_FLOOR, ///< 床セルを表します。

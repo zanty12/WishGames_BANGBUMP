@@ -21,6 +21,9 @@ private:
 	MultiBehavior *attacks;
 	EffectClientSide effects;
 	std::list<Vector2> areaCaptures;
+	Vector2 startAreaLeftBottom;
+	Vector2 startAreaRightTop;
+	int isLoadStartAreaCount = 0;
 	std::map<int, int> texNumbers;
 
 public:

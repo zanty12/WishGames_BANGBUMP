@@ -4,7 +4,10 @@
 #include "move_scene_anim.h"
 
 void MultiPlayModeServerSide::UpdateStart(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
+	// 開始の経過時間を計算
+	float time = time_;
 
+	isPlayerMove = 5.0f < time;
 }
 
 void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
@@ -13,6 +16,9 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 	
 	// 時間がマイナスなら終了（まだ中間リザルトではない）
 	if (time < 0.0f) return;
+
+	// 移動できないようにする
+	isPlayerMove = false;
 
 	// はじめのみ
 	if (preMode != mode && GetMode() != MULTI_MODE::CHARACTER_SELECT) {
@@ -51,15 +57,13 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
 	float time = players.time;
 
-	// シーン遷移アニメーション
-	
 
-
-	const float SPAWN_ANIMATION_START_TIME = 5.0f;
+	const float SPAWN_ANIMATION_START_TIME = 2.0f;
 	const float SPAWN_ANIMATION_TIME = 3.0f;
 	float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
+
 	// スポーンさせる
-	if (MoveScene::Move(Color::White * 0.0f) && spawnSpanTime * clientSpawnCount <= time) {
+	if (MoveScene::Move(Color::White * 0.0f) && SPAWN_ANIMATION_START_TIME + spawnSpanTime * clientSpawnCount <= time) {
 
 		// イテレータ
 		auto iterator = players.clients.begin();
@@ -85,7 +89,8 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 
 	const float FADE_ANIMATION = 0.5f;
 	const float DROP_ANIMATION = 2.5f;
-	const float STAY_ANIMATION = 7.5f;
+	const float STAY_ANIMATION = 3.5f;
+	const float WARP_ANIMATION = 9.5f;
 
 
 
@@ -96,6 +101,7 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 	);
 	if (time <= FADE_ANIMATION) {
 		MoveScene::Move(Color::Black * 0.5f);
+		clientSpawnCount = 0;
 	}
 
 	// ドロップアニメーション
@@ -145,7 +151,30 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 		}
 	}
 	else if (time <= STAY_ANIMATION) {
-		
+	}
+	else if (time <= WARP_ANIMATION) {
+		float time = players.time;
+
+
+		const float SPAWN_ANIMATION_TIME = 3.0f;
+		float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
+
+		// スポーンさせる
+		if (spawnSpanTime * clientSpawnCount <= time) {
+
+			// イテレータ
+			auto iterator = players.clients.begin();
+
+			// アニメーションするプレイヤーのイテレータ
+			for (int i = 0; i < clientSpawnCount && iterator != players.clients.end(); i++) iterator++;
+
+			// イテレータが存在するなら
+			if (iterator != players.clients.end()) {
+				// アニメーションする
+				MultiPlayClient::clients[iterator->id]->ShowExit();
+			}
+			clientSpawnCount++;
+		}
 	}
 	else {
 		MoveScene::Move(Color::White * 1.0f);

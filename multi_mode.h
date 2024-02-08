@@ -8,21 +8,23 @@
 class MultiPlayFlowServerSide;
 class MultiPlayModeServerSide {
 protected:
-	enum MODE {
-		START,
-		PLAY,
-		RESULT,
-	};
 	float maxTime_ = 60.0f;
 	float time_ = 0.0f;
 	float startTime_ = 15.0f;			// 開始までの時間
 	float resultTime_ = 15.0f;			// 中間リザルトの時間
 	bool isSkip = false;
+	bool isPlayerMove = false;			// プレイヤーの移動制限
 	MultiMap *map_ = nullptr;
 	friend MultiPlayFlowServerSide;
 
 
 public:
+	enum MODE {
+		START,
+		PLAY,
+		RESULT,
+	};
+
 	int mode = NONE;
 	int preMode = NONE;
 	MultiPlayModeServerSide(std::wstring modeName) {
@@ -40,7 +42,7 @@ public:
 	virtual void CreateResponse(Storage& out) { };
 	virtual void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
 
-	virtual bool IsPlayerMove(void) const { return time_ <= maxTime_; };
+	virtual bool IsPlayerMove(void) const { return isPlayerMove; };
 	virtual MULTI_MODE GetMode(void) const = 0;
 	float GetTime(void) const { return time_; }
 	float GetMaxTime(void) const { return maxTime_; }
