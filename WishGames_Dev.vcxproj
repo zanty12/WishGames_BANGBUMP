@@ -217,6 +217,7 @@
     <ClCompile Include="thunder.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="title.cpp" />
+    <ClCompile Include="title_ver2.cpp" />
     <ClCompile Include="wind.cpp" />
     <ClCompile Include="xinput.cpp" />
   </ItemGroup>
@@ -327,6 +328,7 @@
     <ClInclude Include="texture.h" />
     <ClInclude Include="time.h" />
     <ClInclude Include="title.h" />
+    <ClInclude Include="title_ver2.h" />
     <ClInclude Include="video.h" />
     <ClInclude Include="xinput.h" />
     <ClInclude Include="wall.h" />

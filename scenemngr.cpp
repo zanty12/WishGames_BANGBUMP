@@ -12,6 +12,7 @@
 #include "multi_server_select.h"
 #include "result.h"
 #include "thunder.h"
+#include "title_ver2.h"
 #include "wind.h"
 #include "lib/imgui/imgui_internal.h"
 
@@ -27,7 +28,7 @@ SceneMngr::SceneMngr(SCENE scene)
     switch (scene)
     {
     case SCENE_TITLE:
-        scene_ = new Title(this);
+        scene_ = new Title2(this);
         break;
     case SCENE_MENU:
         scene_ = new Menu(this);
@@ -91,7 +92,7 @@ void SceneMngr::LoadScene(SCENE scene)
     switch (scene)
     {
     case SCENE_TITLE:
-        scene_ = new Title(this);
+        scene_ = new Title2(this);
         break;
     case SCENE_MENU:
         scene_ = new Menu(this);
