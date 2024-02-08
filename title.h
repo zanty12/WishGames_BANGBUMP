@@ -8,10 +8,12 @@ class Title :public Scene
 {
 private:
 	SceneMngr* scene_mngr_;
+	//graphics
 	Video* title_video_;
 	int logo_tex_;
 	int press_button_tex_;
 	int title_tex_;
+	//sound
 	int bgm_;
 	int confirm_se_;
 	//control
@@ -22,7 +24,6 @@ private:
 	float logo_alpha_ = 0.0f;
 	float fade_alpha_ = 1.0f;
 	float video_fade_ = 0.0f;
-	float title_wait = 2.0f;
 	float title_scale_start_ = 10.0f;
 	float title_scale_ = 10.0f;
 	float game_start_wait_ = 1.0f;
