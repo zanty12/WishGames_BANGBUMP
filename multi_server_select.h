@@ -1,5 +1,6 @@
 #pragma once
 #include "multiplay.h"
+#include "sound.h"
 #include "sprite.h"
 #include "texture.h"
 #include "lib/ImGui/imgui.h"
@@ -12,11 +13,15 @@ private:
     bool start_ = false;
     SceneMngr* scene_mngr_;
     Video* bg_video_ = nullptr;
+    //texture
     int ip_text_tex_;
     int ip_box_tex_;
     int scene_tex_;
     int confirm_tex_;
     int return_tex_;
+    //sound
+    int bgm_;
+    int confirm_se_;
 
     ImFont* font_;
 
@@ -32,10 +37,16 @@ public:
         bg_video_->SetLoop(true);
         bg_video_->SetWindowPos(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2));
         bg_video_->SetSize(Vector2(Graphical::GetWidth(), Graphical::GetHeight()));
+        bgm_ = LoadSound("data/sound/bgm/serverselect.wav");
+        confirm_se_ = LoadSound("data/sound/se/confirm.wav");
         font_ = ImGui::GetIO().Fonts->Fonts[1];
     }
 
-    ~Multi_Server_Select() override = default;
+    ~Multi_Server_Select() override
+    {
+        StopSound(bgm_);
+    }
+
 
     void Update() override
     {
@@ -70,6 +81,7 @@ public:
         if (Input::GetKeyDown(0, Input::A) || GetKeyState(VK_RETURN) & 0x8000)
         {
             connect_ = true;
+            PlaySound(confirm_se_, 0);
         }
         if (Input::GetKeyDown(0, Input::B))
         {

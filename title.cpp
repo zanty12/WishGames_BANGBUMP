@@ -14,7 +14,7 @@ Title::Title(SceneMngr* scene_mngr)
     title_video_->SetWindowPos(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2));
     title_video_->SetSize(Vector2(Graphical::GetWidth(), Graphical::GetHeight()));
     bgm_ = LoadSound("data/sound/bgm/title_BGM.wav");
-    confirm_se_ = LoadSound("data/sound/se/decision.wav");
+    confirm_se_ = LoadSound("data/sound/se/gamestart.wav");
     SetVolume(bgm_, 0.4f);
 }
 
@@ -49,10 +49,10 @@ void Title::Update()
     }
 
 
-    if (Input::GetKeyDown(0, Input::A) || Input::GetKeyDown(0, Input::B) || Input::GetKeyDown(0, Input::X) ||
+    if ((Input::GetKeyDown(0, Input::A) || Input::GetKeyDown(0, Input::B) || Input::GetKeyDown(0, Input::X) ||
         Input::GetKeyDown(0, Input::Y) || Input::GetKeyDown(0, Input::L) || Input::GetKeyDown(0, Input::R) ||
         Input::GetKeyDown(0, Input::Up) || Input::GetKeyDown(0, Input::Down) || Input::GetKeyDown(0, Input::Left) ||
-        Input::GetKeyDown(0, Input::Right)) //Aボタン
+        Input::GetKeyDown(0, Input::Right)) && !game_start_) //Aボタン
     {
         if (logo_)
         {
@@ -64,11 +64,11 @@ void Title::Update()
             game_start_ = true;
         }
     }
-    if(game_start_ && game_start_wait_ > 0.0f)
+    if (game_start_ && game_start_wait_ > 0.0f)
     {
         game_start_wait_ -= Time::GetDeltaTime();
     }
-    if(game_start_ && game_start_wait_ <= 0.0f)
+    if (game_start_ && game_start_wait_ <= 0.0f)
     {
         scene_mngr_->ChangeScene(SCENE_MENU);
     }
@@ -106,15 +106,14 @@ void Title::Draw()
                    Vector2(1088 * scale_x, 177 * scale_y) * title_scale_, Color(1.0f, 1.0f, 1.0f, logo_alpha_));
         if (title_scale_ <= 1.0f)
         {
-            if(game_start_)
+            if (game_start_)
             {
                 DrawSprite(press_button_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3), 0.0f,
-                       Vector2(999 * scale_x, 100.3 * scale_y), Color(1.0f, 1.0f, 1.0f, AlphaAnimation(20.0f)));
+                           Vector2(999 * scale_x, 100.3 * scale_y), Color(1.0f, 1.0f, 1.0f, AlphaAnimation(20.0f)));
             }
             DrawSprite(press_button_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3), 0.0f,
                        Vector2(999 * scale_x, 100.3 * scale_y), Color(1.0f, 1.0f, 1.0f, AlphaAnimation()));
         }
-
     }
 }
 
@@ -134,5 +133,5 @@ float Title::AlphaAnimation(float rate)
     //rateで点滅の速さを変える
     static float time;
     time += Time::GetDeltaTime() * rate;
-    return (sin(time) + 1.0f)/ 2.0f;
+    return (sin(time) + 1.0f) / 2.0f;
 }
