@@ -30,14 +30,14 @@ public:
 };
 class ServerSkillOrbMidium : public ServerSkillOrb {
 public:
-	static const int AddPoint = 2;
+	static const int AddPoint = 3;
 	ServerSkillOrbMidium(Transform transform) : ServerSkillOrb(AddPoint, transform) { };
 	ServerSkillOrbMidium(Transform transform, Vector2 velocity) : ServerSkillOrb(AddPoint, transform, velocity) { };
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM; }
 };
 class ServerSkillOrbBig : public ServerSkillOrb {
 public:
-	static const int AddPoint = 3;
+	static const int AddPoint = 5;
 	ServerSkillOrbBig(Transform transform) : ServerSkillOrb(AddPoint, transform) { };
 	ServerSkillOrbBig(Transform transform, Vector2 velocity) : ServerSkillOrb(AddPoint, transform, velocity) { };
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG; }

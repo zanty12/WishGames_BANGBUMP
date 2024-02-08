@@ -303,12 +303,13 @@ void ClientFire::Attack(void) {
 	attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
 }
 void ClientFire::DrawUI(void) {
-	Vector2 localPos = Vector2(0.0f, 75.0f);
-	Vector2 pos = CalcIconPosition(player->id, MultiPlayClient::clients.size());
+	Vector2 localPos = Vector2(0.0f, player->transform.scale.y * 0.5f);
+	Vector2 pos = player->transform.position - MultiPlayClient::offset;
+	Vector2 scl = Vector2::One * 30.0f;
 
 	float ratio = (float)mp / (float)state->maxMp;
-	DrawSpriteBoxEffectLeftToRight(frameUITexNo, pos + localPos, Vector2::One * 100.0f, Color::White, 1.0f);
-	DrawSpriteBoxEffectLeftToRight(uiTexNo, pos + localPos, Vector2::One * 100.0f, Color::White, ratio);
+	DrawSpriteBoxEffectLeftToRight(frameUITexNo, pos + localPos, scl, Color::White, 1.0f);
+	DrawSpriteBoxEffectLeftToRight(uiTexNo, pos + localPos, scl, Color::White, ratio);
 }
 
 void ServerFireAttack::Loop(void) {
@@ -481,15 +482,17 @@ void ClientWater::Move(void) {
 }
 void ClientWater::Attack(void) {
 	// インジケーター
-	Vector2 stick = Input::GetStickRight(0);
-	if (stick != Vector2::Zero) {
-		Vector2 localPos = stick.Normalize() * 100.0f;
-		Vector2 pos = player->transform.position - MultiPlayClient::offset;
-		float rot = atan2f(-localPos.y, localPos.x);
-		Vector2 scl = Vector2::One * 100.0f;
-		Color col = Color::White;
+	if (player->id == MultiPlayClient::GetID()) {
+		Vector2 stick = Input::GetStickRight(0);
+		if (stick != Vector2::Zero) {
+			Vector2 localPos = stick.Normalize() * 100.0f;
+			Vector2 pos = player->transform.position - MultiPlayClient::offset;
+			float rot = atan2f(-localPos.y, localPos.x);
+			Vector2 scl = Vector2::One * 100.0f;
+			Color col = Color::White;
 
-		attackIndicator.Draw(pos + localPos, rot, scl, col);
+			attackIndicator.Draw(pos + localPos, rot, scl, col);
+		}
 	}
 
 
@@ -611,14 +614,15 @@ void ClientWater::Idle(void) {
 	}
 }
 void ClientWater::DrawUI(void) {
-	Vector2 localPos = Vector2(0.0f, 75.0f);
-	Vector2 pos = CalcIconPosition(player->id, MultiPlayClient::clients.size());
+	Vector2 localPos = Vector2(0.0f, player->transform.scale.y * 0.5f);
+	Vector2 pos = player->transform.position - MultiPlayClient::offset;
+	Vector2 scl = Vector2::One * 20.0f;
 	Color col = Color::White;
 
 	float ratio = (float)mp / (float)state->maxMp;
 	if (ratio < 1.0f) col *= 0.25f;
-	DrawSpriteBoxEffectBottomToUp(frameUITexNo, pos + localPos, Vector2::One * 50.0f, Color::White, 1.0f);
-	DrawSpriteBoxEffectBottomToUp(uiTexNo, pos + localPos, Vector2::One * 50.0f, col, ratio);
+	DrawSpriteBoxEffectBottomToUp(frameUITexNo, pos + localPos, scl, Color::White, 1.0f);
+	DrawSpriteBoxEffectBottomToUp(uiTexNo, pos + localPos, scl, col, ratio);
 }
 
 void ServerWaterAttack::Loop(void) {
@@ -745,7 +749,7 @@ void ServerThunder::Attack(void) {
 				// アタック移動
 				if (attack) {
 					Vector2 localPos = direction.Normal().Normalize() * 40.0f;
-					if (0.0f < localPos.x) localPos *= -1.0f;
+					if (0.0f > localPos.y) localPos *= -1.0f;
 
 					attack->transform.position = player->transform.position + localPos;
 					attack->direction = direction.Normalize() * state->atkDistance;
@@ -784,15 +788,17 @@ AttackServerSide *ServerThunder::CreateAttack(void) {
 
 void ClientThunder::Move(void) {
 	// インジケーター
-	Vector2 stick = Input::GetStickLeft(0);
-	if (stick != Vector2::Zero) {
-		Vector2 localPos = -stick.Normalize() * 100.0f;
-		Vector2 pos = player->transform.position - MultiPlayClient::offset;
-		float rot = atan2f(-localPos.y, localPos.x);
-		Vector2 scl = Vector2::One * 100.0f;
-		Color col = Color::White;
+	if (player->id == MultiPlayClient::GetID()) {
+		Vector2 stick = Input::GetStickLeft(0);
+		if (stick != Vector2::Zero) {
+			Vector2 localPos = -stick.Normalize() * 100.0f;
+			Vector2 pos = player->transform.position - MultiPlayClient::offset;
+			float rot = atan2f(-localPos.y, localPos.x);
+			Vector2 scl = Vector2::One * 100.0f;
+			Color col = Color::White;
 
-		indicator.Draw(pos + localPos, rot, scl, col);
+			indicator.Draw(pos + localPos, rot, scl, col);
+		}
 	}
 
 
@@ -891,15 +897,17 @@ void ClientThunder::Attack(void) {
 	}
 }
 void ClientThunder::DrawUI(void) {
-	Vector2 localPos = Vector2(-50.0f, 75.0f);
-	Vector2 pos = CalcIconPosition(player->id, MultiPlayClient::clients.size());
+	Vector2 localPos = Vector2(-10.0f, player->transform.scale.y * 0.55f);
+	Vector2 pos = player->transform.position - MultiPlayClient::offset;
+	Vector2 scl = Vector2::One * 15.0f;
 
 	int num = mp;
 	int maxNum = state->maxMp;
-	int width = 50.0f;
+	int width = 8.0f;
+	
 	for (int i = 0; i < maxNum; i++) {
-		if (i < num) DrawSprite(uiTexNo, pos + localPos + Vector2(width, 0.0f) * i, 0.0f, Vector2::One * 50.0f, Color::White);
-		else DrawSprite(frameUITexNo, pos + localPos + Vector2(width, 0.0f) * i, 0.0f, Vector2::One * 50.0f, Color::White);
+		if (i < num) DrawSprite(uiTexNo, pos + localPos + Vector2(width, 0.0f) * i, 0.0f, scl, Color::White);
+		else DrawSprite(frameUITexNo, pos + localPos + Vector2(width, 0.0f) * i, 0.0f, scl, Color::White);
 	}
 }
 
@@ -936,7 +944,7 @@ void ClientThunder2Attack::Loop(void) {
 	if (!isShow) return;
 
 	Vector2 pos = transform.position;
-	float rot = atan2f(-velocity.y, velocity.x);
+	float rot = atan2f(velocity.y, -velocity.x);
 	Vector2 scl = Vector2::One * 150.0f;
 	Color col = Color::White;
 	anim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
@@ -1147,12 +1155,13 @@ void ClientWind::Idle(void) {
 	}
 }
 void ClientWind::DrawUI(void) {
-	Vector2 localPos = Vector2(0.0f, 75.0f);
-	Vector2 pos = CalcIconPosition(player->id, MultiPlayClient::clients.size());
+	Vector2 localPos = Vector2(0.0f, player->transform.scale.y * 0.5f);
+	Vector2 pos = player->transform.position - MultiPlayClient::offset;
+	Vector2 scl = Vector2::One * 20.0f;
 
 	float ratio = (float)mp / (float)state->maxMp;
-	DrawSpriteCircleEffect(frameUITexNo, pos + localPos, 0.0f, Vector2::One * 100.0f, Color::White, Vector2::Zero, Vector2::One, 1.0f);
-	DrawSpriteCircleEffect(uiTexNo, pos + localPos, 0.0f, Vector2::One * 100.0f, Color::White, Vector2::Zero, Vector2::One, ratio);
+	DrawSpriteCircleEffect(frameUITexNo, pos + localPos, 0.0f, scl, Color::White, Vector2::Zero, Vector2::One, 1.0f);
+	DrawSpriteCircleEffect(uiTexNo, pos + localPos, 0.0f, scl, Color::White, Vector2::Zero, Vector2::One, ratio);
 }
 
 void ServerWindAttack::Loop(void) {
