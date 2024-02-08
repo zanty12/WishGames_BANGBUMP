@@ -26,7 +26,7 @@ int main()
 #else
 
     if (mode == 0) {
-        Graphical::Initialize(1920, 1080, false);
+        Graphical::Initialize(1920 * 0.5f, 1080 * 0.5f, TRUE);
         DebugUI::Initialize();
         Text::CreateResources();
         WIN::Window window = Graphical::GetHwnd();
@@ -37,7 +37,7 @@ int main()
     }
     else {
         MSG msg;
-        Graphical::Initialize(1920, 1080, true);
+        Graphical::Initialize(1920, 1080, FALSE);
         DebugUI::Initialize();
         Text::CreateResources();
         WIN::Window window = Graphical::GetHwnd();

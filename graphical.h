@@ -12,7 +12,7 @@ private:
 	static int height;
 
 public:
-	static void Initialize(int width, int height, bool windowed);
+	static void Initialize(int width, int height, BOOL windowed);
 	static void WindowShow(void);
 	static void Release(void);
 
