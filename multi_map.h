@@ -28,7 +28,7 @@ private:
 
 public:
 	Vector2 position;
-	const static int cellSize = 53;
+	const static int cellSize = 64;
 	std::list<Vector2> startPosition;
 	int frontBGTexNo = -1, middleBGTexNo = -1, backBGTexNo = -1;
 

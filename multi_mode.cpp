@@ -72,9 +72,12 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 	const float SPAWN_ANIMATION_START_TIME = 2.0f;			// 登場表示開始
 	const float STAGE_NAME_ANIMATION_START_TIME = 5.0f;		// ステージ名表示開始
 
+	const float SPAWN_ANIMATION_TIME = 3.0f;				// 登場中
+	const float STAGE_NAME_ANIMATION_TIME = 2.0f;			// ステージ名表示中
 
 
-	const float SPAWN_ANIMATION_TIME = 3.0f;				// 登場
+
+
 	float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
 
 	// スポーンさせる
@@ -92,6 +95,13 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 			MultiPlayClient::clients[iterator->id]->ShowEntry();
 		}
 		clientSpawnCount++;
+	}
+
+	// ステージ名
+	else if (STAGE_NAME_ANIMATION_START_TIME <= time) {
+		float t = (time - STAGE_NAME_ANIMATION_START_TIME) / STAGE_NAME_ANIMATION_TIME;
+
+		
 	}
 }
 
