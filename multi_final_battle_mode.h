@@ -38,6 +38,8 @@ public:
 		map_->middleBGTexNo = LoadTexture("data/texture/BG/BG_stage3_middle.png");
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage3_front));
 		soNo = LoadSound("data/sound/BGM/stage3_BGM.wav");
+
+		stageNameTexNo = LoadTexture("data/texture/UI/title/UI_finalstage.png");
 	}
 
 

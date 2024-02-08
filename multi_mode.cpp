@@ -99,6 +99,7 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 
 	// ステージ名
 	else if (STAGE_NAME_ANIMATION_START_TIME <= time) {
+		std::cout << stageNameTexNo << std::endl;
 		float t = (time - STAGE_NAME_ANIMATION_START_TIME) / STAGE_NAME_ANIMATION_TIME;
 		float centerX = Graphical::GetWidth() * 0.5f;
 		float centerY = Graphical::GetHeight() * 0.5f;
@@ -107,6 +108,7 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 		float y = MATH::Bezier(centerY + 200.0f, centerY + 50.0f, centerY - 50.0f, centerY - 100.0f, t);
 		float a = MATH::Bezier(0.0f, 1.0f, 0.5f, 0.0f, t);
 		
+		DrawSprite(stageNameTexNo, Vector2(centerX, y), 0.0f, Vector2::One * 200.0f, Color::White * a);
 	}
 }
 

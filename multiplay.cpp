@@ -555,10 +555,10 @@ void MultiPlayClient::PlayerUpdate(void) {
 	lightEffect.Draw(offset);
 
 	// UIの描画
-	gameMode->DrawUI(res_);
+	//gameMode->DrawUI(res_);
 
 	// プレイヤーUIの描画
-	for (auto kvp : MultiPlayClient::clients) if (kvp.second->entryType == ClientPlayer::ENTRY) kvp.second->DrawUI();
+	//for (auto kvp : MultiPlayClient::clients) if (kvp.second->entryType == ClientPlayer::ENTRY) kvp.second->DrawUI();
 
 	// シーン遷移アニメーション
 	MoveScene::Loop();
