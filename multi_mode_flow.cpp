@@ -201,10 +201,20 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		{
 			float n = upper - player->transform.position.y;
 			float m = other->transform.position.y - upper;
-			Vector2 pos = (other->transform.position * n + player->transform.position * m) / (n + m);
+			if (0.0f < m) {
+				Vector2 pos = (other->transform.position * n + player->transform.position * m) / (n + m);
 
-			DrawSprite(other->cursorTexNo, pos, 0.0f, scl, Color::White);
+				DrawSprite(other->cursorTexNo, pos - MultiPlayClient::offset, rot, scl, Color::White);
+			}
+		}
+		{
+			float n = player->transform.position.y - bottom;
+			float m = bottom - other->transform.position.y;
+			if (0.0f < m) {
+				Vector2 pos = (other->transform.position * n + player->transform.position * m) / (n + m);
 
+				DrawSprite(other->cursorTexNo, pos - MultiPlayClient::offset, rot, scl, Color::White);
+			}
 		}
 	}
 
