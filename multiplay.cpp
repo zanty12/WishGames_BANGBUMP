@@ -631,28 +631,30 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 			// IDを検索する
 			auto iterator = clients.find(client.id);
 
+			ClientPlayer *player = nullptr;
+
 			// オブジェクトが作成されていないなら作成する
 			if (iterator == clients.end()) {
-				auto player = new ClientPlayer(client.moveAttributeType, client.attackAttributeType, Transform(client.position));
+				player = new ClientPlayer(client.moveAttributeType, client.attackAttributeType, Transform(client.position));
 				player->id = client.id;
 				clients[client.id] = player;
 			}
 			else {
-				auto &player = iterator->second;
-				player->isShow = true;
-				player->skillPoint = client.skillPoint;
-				player->score = client.score;
-				player->transform.position = client.position;
-				player->velocity = client.moveVelocity;
-				player->attackVelocity = client.attackVelocity;
-				player->chargeVelocity = client.warpVelocity;
-				player->animType = client.animType;
-				player->moveAttributeType = client.moveAttributeType;
-				player->attackAttributeType = client.attackAttributeType;
-				player->damageEffectAttributeType = client.damageEffectAttributeType;
-				if (player->curMoveAttribute) player->curMoveAttribute->mp = client.moveMp;
-				if (player->curAttackAttribute) player->curAttackAttribute->mp = client.attackMp;
-			}			
+				player = iterator->second;
+			}
+			player->isShow = true;
+			player->skillPoint = client.skillPoint;
+			player->score = client.score;
+			player->transform.position = client.position;
+			player->velocity = client.moveVelocity;
+			player->attackVelocity = client.attackVelocity;
+			player->chargeVelocity = client.warpVelocity;
+			player->animType = client.animType;
+			player->moveAttributeType = client.moveAttributeType;
+			player->attackAttributeType = client.attackAttributeType;
+			player->damageEffectAttributeType = client.damageEffectAttributeType;
+			if (player->curMoveAttribute) player->curMoveAttribute->mp = client.moveMp;
+			if (player->curAttackAttribute) player->curAttackAttribute->mp = client.attackMp;
 		}
 
 		// オブジェクト更新
@@ -661,23 +663,26 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 			auto iterator = objects.find(object.id);
 
 			// オブジェクトが作成されていないなら作成する
+			GameObjectClientSide *obj = nullptr;
 			if (iterator == objects.end()) {
-				GameObjectClientSide *pObject = nullptr;
 				switch (object.tag) {
-				case MULTI_OBJECT_TYPE::MULTI_ENEMY1: pObject = new Enemy1ClientSide(Transform(object.position)); break;
-				case MULTI_OBJECT_TYPE::MULTI_ENEMY2: pObject = new Enemy2ClientSide(Transform(object.position)); break;
-				case MULTI_OBJECT_TYPE::MULTI_ENEMY3: pObject = new Enemy3ClientSide(Transform(object.position)); break;
-				case MULTI_OBJECT_TYPE::MULTI_ATTACK_ENEMY2: pObject = new AttackEnemy2ClientSide(Transform(object.position)); break;
-				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_SMALL: pObject = new ClientSkillOrbSmall(); break;
-				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: pObject = new ClientSkillOrbMidium(); break;
-				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: pObject = new ClientSkillOrbBig(); break;
-				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER: pObject = new ClientThunderAttack(Transform(object.position)); break;
-				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2: pObject = new ClientThunder2Attack(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ENEMY1: obj = new Enemy1ClientSide(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ENEMY2: obj = new Enemy2ClientSide(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ENEMY3: obj = new Enemy3ClientSide(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ATTACK_ENEMY2: obj = new AttackEnemy2ClientSide(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_SMALL: obj = new ClientSkillOrbSmall(); break;
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_MIDIUM: obj = new ClientSkillOrbMidium(); break;
+				case MULTI_OBJECT_TYPE::MULTI_SKILL_POINT_BIG: obj = new ClientSkillOrbBig(); break;
+				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER: obj = new ClientThunderAttack(Transform(object.position)); break;
+				case MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2: obj = new ClientThunder2Attack(Transform(object.position)); break;
 				}
-				if (pObject) objects[object.id] = pObject;
+				if (obj) objects[object.id] = obj;
 			}
 			else {
-				auto &obj = iterator->second;
+				obj = iterator->second;
+			}
+
+			if (obj) {
 				obj->isShow = true;
 				obj->transform.position = object.position;
 				obj->velocity = object.velocity;

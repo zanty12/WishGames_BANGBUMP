@@ -312,7 +312,7 @@ public:
 		transform.position = self->transform.position;
 	}
 
-	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER; }
+	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2; }
 };
 class ClientThunderAttack : public AttackClientSide {
 public:
@@ -324,7 +324,6 @@ public:
 		texNo = LoadTexture("data/texture/Attack/effect_thunder_arrow.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 		deathAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_lost.png"), 5, 2, 0, 4, false);
-		this->transform.scale = Vector2::One * 150.0f;
 	}
 
 	void Loop(void) override;
@@ -341,6 +340,8 @@ public:
 		texNo = LoadTexture("data/texture/Attack/effect_thunder_arrow2.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 	}
+
+	void Loop(void) override;
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2; }
 };

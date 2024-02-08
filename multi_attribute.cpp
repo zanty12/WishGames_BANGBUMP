@@ -744,7 +744,9 @@ void ServerThunder::Attack(void) {
 
 				// アタック移動
 				if (attack) {
-					Vector2 localPos = Vector2(0.0f, 10.0f);
+					Vector2 localPos = direction.Normal().Normalize() * 40.0f;
+					if (0.0f < localPos.x) localPos *= -1.0f;
+
 					attack->transform.position = player->transform.position + localPos;
 					attack->direction = direction.Normalize() * state->atkDistance;
 					attack->velocity = CalcVector(direction) * state->powerAttackRatio;
@@ -868,11 +870,13 @@ void ClientThunder::Attack(void) {
 
 	// チャージ中
 	if (IsPlayerAnimAttackCharge(player->animType)) {
-		Vector2 localPos = direction.Normal().Normalize() * 50.0f;
+		Vector2 localPos = direction.Normal().Normalize() * 40.0f;
 		Vector2 pos = player->transform.position - MultiPlayClient::offset;
 		float rot = atan2f(direction.x, direction.y);
 		Vector2 scl = Vector2::One * 150.0f;
 		Color col = Color::White;
+
+		if (player->isReverseX) localPos *= -1.0f;
 
 		// レベルによってテクスチャの変更
 		if (player->GetLv() < 6) {
@@ -880,6 +884,7 @@ void ClientThunder::Attack(void) {
 		}
 		else {
 			attackAnim.texNo = attack2TexNo;
+			rot += 90.0f * MATH::Deg2Rad;
 		}
 
 		attackAnim.Draw(pos + localPos, rot, scl, col);
@@ -916,9 +921,9 @@ void ServerThunderAttack::KnockBack(ServerMovableGameObject *object) {
 void ClientThunderAttack::Loop(void) {
 	if (!isShow) return;
 
-	Vector2 pos = transform.position + velocity.Normalize() * transform.scale.x * 0.5f;
+	Vector2 pos = transform.position;
 	float rot = atan2f(velocity.x, velocity.y);
-	Vector2 scl = transform.scale;
+	Vector2 scl = transform.scale * 150.0f;
 	Color col = Color::White;
 	anim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 
@@ -926,6 +931,17 @@ void ClientThunderAttack::Loop(void) {
 }
 void ClientThunderAttack::Release(void) {
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(deathAnim, transform.position, 0.0f, transform.scale);
+}
+void ClientThunder2Attack::Loop(void) {
+	if (!isShow) return;
+
+	Vector2 pos = transform.position;
+	float rot = atan2f(-velocity.y, velocity.x);
+	Vector2 scl = transform.scale * 150.0f;
+	Color col = Color::White;
+	anim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
+
+	isShow = false;
 }
 
 
