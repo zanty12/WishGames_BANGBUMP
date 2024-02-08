@@ -117,11 +117,18 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	lvDownEffect.MoveEnd();
 	lvUpUI.MoveEnd();
 	lvDownUI.MoveEnd();
+
+	std::ostringstream path;
+	path << "data/texture/UI/" << (id + 1) % 4 << "p.png";
+	iconTexNo = LoadTexture(path.str());
 }
 
 void ClientPlayer::Loop(void) {
 	// 属性がないなら消す
 	if (!moveAttribute || !attackAttribute) return;
+
+	// 表示状態
+	entryType = SHOW;
 
 	// 回転リセット
 	if (!isRotationAttributeControl) transform.rotation = 0.0f;
@@ -209,6 +216,11 @@ void ClientPlayer::ShowExit() {
 }
 void ClientPlayer::DrawUI(void) {
 	if (curAttackAttribute) curAttackAttribute->DrawUI();
+	DrawSprite(iconTexNo,
+		transform.position + Vector2(0.0f, transform.scale.y * 0.75f) - MultiPlayClient::offset,
+		0.0f,
+		Vector2(25, 25),
+		Color::White);
 }
 
 void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim) {

@@ -558,7 +558,7 @@ void MultiPlayClient::PlayerUpdate(void) {
 	gameMode->DrawUI(res_);
 
 	// プレイヤーUIの描画
-	for (auto kvp : MultiPlayClient::clients) kvp.second->DrawUI();
+	for (auto kvp : MultiPlayClient::clients) if (kvp.second->entryType == ClientPlayer::SHOW) kvp.second->DrawUI();
 
 	// シーン遷移アニメーション
 	MoveScene::Loop();

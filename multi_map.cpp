@@ -183,8 +183,8 @@ void MultiMap::Draw(Vector2 offset) {
 					// ゴメンメンドクナッタ
 					// 棘の場合
 					if (id == MAP_READ_SPIKE_DOWN) DrawSprite(texNo, pos, 180.0f * MATH::Deg2Rad, Vector2::One * cellSize, Color::White);
-					else if (id == MAP_READ_SPIKE_RIGHT) DrawSprite(texNo, pos, 270.0f * MATH::Deg2Rad, Vector2::One * cellSize, Color::White);
-					else if (id == MAP_READ_SPIKE_LEFT) DrawSprite(texNo, pos, 90.0f * MATH::Deg2Rad, Vector2::One * cellSize, Color::White);
+					else if (id == MAP_READ_SPIKE_RIGHT) DrawSprite(texNo, pos, 90.0f * MATH::Deg2Rad, Vector2::One * cellSize, Color::White);
+					else if (id == MAP_READ_SPIKE_LEFT) DrawSprite(texNo, pos, 270.0f * MATH::Deg2Rad, Vector2::One * cellSize, Color::White);
 					else DrawSprite(texNo, pos, 0.0f, Vector2::One * cellSize, Color::White);
 				}
 			}

@@ -626,7 +626,7 @@ void ClientWater::DrawUI(void) {
 	Color col = Color::White;
 
 	float ratio = (float)mp / (float)state->maxMp;
-	if (ratio < 1.0f) col *= 0.25f;
+	if (mp < state->cost) col *= 0.25f;
 	DrawSpriteBoxEffectBottomToUp(frameUITexNo, pos + localPos, scl, Color::White, 1.0f);
 	DrawSpriteBoxEffectBottomToUp(uiTexNo, pos + localPos, scl, col, ratio);
 }

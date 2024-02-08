@@ -73,8 +73,6 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 		if (gameMode_->startTime_ <= gameMode_->time_ && gameMode_->playTime_ < 0.0f && !gameMode_->isSkip) deltaTime = 0.0f;
 		gameMode_->time_ += deltaTime;
 
-		std::cout << "TIME : " << gameMode_->time_ << ", MODE : " << gameMode_->time_ << std::endl;
-
 
 		// ゲームのスタートの更新
 		if (gameMode_->time_ < gameMode_->startTime_) {
@@ -122,6 +120,7 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 }
 
 void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
+
 	// モードが切り替わったなら、次のモードへ移行
 	if (currentMode_ != res.mode) {
 		// 現在のモードの取得
@@ -145,7 +144,10 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		currentMode_ = GetMode();
 
 		// BGMを流す
-		if (gameMode_->soNo != -1) PlaySound(gameMode_->soNo, true);
+		if (gameMode_->soNo != -1) {
+			PlaySound(gameMode_->soNo, true);
+			SetVolume(gameMode_->soNo, 0.4f);
+		}
 	}
 	// モードの実行
 	else if (gameMode_) {
