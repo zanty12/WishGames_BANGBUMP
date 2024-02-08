@@ -11,6 +11,7 @@ private:
     char ip_[16] = "";
     bool connect_ = false;
     bool start_ = false;
+    bool first_update_ = true;
     SceneMngr* scene_mngr_;
     Video* bg_video_ = nullptr;
     //texture
@@ -23,6 +24,7 @@ private:
     //sound
     int bgm_;
     int confirm_se_;
+    int back_se_;
 
     ImFont* font_;
 
@@ -33,7 +35,7 @@ public:
         ip_box_tex_ = LoadTexture("data/texture/UI/serverselect/IP_No.png");
         scene_tex_ = LoadTexture("data/texture/UI/serverselect/UI_serverselect.png");
         bg_video_ = new Video("data/video/BG_serverselect.mp4");
-        confirm_tex_ = LoadTexture("data/texture/UI/A.png");
+        confirm_tex_ = LoadTexture("data/texture/UI/serverselect/join.png");
         return_tex_ = LoadTexture("data/texture/UI/back.png");
         b_tex_ = LoadTexture("data/texture/UI/B.png");
         bg_video_->SetLoop(true);
@@ -41,6 +43,7 @@ public:
         bg_video_->SetSize(Vector2(Graphical::GetWidth(), Graphical::GetHeight()));
         bgm_ = LoadSound("data/sound/bgm/serverselect.wav");
         confirm_se_ = LoadSound("data/sound/se/confirm.wav");
+        back_se_ = LoadSound("data/sound/se/back.wav");
         font_ = ImGui::GetIO().Fonts->Fonts[1];
     }
 
@@ -52,6 +55,12 @@ public:
 
     void Update() override
     {
+        if(first_update_)
+        {
+            SetVolume(bgm_, 0.4f);
+            PlaySound(bgm_,-1);
+            first_update_ = false;
+        }
         if (connect_ && !start_)
         {
             //stop scenemngr and go to multiplay client
@@ -84,9 +93,11 @@ public:
         {
             connect_ = true;
             PlaySound(confirm_se_, 0);
+            StopSound(bgm_);
         }
         if (Input::GetKeyDown(0, Input::B))
         {
+            PlaySound(back_se_, 0);
             scene_mngr_->ChangeScene(SCENE_MENU);
         }
         if (!start_ && !connect_)
@@ -109,14 +120,15 @@ public:
                    Vector2(1200, 180), Color(1.0f, 1.0f, 1.0f, 1.0f));
         DrawSprite(scene_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() - 70), 0.0f,
                    // arbirary value of the texture
-                   Vector2(650, 650), Color(1.0f, 1.0f, 1.0f, 1.0f));
-        DrawSprite(confirm_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3), 0.0f,
-                   Vector2(350, 350), Color(1.0f, 1.0f, 1.0f, AlphaAnimation()));
+                   Vector2(650, 650), Color(1.0f, 1.0f, 1.0f, 1.0f));\
+        if (ip_[0] != '\0')
+            DrawSprite(confirm_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3 - 85.0f), 0.0f,
+                       Vector2(350, 350), Color(1.0f, 1.0f, 1.0f, AlphaAnimation()));
         //return
-        DrawSprite(return_tex_, Vector2(((Graphical::GetWidth() -100) ), 80), 0.0f,
-                   Vector2(80.0f , 80.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
-        DrawSprite(b_tex_, Vector2(((Graphical::GetWidth() -160) ), 80), 0.0f,
-                   Vector2(100.0f , 100.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
+        DrawSprite(return_tex_, Vector2(((Graphical::GetWidth() - 100)), 80), 0.0f,
+                   Vector2(80.0f, 80.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+        DrawSprite(b_tex_, Vector2(((Graphical::GetWidth() - 160)), 80), 0.0f,
+                   Vector2(100.0f, 100.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
         ImGui::SetNextWindowPos(ImVec2((Graphical::GetWidth() - textbox_width) / 2, Graphical::GetHeight() / 2 - 100));
         //arbitrary value to fit text in to the textbox texture
         // Draw the texture with ImGui
@@ -124,14 +136,10 @@ public:
         ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));
         ImGui::Begin(u8"Ú‘±", &open, window_flags);
         ImGui::PushItemWidth(textbox_width);
-        ImGui::InputText("##", ip_, 16);
+        if (!ImGui::IsAnyItemActive() && !ImGui::IsMouseClicked(0))
+            ImGui::SetKeyboardFocusHere(0);
+        ImGui::InputText("##", ip_, IM_ARRAYSIZE(ip_));
         ImGui::PopItemWidth();
-        /*if (ImGui::Button("Link Start"))
-        {
-            //stop scenemngr and go to multiplay client
-            connect_ = true;
-        }*/
-        //ImGui::GetFont()->Scale /=2;
         ImGui::PopFont();
         ImGui::PopStyleColor();
         ImGui::End();

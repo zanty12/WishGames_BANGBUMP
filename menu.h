@@ -26,6 +26,7 @@ private:
 	int bgm_;
 	int select_se_;
 	int confirm_se_;
+	int back_se_;
 
 	Video* bg_video_ = nullptr;
 	//control

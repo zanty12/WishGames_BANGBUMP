@@ -1,5 +1,6 @@
 #include "prep.h"
 
+#include "sound.h"
 #include "xinput.h"
 
 std::map<ATTRIBUTE_ACTION, std::string> video_file_map =
@@ -85,6 +86,10 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
     //uiテキスチャー
     tex_bg_ = LoadTexture("data/texture/UI/practice_prep/prep_bg.png");
     //tex_select_arrow_ = LoadTexture("data/texture/UI/practice_prep/select_arrow.png");
+
+    //sound
+    select_se_= LoadSound("data/sound/se/attribute_select.wav");
+    back_se_ = LoadSound("data/sound/se/back.wav");
 }
 
 void Prep::Update()
@@ -95,12 +100,15 @@ void Prep::Update()
         clockwise_ = true;
         if (is_move_ && !move_moving_)
         {
+            move_moving_ = true;
+            PlaySound(select_se_,0);
             move_next_ = move_list.back().attribute;
-            return;
         }
-        else if (!attack_moving_)
+        else if (!is_move_ && !attack_moving_)
         {
+            PlaySound(select_se_,0);
             attack_next_ = attack_list.back().attribute;
+            attack_moving_ = true;
         }
     }
     if (Input::GetStickLeft(0).x > 0.8)
@@ -108,19 +116,22 @@ void Prep::Update()
         clockwise_ = false;
         if (is_move_ && !move_moving_)
         {
+            move_moving_ = true;
+            PlaySound(select_se_,0);
             std::list<attribute_select>::iterator it = move_list.begin();
             ++it;
             move_next_ = (*it).attribute;
-            return;
         }
-        else if (!attack_moving_)
+        else if (!is_move_ && !attack_moving_)
         {
+            PlaySound(select_se_,0);
             std::list<attribute_select>::iterator it = attack_list.begin();
             ++it;
             attack_next_ = (*it).attribute;
+            attack_moving_ = true;
         }
     }
-    if (Input::GetStickLeft(0).y > 0.8)
+    if (Input::GetStickLeft(0).y > 0.9)
     {
         if (is_move_)
         {
@@ -130,7 +141,7 @@ void Prep::Update()
         }
     }
 
-    if (Input::GetStickLeft(0).y < -0.8)
+    if (Input::GetStickLeft(0).y < -0.9)
     {
         if (!is_move_)
         {
@@ -295,6 +306,7 @@ void Prep::Update()
     }
     if (Input::GetKeyDown(0, Input::B))
     {
+        PlaySound(back_se_, 0);
         scene_mngr_->ChangeScene(SCENE_MENU);
     }
 }

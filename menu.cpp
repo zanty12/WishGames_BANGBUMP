@@ -21,6 +21,7 @@ Menu::Menu(SceneMngr* scene_mngr)
     bgm_ = LoadSound("data/SOUND/bgm/modeselect.wav");
     select_se_ = LoadSound((char*)"data/SOUND/se/modeselect_SE.wav");
     confirm_se_ = LoadSound((char*)"data/SOUND/se/confirm.wav");
+    back_se_ = LoadSound("data/SOUND/se/back.wav");
 
     bg_video_ = new Video("data/video/BG_modeselect.mp4");
     bg_video_->SetLoop(true);
@@ -74,6 +75,7 @@ void Menu::Update()
     }
     else if(Input::GetKeyDown(0, Input::B))
     {
+        PlaySound(back_se_,0);
         scene_mngr_->ChangeScene(SCENE_TITLE);
     }
 }
