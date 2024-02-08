@@ -28,6 +28,7 @@ using namespace Network;
 class MultiPlayServer {
 private:
 	static MultiPlayFlowServerSide *gameMode;				// ゲームモード
+	std::list<int> unregistersID;							// 抜けたときのID
 	int maxID = 0;											// IDの最大値				
 	Socket sockfd_;											// ソケット
 	Storage sendBuff = Storage(1024);						// 送信バッファ

@@ -151,6 +151,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		// マップの描画
 		gameMode_->map_->Draw(offset);
 
+		std::cout << res.time << std::endl;
 
 		// ゲームのスタートの画面
 		if (res.time < gameMode_->startTime_) {

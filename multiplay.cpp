@@ -46,9 +46,19 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	if (gameMode->GetMap()->startPosition.size())
 		player->transform.position = *gameMode->GetMap()->startPosition.begin();
 
+	int id = -1;
+	if (unregistersID.size()) {
+		id = unregistersID.front();
+		unregistersID.pop_front();
+	}
+	else {
+		id = maxID;
+		maxID++;
+	}
+
 	// ヘッダーの更新
 	header.command = HEADER::RESPONSE_LOGIN;
-	header.id = maxID++;
+	header.id = id;
 
 	// クライアントデータの作成
 	CLIENT_DATA_SERVER_SIDE clientData = {
@@ -66,7 +76,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	// 送信
 	header.command = HEADER::RESPONSE_LOGIN;
 	SendTo(this->sockfd_, (char *)&header, sizeof(HEADER), 0, clientAddr);
-	std::cout << "Res >> ID:" << (maxID - 1) << " Login" << std::endl;
+	std::cout << "Res >> ID:" << id << " Login" << std::endl;
 
 
 
@@ -76,7 +86,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 #endif
 	//lock_.Unlock();
 
-	return maxID - 1;
+	return id;
 }
 
 void MultiPlayServer::Unregister(int id) {
@@ -90,6 +100,9 @@ void MultiPlayServer::Unregister(int id) {
 	// 解除
 	clients_[id].header.command = HEADER::RESPONSE_LOGOUT;
 	clients_[id].sockfd_.Close();
+
+	// 無効IDの登録
+	unregistersID.push_back(id);
 
 	// 送信
 	SendTo(sockfd_, (char *)&clients_[id].header, sizeof(HEADER), 0, clients_[id].clientAddr_);
