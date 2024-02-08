@@ -217,8 +217,8 @@ void MultiPlayCharacterSelectModeClientSide::DrawUI(RESPONSE_PLAYER &players) {
 	DrawSprite(stick_tex_, Vector2(((Graphical::GetWidth() - 475)), 82), 0.0f,
 		Vector2(115.0f, 118.0f), Color::White);
 	// マッチング
-	DrawSprite(match_tex_, Vector2(Graphical::GetWidth() * 0.5f, Graphical::GetHeight() - 75), 0.0f,
-		Vector2(500.0f, 500.0f), Color::White);
+	DrawSprite(match_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() - 70), 0.0f, // arbirary value of the texture
+		Vector2(650, 650), Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 void MultiPlayCharacterSelectModeClientSide::ParseResponse(Storage &in) {

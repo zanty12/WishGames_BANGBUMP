@@ -79,6 +79,7 @@ protected:
 public:
 	int soNo = -1;										// BGM
 	int stageNameTexNo = -1;							// ステージ名テクスチャ
+	int countDownTexNo = -1;							// カウントダウンテクスチャ
 
 
 protected:
@@ -133,6 +134,8 @@ public:
 
 		std::string mapPath = ini::GetString(PARAM_PATH + L"mode.ini", modeName.c_str(), L"path");
 		map_ = new MultiMap(MAP_PATH + mapPath, MULTIPLAY_RUN_TYPE_CLIENT);
+
+		countDownTexNo = LoadTexture("data/texture/UI/321Go.png");
 	};
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 

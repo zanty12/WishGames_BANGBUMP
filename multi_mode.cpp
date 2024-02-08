@@ -110,6 +110,18 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 		
 		DrawSprite(stageNameTexNo, Vector2(centerX, y), 0.0f, Vector2::One * 200.0f, Color::White * a);
 	}
+
+	// カウントダウン
+	float countDown = startTime_ - time;
+	if (countDown < 4.0f) {
+		float vh = 1.0f / 4.0f;
+		float v = (int)countDown * vh;
+		float centerX = Graphical::GetWidth() * 0.5f;
+		float centerY = Graphical::GetHeight() * 0.5f;
+
+		//DrawSprite(countDownTexNo,Vector2(centerX, centerY),0.0f, Vector2(100,100),
+		//	Vector2(0.0f, v),Vector2(1.0, vh))
+	}
 }
 
 void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offset) {

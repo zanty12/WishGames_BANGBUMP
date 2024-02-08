@@ -122,7 +122,7 @@ public:
 		confirm_tex_ = LoadTexture("data/texture/UI/go.png");
 		select_tex_ = LoadTexture("data/texture/UI/select.png");
 		stick_tex_ = LoadTexture("data/texture/UI/stick.png");
-		match_tex_ = LoadTexture("data/texture/UI/menu/UI_menu.png");
+		match_tex_ = LoadTexture("data/texture/UI/menu/UI_matchmaking.png");
 
 
 
