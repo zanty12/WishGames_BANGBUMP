@@ -157,7 +157,7 @@ public:
 
 
 public:
-	ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform);
+	ClientPlayer(int id, ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform);
 
 	void Loop(void) override;
 	void ShowEntry();

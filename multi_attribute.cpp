@@ -160,6 +160,7 @@ void ServerFire::Move(void) {
 	velocity *= state->friction;
 	player->velocity = velocity;
 
+
 	// –€ŽC
 	Friction();
 }

@@ -10,5 +10,5 @@ Vector2 CalcIconPosition(int id, int maxMembers, int width) {
 
 Vector2 CalcTimePosition(void) {
 	float centerX = Graphical::GetWidth() * 0.5f;	// ‰æ–Ê‚Ì’†‰›iXÀ•Wj
-	return Vector2(centerX, Graphical::GetHeight() - 50.0f);
+	return Vector2(centerX, Graphical::GetHeight() - 100.0f);
 }

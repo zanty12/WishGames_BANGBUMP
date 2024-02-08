@@ -82,8 +82,11 @@ void ServerPlayer::SkillOrbDrop(int drop) {
 
 
 
-ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform) :
+ClientPlayer::ClientPlayer(int id, ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform) :
 	ClientMovableGameObject(transform) {
+	// id‚Ìİ’è
+	this->id = id;
+
 	// ƒŒƒxƒ‹”ÍˆÍ‚Ì“Ç‚İ‚İ
 	std::wstring lvStr = L"lv";
 	for (int i = 0; i < MAX_LV; i++) {
@@ -93,7 +96,8 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 
 	SetMoveAttribute(moveAttribute);
 	SetAttackAttribute(attackAttribute);
-	this->transform.scale = Vector2::One * 150;
+	this->transform.scale.x = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"showX", 0);
+	this->transform.scale.y = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"showY", 0);
 
 	preMoveAttributeType = moveAttributeType;
 	preAttackAttributeType = attackAttributeType;
@@ -120,11 +124,11 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	lvDownUI.MoveEnd();
 
 	std::ostringstream iconPath;
-	iconPath << "data/texture/UI/" << (MultiPlayClient::GetID() % 4) + 1 << "p.png";
+	iconPath << "data/texture/UI/" << (id % 4) + 1 << "p.png";
 	iconTexNo = LoadTexture(iconPath.str());
 
 	std::ostringstream cursorPath;
-	cursorPath << "data/texture/UI/UI_pointer_player" << (MultiPlayClient::GetID() % 4) + 1 << ".png";
+	cursorPath << "data/texture/UI/UI_pointer_player" << (id % 4) + 1 << ".png";
 	cursorTexNo = LoadTexture(cursorPath.str());;
 }
 

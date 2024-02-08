@@ -183,7 +183,7 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 
 
 
-	// cursor
+	// カーソルの表示
 	auto player = MultiPlayClient::clients[MultiPlayClient::GetID()];
 	using namespace PHYSICS;
 	for (auto kvp : MultiPlayClient::clients) {
@@ -195,14 +195,15 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		float bottom = MultiPlayClient::offset.y;
 		float upper = bottom + Graphical::GetHeight();
 		Vector2 direction = other->transform.position - player->transform.position;
-		Vector2 scl = Vector2(100, 100);
-		float rot = std::atan2(-direction.x, direction.y);
+		Vector2 scl = Vector2(75, 75);
+		float rot = std::atan2(direction.x, direction.y);
 
 		{
 			float n = upper - player->transform.position.y;
 			float m = other->transform.position.y - upper;
 			if (0.0f < m) {
 				Vector2 pos = (other->transform.position * n + player->transform.position * m) / (n + m);
+				pos -= direction.Normalize() * 10.0f;
 
 				DrawSprite(other->cursorTexNo, pos - MultiPlayClient::offset, rot, scl, Color::White);
 			}
@@ -212,6 +213,7 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 			float m = bottom - other->transform.position.y;
 			if (0.0f < m) {
 				Vector2 pos = (other->transform.position * n + player->transform.position * m) / (n + m);
+				pos -= direction.Normalize() * 10.0f;
 
 				DrawSprite(other->cursorTexNo, pos - MultiPlayClient::offset, rot, scl, Color::White);
 			}
@@ -234,7 +236,7 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	// 時間制限の描画（数値）
 	// ゲームのスタート
 	if (res.time < gameMode_->startTime_) {
-		Number(Vector2(centerX, 50.0f), Vector2(100, 100), gameMode_->startTime_ - res.time);
+		Number(Vector2(centerX, 100.0f), Vector2(100, 100), gameMode_->startTime_ - res.time);
 	}
 	// ゲームのリザルト
 	else if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {

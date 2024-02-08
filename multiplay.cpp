@@ -149,6 +149,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 
 			// 移動させる
 			player->transform.position += player->velocity + player->blownVelocity + player->gravityVelocity;
+
 #ifdef DEBUG_INPUT
 			std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
 #endif
@@ -671,8 +672,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 
 			// オブジェクトが作成されていないなら作成する
 			if (iterator == clients.end()) {
-				player = new ClientPlayer(client.moveAttributeType, client.attackAttributeType, Transform(client.position));
-				player->id = client.id;
+				player = new ClientPlayer(client.id, client.moveAttributeType, client.attackAttributeType, Transform(client.position));
 				clients[client.id] = player;
 			}
 			else {
