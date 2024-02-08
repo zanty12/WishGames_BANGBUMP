@@ -2,6 +2,7 @@
 #include "sprite.h"
 #include "scene.h"
 #include "scenemngr.h"
+#include "video.h"
 #include "lib/win_time.h"
 
 class Menu :public Scene
@@ -11,8 +12,13 @@ private:
 	int bg_tex_;
 	int multi_tex_;
 	int solo_tex_;
+	int text_tex_;
+	int scene_title_tex_;
+	int select_tex_;
+	int confirm_tex_;
 	bool multi_;
 	WIN::Time lerp_timer_;
+	Video* bg_video_ = nullptr;
 
 public:
 	Menu(SceneMngr* scene_mngr);

@@ -26,11 +26,11 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
     SetNewVideo(move_);
     SetNewVideo(attack_);
     //通常テキスチャー
-    character_ = LoadTexture("data/texture/UI/player1_base.png");
+    character_ = LoadTexture("data/texture/UI/practice_prep/player1_base.png");
     move_list = {
         {
             FIRE_MOVE, 1, (1 + 2) % 4 * M_PI_2, (1 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/player_boot1.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_boot1.png"),
             Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius,
                     1080 / 2 + (sin(((1 + 2) % 4) * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos(((1 + 2) % 4) * M_PI_2) * x_radius,
@@ -38,19 +38,19 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
         },
         {
             WIND_MOVE, 2, (2 + 2) % 4 * M_PI_2, (2 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/player_boot4.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_boot4.png"),
             Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             THUNDER_MOVE, 3, (3 + 2) % 4 * M_PI_2, (3 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/player_boot3.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_boot3.png"),
             Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             DARK_MOVE, 4, (4 + 2) % 4 * M_PI_2, (4 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/player_boot2.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_boot2.png"),
             Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
         }
@@ -58,33 +58,33 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
     attack_list = {
         {
             FIRE_ATTACK, 1, (1 + 2) % 4 * M_PI_2, (1 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/player_hand1.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_hand1.png"),
             Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             WIND_ATTACK, 2, (2 + 2) % 4 * M_PI_2, (2 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/player_hand4.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_hand4.png"),
             Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             THUNDER_ATTACK, 3, (3 + 2) % 4 * M_PI_2, (3 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/player_hand3.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_hand3.png"),
             Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             DARK_ATTACK, 4, (4 + 2) % 4 * M_PI_2, (4 + 2) % 4 * M_PI_2,
-            LoadTexture("data/texture/UI/player_hand2.png"),
+            LoadTexture("data/texture/UI/practice_prep/player_hand2.png"),
             Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
             Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
         }
     };
 
     //uiテキスチャー
-    tex_bg_ = LoadTexture("data/texture/UI/prep_bg.png");
-    tex_select_arrow_ = LoadTexture("data/texture/UI/select_arrow.png");
+    tex_bg_ = LoadTexture("data/texture/UI/practice_prep/prep_bg.png");
+    //tex_select_arrow_ = LoadTexture("data/texture/UI/practice_prep/select_arrow.png");
 }
 
 void Prep::Update()

@@ -7,9 +7,9 @@ Title::Title(SceneMngr* scene_mngr)
     : scene_mngr_(scene_mngr)
 {
     title_video_ = new Video("data/video/title.mp4");
-    logo_tex_ = LoadTexture("data/texture/UI/team_logo.png");
-    press_button_tex_ = LoadTexture("data/texture/UI/pressanybutton.png");
-    title_tex_ = LoadTexture("data/texture/UI/team_logo.png");
+    logo_tex_ = LoadTexture("data/texture/UI/title/team_logo.png");
+    press_button_tex_ = LoadTexture("data/texture/UI/title/pressanybutton.png");
+    title_tex_ = LoadTexture("data/texture/UI/title/team_logo.png");
     title_video_->SetLoop(true);
     title_video_->SetWindowPos(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2));
     title_video_->SetSize(Vector2(Graphical::GetWidth(), Graphical::GetHeight()));
