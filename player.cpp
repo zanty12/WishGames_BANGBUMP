@@ -175,6 +175,21 @@ void Player::Update(void)
 		player_state_ = FALL;
 	}
 
+	//revolve
+	if(revolve_cd_ > 0.0f)
+	{
+		revolve_cd_ -= Time::GetDeltaTime();
+	}
+	if(Input::GetStickLeft(0).x > 0.8f && Input::GetStickRight(0).x < -0.8f)
+	{
+		revolve_cd_ -= Time::GetDeltaTime();
+		if(revolve_cd_ <= 0)
+		{
+			Revolve();
+			revolve_cd_ = 2.0f;
+		}
+	}
+
 	//limit player pos
 	if (GetPos().y < this->GetScale().y)
 	{
@@ -607,6 +622,83 @@ void Player::HpMaxUp(void)
 		hp_ = (int)(INITIAL_HP_ * (1 + (0.1f * lv_)));
 	}
 
+}
+
+void Player::Revolve()
+{
+	Attribute* temp = move_attribute_;
+	move_attribute_ = attack_attribute_;
+	attack_attribute_ = temp;
+	//load texture
+	switch (this->GetAttackAttribute()->GetAttribute())
+    {
+    case ATTRIBUTE_TYPE_FIRE:
+        switch (this->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_DARK:
+            this->GetAnimator()->SetTexenum(player1_12);
+            break;
+        case ATTRIBUTE_TYPE_WIND:
+            this->GetAnimator()->SetTexenum(player1_14);
+            break;
+        case ATTRIBUTE_TYPE_THUNDER:
+            this->GetAnimator()->SetTexenum(player1_13);
+            break;
+        default:
+            break;
+        }
+        break;
+    case ATTRIBUTE_TYPE_DARK:
+        switch (this->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_FIRE:
+            this->GetAnimator()->SetTexenum(player1_21);
+            break;
+        case ATTRIBUTE_TYPE_WIND:
+            this->GetAnimator()->SetTexenum(player1_24);
+            break;
+        case ATTRIBUTE_TYPE_THUNDER:
+            this->GetAnimator()->SetTexenum(player1_23);
+            break;
+        default:
+            break;
+        }
+        break;
+    case ATTRIBUTE_TYPE_WIND:
+        switch (this->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_FIRE:
+            this->GetAnimator()->SetTexenum(player1_41);
+            break;
+        case ATTRIBUTE_TYPE_DARK:
+            this->GetAnimator()->SetTexenum(player1_42);
+            break;
+        case ATTRIBUTE_TYPE_THUNDER:
+            this->GetAnimator()->SetTexenum(player1_43);
+            break;
+        default:
+            break;
+        }
+        break;
+    case ATTRIBUTE_TYPE_THUNDER:
+        switch (this->GetAttribute()->GetAttribute())
+        {
+        case ATTRIBUTE_TYPE_FIRE:
+            this->GetAnimator()->SetTexenum(player1_31);
+            break;
+        case ATTRIBUTE_TYPE_DARK:
+            this->GetAnimator()->SetTexenum(player1_32);
+            break;
+        case ATTRIBUTE_TYPE_WIND:
+            this->GetAnimator()->SetTexenum(player1_34);
+            break;
+        default:
+            break;
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 

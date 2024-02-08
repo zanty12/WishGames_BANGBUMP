@@ -66,6 +66,7 @@ private:
 	Vector2 knockback_end_;		//ノックバックの終わりのポジション
 
 	int not_stick_working_;
+	float revolve_cd_ = 2.0f;
 
 	PLAYER_STATE player_state_;
 	GRAVITY_STATE gravity_state_ = GRAVITY_FULL;
@@ -133,6 +134,7 @@ private:
 	void LvUp(void);
 
 	void HpMaxUp(void);
+	void Revolve(void);
 };
 
 
