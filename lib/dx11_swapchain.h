@@ -56,7 +56,7 @@ namespace DX {
 				/// </summary>
 				/// <param name="hwnd">ハンドルウィンドウ</param>
 				/// <returns></returns>
-				static DXGI_SWAP_CHAIN_DESC Desc(HWND hwnd);
+				static DXGI_SWAP_CHAIN_DESC Desc(HWND hwnd, BOOL windowed);
 
 				/// <summary>
 				/// ブレンドステートの作成

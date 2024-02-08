@@ -12,7 +12,7 @@ DX::DX11::Renderer Graphical::renderer;
 int Graphical::width = 0;
 int Graphical::height = 0;
 
-void Graphical::Initialize(int width, int height) {
+void Graphical::Initialize(int width, int height, bool windowed) {
 	using namespace DX::DX11;
 	Graphical::width = width;
 	Graphical::height = height;
@@ -24,7 +24,7 @@ void Graphical::Initialize(int width, int height) {
 	// デバイスの作成
 	device.Create();
 	// レンダラーの作成
-	renderer.Create(window, device);
+	renderer.Create(window, windowed, device);
 
 
 	// レンダラーの更新

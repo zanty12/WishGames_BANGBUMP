@@ -24,19 +24,28 @@ int main()
     MultiPlayServer server;
     server.OpenTerminal();
 #else
-    MSG msg;
-    Graphical::Initialize(1920, 1080);
-    DebugUI::Initialize();
-    Text::CreateResources();
-    WIN::Window window = Graphical::GetHwnd();
-    const HWND hWnd = window.GetHwnd();
-    InitSound(hWnd);
 
     if (mode == 0) {
+        Graphical::Initialize(1920, 1080, false);
+        DebugUI::Initialize();
+        Text::CreateResources();
+        WIN::Window window = Graphical::GetHwnd();
+        const HWND hWnd = window.GetHwnd();
+        InitSound(hWnd);
         MultiPlayServer server;
         server.OpenTerminal();
     }
     else {
+        MSG msg;
+        Graphical::Initialize(1920, 1080, true);
+        DebugUI::Initialize();
+        Text::CreateResources();
+        WIN::Window window = Graphical::GetHwnd();
+        const HWND hWnd = window.GetHwnd();
+        InitSound(hWnd);
+
+
+
         MultiPlayClient client;
         client.Register();
 
