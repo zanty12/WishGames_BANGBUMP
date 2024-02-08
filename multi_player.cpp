@@ -191,14 +191,27 @@ void ClientPlayer::ShowEntry() {
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
 }
 void ClientPlayer::ShowExit() {
+	if (entryType == EXIT) return;
+
+	timer.Start();
 	entryType = EXIT;
+
+
+	// アニメーション
+	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_transfer.png"), 5, 6, 0, 25, false);
+	// 落雷を降らす
+	float height = 1000.0f;
+	Vector2 localPos = Vector2(0.0f, height * 0.15f);
+	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
 }
 void ClientPlayer::DrawUI(void) {
 	if (curAttackAttribute) curAttackAttribute->DrawUI();
 }
 
 void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim) {
-	if (timer.GetNowTime() < 200ul && entryType == ENTRY || entryType == NONE) return;
+	if (timer.GetNowTime() < 200ul && entryType == ENTRY ||
+		timer.GetNowTime() > 50ul && entryType == EXIT ||
+		entryType == NONE) return;
 
 	// レベルを取得
 	lv = GetLv();

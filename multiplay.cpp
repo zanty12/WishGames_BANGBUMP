@@ -495,7 +495,7 @@ void MultiPlayClient::PlayerUpdate(void) {
 		float velY = res_.clients.begin()->moveVelocity.y;	// 加算するY座標
 
 		float nextY = posY - centerY + velY * 10.0f;		// 移動先のY座標
-		float ratio = 0.85f;								// 滑らかにする倍率
+		float ratio = 0.5f;									// 滑らかにする倍率
 		offset += Vector2(0.0f, (nextY - offset.y) * ratio);
 	}
 	// ゲームモードの描画

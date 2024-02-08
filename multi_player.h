@@ -116,7 +116,7 @@ private:
 	MultiAnimator reverseAnim;								// 反転アニメーション
 	MultiAnimator *curAnim = nullptr;						// アニメーション（現在）
 	WIN::Time timer;										// スポーン開始時からの時間計測
-	ENTRY_TYPE entryType = NONE;							// 入場演出
+	ENTRY_TYPE entryType = NONE;							// 入場演出タイプ
 
 
 	MultiAnimator allDamageEffect;							// ダメージエフェクト

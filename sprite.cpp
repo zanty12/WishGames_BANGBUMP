@@ -67,12 +67,14 @@ void DrawSpriteCircleEffect(int texNo, Vector2 pos, float rot, Vector2 scale, Co
 void DrawSpriteBoxEffectLeftToRight(int texNo, Vector2 pos, Vector2 scale, Color color, float ratio) {
 	pos.y = -pos.y + Graphical::GetHeight();
 
-	float len = MATH::Leap(+scale.x, -scale.x, ratio);
+	if (ratio < 0.0f) ratio = 0.0f;
+	else if (1.0f < ratio) ratio = 1.0f;
+	float len = MATH::Leap(-scale.x, +scale.x, ratio);
 	Vector2 vertices[] = {
-		Vector2(-scale.x,	+scale.y) + pos,
-		Vector2(+len	,	+scale.y) + pos,
-		Vector2(-scale.x,	-scale.y) + pos,
-		Vector2(+len	,	-scale.y) + pos,
+		Vector2(-scale.x	,	+scale.y) + pos,
+		Vector2(+len		,	+scale.y) + pos,
+		Vector2(-scale.x	,	-scale.y) + pos,
+		Vector2(+len		,	-scale.y) + pos,
 	};
 	Vector2 uvs[] = {
 		Vector2(0.0f	,	0.0f),
@@ -87,6 +89,8 @@ void DrawSpriteBoxEffectLeftToRight(int texNo, Vector2 pos, Vector2 scale, Color
 void DrawSpriteBoxEffectBottomToUp(int texNo, Vector2 pos, Vector2 scale, Color color, float ratio) {
 	pos.y = -pos.y + Graphical::GetHeight();
 
+	if (ratio < 0.0f) ratio = 0.0f;
+	else if (1.0f < ratio) ratio = 1.0f;
 	float len = MATH::Leap(-scale.y, +scale.y, ratio);
 	Vector2 vertices[] = {
 		Vector2(+scale.x,	-len	) + pos,
