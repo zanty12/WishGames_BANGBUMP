@@ -47,6 +47,9 @@
     <Filter Include="Multiplay\head\mode">
       <UniqueIdentifier>{9e82936f-cffd-4d1f-834e-2e2190009d17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Multiplay\src\mode">
+      <UniqueIdentifier>{3836fadc-fc6d-4077-b698-4be7e6b82461}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -247,19 +250,10 @@
     <ClCompile Include="multi_behavior.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
-    <ClCompile Include="multi_character_select_mode.cpp">
-      <Filter>Multiplay\src</Filter>
-    </ClCompile>
     <ClCompile Include="multi_enemy.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
     <ClCompile Include="multi_map.cpp">
-      <Filter>Multiplay\src</Filter>
-    </ClCompile>
-    <ClCompile Include="multi_mode.cpp">
-      <Filter>Multiplay\src</Filter>
-    </ClCompile>
-    <ClCompile Include="multi_mode_flow.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
     <ClCompile Include="multi_object.cpp">
@@ -291,6 +285,15 @@
     </ClCompile>
     <ClCompile Include="multi_spike.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_mode_flow.cpp">
+      <Filter>Multiplay\src\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_mode.cpp">
+      <Filter>Multiplay\src\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_character_select_mode.cpp">
+      <Filter>Multiplay\src\mode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

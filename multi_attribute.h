@@ -195,6 +195,7 @@ class ClientWater : public ClientAttribute {
 public:
 	MultiAnimator moveChargeAnim;
 	MultiAnimator attackChargeAnim;
+	MultiAnimator attackSplashAnim;
 	MultiAnimator idle;
 	MultiAnimator attackIndicator;
 	Vector2 prevPosition;			// ワープ前の座標
@@ -207,7 +208,8 @@ public:
 		frameUITexNo = LoadTexture("data/texture/UI/UI_water_cooldown.png");
 		uiTexNo = LoadTexture("data/texture/UI/UI_water_cooldown2.png");
 		int moveChargeTexNo = LoadTexture(Asset::GetAsset(textures::dark_move_charge));
-		int attackChargeTexNo = LoadTexture("data/texture/Effect/effect_water_attack_charge.png");
+		int attackChargeTexNo = LoadTexture("data/texture/Attack/effect_water_attack_charge.png");
+		int attackSplashTexNo = LoadTexture("data/texture/Attack/effect_water_brast.png");
 		int idleTexNo = LoadTexture(Asset::GetAsset(textures::dark_idle));
 		int indicatorTexNo = LoadTexture("data/texture/Effect/UI_water_indicator.png");
 		int attackIndicatorTexNo = LoadTexture("data/texture/Effect/UI_water_indicator2.png");
@@ -216,11 +218,14 @@ public:
 		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true);
 		moveChargeAnim = MultiAnimator(moveChargeTexNo, 5, 10, 0, 47, true);
 		attackChargeAnim = MultiAnimator(attackChargeTexNo, 5, 10, 0, 47, true);
+		attackSplashAnim = MultiAnimator(attackSplashTexNo, 5, 6, 0, 29, true);
 		idle = MultiAnimator(idleTexNo, 5, 6, 0, 29, true);
 		indicator = MultiAnimator(indicatorTexNo, 5, 4, 0, 18, true);
 		attackIndicator = MultiAnimator(attackIndicatorTexNo, 5, 2, 0, 9, true);
 
 		moveAnim.MoveEnd();
+		attackAnim.SetFrame(1000 / 60);
+		attackSplashAnim.SetFrame(1000 / 60);
 	}
 
 	void Move(void) override;

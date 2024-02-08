@@ -12,7 +12,7 @@ public:
 		int id = currentID;
 		currentID++;
 		while (id != sentinelID) {
-			if (isNowLoad) Sleep(1);
+			Sleep(1);
 		}
 	}
 

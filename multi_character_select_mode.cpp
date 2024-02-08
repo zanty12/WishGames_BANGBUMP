@@ -2,8 +2,6 @@
 #include "multi_attribute.h"
 #include "multi_character_select_mode.h"
 #include "move_scene_anim.h"
-#include "load.h"
-#include <thread>
 
 /***********************************************************
 	Server
@@ -158,7 +156,7 @@ void MultiPlayCharacterSelectModeClientSide::DrawStart(RESPONSE_PLAYER &players,
 }
 
 void MultiPlayCharacterSelectModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offset) {
-	std::thread func(Load);
+	MoveScene::Move(Color::Black, true);
 }
 
 void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {

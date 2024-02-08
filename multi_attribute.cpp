@@ -552,6 +552,12 @@ void ClientWater::Attack(void) {
 
 		// •`‰æ‚·‚é
 		attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
+		attackSplashAnim.Draw(
+			pos + direction.Normalize() * state->showAttackX * 0.08 + localPos - MultiPlayClient::offset,
+			rot,
+			Vector2::One * state->showAttackX * 0.5f,
+			Color::White
+		);
 
 		// ”½“]‚µ‚½ŠG‚É‡‚í‚¹‚ÄˆÊ’u‚à”½“]
 		if (player->isReverseX) localPos.x *= -1.0f;

@@ -162,13 +162,6 @@ void MultiMap::Draw(Vector2 offset) {
 	DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, screen.y * 0.5f), 0.0f, Vector2(screen.x, screen.y), Color::White);
 	DrawBG(middleBGTexNo, offset, 1620.0f / 1920.0f);
 	DrawBG(frontBGTexNo, offset, 5400.0f / 1920.0f);
-	//float aspectRatio = 1620.0f / 1920.0f;
-	//DrawSprite(midleBGTexNo, Vector2(screen.x * 0.5f, screen.y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
-	//float aspectRatio = 3600.0f / 1280.0f;
-	//float maxY = height * cellSize;
-	//float t = offset.y / maxY;
-	//float y = MATH::Leap(maxY, 0.0f, t) - maxY * 0.5f;
-	//DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
 
 	// 描画（ブロック）
 	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
@@ -186,7 +179,13 @@ void MultiMap::Draw(Vector2 offset) {
 				if (id != -1) {
 					int texNo = texNumbers[id];
 					Vector2 pos = ToPosition({ x, y }) - offset;
-					DrawSprite(texNo, pos, 0.0f, Vector2::One * cellSize, Color::White);
+
+					// ゴメンメンドクナッタ
+					// 棘の場合
+					if (id == MAP_READ_SPIKE_DOWN) DrawSprite(texNo, pos, 180.0f * MATH::Deg2Rad, Vector2::One * cellSize, Color::White);
+					else if (id == MAP_READ_SPIKE_RIGHT) DrawSprite(texNo, pos, 270.0f * MATH::Deg2Rad, Vector2::One * cellSize, Color::White);
+					else if (id == MAP_READ_SPIKE_LEFT) DrawSprite(texNo, pos, 90.0f * MATH::Deg2Rad, Vector2::One * cellSize, Color::White);
+					else DrawSprite(texNo, pos, 0.0f, Vector2::One * cellSize, Color::White);
 				}
 			}
 		}

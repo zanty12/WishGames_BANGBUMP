@@ -34,7 +34,7 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 	if (gameMode_->maxTime_ < gameMode_->time_) {
 		// 現在のモードの取得
 		MULTI_MODE mode_ = GetMode();
-		isNowLoad = true;
+
 		// 現在のモードの削除
 		if (gameMode_) {
 			// 現在のモードのリリース関数を呼び出す
@@ -66,13 +66,11 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 				}
 			}
 		}
-
-		isNowLoad = false;
 	}
 	else {
 		// 時間の更新
 		float deltaTime = (timeGetTime() - preTime) * 0.001f;
-		if (gameMode_->mode == MultiPlayModeServerSide::PLAY && gameMode_->playTime_ < 0.0f && !gameMode_->isSkip) deltaTime = 0.0f;
+		if (gameMode_->startTime_ <= gameMode_->time_ && gameMode_->playTime_ < 0.0f && !gameMode_->isSkip) deltaTime = 0.0f;
 		gameMode_->time_ += deltaTime;
 
 
@@ -146,9 +144,6 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 
 		// BGMを流す
 		if (gameMode_->soNo != -1) PlaySound(gameMode_->soNo, true);
-
-		// ロード終了
-		isNowLoad = false;
 	}
 	// モードの実行
 	else if (gameMode_) {

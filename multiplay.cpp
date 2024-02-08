@@ -714,8 +714,10 @@ void MultiPlayClient::Update() {
 		Graphical::Clear(Color(Color(1, 1, 1, 1) * 0.5f));
 		Time::Update();
 		RecvUpdate(1);
-		PlayerUpdate();
-		if (!isNowLoad) Graphical::Present();
+		if (!LoadClientSide::isNowLoad) {
+			PlayerUpdate();
+			Graphical::Present();
+		}
 		recvBuff = nullptr;
 	}
 }

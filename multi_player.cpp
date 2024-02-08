@@ -3,6 +3,7 @@
 #include "sprite.h"
 #include "multiplay.h"
 #include "multi_skillorb.h"
+#include "sound.h"
 
 
 void ServerPlayer::Loop(void) {
@@ -189,6 +190,8 @@ void ClientPlayer::ShowEntry() {
 	float height = 1000.0f;
 	Vector2 localPos = Vector2(0.0f, height * 0.15f);
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
+
+	PlaySound(LoadSound("data/sound/SE/player_entry.wav"), false);
 }
 void ClientPlayer::ShowExit() {
 	if (entryType == EXIT) return;
