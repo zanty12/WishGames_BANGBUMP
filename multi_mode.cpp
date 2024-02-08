@@ -104,7 +104,7 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 		float centerY = Graphical::GetHeight() * 0.5f;
 
 
-		float y = MATH::Bezier(y + 200.0f, y + 50.0f, y - 50.0f, y - 100.0f, t);
+		float y = MATH::Bezier(centerY + 200.0f, centerY + 50.0f, centerY - 50.0f, centerY - 100.0f, t);
 		float a = MATH::Bezier(0.0f, 1.0f, 0.5f, 0.0f, t);
 		
 	}
