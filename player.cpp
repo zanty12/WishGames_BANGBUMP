@@ -187,7 +187,13 @@ void Player::Update(void)
 		{
 			Revolve();
 			revolve_cd_ = 2.0f;
+			//revolve_effect_ = new RevolveEffect(this);
 		}
+	}
+
+	if (revolve_effect_)
+	{
+		revolve_effect_->Update();
 	}
 
 	//limit player pos

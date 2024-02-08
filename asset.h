@@ -106,6 +106,7 @@ enum textures
     effect_hit_dark,
     effect_hit_thunder,
     effect_hit_wind,
+    effect_EX,
 
     //block
     skill_orb,

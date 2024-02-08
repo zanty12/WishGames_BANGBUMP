@@ -103,4 +103,5 @@ void ImageDataDictionary::InitDictionary()
 	img_data_[effect_hit_dark] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_hit_dark)), 5, 2);
 	img_data_[effect_hit_thunder] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_hit_thunder)), 5, 2);
 	img_data_[effect_hit_wind] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_hit_wind)), 5, 2);
+	img_data_[effect_EX] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_EX)), 5, 6);
 }

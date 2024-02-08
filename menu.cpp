@@ -1,4 +1,6 @@
 #include "menu.h"
+
+#include "sound.h"
 #include "xinput.h"
 
 Menu::Menu(SceneMngr* scene_mngr)
@@ -8,8 +10,11 @@ Menu::Menu(SceneMngr* scene_mngr)
     solo_tex_ = LoadTexture((char*)"data/TEXTURE/UI/menu/single_mode.png");
     text_tex_ = LoadTexture((char*)"data/TEXTURE/UI/menu/mode_text.png");
     scene_title_tex_ = LoadTexture((char*)"data/TEXTURE/UI/menu/UI_menu.png");
-    select_tex_ = LoadTexture((char*)"data/TEXTURE/UI/select.png");
-    confirm_tex_ =  LoadTexture((char*)"data/TEXTURE/UI/select.png");
+    select_tex_ = LoadTexture((char*)"data/TEXTURE/UI/select2.png");
+    confirm_tex_ =  LoadTexture((char*)"data/TEXTURE/UI/A2.png");
+    return_tex_ = LoadTexture((char*)"data/TEXTURE/UI/B2.png");
+    select_se_ = LoadSound((char*)"data/SOUND/se/modeselect_SE.wav");
+    confirm_se_ = LoadSound((char*)"data/SOUND/se/gamestart_SE.wav");
     multi_ = true;
     lerp_timer_.Start();
     bg_video_ = new Video("data/video/BG_modeselect.mp4");
@@ -30,16 +35,19 @@ void Menu::Update()
     {
         multi_ = false;
         lerp_timer_.Start();
+        PlaySound(select_se_, 0);
     }
     //コントローラーを接続しないとずっとタイトルに行くよ(^^♪
     else if (Input::GetStickLeft(0).x < -0.2f && !multi_) //multi
     {
         multi_ = true;
         lerp_timer_.Start();
+        PlaySound(select_se_, 0);
     }
 
     if (Input::GetKeyDown(0, Input::A))
     {
+        PlaySound(confirm_se_,0);
         if (multi_)
         {
             scene_mngr_->ChangeScene(SCENE_MULTI_SERVER_SELECT);
@@ -48,6 +56,10 @@ void Menu::Update()
         {
             scene_mngr_->ChangeScene(SCENE_PREP);
         }
+    }
+    else if(Input::GetKeyDown(0, Input::B))
+    {
+        scene_mngr_->ChangeScene(SCENE_TITLE);
     }
 }
 
@@ -75,10 +87,12 @@ void Menu::Draw()
         DrawSprite(solo_tex_, Vector2(Graphical::GetWidth() *2/3, Graphical::GetHeight() *2/5), 0.0f,
                    Vector2(450.0f * scale_x, 450.0f * scale_y)* LerpScale(1.0f,1.3,lerp_percent), Color(1.0f, 1.0f, 1.0f, 1.0f));
     }
-    DrawSprite(select_tex_, Vector2(Graphical::GetWidth() -(200 * scale_x), 100*scale_y), 0.0f,
-               Vector2(250.0f * scale_x, 250.0f * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
-    DrawSprite(confirm_tex_, Vector2(Graphical::GetWidth() -(450 * scale_x), 100*scale_y), 0.0f,
-               Vector2(250.0f * scale_x, 250.0f * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(return_tex_, Vector2(((Graphical::GetWidth() -150) * scale_x), 80*scale_y), 0.0f,
+               Vector2(165.0f * scale_x, 165.0f * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(confirm_tex_, Vector2(((Graphical::GetWidth() -315) * scale_x), 80*scale_y), 0.0f,
+               Vector2(165.0f * scale_x, 165.0f * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(select_tex_, Vector2(((Graphical::GetWidth() -500) * scale_x), 80*scale_y), 0.0f,
+               Vector2(200.0f * scale_x, 200.0f * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 void Menu::DebugMenu()

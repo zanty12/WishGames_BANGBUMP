@@ -16,6 +16,7 @@ private:
     int ip_box_tex_;
     int scene_tex_;
     int confirm_tex_;
+    int return_tex_;
 
     ImFont* font_;
 
@@ -26,7 +27,8 @@ public:
         ip_box_tex_ = LoadTexture("data/texture/UI/serverselect/IP_No.png");
         scene_tex_ = LoadTexture("data/texture/UI/serverselect/UI_serverselect.png");
         bg_video_ = new Video("data/video/BG_serverselect.mp4");
-        confirm_tex_ = LoadTexture("data/texture/UI/select.png");
+        confirm_tex_ = LoadTexture("data/texture/UI/A.png");
+        return_tex_ = LoadTexture("data/texture/UI/B.png");
         bg_video_->SetLoop(true);
         bg_video_->SetWindowPos(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2));
         bg_video_->SetSize(Vector2(Graphical::GetWidth(), Graphical::GetHeight()));
@@ -94,8 +96,10 @@ public:
         DrawSprite(scene_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() - 70), 0.0f,
                    // arbirary value of the texture
                    Vector2(650, 650), Color(1.0f, 1.0f, 1.0f, 1.0f));
-        DrawSprite(confirm_tex_, Vector2(Graphical::GetWidth() - (450), Graphical::GetHeight() / 3), 0.0f,
+        DrawSprite(confirm_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3), 0.0f,
                    Vector2(350, 350), Color(1.0f, 1.0f, 1.0f, AlphaAnimation()));
+        DrawSprite(return_tex_, Vector2(((Graphical::GetWidth() -150)), 80), 0.0f,
+               Vector2(165.0f, 165.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
         ImGui::SetNextWindowPos(ImVec2((Graphical::GetWidth() - textbox_width) / 2, Graphical::GetHeight() / 2 - 100));
         //arbitrary value to fit text in to the textbox texture
         // Draw the texture with ImGui
