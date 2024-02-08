@@ -185,6 +185,7 @@
     <ClCompile Include="multi_attack.cpp" />
     <ClCompile Include="multi_attribute.cpp" />
     <ClCompile Include="multi_behavior.cpp" />
+    <ClCompile Include="multi_character_select_frame.cpp" />
     <ClCompile Include="multi_character_select_mode.cpp" />
     <ClCompile Include="multi_enemy.cpp" />
     <ClCompile Include="multi_map.cpp" />
@@ -278,6 +279,7 @@
     <ClInclude Include="multi_attack.h" />
     <ClInclude Include="multi_attribute.h" />
     <ClInclude Include="multi_behavior.h" />
+    <ClInclude Include="multi_character_select_frame.h" />
     <ClInclude Include="multi_character_select_mode.h" />
     <ClInclude Include="multi_client_gameobject.h" />
     <ClInclude Include="multi_connect_renderer.h" />

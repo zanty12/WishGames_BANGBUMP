@@ -151,7 +151,7 @@ void MultiMap::DrawBG(int bgTexNo, Vector2 offset, float aspectRatio) {
 	DrawSprite(bgTexNo, Vector2(screen.x * 0.5f, y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
 }
 
-void MultiMap::Draw(Vector2 offset) {
+void MultiMap::Draw(Vector2 offset, bool isBlockShow) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());                        // 画面のサイズ
 	Vector2Int leftBottomIdx = ToIndex(offset);                                                     // 左下のインデックス
 	Vector2Int rightTopIdx = ToIndex(offset + screen);                                              // 右上のインデックス
@@ -163,6 +163,7 @@ void MultiMap::Draw(Vector2 offset) {
 	DrawBG(middleBGTexNo, offset, 1620.0f / 1920.0f);
 	DrawBG(frontBGTexNo, offset, 5400.0f / 1920.0f);
 
+	if (isBlockShow == false) return;
 	// 描画（ブロック）
 	for (int x = leftBottomIdx.x; x <= rightTopIdx.x; x++) {
 		for (int y = leftBottomIdx.y; y <= rightTopIdx.y; y++) {
