@@ -8,6 +8,7 @@
 #include "prep.h"
 #include "follow.h"
 #include "video.h"
+#include "asset.h"
 
 class MultiPlayServer;
 class MultiPlayClient;
@@ -84,6 +85,14 @@ private:
 	int handTexNo[ATTRIBUTE_TYPE_NUM] = {};
 	int playerTexNo[4] = {};
 
+	int return_tex_ = -1;
+	int confirm_tex_ = -1;
+	int a_tex_ = -1;
+	int b_tex_ = -1;
+	int select_tex_ = -1;
+	int stick_tex_ = -1;
+	int match_tex_ = -1;
+
 private:
 	void CharacterDraw(int id, int maxIdx, float width, float height, float gap, int moveAttribute, int attackAttribute, float moveAttributeSmooth, float attackAttributeSmooth);
 
@@ -106,6 +115,17 @@ public:
 		playerTexNo[2] = LoadTexture("data/texture/UI/player3_base.png");
 		playerTexNo[3] = LoadTexture("data/texture/UI/player4_base.png");
 
+		// UIテクスチャの取得
+		a_tex_ = LoadTexture("data/texture/UI/A.png");
+		b_tex_ = LoadTexture("data/texture/UI/B.png");
+		return_tex_ = LoadTexture("data/texture/UI/back.png");
+		confirm_tex_ = LoadTexture("data/texture/UI/go.png");
+		select_tex_ = LoadTexture("data/texture/UI/select.png");
+		stick_tex_ = LoadTexture("data/texture/UI/stick.png");
+		match_tex_ = LoadTexture("data/texture/UI/menu/UI_menu.png");
+
+
+
 		soNo = LoadSound("data/sound/BGM/select_element_BGM.wav");
 
 
@@ -126,6 +146,7 @@ public:
 	void DrawStart(RESPONSE_PLAYER &players, Vector2 offset) override;
 	void DrawResult(RESPONSE_PLAYER &players, Vector2 offset) override;
 	void Draw(RESPONSE_PLAYER &players, Vector2 offset) override;
+	void DrawUI(RESPONSE_PLAYER &players) override;
 	void ParseResponse(Storage &in) override;
 	void Release(RESPONSE_PLAYER &players) override;
 

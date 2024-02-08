@@ -73,7 +73,7 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 	const float STAGE_NAME_ANIMATION_START_TIME = 5.0f;		// ステージ名表示開始
 
 	const float SPAWN_ANIMATION_TIME = 3.0f;				// 登場中
-	const float STAGE_NAME_ANIMATION_TIME = 2.0f;			// ステージ名表示中
+	const float STAGE_NAME_ANIMATION_TIME = 4.0f;			// ステージ名表示中
 
 
 
@@ -105,8 +105,8 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 		float centerY = Graphical::GetHeight() * 0.5f;
 
 
-		float y = MATH::Bezier(centerY + 200.0f, centerY + 50.0f, centerY - 50.0f, centerY - 100.0f, t);
-		float a = MATH::Bezier(0.0f, 1.0f, 0.5f, 0.0f, t);
+		float y = MATH::Bezier(centerY + 150.0f, centerY + 50.0f, centerY - 25.0f, centerY - 50.0f, t);
+		float a = MATH::Bezier(0.0f, 1.0f, 0.7f, 0.0f, t);
 		
 		DrawSprite(stageNameTexNo, Vector2(centerX, y), 0.0f, Vector2::One * 200.0f, Color::White * a);
 	}

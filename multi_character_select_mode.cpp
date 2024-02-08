@@ -199,6 +199,28 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 	}
 }
 
+void MultiPlayCharacterSelectModeClientSide::DrawUI(RESPONSE_PLAYER &players) {
+
+	//戻る
+	DrawSprite(return_tex_, Vector2(((Graphical::GetWidth() - 100)), 80), 0.0f,
+		Vector2(80.0f, 80.0f), Color::White);
+	DrawSprite(b_tex_, Vector2(((Graphical::GetWidth() - 160)), 80), 0.0f,
+		Vector2(100.0f, 100.0f), Color::White);
+	//決定
+	DrawSprite(confirm_tex_, Vector2(((Graphical::GetWidth() - 240)), 80), 0.0f,
+		Vector2(80.0f, 80.0f), Color::White);
+	DrawSprite(a_tex_, Vector2(((Graphical::GetWidth() - 305)), 80), 0.0f,
+		Vector2(100.0f, 100.0f), Color::White);
+	//選択
+	DrawSprite(select_tex_, Vector2(((Graphical::GetWidth() - 390)), 80), 0.0f,
+		Vector2(80.0f, 80.0f), Color::White);
+	DrawSprite(stick_tex_, Vector2(((Graphical::GetWidth() - 475)), 82), 0.0f,
+		Vector2(115.0f, 118.0f), Color::White);
+	// マッチング
+	DrawSprite(match_tex_, Vector2(Graphical::GetWidth() * 0.5f, Graphical::GetHeight() - 75), 0.0f,
+		Vector2(500.0f, 500.0f), Color::White);
+}
+
 void MultiPlayCharacterSelectModeClientSide::ParseResponse(Storage &in) {
 	res = RESPONSE_CHARACTER_SELECT();
 	// レスポンス解析

@@ -171,6 +171,10 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 }
 
 void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
+
+	// ゲームモードの描画（UI）
+	gameMode_->DrawUI(res);
+	
 	if (gameMode_->playTime_ < 0.0f) return;
 
 
