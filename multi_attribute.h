@@ -280,7 +280,7 @@ public:
 		chargeAttackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_charge.png"), 5, 3, 0, 14, true);
 		frameUITexNo = LoadTexture("data/texture/UI/UI_thunder_cooldown.png");
 		uiTexNo = LoadTexture("data/texture/UI/UI_thunder_cooldown2.png");
-		indicator = MultiAnimator(LoadTexture("data/texture/Effect/UI_thunder_indicator.png"), 1, 1, 0, 1, true);
+		indicator = MultiAnimator(attackTexNo, 1, 1, 0, 1, true);
 	}
 
 	void Move(void) override;
@@ -337,7 +337,7 @@ public:
 	MultiAnimator anim;
 
 	ClientThunder2Attack(Transform transform) : ClientThunderAttack(transform) {
-		texNo = LoadTexture("data/texture/Attack/effect_thunder_arrow2.png");
+		texNo = LoadTexture("data/texture/Attack/effect_thunder_attack2.png");
 		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
 	}
 

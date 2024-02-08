@@ -923,7 +923,7 @@ void ClientThunderAttack::Loop(void) {
 
 	Vector2 pos = transform.position;
 	float rot = atan2f(velocity.x, velocity.y);
-	Vector2 scl = transform.scale * 150.0f;
+	Vector2 scl = Vector2::One * 150.0f;
 	Color col = Color::White;
 	anim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 
@@ -937,7 +937,7 @@ void ClientThunder2Attack::Loop(void) {
 
 	Vector2 pos = transform.position;
 	float rot = atan2f(-velocity.y, velocity.x);
-	Vector2 scl = transform.scale * 150.0f;
+	Vector2 scl = Vector2::One * 150.0f;
 	Color col = Color::White;
 	anim.Draw(pos - MultiPlayClient::offset, rot, scl, col);
 
