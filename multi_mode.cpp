@@ -8,6 +8,8 @@ void MultiPlayModeServerSide::UpdateStart(std::map<int, CLIENT_DATA_SERVER_SIDE>
 	float time = time_;
 
 	isPlayerMove = 5.0f < time;
+
+	
 }
 
 void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
@@ -54,12 +56,25 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 	}
 }
 
+void MultiPlayModeServerSide::Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
+	// プレイヤーの状態の初期化
+	for (auto kvp : MultiPlayServer::clients_) {
+		auto player = kvp.second.player_;
+		player->animType = ANIMATION_TYPE_IDLE;
+		player->attackVelocity = player->chargeVelocity = player->blownVelocity = player->velocity = Vector2::Zero;
+	}
+}
+
 void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
 	float time = players.time;
 
 
-	const float SPAWN_ANIMATION_START_TIME = 2.0f;
-	const float SPAWN_ANIMATION_TIME = 3.0f;
+	const float SPAWN_ANIMATION_START_TIME = 2.0f;			// 登場表示開始
+	const float STAGE_NAME_ANIMATION_START_TIME = 5.0f;		// ステージ名表示開始
+
+
+
+	const float SPAWN_ANIMATION_TIME = 3.0f;				// 登場
 	float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
 
 	// スポーンさせる

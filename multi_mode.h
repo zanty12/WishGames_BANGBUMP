@@ -47,7 +47,7 @@ public:
 	virtual void UpdateStart(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
 	virtual void UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
 	virtual void CreateResponse(Storage& out) { };
-	virtual void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) { };
+	virtual void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
 
 	virtual bool IsPlayerMove(void) const { return isPlayerMove; };
 	virtual MULTI_MODE GetMode(void) const = 0;
@@ -139,7 +139,7 @@ public:
 	virtual void DrawStart(RESPONSE_PLAYER &players, Vector2 offset);
 	virtual void DrawResult(RESPONSE_PLAYER &players, Vector2 offset);
 	virtual void ParseResponse(Storage& in) { };
-	virtual void Release(RESPONSE_PLAYER &players) { };
+	virtual void Release(RESPONSE_PLAYER &players) {};
 
 
 	virtual MULTI_MODE GetMode(void) const = 0;
