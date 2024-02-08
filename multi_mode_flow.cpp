@@ -190,23 +190,21 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		auto other = kvp.second;
 
 		// 自分自身ならカーソルいらない
-		if (other->id == player->id) break;
+		if (other->id == player->id) continue;
 
-		Vector2 leftBottom = MultiPlayClient::offset;
-		Vertex2 downerScreenFrame(leftBottom, Vector2(Graphical::GetWidth(), 0.0f) + leftBottom);
-		Vertex2 upperScreenFrame(Vector2(0.0f, Graphical::GetHeight()) + leftBottom, Vector2(Graphical::GetWidth(), Graphical::GetHeight()) + leftBottom);
-		Vertex2 direction(player->transform.position, other->transform.position);
-		RayHit hit;
+		float bottom = MultiPlayClient::offset.y;
+		float upper = bottom + Graphical::GetHeight();
+		Vector2 direction = other->transform.position - player->transform.position;
+		Vector2 scl = Vector2(100, 100);
+		float rot = std::atan2(-direction.x, direction.y);
 
-		if (Collider2D::Touch(upperScreenFrame, direction, &hit)) {
-			float rot = std::atan2(hit.tilt.y, hit.tilt.x);
-			Vector2 scl = Vector2(500, 500);
-			DrawSprite(other->cursorTexNo, hit.position, rot, scl, Color::White);
-		}
-		else if (Collider2D::Touch(downerScreenFrame, direction, &hit)) {
-			float rot = std::atan2(hit.tilt.y, hit.tilt.x);
-			Vector2 scl = Vector2(500, 500);
-			DrawSprite(other->cursorTexNo, hit.position, rot, scl, Color::White);
+		{
+			float n = upper - player->transform.position.y;
+			float m = other->transform.position.y - upper;
+			Vector2 pos = (other->transform.position * n + player->transform.position * m) / (n + m);
+
+			DrawSprite(other->cursorTexNo, pos, 0.0f, scl, Color::White);
+
 		}
 	}
 

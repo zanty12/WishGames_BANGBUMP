@@ -99,7 +99,6 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 
 	// ステージ名
 	else if (STAGE_NAME_ANIMATION_START_TIME <= time) {
-		std::cout << stageNameTexNo << std::endl;
 		float t = (time - STAGE_NAME_ANIMATION_START_TIME) / STAGE_NAME_ANIMATION_TIME;
 		float centerX = Graphical::GetWidth() * 0.5f;
 		float centerY = Graphical::GetHeight() * 0.5f;
