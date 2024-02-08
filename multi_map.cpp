@@ -401,6 +401,12 @@ void MultiMap::AttackUpdate(void) {
 			// ダメージ
 			if (attack->Touch(player)) {
 				player->Damage(attack);
+				// アタックが発射物なら削除
+				if (attack->isProjectile) {
+					attack->Destroy();
+
+					std::cout << "DAMAGE" << std::endl;
+				}
 			}
 		}
 
@@ -428,6 +434,11 @@ void MultiMap::AttackUpdate(void) {
 			if (attack->Touch(enemy)) {
 				enemy->damageEffectAttributeType = attack->GetType();
 				enemy->Damage(attack);
+				// アタックが発射物なら削除
+				if (attack->isProjectile) {
+					attack->Destroy();
+					std::cout << "DAMAGE" << std::endl;
+				}
 			}
 		}
 	}

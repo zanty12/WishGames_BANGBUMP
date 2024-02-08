@@ -280,7 +280,7 @@ public:
 		chargeAttackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_charge.png"), 5, 3, 0, 14, true);
 		frameUITexNo = LoadTexture("data/texture/UI/UI_thunder_cooldown.png");
 		uiTexNo = LoadTexture("data/texture/UI/UI_thunder_cooldown2.png");
-		indicator = MultiAnimator(attackTexNo, 1, 1, 0, 1, true);
+		indicator = MultiAnimator(LoadTexture("data/texture/Effect/UI_thunder_indicator.png"), 1, 1, 0, 1, true);
 	}
 
 	void Move(void) override;
@@ -296,6 +296,7 @@ public:
 	ServerThunderAttack(GameObjectServerSide *self, ServerAttribute *attribute) :
 		AttackServerSide(attribute->state->atk, attribute->state->atkDrop, attribute->state->atkCoolTime, attribute->state->knockbackRate, attribute->state->atkRange, self) {
 		transform.position = self->transform.position;
+		isProjectile = true;
 	}
 
 	void Loop(void) override;
@@ -310,6 +311,7 @@ public:
 	ServerThunder2Attack(GameObjectServerSide *self, ServerAttribute *attribute) :
 		ServerThunderAttack(self, attribute) {
 		transform.position = self->transform.position;
+		isProjectile = true;
 	}
 
 	MULTI_OBJECT_TYPE GetType(void) override { return MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2; }
