@@ -89,6 +89,10 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 		else {
 			gameMode_->mode = MultiPlayModeServerSide::PLAY;
 			gameMode_->Update(clients);
+
+			if (GetAsyncKeyState(VK_RETURN)) {
+				if(0.0f <= gameMode_->playTime_)gameMode_->time_ = gameMode_->startTime_ + gameMode_->playTime_;
+			}
 		}
 		gameMode_->preMode = gameMode_->mode;
 		preTime = timeGetTime();
@@ -240,11 +244,11 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	}
 	// ゲームのリザルト
 	else if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {
-		Number(Vector2(centerX, 50.0f), Vector2(100, 100), res.maxTime - res.time);
+		Number(Vector2(centerX, 100.0f), Vector2(100, 100), res.maxTime - res.time);
 	}
 	// ゲームモード
 	else {
-		Number(Vector2(centerX, 50.0f), Vector2(100, 100), res.maxTime - gameMode_->resultTime_ - res.time);
+		Number(Vector2(centerX, 100.0f), Vector2(100, 100), res.maxTime - gameMode_->resultTime_ - res.time);
 	}
 
 	// スコアの描画
@@ -292,10 +296,10 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		float centerX = Graphical::GetWidth() * 0.5f;
 		float height = Graphical::GetHeight();
 		switch (idx) {
-		case 0: Number(Vector2(centerX - 175, 60), Vector2::One * 70.0f, client.score); break;
-		case 1: Number(Vector2(centerX - 70,  60), Vector2::One * 70.0f, client.score); break;
-		case 2: Number(Vector2(centerX + 70,  60), Vector2::One * 70.0f, client.score); break;
-		case 3: Number(Vector2(centerX + 175, 60), Vector2::One * 70.0f, client.score); break;
+		case 0: Number(Vector2(centerX - 175, 100.0f), Vector2::One * 70.0f, client.score); break;
+		case 1: Number(Vector2(centerX - 70,  100.0f), Vector2::One * 70.0f, client.score); break;
+		case 2: Number(Vector2(centerX + 70,  100.0f), Vector2::One * 70.0f, client.score); break;
+		case 3: Number(Vector2(centerX + 175, 100.0f), Vector2::One * 70.0f, client.score); break;
 		}
 	}
 }

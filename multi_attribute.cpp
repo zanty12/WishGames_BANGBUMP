@@ -885,7 +885,7 @@ void ClientThunder::Attack(void) {
 	if (IsPlayerAnimAttackCharge(player->animType)) {
 		Vector2 localPos = direction.Normal().Normalize() * 40.0f;
 		Vector2 pos = player->transform.position - MultiPlayClient::offset;
-		float rot = atan2f(direction.x, direction.y);
+		float rot = atan2f(-direction.y, direction.x);
 		Vector2 scl = Vector2::One * 150.0f;
 		Color col = Color::White;
 
@@ -937,7 +937,7 @@ void ClientThunderAttack::Loop(void) {
 	if (!isShow) return;
 
 	Vector2 pos = transform.position;
-	float rot = atan2f(velocity.x, velocity.y);
+	float rot = atan2f(-velocity.y, velocity.x);
 	Vector2 scl = Vector2::One * 150.0f;
 	Color col = Color::White;
 	anim.Draw(pos - MultiPlayClient::offset, rot, scl, col);

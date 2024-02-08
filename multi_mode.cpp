@@ -121,7 +121,7 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 		float rate = MATH::Leap(0.4f, 1.0f, t * t);
 
 		DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
-			Color(1,1,1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
+			Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
 	}
 }
 

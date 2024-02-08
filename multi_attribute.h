@@ -281,7 +281,7 @@ public:
 		attack2TexNo = LoadTexture("data/texture/Attack/effect_thunder_attack2.png");
 
 		moveAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_move.png"), 5, 3, 0, 14, false);
-		attackAnim = MultiAnimator(attackTexNo, 5, 6, 0, 29, true);
+		attackAnim = MultiAnimator(attackTexNo, 5, 2, 0, 9, true);
 		chargeAttackAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_charge.png"), 5, 3, 0, 14, true);
 		frameUITexNo = LoadTexture("data/texture/UI/UI_thunder_cooldown.png");
 		uiTexNo = LoadTexture("data/texture/UI/UI_thunder_cooldown2.png");
@@ -329,7 +329,7 @@ public:
 
 	ClientThunderAttack(Transform transform) : AttackClientSide(transform) {
 		texNo = LoadTexture("data/texture/Attack/effect_thunder_arrow.png");
-		anim = MultiAnimator(texNo, 5, 6, 0, 29, true);
+		anim = MultiAnimator(texNo, 5, 2, 0, 9, true);
 		deathAnim = MultiAnimator(LoadTexture("data/texture/Effect/effect_thunder_lost.png"), 5, 2, 0, 4, false);
 	}
 

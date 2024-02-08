@@ -297,6 +297,7 @@
     <ClInclude Include="multi_player.h" />
     <ClInclude Include="multi_last_result_mode.h" />
     <ClInclude Include="multi_result_skillorb.h" />
+    <ClInclude Include="multi_se.h" />
     <ClInclude Include="multi_server_select.h" />
     <ClInclude Include="multi_skillorb.h" />
     <ClInclude Include="multi_spike.h" />
