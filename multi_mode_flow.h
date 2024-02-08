@@ -6,6 +6,7 @@
 #include "multi_obstacle_race_mode.h"
 #include "multi_enemy_rush_mode.h"
 #include "multi_final_battle_mode.h"
+#include "multi_last_result_mode.h"
 #include "number.h"
 #include "follow.h"
 
@@ -19,7 +20,7 @@ class MultiPlayFlowServerSide {
 private:
 	MultiPlayModeServerSide *gameMode_ = nullptr;
 	MultiPlayServer *game_ = nullptr;
-	DWORD startTime = 0ul;
+	DWORD preTime = 0ul;
 
 
 

@@ -14,10 +14,11 @@ using namespace Network;
 
 enum MULTI_MODE {
 	NONE = -1,
-	CHARACTER_SELECT = 0,
+	CHARACTER_SELECT,
 	AREA_CAPTURE,
 	ENEMY_RUSH,
 	FINAL_BATTLE,
+	LAST_RESULT,
 };
 
 

@@ -3,6 +3,9 @@
 #include "lib/collider2d.h"
 #include "time.h"
 
+/***********************************************************
+	Server
+************************************************************/
 class MultiPlayEnemyRushModeServerSide : public MultiPlayModeServerSide {
 
 
@@ -22,6 +25,10 @@ public:
 
 
 
+
+/***********************************************************
+	Client
+************************************************************/
 class MultiPlayEnemyRushModeClientSide : public MultiPlayModeClientSide {
 
 public:
@@ -30,6 +37,7 @@ public:
 		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_back));
 		map_->middleBGTexNo = LoadTexture("data/texture/BG/BG_stage2_middle.png");
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_front));
+		soNo = LoadSound("data/sound/BGM/stage2_BGM.wav");
 	};
 
 
