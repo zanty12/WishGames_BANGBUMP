@@ -73,6 +73,8 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 		if (gameMode_->startTime_ <= gameMode_->time_ && gameMode_->playTime_ < 0.0f && !gameMode_->isSkip) deltaTime = 0.0f;
 		gameMode_->time_ += deltaTime;
 
+		std::cout << "TIME : " << gameMode_->time_ << ", MODE : " << gameMode_->time_ << std::endl;
+
 
 		// ゲームのスタートの更新
 		if (gameMode_->time_ < gameMode_->startTime_) {
@@ -150,8 +152,6 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 
 		// マップの描画
 		gameMode_->map_->Draw(offset);
-
-		std::cout << res.time << std::endl;
 
 		// ゲームのスタートの画面
 		if (res.time < gameMode_->startTime_) {
