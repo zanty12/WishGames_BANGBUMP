@@ -577,12 +577,13 @@ void MultiPlayClient::PlayerUpdate(void) {
 	// ライトエフェクトの描画
 	lightEffect.Draw(offset);
 
+#ifndef MOVIE
 	// UIの描画
 	gameMode->DrawUI(res_);
 
 	// プレイヤーUIの描画
 	for (auto kvp : MultiPlayClient::clients) if (kvp.second->entryType == ClientPlayer::ENTRY) kvp.second->DrawUI();
-
+#endif
 	// シーン遷移アニメーション
 	MoveScene::Loop();
 
