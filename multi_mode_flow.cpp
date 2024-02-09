@@ -150,7 +150,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 
 		// BGM‚ð—¬‚·
 		if (gameMode_ && gameMode_->soNo != -1) {
-			PlaySound(gameMode_->soNo, true);
+			PlaySound(gameMode_->soNo, -1);
 			SetVolume(gameMode_->soNo, 0.4f);
 		}
 	}

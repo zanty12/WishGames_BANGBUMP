@@ -1,6 +1,6 @@
 #include "multi_character_select_frame.h"
 
-void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int playerTexNo, int bootTexNo, int handTexNo, bool isShow, float width, float height, float gap, int moveAttribute, int attackAttribute) {
+void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int arrowTexNo, int playerTexNo, int bootTexNo, int handTexNo, bool isShow, float width, float height, float gap, int moveAttribute, int attackAttribute) {
 	const float SCREEN_WIDTH = Graphical::GetWidth();					// âÊñ ÇÃïù
 	const float SCREEN_HEIGHT = Graphical::GetHeight();					// âÊñ ÇÃçÇÇ≥
 	const float center = (float)maxNum - (float)maxNum * 0.5f - 0.5f;	// íÜâõ
@@ -47,5 +47,11 @@ void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int p
 		DrawSprite(bootTexNo, Vector2(x, y + 40), 0.0f, Vector2::One * height * scl * scaleMoveAttributeRate, Color(1, 1, 1, alpha) * col);
 		// òr
 		DrawSprite(handTexNo, Vector2(x, y + 40), 0.0f, Vector2::One * height * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col);
+		// ñÓàÛ
+		DrawSprite(arrowTexNo, Vector2(x + 160, y + 40), 0.0f, Vector2::One * 50 * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col);
+		DrawSprite(arrowTexNo, Vector2(x - 160, y + 40), 3.1415f, Vector2::One * 50 * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col, Vector2(0.0f, 1.0f), Vector2(1.0f, -1.0f));
+		DrawSprite(arrowTexNo, Vector2(x + 160, y - 180), 0.0f, Vector2::One * 50 * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col);
+		DrawSprite(arrowTexNo, Vector2(x - 160, y - 180), 3.1415f, Vector2::One * 50 * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col, Vector2(0.0f, 1.0f), Vector2(1.0f, -1.0f));
+
 	}
 }

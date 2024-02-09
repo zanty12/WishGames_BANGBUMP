@@ -120,7 +120,7 @@ public:
                    Vector2(1200, 180), Color(1.0f, 1.0f, 1.0f, 1.0f));
         DrawSprite(scene_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() - 70), 0.0f,
                    // arbirary value of the texture
-                   Vector2(650, 650), Color(1.0f, 1.0f, 1.0f, 1.0f));\
+                   Vector2(650, 650), Color(1.0f, 1.0f, 1.0f, 1.0f));
         if (ip_[0] != '\0')
             DrawSprite(confirm_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3 - 85.0f), 0.0f,
                        Vector2(350, 350), Color(1.0f, 1.0f, 1.0f, AlphaAnimation()));
@@ -130,6 +130,7 @@ public:
         DrawSprite(b_tex_, Vector2(((Graphical::GetWidth() - 160)), 80), 0.0f,
                    Vector2(100.0f, 100.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
         ImGui::SetNextWindowPos(ImVec2((Graphical::GetWidth() - textbox_width) / 2, Graphical::GetHeight() / 2 - 100));
+        ImGui::SetNextWindowSize(ImVec2(1100,200));
         //arbitrary value to fit text in to the textbox texture
         // Draw the texture with ImGui
         ImGui::PushFont(font_);

@@ -13,7 +13,6 @@ public:
 	int addPoint = 1;
 	WIN::Time timer;
 	float friction = 0.95f;
-	int haveSeNo = LoadSound("data/sound/SE/skillorb.wav");
 	
 
 	ServerSkillOrb() { };
@@ -54,11 +53,13 @@ public:
 class ClientSkillOrb : public GameObjectClientSide {
 protected:
 	MultiAnimator anim;
+	int haveSeNo = LoadSound("data/sound/SE/skillorb.wav");
 
 public:
 	ClientSkillOrb(Vector2 scale);
 
 	void Loop(void) override;
+	void Release(void) override;
 };
 class ClientSkillOrbSmall : public ClientSkillOrb {
 public:

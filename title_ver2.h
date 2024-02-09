@@ -30,9 +30,12 @@ protected:
     int title_tex_;
     int title_base_tex_;
     int flash_tex_;
+    int overlay_tex_;
     //sound
     int bgm_;
     int confirm_se_;
+    int syakin;
+    int don;
     //control
     //logo
     bool logo_ = true;
@@ -82,6 +85,9 @@ private:
 
     class VideoBase : public TitleVer2_State
     {
+    private:
+        const float title_scale_start_ = 0.5f;
+        float title_scale_ = title_scale_start_;
     public:
         VideoBase(Title2* title) : TitleVer2_State(title) {};
         ~VideoBase() override = default;
@@ -102,6 +108,12 @@ private:
 
     class TitleStart : public TitleVer2_State
     {
+    private:
+        bool first_ = true;
+        const float title_scale_start_ = 10.0f;
+        float title_scale_ = title_scale_start_;
+        float don_timer_ = 0.0f;
+        bool don_played_ = false;
     public:
         TitleStart(Title2* title) : TitleVer2_State(title) {};
         ~TitleStart() override = default;

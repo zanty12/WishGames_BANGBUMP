@@ -42,8 +42,6 @@ void ServerSkillOrb::Loop(void) {
 			player->skillPoint += addPoint;
 			// íœ
 			Destroy();
-			// Œø‰Ê‰¹
-			PlaySE(haveSeNo, transform.position, player->transform.position);
 			isDestroy = true;
 		}
 	}
@@ -57,6 +55,11 @@ void ClientSkillOrb::Loop(void) {
 	if (!isShow) return;
 	anim.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
 	isShow = false;
+}
+
+void ClientSkillOrb::Release(void) {
+	// Œø‰Ê‰¹
+	PlaySE(haveSeNo, Vector2(Graphical::GetWidth(), Graphical::GetHeight()) * 0.5f + MultiPlayClient::offset, transform.position);
 }
 
 ClientSkillOrbSmall::ClientSkillOrbSmall() : ClientSkillOrb(Vector2::One * 80) { 
