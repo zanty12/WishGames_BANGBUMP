@@ -134,6 +134,7 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
                                            LoadTexture(Asset::GetAsset(fire_attack)), Vector2::Zero),
                                        PlayerAttack(10000)
 {
+    SetSize(Vector2(parent->GetState()->atkRange,parent->GetState()->atkDistance));
     SetScale(size_);
     SetType(OBJ_ATTACK);
     SetDamage(parent->GetState()->atk);

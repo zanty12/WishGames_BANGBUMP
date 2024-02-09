@@ -42,6 +42,7 @@ public:
     FireAttack(Fire* parent);
     ~FireAttack() override = default;
     void Update() override;
+    void SetSize(Vector2 size) { size_ = size; }
 };
 
 class FireEffect : public MovableObj
