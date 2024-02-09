@@ -43,6 +43,7 @@ private:
 	int result_tex_ = 0;
 	int button_restart_ = 0;
 	int button_title_ = 0;
+	bool result_ = false;
 
 	//bgm
 	int practicemode_bgm_ = 0;

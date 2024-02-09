@@ -10,6 +10,7 @@
 #include "text.h"
 
 #include "sound.h"
+#include "xinput.h"
 
 Game::Game(SceneMngr* scene_mngr)
     : GameBase(scene_mngr)
@@ -38,7 +39,7 @@ Game::Game(SceneMngr* scene_mngr)
 
 void Game::Update()
 {
-    if (!GetChangeScene())
+    if (!Input::GetKeyDown(0, Input::B))
         UpdateNormal();
     else
         UpdateResult();
@@ -46,7 +47,7 @@ void Game::Update()
 
 void Game::Draw()
 {
-    if (!GetChangeScene())
+    if (!result_)
         DrawNormal();
     else
         DrawResult();
@@ -259,6 +260,26 @@ void Game::UpdateResult()
         button_restart_ = LoadTexture("data/texture/UI/button_restart.png");
     }
 
+    //選択画面描画
+
+    if (result_)
+    {
+        //ゲームに戻る
+        if (Input::GetKeyDown(0, Input::B))
+        {
+            result_ = false;
+        }
+        //ステージ選択画面に戻る
+        else if (Input::GetKeyDown(0, Input::A))
+        {
+            scene_mngr_->ChangeScene(SCENE_MENU);
+        }
+
+        return;
+    }
+
+    //一回のみ
+    result_ = true;
 }
 
 void Game::DrawResult()
