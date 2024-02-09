@@ -39,7 +39,7 @@ Game::Game(SceneMngr* scene_mngr)
 
 void Game::Update()
 {
-    if (!Input::GetKeyDown(0, Input::B))
+    if (!Input::GetKeyDown(0, Input::B) && !result_)
         UpdateNormal();
     else
         UpdateResult();
@@ -265,12 +265,12 @@ void Game::UpdateResult()
     if (result_)
     {
         //ゲームに戻る
-        if (Input::GetKeyDown(0, Input::B))
+        if (Input::GetKeyDown(0, Input::East))
         {
             result_ = false;
         }
         //ステージ選択画面に戻る
-        else if (Input::GetKeyDown(0, Input::A))
+        if (Input::GetKeyDown(0, Input::South))
         {
             scene_mngr_->ChangeScene(SCENE_MENU);
         }
