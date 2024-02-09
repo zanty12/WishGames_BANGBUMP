@@ -25,7 +25,6 @@ constexpr float y_radius = 80.0f;
 Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
 {
     SetNewVideo(move_);
-    SetNewVideo(attack_);
     //通常テキスチャー
     character_ = LoadTexture("data/texture/UI/practice_prep/player1_base.png");
     move_list = {
@@ -353,7 +352,7 @@ void Prep::Draw()
     }
 
     //動画
-    video_->Draw();
+    video_->DrawAsResource();
 }
 
 void Prep::DebugMenu()
