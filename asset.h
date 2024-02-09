@@ -125,6 +125,8 @@ enum textures
 enum sounds
 {
     //bgm
+    BGM_practicemode,
+
     //se
     SE_1,
     SE_2,

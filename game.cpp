@@ -9,6 +9,8 @@
 #include "asset.h"
 #include "text.h"
 
+#include "sound.h"
+
 Game::Game(SceneMngr* scene_mngr)
     : GameBase(scene_mngr)
 {
@@ -27,6 +29,10 @@ Game::Game(SceneMngr* scene_mngr)
     /*Player *player_ = new Player(mapmngr_->GetPlayerSpawn(), 0.0f, Vector2(0.0f, 0.0f), mapmngr_);
     players_.push_back(player_);
     camera_ = new Camera(player_);*/
+
+    //BGMí«â¡ÅAçƒê∂
+    practicemode_bgm_ = LoadSound(Asset::GetAsset(BGM_practicemode).c_str());
+    PlaySound(practicemode_bgm_, -1);
 }
 
 

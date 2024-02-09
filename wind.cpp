@@ -180,8 +180,7 @@ void WindAttack::Update()
                         cd_timer_ = damage_cd_;
                         enemy->SetHp(enemy->GetHp() - GetDamage());
 
-                        //エフェクトの生成★エネミー３の位置とか色々バグっているので生成するとエラー
-                        if (!enemy->GetDiscard() && enemy->GetEnemyType() != TYPE__PHANTOM)
+                        if (!enemy->GetDiscard())
                         {
                             Vector2 pos = enemy->GetPos();
                             Vector2 scale = enemy->GetScale();

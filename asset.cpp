@@ -111,6 +111,10 @@ const std::map<textures, std::string> Asset::textures_ = {
 };
 
 const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::string>{
+    // bgm
+    {sounds::BGM_practicemode,"data/sound/BGM/practicemode_BGM.wav"},
+
+    // se
     {sounds::SE_1,"data/sound/enemy_damage_1.wav"},
     {sounds::SE_2,"data/sound/enemy_damage_2.wav"},
     {sounds::SE_3,"data/sound/enemy_atk.wav"},

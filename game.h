@@ -44,6 +44,9 @@ private:
 	int button_restart_ = 0;
 	int button_title_ = 0;
 
+	//bgm
+	int practicemode_bgm_ = 0;
+
 public:
 	Game() = delete;
 	Game(SceneMngr* scene_mngr);
