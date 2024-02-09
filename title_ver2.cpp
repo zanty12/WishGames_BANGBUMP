@@ -25,8 +25,8 @@ Title2::Title2(SceneMngr* scene_mngr)
     //sound
     bgm_ = LoadSound("data/sound/bgm/title_BGM_long.wav");
     confirm_se_ = LoadSound("data/sound/se/gamestart.wav");
-    syakin = LoadSound("data/sound/se/syakin.wav");
-    don = LoadSound("data/sound/se/don.wav");
+    syakin = LoadSound("data/sound/se/don.wav");
+    don = LoadSound("data/sound/se/3.wav");
     SetVolume(bgm_, 0.4f);
 
     //state
@@ -178,7 +178,7 @@ void Title2::TitleStart::Update()
 {
     title_->title_video_->Update();
     if (title_scale_ > 1.0f)
-        title_scale_ -= (title_scale_start_) * Time::GetDeltaTime();
+        title_scale_ -= (title_scale_start_*2.0f) * Time::GetDeltaTime();
     if (first_)
     {
         first_ = false;
