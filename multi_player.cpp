@@ -5,7 +5,7 @@
 #include "multi_skillorb.h"
 #include "multiplay.h"
 #include "multi_ui.h"
-#include "sound.h"
+#include "multi_se.h"
 
 
 void ServerPlayer::Loop(void) {
@@ -118,7 +118,8 @@ ClientPlayer::ClientPlayer(int id, ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_T
 	lvDownUI = MultiAnimator(LoadTexture("data/texture/UI/UI_leveldown.png"), 5, 6, 0, 29, false);
 
 	// ƒTƒEƒ“ƒh
-	//seLvUpNo = LoadSound("")
+	seLvUpNo = LoadSound("data/sound/SE/lv_up.wav");
+	seLvDownNo = LoadSound("data/sound/SE/lv_down.wav");
 
 
 
@@ -315,11 +316,12 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 	if (preLv < lv) {
 		lvUpEffect.MoveBegin();
 		lvUpUI.MoveBegin();
-
+		if (MultiPlayClient::GetID() == id) PlaySE(seLvUpNo);
 	}
 	else if (lv < preLv) {
 		lvDownEffect.MoveBegin();
 		lvDownUI.MoveBegin();
+		if (MultiPlayClient::GetID() == id) PlaySE(seLvDownNo);
 	}
 	preLv = lv;
 }

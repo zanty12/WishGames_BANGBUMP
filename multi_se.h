@@ -15,3 +15,9 @@ void PlaySE(int seNo, Vector2 player, Vector2 other) {
 		SetVolume(seNo, volume);
 	}
 }
+
+void PlaySE(int seNo) {
+	float volume = 0.3f;
+	PlaySound(seNo, false);
+	SetVolume(seNo, volume);
+}
