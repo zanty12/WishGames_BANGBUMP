@@ -65,6 +65,13 @@ private:
     //uiテキスチャー
     int tex_bg_;
     int tex_select_arrow_;
+    int return_tex_;
+    int b_tex_;
+    int confirm_tex_;
+    int a_tex_;
+    int select_tex_;
+    int stick_tex_;
+
     //sound
     int bgm_;
     int select_se_;

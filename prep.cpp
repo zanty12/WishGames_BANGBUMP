@@ -84,7 +84,14 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
 
     //uiテキスチャー
     tex_bg_ = LoadTexture("data/texture/UI/practice_prep/prep_bg.png");
-    //tex_select_arrow_ = LoadTexture("data/texture/UI/practice_prep/select_arrow.png");
+    tex_select_arrow_ = LoadTexture("data/texture/UI/UI_elemental_select.png");
+    return_tex_ = LoadTexture("data/texture/UI/back.png");
+    b_tex_ = LoadTexture("data/texture/UI/b.png");
+    confirm_tex_ = LoadTexture("data/texture/UI/go.png");
+    a_tex_ = LoadTexture("data/texture/UI/a.png");
+    select_tex_ = LoadTexture((char*)"data/TEXTURE/UI/select.png");
+    stick_tex_ = LoadTexture((char*)"data/TEXTURE/UI/stick.png");
+
 
     //sound
     select_se_= LoadSound("data/sound/se/attribute_select.wav");
@@ -350,6 +357,23 @@ void Prep::Draw()
         ++move_it;
         ++attack_it;
     }
+
+    //右下操作説明
+    //戻る
+    DrawSprite(return_tex_, Vector2(((Graphical::GetWidth() -100) ), 80), 0.0f,
+               Vector2(80.0f , 80.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(b_tex_, Vector2(((Graphical::GetWidth() -160)), 80), 0.0f,
+               Vector2(100.0f , 100.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    //決定
+    DrawSprite(confirm_tex_, Vector2(((Graphical::GetWidth() -240) ), 80), 0.0f,
+               Vector2(80.0f , 80.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(a_tex_, Vector2(((Graphical::GetWidth() -305) ), 80), 0.0f,
+               Vector2(100.0f , 100.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    //選択
+    DrawSprite(select_tex_, Vector2(((Graphical::GetWidth() -390) ), 80), 0.0f,
+               Vector2(80.0f , 80.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(stick_tex_, Vector2(((Graphical::GetWidth() -475) ), 82), 0.0f,
+               Vector2(115.0f , 118.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
 
     //動画
     video_->DrawAsResource();
