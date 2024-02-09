@@ -52,7 +52,6 @@ public:
 		deathAnim = MultiAnimator(LoadTexture(Asset::GetAsset(textures::effect_enemydead)), 5, 6, 0, 29, false);
 
 		deathSeNo = LoadSound("data/sound/SE/enemy_death.wav");
-		std::cout << deathSeNo << std::endl;
 
 		// ダメージエフェクト
 		allDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_all.png"), 5, 2, 0, 7, false);
@@ -98,7 +97,6 @@ class Enemy2ServerSide : public EnemyServerSide {
 
 public:
 	Enemy2ServerSide(Transform transform, MultiMap *map) : EnemyServerSide(transform, map, L"Enemy2") {
-		coolTime = MATH::Rand(4.0f, 6.0f);
 		spawnTimer.Start();
 	}
 

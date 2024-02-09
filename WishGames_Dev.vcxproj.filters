@@ -238,9 +238,6 @@
     <ClCompile Include="multi_anim.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
-    <ClCompile Include="multi_area_capture_mode.cpp">
-      <Filter>Multiplay\src</Filter>
-    </ClCompile>
     <ClCompile Include="multi_attack.cpp">
       <Filter>Multiplay\src</Filter>
     </ClCompile>
@@ -303,6 +300,12 @@
     </ClCompile>
     <ClCompile Include="multi_character_select_frame.cpp">
       <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_se.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_area_capture_mode.cpp">
+      <Filter>Multiplay\src\mode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

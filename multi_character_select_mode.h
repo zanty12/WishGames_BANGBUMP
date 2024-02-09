@@ -75,6 +75,7 @@ private:
 	int playerTexNo[4] = {};									// キャラ画像
 	int charFramePTexNo[4] = {};								// キャラフレーム
 	int charFrameTexNo = -1;									// キャラのフレーム
+	int charSelectArrow = -1;										// 矢印
 
 
 	int return_tex_ = -1;										// テクスチャ（戻る）
@@ -118,6 +119,7 @@ public:
 
 		// キャラ選択
 		charFrameTexNo = LoadTexture("data/texture/UI/UI_frame_base.png");
+		charSelectArrow = LoadTexture("data/texture/UI/UI_elemental_select.png");
 		charFramePTexNo[0] = LoadTexture("data/texture/UI/UI_frame_player1.png");
 		charFramePTexNo[1] = LoadTexture("data/texture/UI/UI_frame_player2.png");
 		charFramePTexNo[2] = LoadTexture("data/texture/UI/UI_frame_player3.png");
