@@ -231,6 +231,7 @@ void Title2::TitleStart::Draw()
                Vector2(960, 960) * title_scale_, Color(1.0f, 1.0f, 1.0f, 1.0f));
     if(don_played_ && revolve_timer_ > 0.0f)
     {
+       
         revolve_effect_->Draw();
     }
     if (!title_->game_start_)
