@@ -15,8 +15,8 @@ using namespace Network;
 enum MULTI_MODE {
 	NONE = -1,
 	CHARACTER_SELECT,
-	LAST_RESULT,
 	AREA_CAPTURE,
+	LAST_RESULT,
 	ENEMY_RUSH,
 	FINAL_BATTLE,
 };

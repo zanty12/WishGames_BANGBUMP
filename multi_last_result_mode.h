@@ -34,8 +34,10 @@ public:
 	int iconTexNo[4] = {};
 	int winTexNo[4] = {};
 	int barTexNo[4] = {};
+	int nameTexNo[4] = {};
 	int victoryTexNo = -1;
 	int defeatTexNo = -1;
+	int frameTexNo = -1;
 
 	MultiPlayLastResultModeClientSide() : MultiPlayModeClientSide(L"LastResult") {
 		soNo = LoadSound("data/sound/BGM/stage3_BGM.wav");
@@ -51,8 +53,13 @@ public:
 		barTexNo[1] = LoadTexture("data/texture/UI/result/UI_result_2.png");
 		barTexNo[2] = LoadTexture("data/texture/UI/result/UI_result_3.png");
 		barTexNo[3] = LoadTexture("data/texture/UI/result/UI_result_4.png");
+		nameTexNo[0] = LoadTexture("data/texture/UI/result/UI_result_text1.png");
+		nameTexNo[1] = LoadTexture("data/texture/UI/result/UI_result_text2.png");
+		nameTexNo[2] = LoadTexture("data/texture/UI/result/UI_result_text3.png");
+		nameTexNo[3] = LoadTexture("data/texture/UI/result/UI_result_text4.png");
 		victoryTexNo = LoadTexture("data/texture/UI/result/VICTORY.png");
 		defeatTexNo = LoadTexture("data/texture/UI/result/DEFEAT.png");
+		frameTexNo = LoadTexture("data/texture/UI/result/UI_result_frame.png");
 
 		isBlockShow = false;
 	}
