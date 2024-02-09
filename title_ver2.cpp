@@ -38,31 +38,6 @@ Title2::~Title2()
 void Title2::Update()
 {
     state_->Update();
-
-
-    if ((Input::GetKeyDown(0, Input::A) || Input::GetKeyDown(0, Input::B) || Input::GetKeyDown(0, Input::X) ||
-        Input::GetKeyDown(0, Input::Y) || Input::GetKeyDown(0, Input::L) || Input::GetKeyDown(0, Input::R) ||
-        Input::GetKeyDown(0, Input::Up) || Input::GetKeyDown(0, Input::Down) || Input::GetKeyDown(0, Input::Left) ||
-        Input::GetKeyDown(0, Input::Right)) && !game_start_) //Aƒ{ƒ^ƒ“
-    {
-        if (logo_)
-        {
-            logo_ = false;
-        }
-        else
-        {
-            PlaySound(confirm_se_, 0);
-            game_start_ = true;
-        }
-    }
-    if (game_start_ && game_start_wait_ > 0.0f)
-    {
-        game_start_wait_ -= Time::GetDeltaTime();
-    }
-    if (game_start_ && game_start_wait_ <= 0.0f)
-    {
-        scene_mngr_->ChangeScene(SCENE_MENU);
-    }
 }
 
 void Title2::Draw()
@@ -154,7 +129,7 @@ void Title2::VideoBase::Draw()
     const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
     title_->title_video_base_->DrawAsResource(Color(0.8f, 0.8f, 0.8f, 1.0f));
     DrawSprite(title_->title_base_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
-               Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, title_->logo_alpha_));
+               Vector2(1088 * scale_x, 177 * scale_y), Color(0.9f, 0.9f, 0.9f, 1.0f));
 }
 
 void Title2::Flash::Update()
