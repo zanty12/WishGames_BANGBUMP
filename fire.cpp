@@ -10,6 +10,9 @@
 Fire::Fire(Player* player)
     : Attribute(player, ATTRIBUTE_TYPE_FIRE), move_effect_(new FireEffect(this))
 {
+    LoadMoveSound(SE_fire_move);
+    PlaySound(move_sound_, -1);
+    SetVolume(move_sound_, 0.0f);
 }
 
 Vector2 Fire::Move()
@@ -35,7 +38,12 @@ Vector2 Fire::Move()
     }
     if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f)
     {
+        SetVolume(move_sound_, 0.0f);
         move_effect_->SetColor(Color(1, 1, 1, 0));
+    }
+    else
+    {
+        SetVolume(move_sound_, 1.0f);
     }
 
     if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() < speed * Time::GetDeltaTime())
@@ -59,6 +67,8 @@ Vector2 Fire::Move()
 
 void Fire::Action()
 {
+    SetVolume(move_sound_, 0.0f);
+
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
     stick.y *= -1;
@@ -93,7 +103,7 @@ void Fire::Action()
         if (attack_ != nullptr)
         {
             player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
-
+            attack_->Discard();
             if (!attack_->CheckHitEffect())
             {
                 delete attack_;
@@ -134,8 +144,8 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
                                            LoadTexture(Asset::GetAsset(fire_attack)), Vector2::Zero),
                                        PlayerAttack(10000)
 {
-    SetSize(Vector2(parent->GetState()->atkRange,parent->GetState()->atkDistance));
-    SetScale(size_);
+
+    SetScale(Vector2(SIZE_,SIZE_*3));
     SetType(OBJ_ATTACK);
     SetDamage(parent->GetState()->atk);
     damage_cd_ = parent->GetState()->atkCoolTime;
@@ -144,10 +154,18 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
     GetAnimator()->SetTexenum(fire_attack);
     GetAnimator()->SetLoopAnim(FIRE_ATTACK_ANIM);
     GetAnimator()->SetDrawPriority(75);
+
+    //サウンド
+    LoadAttackSound(SE_fire_attack);
+    PlaySound(attack_sound_, -1);
 }
 
 void FireAttack::Update()
 {
+    HitEffectUpdate(); //エフェクトのアップデート
+    if (GetDiscard())
+        return;
+
     if(cd_timer_ > 0.0f)
         cd_timer_ -= Time::GetDeltaTime();
     std::list<Collider*> collisions = GetCollider()->GetCollision();
@@ -166,8 +184,7 @@ void FireAttack::Update()
                         cd_timer_ = damage_cd_;
                         enemy->SetHp(enemy->GetHp() - GetDamage());
 
-                        //エフェクトの生成★エネミー３の位置とか色々バグっているので生成するとエラー
-                        if (!enemy->GetDiscard() && enemy->GetEnemyType() != TYPE__PHANTOM)
+                        if (!enemy->GetDiscard())
                         {
                             Vector2 pos = enemy->GetPos();
                             Vector2 scale = enemy->GetScale();
@@ -182,7 +199,6 @@ void FireAttack::Update()
         }
     }
 
-    HitEffectUpdate(); //エフェクトのアップデート
 }
 
 FireEffect::FireEffect(Fire* parent)

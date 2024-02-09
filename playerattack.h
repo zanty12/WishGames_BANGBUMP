@@ -4,6 +4,8 @@
 #include "movableobj.h"
 #include "time.h"
 
+#include "sound.h"
+
 class AttackHitEffect;
 
 class PlayerAttack
@@ -14,6 +16,8 @@ protected:
     float cd_timer_ = 0.0f; //time for each damage tick
 protected:
 	std::list< AttackHitEffect*> hit_effects_;
+	int attack_sound_ = 0;
+	void LoadAttackSound(sounds sound) { attack_sound_ = LoadSound(Asset::GetAsset(sound).c_str()); }
 
 public:
     PlayerAttack(float damage) : damage_(damage) {}
@@ -29,6 +33,8 @@ public:
 	void HitEffectUpdate();
 	//エフェクトが存在してるかどうか
 	bool CheckHitEffect(void) { return hit_effects_.size(); }
+
+	void StopSE(void) { StopSound(attack_sound_); }
 
 private:
 	void RemoveEffect(void);

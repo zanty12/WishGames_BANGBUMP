@@ -175,12 +175,16 @@ void Player::Update(void)
 		player_state_ = FALL;
 	}
 
+	if (revolve_cd_ > 1.5f)
+	{
+		this->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
+	}
 	//revolve
 	if(revolve_cd_ > 0.0f)
 	{
 		revolve_cd_ -= Time::GetDeltaTime();
 	}
-	if(Input::GetStickLeft(0).x > 0.8f && Input::GetStickRight(0).x < -0.8f)
+	if(Input::GetTriggerRight(0)>=1 && Input::GetTriggerLeft(0) >= 1 && revolve_cd_<=0)
 	{
 		revolve_cd_ -= Time::GetDeltaTime();
 		if(revolve_cd_ <= 0)
@@ -711,6 +715,8 @@ void Player::Revolve()
     default:
         break;
     }
+
+	this->GetAnimator()->SetLoopAnim(PLAYER_ATTACK_ANIM);
 }
 
 
