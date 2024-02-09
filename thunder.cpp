@@ -245,6 +245,29 @@ void Thunder::DebugMenu()
     ImGui::End();
 }
 
+void Thunder::Gatchanko(bool is_attack)
+{
+    //UŒ‚Žž
+    if (is_attack)
+    {
+        delete move_indicator_;
+        move_indicator_ = nullptr;
+        move_effect_->DispUninit();
+    }
+    //ˆÚ“®Žž
+    else
+    {
+        delete attack_indicator_;
+        attack_indicator_ = nullptr;
+        for (auto attack : attack_)
+        {
+            delete attack;
+            attack = nullptr;
+        }
+        move_effect_->DispInit();
+    }
+}
+
 ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range): parent_(parent),range_(range),
                                                                        MovableObj(parent->GetPlayer()->GetPos(),
                                                                            atan2(-dir.y, dir.x),
@@ -288,9 +311,9 @@ void ThunderAttack::Update()
                 if (enemy != nullptr)
                 {
                     enemy->SetHp(enemy->GetHp() - GetDamage());
-
                     if (!enemy->GetDiscard())
                     {
+                        Discard();
                         Vector2 pos = enemy->GetPos();
                         Vector2 scale = enemy->GetScale();
                         AttachHitEffect(new AttackHitEffect(pos, scale, effect_hit_thunder, EFFECT_HIT_THUNDER_ANIM));

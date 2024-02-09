@@ -40,10 +40,12 @@ protected:
     //fade
     float fade_alpha_ = 1.0f;
     //video base
-    const float video_base_time_ = 4.23f;
+    const float video_base_time_ = 5.78f; //prelude of bgm
     float video_base_timer_ = video_base_time_;
-    //video
-    float video_fade_ = 0.0f;
+    //flash
+    const float video_flash_time_ = 0.23f; //arbitrary flash time
+    float video_flash_timer_ = video_flash_time_;
+    //control
     bool game_start_ = false;
     float game_start_wait_ = 1.0f;
 
@@ -82,6 +84,26 @@ private:
     public:
         VideoBase(Title2* title) : TitleVer2_State(title) {};
         ~VideoBase() override = default;
+        void Update() override;
+        void Draw() override;
+    };
+
+    class Flash : public TitleVer2_State
+    {
+    private:
+        float alpha_;
+    public:
+        Flash(Title2* title) : TitleVer2_State(title) {};
+        ~Flash() override = default;
+        void Update() override;
+        void Draw() override;
+    };
+
+    class TitleStart : public TitleVer2_State
+    {
+    public:
+        TitleStart(Title2* title) : TitleVer2_State(title) {};
+        ~TitleStart() override = default;
         void Update() override;
         void Draw() override;
     };

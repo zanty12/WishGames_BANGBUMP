@@ -106,7 +106,7 @@ void Dark::Action()
     {
         if (attack_indicator_ == nullptr)
         {
-            attack_indicator_ = new ThunderIndicator();
+            attack_indicator_ = new DarkAttackIndicator();
             attack_indicator_->GetAnimator()->SetColor(Color(0.0f, 0.0f, 1.0f, 1.0f));
         }
         Vector2 dir = stick.Normalize();
@@ -116,6 +116,11 @@ void Dark::Action()
         pos = player_->GetPos() + pos;
         attack_indicator_->SetPos(pos);
         attack_indicator_->SetRot(angle);
+    }
+    else
+    {
+        delete attack_indicator_;
+        attack_indicator_ = nullptr;
     }
     if (attack_)
         attack_->Update();
@@ -173,6 +178,26 @@ void Dark::DebugMenu()
     ImGui::SliderFloat2("maxSpeedFalling", &maxSpeedFalling, 0.0f, 1.0f);
     ImGui::SliderFloat2("warpDistance", &warpDistance_, 400.0f, 1000.0f);
     ImGui::End();
+}
+
+void Dark::Gatchanko(bool is_attack)
+{
+    //アタック時は移動エフェクトを消す
+    if (is_attack)
+    {
+        delete move_indicator_;
+        move_indicator_ = nullptr;
+        move_effect_->DispUninit();
+    }
+    //移動時なら攻撃エフェクトおよびオブジェクトを消す。移動エフェクトの再表示
+    else
+    {
+        delete attack_;
+        attack_ = nullptr;
+        delete attack_indicator_;
+        attack_indicator_ = nullptr;
+        move_effect_->DispInit();
+    }
 }
 
 DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
@@ -376,4 +401,17 @@ void DarkEffect::Charge()
     SetPos(pos);
 
     parent_->GetPlayer()->GetAnimator()->SetLoopAnim(PLAYER_FD_MOVE_ANIM);
+}
+
+DarkAttackIndicator::DarkAttackIndicator()
+    : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(effect_water_atk_indicator)), Vector2::Zero)
+{
+    GetCollider()->Discard();
+    SetCollider(nullptr);
+
+    SetType(OBJ_VOID);
+    SetColor(Color(1, 1, 1, 1));
+    GetAnimator()->SetDrawPriority(25);
+    GetAnimator()->SetTexenum(effect_water_atk_indicator);
+    GetAnimator()->SetLoopAnim(EFFECT_WATER_ATK_INDICATOR);
 }

@@ -98,6 +98,7 @@ void ImageDataDictionary::InitDictionary()
 	img_data_[effect_enemydead] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_enemydead)), 5, 8);
 	img_data_[effect_spawn] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_spawn)), 5, 3);
 	img_data_[effect_water_indicator] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_water_indicator)), 5, 4);
+	img_data_[effect_water_atk_indicator] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_water_atk_indicator)), 5, 2);
 	img_data_[effect_hit] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_hit)), 5, 2);
 	img_data_[effect_hit_fire] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_hit_fire)), 5, 2);
 	img_data_[effect_hit_dark] = IMAGE_DATA(LoadTexture(Asset::GetAsset(effect_hit_dark)), 5, 2);

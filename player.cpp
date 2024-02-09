@@ -187,7 +187,7 @@ void Player::Update(void)
 		{
 			Revolve();
 			revolve_cd_ = 2.0f;
-			//revolve_effect_ = new RevolveEffect(this);
+			revolve_effect_ = new RevolveEffect(this);
 		}
 	}
 
@@ -635,6 +635,12 @@ void Player::Revolve()
 	Attribute* temp = move_attribute_;
 	move_attribute_ = attack_attribute_;
 	attack_attribute_ = temp;
+
+	move_attribute_->Gatchanko(false);
+	attack_attribute_->Gatchanko(true);
+
+	SetVel(Vector2::Zero);
+
 	//load texture
 	switch (this->GetAttackAttribute()->GetAttribute())
     {

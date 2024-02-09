@@ -28,7 +28,7 @@ SceneMngr::SceneMngr(SCENE scene)
     switch (scene)
     {
     case SCENE_TITLE:
-        scene_ = new Title(this);
+        scene_ = new Title2(this);
         break;
     case SCENE_MENU:
         scene_ = new Menu(this);
@@ -92,7 +92,7 @@ void SceneMngr::LoadScene(SCENE scene)
     switch (scene)
     {
     case SCENE_TITLE:
-        scene_ = new Title(this);
+        scene_ = new Title2(this);
         break;
     case SCENE_MENU:
         scene_ = new Menu(this);

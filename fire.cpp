@@ -33,6 +33,10 @@ Vector2 Fire::Move()
             player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
             player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
     }
+    if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f)
+    {
+        move_effect_->SetColor(Color(1, 1, 1, 0));
+    }
 
     if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() < speed * Time::GetDeltaTime())
     {
@@ -49,11 +53,6 @@ Vector2 Fire::Move()
     }
     else
     {
-        if (move_effect_) //‘€ì‚ð‚â‚ß‚½‚ç”ñ•\Ž¦
-        {
-            move_effect_->SetColor(Color(1, 1, 1, 0));
-        }
-
         return player_->GetVel() * state_->friction;
     }
 };
@@ -109,6 +108,22 @@ void Fire::DebugMenu()
     ImGui::Begin("Fire");
     ImGui::SliderFloat2("speed", &speed, 0.0f, 9 * GameObject::SIZE_);
     ImGui::End();
+}
+
+void Fire::Gatchanko(bool is_attack)
+{
+    //UŒ‚Žž
+    if (is_attack)
+    {
+        move_effect_->DispUninit();
+    }
+    //ˆÚ“®Žž
+    else
+    {
+        delete attack_;
+        attack_ = nullptr;
+        move_effect_->DispInit();
+    }
 }
 
 FireAttack::FireAttack(Fire* parent) : parent_(parent),
