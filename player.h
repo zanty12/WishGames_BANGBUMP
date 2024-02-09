@@ -252,6 +252,5 @@ public:
             time_ += Time::GetDeltaTime();
             SetPos(player_->GetPos());
         }
-
     }
 };

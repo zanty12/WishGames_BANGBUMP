@@ -6,13 +6,20 @@
 Title2::Title2(SceneMngr* scene_mngr)
     : scene_mngr_(scene_mngr)
 {
-    title_video_ = new Video("data/video/title.mp4");
+    //texture
     logo_tex_ = LoadTexture("data/texture/UI/title/team_logo.png");
     press_button_tex_ = LoadTexture("data/texture/UI/title/pressanybutton.png");
     title_tex_ = LoadTexture("data/texture/UI/title/team_logo.png");
+    //video
+    title_video_ = new Video("data/video/title.mp4");
     title_video_->SetLoop(true);
     title_video_->SetWindowPos(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2));
     title_video_->SetSize(Vector2(Graphical::GetWidth(), Graphical::GetHeight()));
+    title_video_base_ = new Video("data/video/title.mp4");
+    title_video_base_->SetLoop(true);
+    title_video_base_->SetWindowPos(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2));
+    title_video_base_->SetSize(Vector2(Graphical::GetWidth(), Graphical::GetHeight()));
+    //sound
     bgm_ = LoadSound("data/sound/bgm/title_BGM_long.wav");
     confirm_se_ = LoadSound("data/sound/se/gamestart.wav");
     SetVolume(bgm_, 0.4f);
@@ -41,7 +48,7 @@ void Title2::Update()
     }
 
 
-    else if (!logo_ && fade_alpha_ <= 0.0f && video_wait_ <= 0.0f)
+    else if (!logo_ && fade_alpha_ <= 0.0f && video_base_time_ <= 0.0f)
     {
         title_video_->Update();
     }
@@ -93,9 +100,9 @@ void Title2::Draw()
             Graphical::Clear(Color(fade_alpha_, fade_alpha_, fade_alpha_, 1.0f));
             return;
         }
-        if(video_wait_ > 0.0f)
+        if(video_base_timer_ > video_base_time_)
         {
-            video_wait_ -= Time::GetDeltaTime();
+            video_base_timer_ -= Time::GetDeltaTime();
             Graphical::Clear(Color::Black);
             DrawSprite(title_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
                    Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, logo_alpha_));
@@ -126,4 +133,65 @@ float Title2::AlphaAnimation(float rate)
     static float time;
     time += Time::GetDeltaTime() * rate;
     return (sinf(time) + 1.0f) / 2.0f;
+}
+
+void Title2::GoToState(TitleVer2_State* state)
+{
+    delete state_;
+    state_ = state;
+}
+
+void Title2::Logo::Update()
+{
+    title_->logo_time_ -= Time::GetDeltaTime();
+    if (title_->logo_alpha_ < 1.0f)
+        title_->logo_alpha_ += Time::GetDeltaTime() / 2.0f;
+    if (title_->logo_alpha_ > 1.0f)
+        title_->logo_alpha_ = 1.0f;
+    if (title_->logo_time_ <= 0.0f)
+    {
+        PlaySound(title_->bgm_, -1);
+        title_->GoToState(new LogoFade(title_));
+    }
+}
+
+void Title2::Logo::Draw()
+{
+    const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
+    const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
+    Graphical::Clear(Color::White);
+    DrawSprite(title_->logo_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2), 0.0f,
+               Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, title_->logo_alpha_));
+}
+
+void Title2::LogoFade::Update()
+{
+    title_->fade_alpha_ -= Time::GetDeltaTime() / 0.3f;
+    if (title_->fade_alpha_ <= 0.0f)
+    {
+        title_->GoToState(new VideoBase(title_));
+    }
+}
+
+void Title2::LogoFade::Draw()
+{
+    Graphical::Clear(Color(title_->fade_alpha_, title_->fade_alpha_, title_->fade_alpha_, 1.0f));
+}
+
+void Title2::VideoBase::Update()
+{
+    title_->video_base_timer_ -= Time::GetDeltaTime();
+    if (title_->video_base_timer_ <= 0.0f)
+    {
+        title_->GoToState(nullptr);
+    }
+}
+
+void Title2::VideoBase::Draw()
+{
+    const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
+    const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
+    Graphical::Clear(Color::Black);
+    DrawSprite(title_->title_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
+               Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, title_->logo_alpha_));
 }
