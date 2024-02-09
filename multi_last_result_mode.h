@@ -1,8 +1,10 @@
 #pragma once
 #include <list>
+#include "multiplay.h"
 #include "multi_mode.h"
 #include "time.h"
 #include "asset.h"
+#include "video.h"
 
 
 /*******************************************************
@@ -38,8 +40,10 @@ public:
 	int victoryTexNo = -1;
 	int defeatTexNo = -1;
 	int frameTexNo = -1;
+	Video *video = nullptr;
+	MultiPlayClient *game = nullptr;
 
-	MultiPlayLastResultModeClientSide() : MultiPlayModeClientSide(L"LastResult") {
+	MultiPlayLastResultModeClientSide(MultiPlayClient *game) : game(game), MultiPlayModeClientSide(L"LastResult") {
 		soNo = LoadSound("data/sound/BGM/stage3_BGM.wav");
 		iconTexNo[0] = LoadTexture("data/texture/UI/result/UI_player1.png");
 		iconTexNo[1] = LoadTexture("data/texture/UI/result/UI_player2.png");
@@ -62,6 +66,16 @@ public:
 		frameTexNo = LoadTexture("data/texture/UI/result/UI_result_frame.png");
 
 		isBlockShow = false;
+
+
+		video = new Video("./data/video/UI_result_BG.mp4");
+		Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());
+		video->SetSize(screen);
+		video->SetWindowPos(screen * 0.5f);
+		video->SetLoop(true);
+	}
+	~MultiPlayLastResultModeClientSide() {
+		delete video;
 	}
 
 

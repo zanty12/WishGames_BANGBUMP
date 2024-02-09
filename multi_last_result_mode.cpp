@@ -1,10 +1,14 @@
 #include "multi_last_result_mode.h"
 
 void MultiPlayLastResultModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {
+
+	// “®‰æ‚Ì•`‰æ
+	video->DrawAsResource();
+
 	if (ranking.size() == 0) {
 		ranking = players.clients;
 		ranking.sort([](CLIENT_DATA_CLIENT_SIDE &a, CLIENT_DATA_CLIENT_SIDE &b) {
-			return a.skillPoint < b.skillPoint;
+			return a.skillPoint > b.skillPoint;
 			}
 		);
 	}
@@ -19,7 +23,6 @@ void MultiPlayLastResultModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 o
 	{
 		Vector2 scl = Vector2(Graphical::GetWidth(), Graphical::GetHeight()) * 0.5f;
 		DrawSprite(frameTexNo, center, 0.0f, screen, Color::White);
-		std::cout << "FFRAMW : " << frameTexNo << std::endl;
 	}
 
 	// VICTORY
@@ -31,11 +34,13 @@ void MultiPlayLastResultModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 o
 
 	// ƒo[
 	int id = 0;
+	std::cout << ranking.size() << std::endl;
 	for (auto &client : ranking) {
-		float floatY = ranking.size() * 0.5f - 0.5f;
-		float height = 50.0f;
+		float floatY = id - ranking.size() * 0.5f - 0.5f;
+		float height = 150.0f;
 		Vector2 scl = Vector2(800, 800);
 		Vector2 pos = Vector2(screen.x - scl.x * 0.5f - 200, center.y - floatY * height);
+		std::cout << floatY << std::endl;
 
 		DrawSprite(barTexNo[id], pos, 0.0f, scl, Color::White);
 		DrawSprite(nameTexNo[client.id % 4], pos, 0.0f, scl, Color::White);
@@ -48,5 +53,9 @@ void MultiPlayLastResultModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 o
 		Vector2 scl = Vector2(800, 800);
 		Vector2 pos = Vector2(scl.x * 0.5f, center.y + 77);
 		DrawSprite(winTexNo[ranking.begin()->id % 4], pos, 0.0f, scl, Color::White);
+	}
+
+	if (game && Input::GetKeyDown(0, Input::A)) {
+		game->Unregister();
 	}
 }

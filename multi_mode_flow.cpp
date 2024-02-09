@@ -119,7 +119,7 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 	case AREA_CAPTURE: return new MultiPlayAreaCaptureModeClientSide();
 	case ENEMY_RUSH: return new MultiPlayEnemyRushModeClientSide();
 	case FINAL_BATTLE: return new MultiPlayFinalBattleModeClientSide();
-	case LAST_RESULT: return new MultiPlayLastResultModeClientSide();
+	case LAST_RESULT: return new MultiPlayLastResultModeClientSide(game_);
 	}
 	return nullptr;
 }
