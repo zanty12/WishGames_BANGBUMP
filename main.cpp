@@ -18,6 +18,12 @@ int main()
     srand(time(NULL));
 
 #ifdef SERVER
+    Graphical::Initialize(1920 * 0.5f, 1080 * 0.5f, TRUE);
+    DebugUI::Initialize();
+    Text::CreateResources();
+    WIN::Window window = Graphical::GetHwnd();
+    const HWND hWnd = window.GetHwnd();
+    InitSound(hWnd);
     MultiPlayServer server;
     server.OpenTerminal();
 #else
