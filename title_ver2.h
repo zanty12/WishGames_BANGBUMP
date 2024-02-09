@@ -28,6 +28,7 @@ protected:
     int logo_tex_;
     int press_button_tex_;
     int title_tex_;
+    int title_base_tex_;
     int flash_tex_;
     //sound
     int bgm_;

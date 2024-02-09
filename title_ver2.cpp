@@ -9,7 +9,8 @@ Title2::Title2(SceneMngr* scene_mngr)
     //texture
     logo_tex_ = LoadTexture("data/texture/UI/title/team_logo.png");
     press_button_tex_ = LoadTexture("data/texture/UI/title/pressanybutton.png");
-    title_tex_ = LoadTexture("data/texture/UI/title/team_logo.png");
+    title_base_tex_ = LoadTexture("data/texture/UI/title/team_logo.png");
+    title_tex_ = LoadTexture("data/texture/UI/title/title.png");
     flash_tex_ = LoadTexture("data/texture/UI/fade_white.png");
     //video
     title_video_ = new Video("data/video/title.mp4");
@@ -152,7 +153,7 @@ void Title2::VideoBase::Draw()
     const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
     const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
     title_->title_video_base_->DrawAsResource(Color(0.8f, 0.8f, 0.8f, 1.0f));
-    DrawSprite(title_->title_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
+    DrawSprite(title_->title_base_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
                Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, title_->logo_alpha_));
 }
 
@@ -171,7 +172,7 @@ void Title2::Flash::Draw()
     const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
     const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
     title_->title_video_base_->DrawAsResource(Color(1.0f, 1.0f, 1.0f, 1.0f));
-    DrawSprite(title_->title_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
+    DrawSprite(title_->title_base_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
                Vector2(1088 * scale_x, 177 * scale_y), Color(1.0f, 1.0f, 1.0f, title_->logo_alpha_));
     DrawSprite(title_->flash_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2), 0.0f,
                Vector2(1920 * scale_x, 1080 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha_));
@@ -202,7 +203,7 @@ void Title2::TitleStart::Draw()
 {
     title_->title_video_->DrawAsResource(Color(1.0f, 1.0f, 1.0f, 1.0f));
     DrawSprite(title_->title_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
-               Vector2(1088, 177), Color(1.0f, 1.0f, 1.0f, 1.0f));
+               Vector2(1062, 738), Color(1.0f, 1.0f, 1.0f, 1.0f));
     if (!title_->game_start_)
         DrawSprite(title_->press_button_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3), 0.0f,
                    Vector2(999, 100.3), Color(1.0f, 1.0f, 1.0f, title_->AlphaAnimation()));
