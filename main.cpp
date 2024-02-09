@@ -9,7 +9,7 @@
 #include "time.h"
 #include "sound.h"
 
-bool debug_mode = true;
+bool debug_mode = false;
 //#define SERVER
 
 int main()
