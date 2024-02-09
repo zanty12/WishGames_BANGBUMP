@@ -32,6 +32,13 @@ void GameObject::Discard()
     if (collider_) collider_->Discard();
 }
 
+void GameObject::DispInit(void)
+{
+    color_ = Color(1, 1, 1, 1);
+    animator_->SetIsAnim(true);
+    animator_->SetColor(GetColor());
+}
+
 void GameObject::DispUninit(void)
 {
     color_ = Color(0, 0, 0, 0);

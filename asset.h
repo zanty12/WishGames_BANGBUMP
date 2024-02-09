@@ -101,6 +101,7 @@ enum textures
     effect_enemydead,
     effect_spawn,
     effect_water_indicator,
+    effect_water_atk_indicator,
     effect_hit,
     effect_hit_fire,
     effect_hit_dark,

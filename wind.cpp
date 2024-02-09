@@ -144,6 +144,22 @@ void Wind::DebugMenu()
     ImGui::End();
 }
 
+void Wind::Gatchanko(bool is_attack)
+{
+    //攻撃時
+    if (is_attack)
+    {
+        move_effect_->DispUninit();
+    }
+    //移動時
+    else
+    {
+        delete attack_;
+        attack_ = nullptr;
+        move_effect_->DispInit();
+    }
+}
+
 WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPlayer()->GetPos(), 0.0f,
                                            LoadTexture(Asset::GetAsset(wind_attack)), Vector2::Zero),PlayerAttack(10000)
 {

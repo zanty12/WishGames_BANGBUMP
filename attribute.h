@@ -36,6 +36,9 @@ public:
 
 	virtual void DebugMenu() = 0;
 
+	//‚ª‚Á‚¿‚á‚ñ‚±ƒVƒXƒeƒ€
+	virtual void Gatchanko(bool is_attack) = 0;
+
 	Player* GetPlayer() { return player_; }
 
 	ATTRIBUTE_TYPE GetAttribute() { return attributeType_; }

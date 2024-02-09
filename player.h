@@ -232,7 +232,7 @@ private:
     Player* player_;
 
 public:
-    RevolveEffect(Player* player) : MovableObj(player->GetPos(), 0.0f, LoadTexture("data/texture/effect/revolve.png"),
+    RevolveEffect(Player* player) : MovableObj(player->GetPos(), 0.0f, LoadTexture(Asset::GetAsset(effect_EX)),
                                                Vector2::Zero), time_(0.0f), player_(player)
     {
         SetType(OBJ_VOID);
@@ -251,6 +251,10 @@ public:
         {
             time_ += Time::GetDeltaTime();
             SetPos(player_->GetPos());
+        }
+        else
+        {
+            Discard();
         }
 
     }
