@@ -124,6 +124,14 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 	return nullptr;
 }
 
+MultiPlayFlowClientSide::MultiPlayFlowClientSide(MultiPlayClient *game) : game_(game) {
+	std::ostringstream path;
+	path << "data/texture/UI/" << "UI_icon_" << (game->GetID() + 1) % 4 << ".png";
+	icon = LoadTexture(path.str());
+	icon2 = LoadTexture("data/texture/UI/UI_icon_base.png");
+	icon3 = LoadTexture("data/texture/UI/UI_icon_gauge.png");
+}
+
 void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 
 	// モードが切り替わったなら、次のモードへ移行

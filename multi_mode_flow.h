@@ -68,13 +68,7 @@ private:
 private:
 	MultiPlayModeClientSide *CreateMode(MULTI_MODE mode);
 public:
-	MultiPlayFlowClientSide(MultiPlayClient *game) : game_(game) {
-		std::ostringstream path;
-		path << "data/texture/UI/" << "UI_icon_" << (MultiPlayClient::GetID() + 1) % 4 << ".png";
-		icon = LoadTexture(path.str());
-		icon2 = LoadTexture("data/texture/UI/UI_icon_base.png");
-		icon3 = LoadTexture("data/texture/UI/UI_icon_gauge.png");
-	}
+	MultiPlayFlowClientSide(MultiPlayClient *game);
 
 	~MultiPlayFlowClientSide() {
 		if (gameMode_) delete gameMode_;
