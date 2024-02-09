@@ -10,14 +10,17 @@ class TitleVer2_State
 {
 protected:
     Title2* title_;
+
 public:
-    TitleVer2_State(Title2* title) : title_(title) {};
+    TitleVer2_State(Title2* title) : title_(title)
+    {
+    };
     virtual ~TitleVer2_State() = default;
     virtual void Update() = 0;
     virtual void Draw() = 0;
 };
 
-class Title2 :public Scene
+class Title2 : public Scene
 {
 protected:
     SceneMngr* scene_mngr_;
@@ -53,22 +56,24 @@ protected:
     bool game_start_ = false;
     float game_start_wait_ = 1.0f;
 
-
 public:
     Title2(SceneMngr* scene_mngr);
     ~Title2();
-    void Update()override;
-    void Draw()override;
+    void Update() override;
+    void Draw() override;
     void DebugMenu() override;
     void GoToState(TitleVer2_State* state);
 
 private:
     float AlphaAnimation(float rate = 1.0f);
+    float Shake(float input, float range, float rate = 1.0f);
 
     class Logo : public TitleVer2_State
     {
     public:
-        Logo(Title2* title) : TitleVer2_State(title) {};
+        Logo(Title2* title) : TitleVer2_State(title)
+        {
+        };
         ~Logo() override = default;
         void Update() override;
         void Draw() override;
@@ -77,7 +82,9 @@ private:
     class LogoFade : public TitleVer2_State
     {
     public:
-        LogoFade(Title2* title) : TitleVer2_State(title) {};
+        LogoFade(Title2* title) : TitleVer2_State(title)
+        {
+        };
         ~LogoFade() override = default;
         void Update() override;
         void Draw() override;
@@ -88,8 +95,11 @@ private:
     private:
         const float title_scale_start_ = 0.5f;
         float title_scale_ = title_scale_start_;
+
     public:
-        VideoBase(Title2* title) : TitleVer2_State(title) {};
+        VideoBase(Title2* title) : TitleVer2_State(title)
+        {
+        };
         ~VideoBase() override = default;
         void Update() override;
         void Draw() override;
@@ -99,8 +109,11 @@ private:
     {
     private:
         float alpha_;
+
     public:
-        Flash(Title2* title) : TitleVer2_State(title) {};
+        Flash(Title2* title) : TitleVer2_State(title)
+        {
+        };
         ~Flash() override = default;
         void Update() override;
         void Draw() override;
@@ -114,11 +127,13 @@ private:
         float title_scale_ = title_scale_start_;
         float don_timer_ = 0.0f;
         bool don_played_ = false;
+
     public:
-        TitleStart(Title2* title) : TitleVer2_State(title) {};
+        TitleStart(Title2* title) : TitleVer2_State(title)
+        {
+        };
         ~TitleStart() override = default;
         void Update() override;
         void Draw() override;
     };
-
 };

@@ -19,8 +19,8 @@ std::map<ATTRIBUTE_ACTION, std::string> video_file_map =
 std::list<attribute_select> move_list;
 std::list<attribute_select> attack_list;
 
-constexpr float x_radius = 300.0f;
-constexpr float y_radius = 80.0f;
+constexpr float x_radius = 500.0f;
+constexpr float y_radius = 120.0f;
 
 Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
 {
@@ -31,54 +31,54 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
         {
             FIRE_MOVE, 1, (1 + 2) % 4 * M_PI_2, (1 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_boot1.png"),
-            Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius,
+            Vector2(Graphical::GetWidth() / 2 + cos((1 + 2) % 4 * M_PI_2) * x_radius,
                     1080 / 2 + (sin(((1 + 2) % 4) * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos(((1 + 2) % 4) * M_PI_2) * x_radius,
+            Vector2(Graphical::GetWidth() / 2 + cos(((1 + 2) % 4) * M_PI_2) * x_radius,
                     1080 / 2 + (sin(((1 + 2) % 4) * M_PI_2) + 1) * y_radius)
         },
         {
             WIND_MOVE, 2, (2 + 2) % 4 * M_PI_2, (2 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_boot4.png"),
-            Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((2 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((2 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             THUNDER_MOVE, 3, (3 + 2) % 4 * M_PI_2, (3 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_boot3.png"),
-            Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((3 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() /2+ cos((3 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             DARK_MOVE, 4, (4 + 2) % 4 * M_PI_2, (4 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_boot2.png"),
-            Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((4 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((4 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
         }
     };
     attack_list = {
         {
             FIRE_ATTACK, 1, (1 + 2) % 4 * M_PI_2, (1 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_hand1.png"),
-            Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((1 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((1 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             WIND_ATTACK, 2, (2 + 2) % 4 * M_PI_2, (2 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_hand4.png"),
-            Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((2 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((2 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             THUNDER_ATTACK, 3, (3 + 2) % 4 * M_PI_2, (3 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_hand3.png"),
-            Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((3 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((3 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             DARK_ATTACK, 4, (4 + 2) % 4 * M_PI_2, (4 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_hand2.png"),
-            Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((4 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((4 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
         }
     };
 
@@ -231,7 +231,7 @@ void Prep::Update()
                     move.rot = 2 * M_PI;
                 }
             }
-            move.pos = Vector2(540 + cos(move.rot) * x_radius, 1080 / 2 + (sin(move.rot) + 1) * y_radius);
+            move.pos = Vector2(Graphical::GetWidth()/2 + cos(move.rot) * x_radius, Graphical::GetHeight() / 2 + (sin(move.rot) + 1) * y_radius);
         }
         else
         {
@@ -259,7 +259,7 @@ void Prep::Update()
                     attack.rot = 2 * M_PI;
                 }
             }
-            attack.pos = Vector2(540 + cos(attack.rot) * x_radius, 1080 / 2 + (sin(attack.rot) + 1) * y_radius);
+            attack.pos = Vector2(Graphical::GetWidth()/2 + cos(attack.rot) * x_radius, Graphical::GetHeight() / 2 + (sin(attack.rot) + 1) * y_radius);
         }
         else
         {
@@ -267,7 +267,8 @@ void Prep::Update()
         }
     }
 
-    video_->Update();
+    //video_->Update();
+
     if (Input::GetKeyDown(0, Input::A)) //Aボタン
     {
         {
@@ -339,7 +340,7 @@ void Prep::Draw()
             alpha = 0.5f;
 
         DrawSprite(move_it->tex, Vector2(move_it->pos.x * scale_x, move_it->pos.y * scale_y), 0.0f,
-                   Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));
+                   Vector2(900 * scale_x, 900 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));
 
         if (!is_move_ && i == 1)
             alpha = 1.0f;
@@ -347,12 +348,12 @@ void Prep::Draw()
             alpha = 0.5f;
 
         DrawSprite(attack_it->tex, Vector2(attack_it->pos.x * scale_x, attack_it->pos.y * scale_y), 0.0f,
-                   Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));
+                   Vector2(900 * scale_x, 900 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));
 
         if (i == 3)
             //キャラクター
-            DrawSprite(character_, Vector2(540 * scale_x, 1080 / 2 * scale_y), 0.0f,
-                       Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
+            DrawSprite(character_, Vector2(Graphical::GetWidth() / 2 * scale_x, Graphical::GetHeight() / 2 * scale_y), 0.0f,
+                       Vector2(900 * scale_x, 900 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
 
         ++move_it;
         ++attack_it;
@@ -376,7 +377,7 @@ void Prep::Draw()
                Vector2(115.0f , 118.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
 
     //動画
-    video_->DrawAsResource();
+    //video_->DrawAsResource();
 }
 
 void Prep::DebugMenu()

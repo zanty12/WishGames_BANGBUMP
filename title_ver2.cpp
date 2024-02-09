@@ -9,7 +9,7 @@ Title2::Title2(SceneMngr* scene_mngr)
     //texture
     logo_tex_ = LoadTexture("data/texture/UI/title/team_logo.png");
     press_button_tex_ = LoadTexture("data/texture/UI/title/pressanybutton.png");
-    title_base_tex_ = LoadTexture("data/texture/UI/title/title.png");
+    title_base_tex_ = LoadTexture("data/texture/UI/title/title_base.png");
     title_tex_ = LoadTexture("data/texture/UI/title/title.png");
     flash_tex_ = LoadTexture("data/texture/UI/fade_white.png");
     overlay_tex_ = LoadTexture("data/texture/UI/fade.png");
@@ -65,6 +65,13 @@ float Title2::AlphaAnimation(float rate)
     static float time;
     time += Time::GetDeltaTime() * rate;
     return (sinf(time) + 1.0f) / 2.0f;
+}
+
+float Title2::Shake(float input, float range, float rate)
+{
+    static float time;
+    time += Time::GetDeltaTime() * rate;
+    return input + sinf(time) * range;
 }
 
 void Title2::GoToState(TitleVer2_State* state)
@@ -134,7 +141,7 @@ void Title2::VideoBase::Draw()
     const float scale_x = static_cast<float>(Graphical::GetWidth()) / 1920;
     const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
     title_->title_video_base_->DrawAsResource(Color(1.0f, 1.0f, 1.0f, 1.0f));
-    DrawSprite(title_->title_base_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
+    DrawSprite(title_->title_base_tex_, Vector2(title_->Shake(Graphical::GetWidth() / 2,2.5f,50.0f), title_->Shake(Graphical::GetHeight() *2/3,2.5f,50.0f)), 0.0f,
                Vector2(1062, 738) * title_scale_, Color(1.0f, 1.0f, 1.0f, 1.0f));
     DrawSprite(title_->overlay_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2), 0.0f,
                Vector2(1920 * scale_x, 1080 * scale_y), Color(1.0f, 1.0f, 1.0f, 0.8));
