@@ -5,6 +5,7 @@
 #include "time.h"
 #include "asset.h"
 #include "video.h"
+#include "move_scene_anim.h"
 
 
 /*******************************************************
@@ -44,6 +45,7 @@ public:
 	MultiPlayClient *game = nullptr;
 
 	MultiPlayLastResultModeClientSide(MultiPlayClient *game) : game(game), MultiPlayModeClientSide(L"LastResult") {
+		MoveScene::Move(Color(0, 0, 0, 0));
 		soNo = LoadSound("data/sound/BGM/stage3_BGM.wav");
 		iconTexNo[0] = LoadTexture("data/texture/UI/result/UI_player1.png");
 		iconTexNo[1] = LoadTexture("data/texture/UI/result/UI_player2.png");
