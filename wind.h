@@ -73,6 +73,7 @@ public:
     Vector2 Move(void) override;
     void Action(void) override;
     void DebugMenu(void) override;
+    void Gatchanko(bool is_attack) override;
 };
 
 class WindAttack : public MovableObj,public PlayerAttack

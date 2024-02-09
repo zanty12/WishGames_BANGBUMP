@@ -95,6 +95,7 @@ public:
 
     virtual void Update(void) = 0;
 
+    void DispInit(void);
     void DispUninit(void);  //画面からオブジェクトの描画と当たり判定を消す
 
     static Vector2 GetWorldCoord(Vector2 pos);
