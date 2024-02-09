@@ -170,6 +170,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 		// 攻撃判定の更新
 		gameMode->GetMap()->AttackUpdate();
 	}
+
 	// ゲームモードの更新
 	gameMode->Update(clients_);
 
