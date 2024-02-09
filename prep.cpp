@@ -19,6 +19,20 @@ std::map<ATTRIBUTE_ACTION, std::string> video_file_map =
 std::list<attribute_select> move_list;
 std::list<attribute_select> attack_list;
 
+struct uv_set
+{
+    Vector2 start;
+    Vector2 end;
+};
+
+std::map<int,uv_set> bg_uv = {
+    //divide the texture into 4 parts
+    {0,{{0,0},{0.5,0.5}}},
+    {1,{{0.5,0},{1,0.5}}},
+    {2,{{0,0.5},{0.5,1}}},
+    {3,{{0.5,0.5},{1,1}}}
+};
+
 constexpr float x_radius = 500.0f;
 constexpr float y_radius = 120.0f;
 
@@ -83,7 +97,7 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
     };
 
     //uiテキスチャー
-    tex_bg_ = LoadTexture("data/texture/UI/practice_prep/prep_bg.png");
+    tex_bg_ = LoadTexture("data/texture/UI/UI_elemental_BG.png");
     tex_select_arrow_ = LoadTexture("data/texture/UI/UI_elemental_select.png");
     return_tex_ = LoadTexture("data/texture/UI/back.png");
     b_tex_ = LoadTexture("data/texture/UI/b.png");
@@ -94,12 +108,20 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
 
 
     //sound
+    bgm_ = LoadSound("data/sound/bgm/select_element_BGM.wav");
     select_se_= LoadSound("data/sound/se/attribute_select.wav");
     back_se_ = LoadSound("data/sound/se/back.wav");
+
 }
 
 void Prep::Update()
 {
+    if(first_update_)
+    {
+        SetVolume(bgm_,0.4f);
+        PlaySound(bgm_,-1);
+        first_update_ = false;
+    }
     //キー入力
     if (Input::GetStickLeft(0).x < -0.8)
     {
@@ -179,8 +201,9 @@ void Prep::Update()
         if (is_move_)
         {
             delete video_;
+            video_ = nullptr;
             move_ = move_next_;
-            SetNewVideo(move_);
+            //SetNewVideo(move_);
         }
     }
     if (attack_ != attack_next_)
@@ -204,8 +227,9 @@ void Prep::Update()
         if (!is_move_)
         {
             delete video_;
+            video_ = nullptr;
             attack_ = attack_next_;
-            SetNewVideo(attack_);
+            //SetNewVideo(attack_);
         }
     }
 
@@ -325,7 +349,7 @@ void Prep::Draw()
     //背景
     DrawSprite(tex_bg_, Vector2(static_cast<float>(Graphical::GetWidth()) / 2,
                                 static_cast<float>(Graphical::GetHeight()) / 2), 0.0f,
-               Vector2(1920 * scale_x, 1080 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
+               Vector2(1920 * scale_x, 1080 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0));
 
     //移動と攻撃選択
     auto move_it = move_list.rbegin();
@@ -337,7 +361,7 @@ void Prep::Draw()
         if (is_move_ && i == 1)
             alpha = 1.0f;
         else
-            alpha = 0.5f;
+            alpha = 0.6f;
 
         DrawSprite(move_it->tex, Vector2(move_it->pos.x * scale_x, move_it->pos.y * scale_y), 0.0f,
                    Vector2(900 * scale_x, 900 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));
@@ -345,7 +369,7 @@ void Prep::Draw()
         if (!is_move_ && i == 1)
             alpha = 1.0f;
         else
-            alpha = 0.5f;
+            alpha = 0.6f;
 
         DrawSprite(attack_it->tex, Vector2(attack_it->pos.x * scale_x, attack_it->pos.y * scale_y), 0.0f,
                    Vector2(900 * scale_x, 900 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));

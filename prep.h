@@ -52,6 +52,9 @@ private:
 
     bool is_move_ = true;
 
+    float bg_alpha_ = 0.0f;
+    bool first_update_ = true;
+
     //通常テキスチャー
     int character_;
     int tex_fire_move_;
@@ -96,4 +99,10 @@ public:
 
 private:
     void SetNewVideo(ATTRIBUTE_ACTION video_file);
+    float AlphaAnimation(float rate)
+    {
+        static float time;
+        time += Time::GetDeltaTime() * rate;
+        return (sinf(time) + 1.0f) / 2.0f;
+    }
 };
