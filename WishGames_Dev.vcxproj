@@ -194,6 +194,7 @@
     <ClCompile Include="multi_object.cpp" />
     <ClCompile Include="multi_player.cpp" />
     <ClCompile Include="multi_result_skillorb.cpp" />
+    <ClCompile Include="multi_se.cpp" />
     <ClCompile Include="multi_skillorb.cpp" />
     <ClCompile Include="multi_spike.cpp" />
     <ClCompile Include="multi_ui.cpp" />

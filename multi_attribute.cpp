@@ -902,10 +902,10 @@ void ClientThunder::Attack(void) {
 		else {
 			attackAnim.texNo = attack2TexNo;
 			attackAnim.width = 5;
-			attackAnim.height = 5;
+			attackAnim.height = 6;
 			attackAnim.begin = 0;
 			attackAnim.end = 29;
-			rot += 90.0f * MATH::Deg2Rad;
+			rot -= 180.0f * MATH::Deg2Rad;
 		}
 
 		attackAnim.Draw(pos + localPos, rot, scl, col);

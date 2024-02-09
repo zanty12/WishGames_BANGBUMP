@@ -51,6 +51,11 @@ float4 PS(VSOutput input) : SV_Target0
 {
 	float4 tex = g_texture.Sample(g_sampler, input.uv);
 	float4 col = input.col;
+	
+
+	//tex.r += (0.5f - tex.r) * abs((0.5f - tex.r)) * 0.01f;
+	//tex.g += (0.5f - tex.g) * abs((0.5f - tex.g)) * 0.01f;
+	//tex.b += (0.5f - tex.b) * abs((0.5f - tex.b)) * 0.01f;
 	return tex * col;
 
 }

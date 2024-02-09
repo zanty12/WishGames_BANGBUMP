@@ -25,15 +25,26 @@ void ServerSkillOrb::Loop(void) {
 	// 一秒以内ならスキルポイントをとらない
 	if (timer.GetNowTime() < 1000) return;
 
+
+	bool  isDestroy = false;
 	for (auto &kvp : MultiPlayServer::clients_) {
+		// 削除なら何もしない
+		if (isDestroy) return;
+
+
 		auto &player = kvp.second.player_;
 		Vector2 direction = transform.position - player->transform.position;
 		float distance = direction.Distance();
 
 		if (distance <= radius + player->radius) {
 			auto &player = kvp.second.player_;
+			// ポイント加算
 			player->skillPoint += addPoint;
+			// 削除
 			Destroy();
+			// 効果音
+			PlaySE(haveSeNo, transform.position, player->transform.position);
+			isDestroy = true;
 		}
 	}
 }
