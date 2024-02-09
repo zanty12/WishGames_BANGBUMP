@@ -30,6 +30,7 @@ public:
     Vector2 Move() override;
     void Action() override;
     void DebugMenu() override;
+    void Gatchanko(bool is_attack) override;
 };
 
 class FireAttack : public MovableObj,public PlayerAttack
