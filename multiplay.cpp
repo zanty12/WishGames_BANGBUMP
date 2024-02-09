@@ -497,6 +497,7 @@ int MultiPlayClient::Register(std::string serverAddress) {
 			if (header.command = HEADER::RESPONSE_LOGIN) break;
 		}
 	}
+	// a
 
 	// IDを記録
 	id = header.id;
