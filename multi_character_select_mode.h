@@ -92,8 +92,7 @@ private:
 
 public:
 	MultiPlayCharacterSelectModeClientSide(MultiPlayClient * game) : MultiPlayModeClientSide(L"CharacterSelect"), game_(game) {
-		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
-		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
+		map_->backBGTexNo = LoadTexture("data/texture/BG/UI_elemental_BG.png");
 
 		// プレイヤーテクスチャの取得
 		bootTexNo[0] = LoadTexture("data/texture/UI/player_boot1.png");
@@ -121,18 +120,20 @@ public:
 		// キャラ選択
 		charFrameTexNo = LoadTexture("data/texture/UI/UI_frame_base.png");
 		charSelectArrow = LoadTexture("data/texture/UI/UI_elemental_select.png");
+		charReadyTexNo = LoadTexture("data/texture/UI/UI_ready.png");
 		charFramePTexNo[0] = LoadTexture("data/texture/UI/UI_frame_player1.png");
 		charFramePTexNo[1] = LoadTexture("data/texture/UI/UI_frame_player2.png");
 		charFramePTexNo[2] = LoadTexture("data/texture/UI/UI_frame_player3.png");
 		charFramePTexNo[3] = LoadTexture("data/texture/UI/UI_frame_player4.png");
 
-
 		soNo = LoadSound("data/sound/BGM/select_element_BGM.wav");
 
 
+		// ブロック非表示
+		isBlockShow = false;
+
 
 		video = new Video("./data/video/fire_move.mp4");
-
 		video->SetSize(Vector2(853.3 * static_cast<float>(Graphical::GetWidth()) / 1920,
 			480 * static_cast<float>(Graphical::GetHeight()) / 1080));
 		video->SetLoop(true);

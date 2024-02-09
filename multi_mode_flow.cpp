@@ -119,9 +119,20 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 	case AREA_CAPTURE: return new MultiPlayAreaCaptureModeClientSide();
 	case ENEMY_RUSH: return new MultiPlayEnemyRushModeClientSide();
 	case FINAL_BATTLE: return new MultiPlayFinalBattleModeClientSide();
-	case LAST_RESULT: return new MultiPlayLastResultModeClientSide();
+	case LAST_RESULT: return new MultiPlayLastResultModeClientSide(game_);
 	}
 	return nullptr;
+}
+
+MultiPlayFlowClientSide::MultiPlayFlowClientSide(MultiPlayClient *game) : game_(game) {
+	std::ostringstream path;
+	path << "data/texture/UI/" << "UI_icon_" << ((game->GetID() % 4) + 1) << ".png";
+	icon[0] = LoadTexture("data/texture/UI/UI_icon_1.png");
+	icon[1] = LoadTexture("data/texture/UI/UI_icon_2.png");
+	icon[2] = LoadTexture("data/texture/UI/UI_icon_3.png");
+	icon[3] = LoadTexture("data/texture/UI/UI_icon_4.png");
+	icon2 = LoadTexture("data/texture/UI/UI_icon_base.png");
+	icon3 = LoadTexture("data/texture/UI/UI_icon_gauge.png");
 }
 
 void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
@@ -158,7 +169,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 	else if (gameMode_) {
 
 		// マップの描画
-		gameMode_->map_->Draw(offset);
+		gameMode_->map_->Draw(offset, gameMode_->isBlockShow);
 
 		// ゲームのスタートの画面
 		if (res.time < gameMode_->startTime_) {
@@ -258,8 +269,8 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		Vector2 uv = Vector2::Zero;
 		Vector2 uvScale = Vector2::One;
 		Vector2 pos = CalcIconPosition(idx, maxMembers);
-		Vector2 scl = Vector2(200, 100);
-		DrawSprite(icon3,
+		Vector2 scl = Vector2(300, 300);
+		DrawSprite(icon2,
 			pos, 0.0f, scl,
 			Color::White,
 			uv, uvScale
@@ -280,13 +291,16 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 			
 
 			float x = pos.x - scl.x * 0.5f;
-			DrawSprite(icon2,
+			//DrawSpriteBoxEffectLeftToRight(
+			//	icon3, pos, scl, Color::White, t
+			//);
+			DrawSprite(icon3,
 				Vector2(x + scl.x * t * 0.5f, pos.y), 0.0f, Vector2(scl.x * t, scl.y),
 				Color::White,
 				uv, Vector2(t, 1.0f)
 			);
 		};
-		DrawSprite(icon,
+		DrawSprite(icon[idx % 4],
 			pos, 0.0f, scl,
 			Color::White,
 			uv, uvScale

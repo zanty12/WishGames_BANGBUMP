@@ -61,14 +61,14 @@ private:
 	MULTI_MODE currentMode_ = MULTI_MODE::NONE;
 	int numTexNo = LoadTexture("data/texture/UI/number.png");
 	int timerTexNo = LoadTexture("data/texture/UI/multi_timer.png");
-	int icon = LoadTexture("data/texture/UI/testicon1.png");
-	int icon2 = LoadTexture("data/texture/UI/testicon2.png");
-	int icon3 = LoadTexture("data/texture/UI/testicon3.png");
+	int icon[4] = {};
+	int icon2 = -1;
+	int icon3 = -1;
 
 private:
 	MultiPlayModeClientSide *CreateMode(MULTI_MODE mode);
 public:
-	MultiPlayFlowClientSide(MultiPlayClient *game) : game_(game) { }
+	MultiPlayFlowClientSide(MultiPlayClient *game);
 
 	~MultiPlayFlowClientSide() {
 		if (gameMode_) delete gameMode_;

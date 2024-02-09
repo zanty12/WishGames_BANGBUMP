@@ -47,6 +47,9 @@ void ServerPlayer::Loop(void) {
 		}
 	}
 	if (blownVelocity.DistanceSq() < 1.0f) blownVelocity = Vector2::Zero;
+
+	// スキルオーブの上限追加
+	if (999 < skillPoint) skillPoint = 999;
 }
 
 void ServerPlayer::Damage(AttackServerSide *attack) {

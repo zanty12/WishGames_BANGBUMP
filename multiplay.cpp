@@ -454,6 +454,8 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// シーン遷移アニメーションの初期化
 	MoveScene::Initialize();
+
+	filterTexNo = LoadTexture("data/texture/filter.png");
 }
 
 int MultiPlayClient::Register(std::string serverAddress) {
@@ -597,6 +599,8 @@ void MultiPlayClient::PlayerUpdate(void) {
 #endif
 	// シーン遷移アニメーション
 	MoveScene::Loop();
+
+	DrawSprite(filterTexNo, Vector2(Graphical::GetWidth(), Graphical::GetHeight()) * 0.5f, 0.0f, Vector2(Graphical::GetWidth(), Graphical::GetHeight()), Color(1,1,1,0.3f));
 
 
 #ifdef DEBUG_LINK
