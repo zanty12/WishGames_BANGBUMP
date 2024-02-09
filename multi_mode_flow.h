@@ -61,7 +61,7 @@ private:
 	MULTI_MODE currentMode_ = MULTI_MODE::NONE;
 	int numTexNo = LoadTexture("data/texture/UI/number.png");
 	int timerTexNo = LoadTexture("data/texture/UI/multi_timer.png");
-	int icon = -1;
+	int icon[4] = {};
 	int icon2 = -1;
 	int icon3 = -1;
 

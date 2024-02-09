@@ -126,8 +126,11 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 
 MultiPlayFlowClientSide::MultiPlayFlowClientSide(MultiPlayClient *game) : game_(game) {
 	std::ostringstream path;
-	path << "data/texture/UI/" << "UI_icon_" << (game->GetID() + 1) % 4 << ".png";
-	icon = LoadTexture(path.str());
+	path << "data/texture/UI/" << "UI_icon_" << ((game->GetID() % 4) + 1) << ".png";
+	icon[0] = LoadTexture("data/texture/UI/UI_icon_1.png");
+	icon[1] = LoadTexture("data/texture/UI/UI_icon_2.png");
+	icon[2] = LoadTexture("data/texture/UI/UI_icon_3.png");
+	icon[3] = LoadTexture("data/texture/UI/UI_icon_4.png");
 	icon2 = LoadTexture("data/texture/UI/UI_icon_base.png");
 	icon3 = LoadTexture("data/texture/UI/UI_icon_gauge.png");
 }
@@ -266,8 +269,8 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		Vector2 uv = Vector2::Zero;
 		Vector2 uvScale = Vector2::One;
 		Vector2 pos = CalcIconPosition(idx, maxMembers);
-		Vector2 scl = Vector2(200, 100);
-		DrawSprite(icon3,
+		Vector2 scl = Vector2(300, 300);
+		DrawSprite(icon2,
 			pos, 0.0f, scl,
 			Color::White,
 			uv, uvScale
@@ -288,13 +291,16 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 			
 
 			float x = pos.x - scl.x * 0.5f;
-			DrawSprite(icon2,
+			//DrawSpriteBoxEffectLeftToRight(
+			//	icon3, pos, scl, Color::White, t
+			//);
+			DrawSprite(icon3,
 				Vector2(x + scl.x * t * 0.5f, pos.y), 0.0f, Vector2(scl.x * t, scl.y),
 				Color::White,
 				uv, Vector2(t, 1.0f)
 			);
 		};
-		DrawSprite(icon,
+		DrawSprite(icon[idx % 4],
 			pos, 0.0f, scl,
 			Color::White,
 			uv, uvScale
