@@ -8,12 +8,8 @@ class Load
 {
 private:
 	static Video* video_;
-	static int loading_tex_;
 public:
-	Load()
-	{
-		loading_tex_ = LoadTexture("data/texture/UI/loading.png");
-	}
+	Load()= default;
 	~Load()
 	{
 		delete video_;
@@ -26,7 +22,8 @@ public:
 
 	static void LoadStop()
 	{
-
+		delete video_;
+		video_ = nullptr;
 	}
 
 	static void Update(void)
@@ -44,6 +41,7 @@ public:
 private:
 	static void NewVideo()
 	{
+		if(video_) delete video_;
 		video_ = new Video("data/video/LoadScreen.mp4");
 		video_->SetLoop(true);
 		video_->SetWindowPos(Vector2(Graphical::GetWidth() /2 , Graphical::GetHeight() / 2));

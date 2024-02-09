@@ -6,7 +6,6 @@ bool LoadClientSide::isNowLoad = false;
 std::thread *LoadClientSide::thread = nullptr;
 
 Video* Load::video_ = nullptr;
-int Load::loading_tex_ = 0;
 
 
 void LoadClientSide::BeginLoad(void) {
