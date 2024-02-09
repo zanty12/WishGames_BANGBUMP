@@ -196,11 +196,11 @@ void Thunder::Action()
         {
             attack_indicator_ = new ThunderIndicator();
         }
-        float angle = atan2(previousStick.y, previousStick.x);
-        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + attack_indicator_->GetScale().x / 2);
+        float angle = atan2(previousStick.y, -previousStick.x);
+        Vector2 pos = Vector2(cos(angle), sin(angle)) * (player_->GetScale().x / 2 + attack_indicator_->GetScale().x / 2);
         pos = player_->GetPos() + pos;
         attack_indicator_->SetPos(pos);
-        attack_indicator_->SetRot(angle);
+        attack_indicator_->SetRot(-angle);
     }
     //release
     if (attack_charge_ > atttack_trigger_min_ && stick_distance < responseMinStickDistance && attack_cd_ <= 0.0f)
@@ -211,7 +211,7 @@ void Thunder::Action()
             {
                 float range = 1 + (attack_charge_ - atttack_trigger_min_) / (attack_charge_max_- atttack_trigger_min_)*(15 + 1) * GameObject::SIZE_;
                 //15の後はレベル変動値
-                attack_[i] = new ThunderAttack(this, Vector2(previousStick.x,-previousStick.y).Normalize(),
+                attack_[i] = new ThunderAttack(this, Vector2(-previousStick.x,previousStick.y).Normalize(),
                                                17 * GameObject::SIZE_ * Time::GetDeltaTime(),range);
                 attack_charge_ = 0.0f;
                 attack_cd_ = 1.0f;
@@ -274,20 +274,26 @@ ThunderAttack::ThunderAttack(Thunder* parent, Vector2 dir, float vel,float range
                                                                            LoadTexture(Asset::GetAsset(fire_attack)),
                                                                            dir * vel),PlayerAttack(10000)
 {
+    //dir.x *= -1;
+    //SetVel(dir * vel);
     start_pos_ = parent_->GetPlayer()->GetPos();
     SetPos(parent_->GetPlayer()->GetPos());
     SetScale(size_);
     SetType(OBJ_ATTACK);
 
     float rot = GetRot();
-    SetRot(rot + (3.14f / 2));
+    SetRot(rot);
     damage_ = parent_->GetState()->atk;
 
     //アニメーション設定
-    SetScale(Vector2(SIZE_ * 2, SIZE_ * 2));
+    SetScale(Vector2(SIZE_ * 4, SIZE_ * 2));
     GetAnimator()->SetTexenum(thunder_attack);
     GetAnimator()->SetLoopAnim(THUNDER_ATTACK_ANIM);
     GetAnimator()->SetDrawPriority(75);
+
+    //サウンド
+    LoadAttackSound(SE_thunder_attack);
+    PlaySound(attack_sound_, 0);
 }
 
 void ThunderAttack::Update()

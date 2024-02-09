@@ -34,6 +34,14 @@ Game::Game(SceneMngr* scene_mngr)
     //BGM追加、再生
     practicemode_bgm_ = LoadSound(Asset::GetAsset(BGM_practicemode).c_str());
     PlaySound(practicemode_bgm_, -1);
+    SetVolume(practicemode_bgm_, 0.4f);
+
+    ui_training_ = LoadTexture("data/texture/UI/UI_training_text.png");
+    button_yes_ = LoadTexture("data/texture/UI/UI_yes_text.png");
+    button_no_ = LoadTexture("data/texture/UI/UI_no_text.png");
+    button_a_ = LoadTexture("data/texture/UI/A.png");
+    button_b_ = LoadTexture("data/texture/UI/B.png");
+    black_back_ = LoadTexture("data/texture/UI/fade.png");
 }
 
 
@@ -230,12 +238,6 @@ void Game::UpdateResult()
     if (!changed)
     {
         changed = true;
-        ui_training_ = LoadTexture("data/texture/UI/UI_training_text.png");
-        button_yes_ = LoadTexture("data/texture/UI/UI_yes_text.png");
-        button_no_ = LoadTexture("data/texture/UI/UI_no_text.png");
-        button_a_ = LoadTexture("data/texture/UI/A.png");
-        button_b_ = LoadTexture("data/texture/UI/B.png");
-        black_back_ = LoadTexture("data/texture/UI/fade.png");
     }
 
     //選択画面描画
@@ -250,6 +252,8 @@ void Game::UpdateResult()
         //ステージ選択画面に戻る
         if (Input::GetKeyDown(0, Input::South))
         {
+            StopSound(practicemode_bgm_);
+            StopSoundAll();
             scene_mngr_->ChangeScene(SCENE_MENU);
         }
 

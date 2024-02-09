@@ -10,6 +10,9 @@
 Fire::Fire(Player* player)
     : Attribute(player, ATTRIBUTE_TYPE_FIRE), move_effect_(new FireEffect(this))
 {
+    LoadMoveSound(SE_fire_move);
+    PlaySound(move_sound_, -1);
+    SetVolume(move_sound_, 0.0f);
 }
 
 Vector2 Fire::Move()
@@ -35,7 +38,12 @@ Vector2 Fire::Move()
     }
     if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f)
     {
+        SetVolume(move_sound_, 0.0f);
         move_effect_->SetColor(Color(1, 1, 1, 0));
+    }
+    else
+    {
+        SetVolume(move_sound_, 1.0f);
     }
 
     if (stick.Distance() > responseMinStickDistance && player_->GetVel().Distance() < speed * Time::GetDeltaTime())
@@ -59,6 +67,8 @@ Vector2 Fire::Move()
 
 void Fire::Action()
 {
+    SetVolume(move_sound_, 0.0f);
+
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
     stick.y *= -1;
@@ -144,6 +154,10 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
     GetAnimator()->SetTexenum(fire_attack);
     GetAnimator()->SetLoopAnim(FIRE_ATTACK_ANIM);
     GetAnimator()->SetDrawPriority(75);
+
+    //ƒTƒEƒ“ƒh
+    LoadAttackSound(SE_fire_attack);
+    PlaySound(attack_sound_, -1);
 }
 
 void FireAttack::Update()

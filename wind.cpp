@@ -7,6 +7,9 @@
 Wind::Wind(Player* player)
     : Attribute(player, ATTRIBUTE_TYPE_WIND),move_effect_(new WindEffect(this))
 {
+    LoadMoveSound(SE_wind_move);
+    PlaySound(move_sound_, -1);
+    SetVolume(move_sound_, 0.0f);
 }
 
 bool Wind::StickTrigger(Vector2 stick, Vector2 previousStick)
@@ -29,6 +32,8 @@ Vector2 Wind::Move(void)
     Vector2 stick = Input::GetStickLeft(0);
     Vector2 previousStick = Input::GetPreviousStickLeft(0);
 
+    SetVolume(move_sound_, 1.0f);
+
     Vector2 stickR = Input::GetStickRight(0);
     if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f &&
         abs(stickR.x) < 0.01f && abs(stickR.y) < 0.01f)
@@ -36,6 +41,16 @@ Vector2 Wind::Move(void)
         if (player_->GetAnimator()->GetLoopAnim() != PLAYER_ATTACK_ANIM &&
             player_->GetAnimator()->GetLoopAnimNext() != PLAYER_ATTACK_ANIM)
             player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
+    }
+
+    if (abs(stick.x) < 0.01f && abs(stick.y) < 0.01f)
+    {
+        SetVolume(move_sound_, 0.0f);
+        move_effect_->SetColor(Color(1, 1, 1, 0));
+    }
+    else
+    {
+        SetVolume(move_sound_, 1.0f);
     }
 
     // 回転のスピードを取得
@@ -100,6 +115,8 @@ Vector2 Wind::Move(void)
 
 void Wind::Action(void)
 {
+    SetVolume(move_sound_, 0.0f);
+
     using namespace PHYSICS;
     Vector2 stick = Input::GetStickRight(0);
     Vector2 previousStick = Input::GetPreviousStickRight(0);
@@ -172,6 +189,10 @@ WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPl
     GetAnimator()->SetTexenum(wind_attack);
     GetAnimator()->SetLoopAnim(WIND_ATTACK_ANIM);
     GetAnimator()->SetDrawPriority(25);
+
+    //サウンド
+    LoadAttackSound(SE_wind_attack);
+    PlaySound(attack_sound_, -1);
 }
 
 void WindAttack::Update()
