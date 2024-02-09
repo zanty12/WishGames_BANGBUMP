@@ -383,6 +383,12 @@ void Prep::Draw()
         ++attack_it;
     }
 
+    //arrows
+    DrawSprite(tex_select_arrow_,Vector2(1183,1080-428),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2::Zero,Vector2(1.0f,1.0f));
+    DrawSprite(tex_select_arrow_,Vector2(679,1080-428),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2(1.0f,1.0f),Vector2(-1.0f,-1.0f));
+    DrawSprite(tex_select_arrow_,Vector2(1183,1080-827),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2::Zero,Vector2(1.0f,1.0f));
+    DrawSprite(tex_select_arrow_,Vector2(679,1080-827),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2(1.0f,1.0f),Vector2(-1.0f,-1.0f));
+
     //âEâ∫ëÄçÏê‡ñæ
     //ñﬂÇÈ
     DrawSprite(return_tex_, Vector2(((Graphical::GetWidth() -100) ), 80), 0.0f,
