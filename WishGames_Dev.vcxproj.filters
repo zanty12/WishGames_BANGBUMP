@@ -295,6 +295,15 @@
     <ClCompile Include="multi_character_select_mode.cpp">
       <Filter>Multiplay\src\mode</Filter>
     </ClCompile>
+    <ClCompile Include="fade.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="title_ver2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_character_select_frame.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphical.h">
@@ -614,6 +623,21 @@
     </ClInclude>
     <ClInclude Include="multi_last_result_mode.h">
       <Filter>Multiplay\head\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="bar.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="fade.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="title_ver2.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_se.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_character_select_frame.h">
+      <Filter>Multiplay\head</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

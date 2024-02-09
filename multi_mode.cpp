@@ -8,6 +8,8 @@ void MultiPlayModeServerSide::UpdateStart(std::map<int, CLIENT_DATA_SERVER_SIDE>
 	float time = time_;
 
 	isPlayerMove = 5.0f < time;
+
+	
 }
 
 void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
@@ -54,12 +56,28 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 	}
 }
 
+void MultiPlayModeServerSide::Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
+	// プレイヤーの状態の初期化
+	for (auto kvp : MultiPlayServer::clients_) {
+		auto player = kvp.second.player_;
+		player->animType = ANIMATION_TYPE_IDLE;
+		player->attackVelocity = player->chargeVelocity = player->blownVelocity = player->velocity = Vector2::Zero;
+	}
+}
+
 void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
 	float time = players.time;
 
 
-	const float SPAWN_ANIMATION_START_TIME = 2.0f;
-	const float SPAWN_ANIMATION_TIME = 3.0f;
+	const float SPAWN_ANIMATION_START_TIME = 2.0f;			// 登場表示開始
+	const float STAGE_NAME_ANIMATION_START_TIME = 5.0f;		// ステージ名表示開始
+
+	const float SPAWN_ANIMATION_TIME = 3.0f;				// 登場中
+	const float STAGE_NAME_ANIMATION_TIME = 4.0f;			// ステージ名表示中
+
+
+
+
 	float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
 
 	// スポーンさせる
@@ -77,6 +95,33 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 			MultiPlayClient::clients[iterator->id]->ShowEntry();
 		}
 		clientSpawnCount++;
+	}
+
+	// ステージ名
+	else if (STAGE_NAME_ANIMATION_START_TIME <= time) {
+		float t = (time - STAGE_NAME_ANIMATION_START_TIME) / STAGE_NAME_ANIMATION_TIME;
+		float centerX = Graphical::GetWidth() * 0.5f;
+		float centerY = Graphical::GetHeight() * 0.5f;
+
+
+		float y = MATH::Bezier(centerY + 150.0f, centerY + 50.0f, centerY - 25.0f, centerY - 50.0f, t);
+		float a = MATH::Bezier(0.0f, 1.0f, 0.7f, 0.0f, t);
+		
+		DrawSprite(stageNameTexNo, Vector2(centerX, y), 0.0f, Vector2::One * 200.0f, Color::White * a);
+	}
+
+	// カウントダウン
+	float countDown = startTime_ - time;
+	if (countDown < 4.0f) {
+		float vh = 1.0f / 4.0f;
+		float v = (int)countDown * vh;
+		float centerX = Graphical::GetWidth() * 0.5f;
+		float centerY = Graphical::GetHeight() * 0.5f;
+		float t = countDown - (int)countDown;
+		float rate = MATH::Leap(0.4f, 1.0f, t * t);
+
+		DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
+			Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
 	}
 }
 

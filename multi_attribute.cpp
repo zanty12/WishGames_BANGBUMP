@@ -160,6 +160,7 @@ void ServerFire::Move(void) {
 	velocity *= state->friction;
 	player->velocity = velocity;
 
+
 	// 摩擦
 	Friction();
 }
@@ -626,7 +627,7 @@ void ClientWater::DrawUI(void) {
 	Color col = Color::White;
 
 	float ratio = (float)mp / (float)state->maxMp;
-	if (ratio < 1.0f) col *= 0.25f;
+	if (mp < state->cost) col *= 0.25f;
 	DrawSpriteBoxEffectBottomToUp(frameUITexNo, pos + localPos, scl, Color::White, 1.0f);
 	DrawSpriteBoxEffectBottomToUp(uiTexNo, pos + localPos, scl, col, ratio);
 }
@@ -884,7 +885,7 @@ void ClientThunder::Attack(void) {
 	if (IsPlayerAnimAttackCharge(player->animType)) {
 		Vector2 localPos = direction.Normal().Normalize() * 40.0f;
 		Vector2 pos = player->transform.position - MultiPlayClient::offset;
-		float rot = atan2f(direction.x, direction.y);
+		float rot = atan2f(-direction.y, direction.x);
 		Vector2 scl = Vector2::One * 150.0f;
 		Color col = Color::White;
 
@@ -893,10 +894,18 @@ void ClientThunder::Attack(void) {
 		// レベルによってテクスチャの変更
 		if (player->GetLv() < 6) {
 			attackAnim.texNo = attackTexNo;
+			attackAnim.width = 5;
+			attackAnim.height = 2;
+			attackAnim.begin = 0;
+			attackAnim.end = 9;
 		}
 		else {
 			attackAnim.texNo = attack2TexNo;
-			rot += 90.0f * MATH::Deg2Rad;
+			attackAnim.width = 5;
+			attackAnim.height = 6;
+			attackAnim.begin = 0;
+			attackAnim.end = 29;
+			rot -= 180.0f * MATH::Deg2Rad;
 		}
 
 		attackAnim.Draw(pos + localPos, rot, scl, col);
@@ -929,14 +938,14 @@ void ServerThunderAttack::Loop(void) {
 		Destroy();
 }
 void ServerThunderAttack::KnockBack(ServerMovableGameObject *object) {
-	object->blownVelocity = (object->transform.position - transform.position) * knockbackRate;
+	object->blownVelocity = (object->transform.position - transform.position).Normalize() * knockbackRate;
 }
 
 void ClientThunderAttack::Loop(void) {
 	if (!isShow) return;
 
 	Vector2 pos = transform.position;
-	float rot = atan2f(velocity.x, velocity.y);
+	float rot = atan2f(-velocity.y, velocity.x);
 	Vector2 scl = Vector2::One * 150.0f;
 	Color col = Color::White;
 	anim.Draw(pos - MultiPlayClient::offset, rot, scl, col);

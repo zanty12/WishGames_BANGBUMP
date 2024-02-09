@@ -103,7 +103,7 @@ public:
 class ClientAttribute;
 class AttackClientSide;
 class ClientPlayer : public ClientMovableGameObject {
-private:
+public:
 	enum ENTRY_TYPE {
 		NONE,
 		ENTRY,
@@ -116,7 +116,6 @@ private:
 	MultiAnimator reverseAnim;								// 反転アニメーション
 	MultiAnimator *curAnim = nullptr;						// アニメーション（現在）
 	WIN::Time timer;										// スポーン開始時からの時間計測
-	ENTRY_TYPE entryType = NONE;							// 入場演出タイプ
 
 
 	MultiAnimator allDamageEffect;							// ダメージエフェクト
@@ -129,6 +128,8 @@ private:
 	MultiAnimator lvDownEffect;								// レベルダウンエフェクト
 	MultiAnimator lvUpUI;									// レベルアップUIエフェクト
 	MultiAnimator lvDownUI;									// レベルダウンUIエフェクト
+	int seLvUpNo = -1;										// レベルアップSE
+	int seLvDownNo = -1;									// レベルダウンSE
 
 public:
 	int skillPoint = 0;										// スキルポイント
@@ -150,12 +151,15 @@ public:
 	ClientAttribute *attackAttribute = nullptr;				// 攻撃属性
 	ClientAttribute *curMoveAttribute = nullptr;			// 移動属性（現在）
 	ClientAttribute *curAttackAttribute = nullptr;			// 攻撃属性（現在）
+	ENTRY_TYPE entryType = NONE;							// 入場演出タイプ
 	float skillPointAnimation = 0.0f;						// スキルポイント獲得時のゲージのアニメーションで使用する
 	int lvupPoint[MAX_LV] = {};								// レベルアップに必要なポイント
+	int iconTexNo = -1;										// 1P,2P,3P,4P
+	int cursorTexNo = -1;									// カーソル
 
 
 public:
-	ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform);
+	ClientPlayer(int id, ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform);
 
 	void Loop(void) override;
 	void ShowEntry();

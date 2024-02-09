@@ -139,8 +139,8 @@ public:
 
 	Vector3 operator+= (Vector3 v);
 	Vector3 operator-= (Vector3 v);
-	friend Vector3 operator*= (Vector3 v, float scaler) { return Vector3(v.x *= scaler, v.y *= scaler, v.z *= scaler); }
-	friend Vector3 operator/= (Vector3 v, float scaler) { return Vector3(v.x /= scaler, v.y /= scaler, v.z /= scaler); }
+	friend Vector3 operator*= (Vector3 &v, float scaler) { return Vector3(v.x *= scaler, v.y *= scaler, v.z *= scaler); }
+	friend Vector3 operator/= (Vector3 &v, float scaler) { return Vector3(v.x /= scaler, v.y /= scaler, v.z /= scaler); }
 	friend Vector3 operator*= (float scaler, Vector3 v) { return Vector3(scaler *= v.x, scaler *= v.y, scaler *= v.z); }
 	friend Vector3 operator/= (float scaler, Vector3 v) { return Vector3(scaler /= v.x, scaler /= v.y, scaler /= v.z); }
 

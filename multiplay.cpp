@@ -149,6 +149,7 @@ void MultiPlayServer::PlayerUpdate(void) {
 
 			// 移動させる
 			player->transform.position += player->velocity + player->blownVelocity + player->gravityVelocity;
+
 #ifdef DEBUG_INPUT
 			std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
 #endif
@@ -470,9 +471,23 @@ int MultiPlayClient::Register(std::string serverAddress) {
 	SendTo(sockfd_, (char *)&header, sizeof(HEADER), 0, serverAddr);
 
 	// 受信
+	WIN::Time timer;
+	timer.Start();
 	while (true) {
-		Recv(sockfd_, (char *)&header, sizeof(HEADER), 0);
-		if (header.command = HEADER::RESPONSE_LOGIN) break;
+		// ファイルディスクリプタ
+		FD tmp;
+		memcpy(&tmp, &readfd_, sizeof(FD));
+		Select(&tmp, nullptr, nullptr, 0, 1);
+
+		if (tmp.Contains(sockfd_)) {
+			Recv(sockfd_, (char *)&header, sizeof(HEADER), 0);
+			if (header.command = HEADER::RESPONSE_LOGIN) break;
+		}
+		// 10秒間入出できないなら強制終了
+		else if (10000ul < timer.GetNowTime()) {
+			Unregister();
+			return -1;
+		}
 	}
 
 	// IDを記録
@@ -480,6 +495,11 @@ int MultiPlayClient::Register(std::string serverAddress) {
 
 	std::cout << "Res << ID:" << header.id << " Login" << std::endl;
 	std::cout << header.id << "番目に登録しました。" << std::endl;
+
+	// 終了
+	if (id == -1) {
+		Unregister();
+	}
 
 	return header.id;
 }
@@ -499,9 +519,12 @@ void MultiPlayClient::Unregister(void) {
 	std::cout << id << "を解除しました。" << std::endl;
 
 	sockfd_.Close();
+
+	isFinish = true;
 }
 
 void MultiPlayClient::PlayerUpdate(void) {
+
 	// カメラ座標の計算
 	if (res_.clients.size()) {
 		float posY = res_.clients.begin()->position.y;		// プレイヤーのY座標
@@ -554,12 +577,13 @@ void MultiPlayClient::PlayerUpdate(void) {
 	// ライトエフェクトの描画
 	lightEffect.Draw(offset);
 
+#ifndef MOVIE
 	// UIの描画
 	gameMode->DrawUI(res_);
 
 	// プレイヤーUIの描画
-	for (auto kvp : MultiPlayClient::clients) kvp.second->DrawUI();
-
+	for (auto kvp : MultiPlayClient::clients) if (kvp.second->entryType == ClientPlayer::ENTRY) kvp.second->DrawUI();
+#endif
 	// シーン遷移アニメーション
 	MoveScene::Loop();
 
@@ -649,8 +673,7 @@ void MultiPlayClient::RecvUpdate(int waitTime) {
 
 			// オブジェクトが作成されていないなら作成する
 			if (iterator == clients.end()) {
-				player = new ClientPlayer(client.moveAttributeType, client.attackAttributeType, Transform(client.position));
-				player->id = client.id;
+				player = new ClientPlayer(client.id, client.moveAttributeType, client.attackAttributeType, Transform(client.position));
 				clients[client.id] = player;
 			}
 			else {

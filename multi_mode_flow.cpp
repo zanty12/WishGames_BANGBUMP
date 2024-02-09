@@ -3,6 +3,7 @@
 #include "load.h"
 #include "multi_ui.h"
 #include "sound.h"
+#include "lib/collider2d.h"
 
 /***********************************************************
 	Server
@@ -73,8 +74,6 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 		if (gameMode_->startTime_ <= gameMode_->time_ && gameMode_->playTime_ < 0.0f && !gameMode_->isSkip) deltaTime = 0.0f;
 		gameMode_->time_ += deltaTime;
 
-		std::cout << "TIME : " << gameMode_->time_ << ", MODE : " << gameMode_->time_ << std::endl;
-
 
 		// ゲームのスタートの更新
 		if (gameMode_->time_ < gameMode_->startTime_) {
@@ -90,6 +89,10 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 		else {
 			gameMode_->mode = MultiPlayModeServerSide::PLAY;
 			gameMode_->Update(clients);
+
+			if (GetAsyncKeyState(VK_RETURN)) {
+				if(0.0f <= gameMode_->playTime_)gameMode_->time_ = gameMode_->startTime_ + gameMode_->playTime_;
+			}
 		}
 		gameMode_->preMode = gameMode_->mode;
 		preTime = timeGetTime();
@@ -122,6 +125,7 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 }
 
 void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
+
 	// モードが切り替わったなら、次のモードへ移行
 	if (currentMode_ != res.mode) {
 		// 現在のモードの取得
@@ -145,7 +149,10 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		currentMode_ = GetMode();
 
 		// BGMを流す
-		if (gameMode_->soNo != -1) PlaySound(gameMode_->soNo, true);
+		if (gameMode_ && gameMode_->soNo != -1) {
+			PlaySound(gameMode_->soNo, true);
+			SetVolume(gameMode_->soNo, 0.4f);
+		}
 	}
 	// モードの実行
 	else if (gameMode_) {
@@ -169,7 +176,55 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 }
 
 void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
+	if (gameMode_ == nullptr) return;
+
+	// ゲームモードの描画（UI）
+	gameMode_->DrawUI(res);
+
+	// プレイ時間がない（キャラ選択 or リザルト）
 	if (gameMode_->playTime_ < 0.0f) return;
+
+
+
+
+	// カーソルの表示
+	auto player = MultiPlayClient::clients[MultiPlayClient::GetID()];
+	using namespace PHYSICS;
+	for (auto kvp : MultiPlayClient::clients) {
+		auto other = kvp.second;
+
+		// 自分自身ならカーソルいらない
+		if (other->id == player->id) continue;
+
+		float bottom = MultiPlayClient::offset.y;
+		float upper = bottom + Graphical::GetHeight();
+		Vector2 direction = other->transform.position - player->transform.position;
+		Vector2 scl = Vector2(75, 75);
+		float rot = std::atan2(direction.x, direction.y);
+
+		{
+			float n = upper - player->transform.position.y;
+			float m = other->transform.position.y - upper;
+			if (0.0f < m) {
+				Vector2 pos = (other->transform.position * n + player->transform.position * m) / (n + m);
+				pos -= direction.Normalize() * 10.0f;
+
+				DrawSprite(other->cursorTexNo, pos - MultiPlayClient::offset, rot, scl, Color::White);
+			}
+		}
+		{
+			float n = player->transform.position.y - bottom;
+			float m = bottom - other->transform.position.y;
+			if (0.0f < m) {
+				Vector2 pos = (other->transform.position * n + player->transform.position * m) / (n + m);
+				pos -= direction.Normalize() * 10.0f;
+
+				DrawSprite(other->cursorTexNo, pos - MultiPlayClient::offset, rot, scl, Color::White);
+			}
+		}
+	}
+
+
 
 
 
@@ -185,15 +240,15 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	// 時間制限の描画（数値）
 	// ゲームのスタート
 	if (res.time < gameMode_->startTime_) {
-		Number(Vector2(centerX, 50.0f), Vector2(100, 100), gameMode_->startTime_ - res.time);
+		Number(Vector2(centerX, 100.0f), Vector2(100, 100), gameMode_->startTime_ - res.time);
 	}
 	// ゲームのリザルト
 	else if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {
-		Number(Vector2(centerX, 50.0f), Vector2(100, 100), res.maxTime - res.time);
+		Number(Vector2(centerX, 100.0f), Vector2(100, 100), res.maxTime - res.time);
 	}
 	// ゲームモード
 	else {
-		Number(Vector2(centerX, 50.0f), Vector2(100, 100), res.maxTime - gameMode_->resultTime_ - res.time);
+		Number(Vector2(centerX, 100.0f), Vector2(100, 100), res.maxTime - gameMode_->resultTime_ - res.time);
 	}
 
 	// スコアの描画
@@ -241,10 +296,10 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		float centerX = Graphical::GetWidth() * 0.5f;
 		float height = Graphical::GetHeight();
 		switch (idx) {
-		case 0: Number(Vector2(centerX - 175, 60), Vector2::One * 70.0f, client.score); break;
-		case 1: Number(Vector2(centerX - 70,  60), Vector2::One * 70.0f, client.score); break;
-		case 2: Number(Vector2(centerX + 70,  60), Vector2::One * 70.0f, client.score); break;
-		case 3: Number(Vector2(centerX + 175, 60), Vector2::One * 70.0f, client.score); break;
+		case 0: Number(Vector2(centerX - 175, 100.0f), Vector2::One * 70.0f, client.score); break;
+		case 1: Number(Vector2(centerX - 70,  100.0f), Vector2::One * 70.0f, client.score); break;
+		case 2: Number(Vector2(centerX + 70,  100.0f), Vector2::One * 70.0f, client.score); break;
+		case 3: Number(Vector2(centerX + 175, 100.0f), Vector2::One * 70.0f, client.score); break;
 		}
 	}
 }

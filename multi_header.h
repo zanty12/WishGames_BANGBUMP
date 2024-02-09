@@ -240,6 +240,7 @@ struct RESPONSE_CHARACTER_SELECT {
 		int id = -1;						// 属性のID
 		ATTRIBUTE_TYPE moveAttributeType;	// 移動属性タイプ
 		ATTRIBUTE_TYPE attackAttributeType;	// 攻撃属性タイプ
+		int status = 0;						// プレイヤーの状態（選択しているか？決定しているか？）
 	};
 
 	std::list<DESC> characters;

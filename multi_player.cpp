@@ -3,7 +3,9 @@
 #include "sprite.h"
 #include "multiplay.h"
 #include "multi_skillorb.h"
-#include "sound.h"
+#include "multiplay.h"
+#include "multi_ui.h"
+#include "multi_se.h"
 
 
 void ServerPlayer::Loop(void) {
@@ -81,8 +83,11 @@ void ServerPlayer::SkillOrbDrop(int drop) {
 
 
 
-ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform) :
+ClientPlayer::ClientPlayer(int id, ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform) :
 	ClientMovableGameObject(transform) {
+	// idの設定
+	this->id = id;
+
 	// レベル範囲の読み込み
 	std::wstring lvStr = L"lv";
 	for (int i = 0; i < MAX_LV; i++) {
@@ -92,7 +97,8 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 
 	SetMoveAttribute(moveAttribute);
 	SetAttackAttribute(attackAttribute);
-	this->transform.scale = Vector2::One * 150;
+	this->transform.scale.x = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"showX", 0);
+	this->transform.scale.y = ini::GetFloat(PARAM_PATH + L"player.ini", L"Player", L"showY", 0);
 
 	preMoveAttributeType = moveAttributeType;
 	preAttackAttributeType = attackAttributeType;
@@ -111,12 +117,27 @@ ClientPlayer::ClientPlayer(ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE atta
 	lvUpUI = MultiAnimator(LoadTexture("data/texture/UI/UI_levelup.png"), 5, 6, 0, 29, false);
 	lvDownUI = MultiAnimator(LoadTexture("data/texture/UI/UI_leveldown.png"), 5, 6, 0, 29, false);
 
+	// サウンド
+	seLvUpNo = LoadSound("data/sound/SE/lv_up.wav");
+	seLvDownNo = LoadSound("data/sound/SE/lv_down.wav");
+
+
+
+
 	exEffect.SetFrame(1000 / 42);
 	exEffect.MoveEnd();
 	lvUpEffect.MoveEnd();
 	lvDownEffect.MoveEnd();
 	lvUpUI.MoveEnd();
 	lvDownUI.MoveEnd();
+
+	std::ostringstream iconPath;
+	iconPath << "data/texture/UI/" << (id % 4) + 1 << "p.png";
+	iconTexNo = LoadTexture(iconPath.str());
+
+	std::ostringstream cursorPath;
+	cursorPath << "data/texture/UI/UI_pointer_player" << (id % 4) + 1 << ".png";
+	cursorTexNo = LoadTexture(cursorPath.str());;
 }
 
 void ClientPlayer::Loop(void) {
@@ -187,7 +208,7 @@ void ClientPlayer::ShowEntry() {
 	// アニメーション
 	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_spawn.png"), 5, 3, 0, 9, false);
 	// 落雷を降らす
-	float height = 1000.0f;
+	float height = 1100.0f;
 	Vector2 localPos = Vector2(0.0f, height * 0.15f);
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
 
@@ -203,12 +224,22 @@ void ClientPlayer::ShowExit() {
 	// アニメーション
 	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_transfer.png"), 5, 6, 0, 25, false);
 	// 落雷を降らす
-	float height = 1000.0f;
+	float height = 1100.0f;
 	Vector2 localPos = Vector2(0.0f, height * 0.15f);
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
 }
 void ClientPlayer::DrawUI(void) {
 	if (curAttackAttribute) curAttackAttribute->DrawUI();
+	DrawSprite(iconTexNo,
+		transform.position + Vector2(0.0f, transform.scale.y * 0.75f) - MultiPlayClient::offset,
+		0.0f,
+		Vector2(25, 25),
+		Color::White);
+
+	lvUpEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
+	lvDownEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
+	lvUpUI.Draw(CalcIconPosition(id, MultiPlayClient::clients.size()) + Vector2(0.0f, 45.0f), 0.0f, transform.scale, Color::White);
+	lvDownUI.Draw(CalcIconPosition(id, MultiPlayClient::clients.size()) + Vector2(0.0f, 45.0f), 0.0f, transform.scale, Color::White);
 }
 
 void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim) {
@@ -285,15 +316,13 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 	if (preLv < lv) {
 		lvUpEffect.MoveBegin();
 		lvUpUI.MoveBegin();
+		if (MultiPlayClient::GetID() == id) PlaySE(seLvUpNo);
 	}
 	else if (lv < preLv) {
 		lvDownEffect.MoveBegin();
 		lvDownUI.MoveBegin();
+		if (MultiPlayClient::GetID() == id) PlaySE(seLvDownNo);
 	}
-	lvUpEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
-	lvDownEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
-	lvUpUI.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
-	lvDownUI.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
 	preLv = lv;
 }
 

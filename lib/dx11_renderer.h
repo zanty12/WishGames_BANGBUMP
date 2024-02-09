@@ -84,7 +84,7 @@ namespace DX {
 			/// <param name="hwnd">ハンドルウィンドウ</param>
 			/// <param name="device3d">デバイス3D</param>
 			/// <returns></returns>
-			HRESULT Create(HWND hwnd, ID3D11Device *device);
+			HRESULT Create(HWND hwnd, BOOL windowed, ID3D11Device *device);
 
 			CORE::VIEWPORT &GetViewport() { return viewport; }
 			CORE::SWAPCHAIN &GetSwapchain() { return swapchain; }

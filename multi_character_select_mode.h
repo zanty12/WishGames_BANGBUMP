@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include "multi_character_select_frame.h"
 #include "multiplay.h"
 #include "multi_mode.h"
 #include "multi_runenum.h"
@@ -8,6 +9,7 @@
 #include "prep.h"
 #include "follow.h"
 #include "video.h"
+#include "asset.h"
 
 class MultiPlayServer;
 class MultiPlayClient;
@@ -17,6 +19,7 @@ class MultiPlayClient;
 class MultiPlayCharacterSelectModeServerSide : public MultiPlayModeServerSide {
 private:
 	MultiPlayServer *game_ = nullptr;
+	std::map<int, int> status;
 
 private:
 	/// <summary>
@@ -56,18 +59,6 @@ public:
 ************************************************************/
 class MultiPlayCharacterSelectModeClientSide : public MultiPlayModeClientSide {
 private:
-	struct AnimData {
-		Follow uAttackAnim, uMoveAnim;
-		ATTRIBUTE_TYPE attackAttributeType = ATTRIBUTE_TYPE_FIRE, moveAttributeType = ATTRIBUTE_TYPE_FIRE;
-
-		AnimData() = default;
-		AnimData(ATTRIBUTE_TYPE attackAttributeType, ATTRIBUTE_TYPE moveAttributeType)
-			: attackAttributeType(attackAttributeType), moveAttributeType(moveAttributeType) { }
-
-		void set(ATTRIBUTE_TYPE attackAttributeType, ATTRIBUTE_TYPE moveAttributeType) {
-			this->attackAttributeType = attackAttributeType, this->moveAttributeType = moveAttributeType;
-		}
-	};
 
 	/// <summary>
 	/// 属性作成
@@ -76,16 +67,26 @@ private:
 
 private:
 	RESPONSE_CHARACTER_SELECT res;
-	std::map<int, AnimData> characters;
-	int charsTexNo = LoadTexture("data/texture/player1_11_22_33_44.png");
+	std::map<int, CharacterSelectFrameClientSide> characters;
 	MultiPlayClient *game_ = nullptr;
 	Video *video = nullptr;
 	int bootTexNo[ATTRIBUTE_TYPE_NUM] = {};
 	int handTexNo[ATTRIBUTE_TYPE_NUM] = {};
-	int playerTexNo[4] = {};
+	int playerTexNo[4] = {};									// キャラ画像
+	int charFramePTexNo[4] = {};								// キャラフレーム
+	int charFrameTexNo = -1;									// キャラのフレーム
+
+
+	int return_tex_ = -1;										// テクスチャ（戻る）
+	int confirm_tex_ = -1;										// テクスチャ（進む）
+	int a_tex_ = -1;											// テクスチャ（Aボタン）
+	int b_tex_ = -1;											// テクスチャ（Bボタン）
+	int select_tex_ = -1;										// テクスチャ（選択）
+	int stick_tex_ = -1;										// テクスチャ（スティック）
+	int match_tex_ = -1;										// テクスチャ（マッチメイキング）
 
 private:
-	void CharacterDraw(int id, int maxIdx, float width, float height, float gap, int moveAttribute, int attackAttribute, float moveAttributeSmooth, float attackAttributeSmooth);
+	void CharacterDraw(int id, int maxIdx, bool isShow, float width, float height, float gap, int moveAttribute, int attackAttribute, float moveAttributeSmooth, float attackAttributeSmooth);
 
 public:
 	MultiPlayCharacterSelectModeClientSide(MultiPlayClient * game) : MultiPlayModeClientSide(L"CharacterSelect"), game_(game) {
@@ -105,6 +106,23 @@ public:
 		playerTexNo[1] = LoadTexture("data/texture/UI/player2_base.png");
 		playerTexNo[2] = LoadTexture("data/texture/UI/player3_base.png");
 		playerTexNo[3] = LoadTexture("data/texture/UI/player4_base.png");
+
+		// UIテクスチャの取得
+		a_tex_ = LoadTexture("data/texture/UI/A.png");
+		b_tex_ = LoadTexture("data/texture/UI/B.png");
+		return_tex_ = LoadTexture("data/texture/UI/back.png");
+		confirm_tex_ = LoadTexture("data/texture/UI/go.png");
+		select_tex_ = LoadTexture("data/texture/UI/select.png");
+		stick_tex_ = LoadTexture("data/texture/UI/stick.png");
+		match_tex_ = LoadTexture("data/texture/UI/menu/UI_matchmaking.png");
+
+		// キャラ選択
+		charFrameTexNo = LoadTexture("data/texture/UI/UI_frame_base.png");
+		charFramePTexNo[0] = LoadTexture("data/texture/UI/UI_frame_player1.png");
+		charFramePTexNo[1] = LoadTexture("data/texture/UI/UI_frame_player2.png");
+		charFramePTexNo[2] = LoadTexture("data/texture/UI/UI_frame_player3.png");
+		charFramePTexNo[3] = LoadTexture("data/texture/UI/UI_frame_player4.png");
+
 
 		soNo = LoadSound("data/sound/BGM/select_element_BGM.wav");
 
@@ -126,6 +144,7 @@ public:
 	void DrawStart(RESPONSE_PLAYER &players, Vector2 offset) override;
 	void DrawResult(RESPONSE_PLAYER &players, Vector2 offset) override;
 	void Draw(RESPONSE_PLAYER &players, Vector2 offset) override;
+	void DrawUI(RESPONSE_PLAYER &players) override;
 	void ParseResponse(Storage &in) override;
 	void Release(RESPONSE_PLAYER &players) override;
 

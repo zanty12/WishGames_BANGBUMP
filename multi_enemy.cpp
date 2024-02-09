@@ -141,7 +141,7 @@ void AttackEnemy2ServerSide::Loop(void) {
 		if (MultiPlayClient::GetGameMode()->GetMap()->Collision(transform.position, radius) != -1) Destroy();
 }
 void AttackEnemy2ServerSide::KnockBack(ServerMovableGameObject *object) {
-	object->blownVelocity = (object->transform.position - transform.position) * knockbackRate;
+	object->blownVelocity = (object->transform.position - transform.position).Normalize() * knockbackRate;
 }
 void AttackEnemy2ClientSide::Loop(void) {
 	if (!isShow) return;

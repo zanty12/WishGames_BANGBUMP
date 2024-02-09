@@ -28,7 +28,7 @@ private:
 
 public:
 	Vector2 position;
-	const static int cellSize = 53;
+	const static int cellSize = 64;
 	std::list<Vector2> startPosition;
 	int frontBGTexNo = -1, middleBGTexNo = -1, backBGTexNo = -1;
 
@@ -44,7 +44,7 @@ public:
 	Vector2Int ToIndex(Vector2 pos) { return Vector2Int(pos.x / cellSize, pos.y / cellSize); }
 	Vector2 ToPosition(Vector2Int idx) { return Vector2(idx.x * cellSize, idx.y * cellSize); }
 	void DrawBG(int bgTexNo, Vector2 offset, float aspectRatio);
-	void Draw(Vector2 offset);
+	void Draw(Vector2 offset, bool isBlockShow = true);
 	void AttackUpdate(void);
 	int Collision(Vector2 &position, float radius, Vector2 *velocity = nullptr);
 	int Collision(Vector2 &position, Vector2 scale, Vector2 *velocity = nullptr, Vector2 *blownVelocity = nullptr, Vector2 *gravityVelocity = nullptr);

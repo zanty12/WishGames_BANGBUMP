@@ -3,6 +3,7 @@
 #include "multi_object.h"
 #include "multi_anim.h"
 #include "lib/win_time.h"
+#include "multi_se.h"
 
 /*******************************************************
   Server
@@ -12,6 +13,7 @@ public:
 	int addPoint = 1;
 	WIN::Time timer;
 	float friction = 0.95f;
+	int haveSeNo = LoadSound("data/sound/SE/skillorb.wav");
 	
 
 	ServerSkillOrb() { };
