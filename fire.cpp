@@ -93,7 +93,7 @@ void Fire::Action()
         if (attack_ != nullptr)
         {
             player_->GetAnimator()->SetLoopAnim(PLAYER_IDLE_ANIM);
-
+            attack_->Discard();
             if (!attack_->CheckHitEffect())
             {
                 delete attack_;
@@ -134,8 +134,8 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
                                            LoadTexture(Asset::GetAsset(fire_attack)), Vector2::Zero),
                                        PlayerAttack(10000)
 {
-    SetSize(Vector2(parent->GetState()->atkRange,parent->GetState()->atkDistance));
-    SetScale(size_);
+
+    SetScale(Vector2(SIZE_,SIZE_*3));
     SetType(OBJ_ATTACK);
     SetDamage(parent->GetState()->atk);
     damage_cd_ = parent->GetState()->atkCoolTime;
@@ -148,6 +148,10 @@ FireAttack::FireAttack(Fire* parent) : parent_(parent),
 
 void FireAttack::Update()
 {
+    HitEffectUpdate(); //エフェクトのアップデート
+    if (GetDiscard())
+        return;
+
     if(cd_timer_ > 0.0f)
         cd_timer_ -= Time::GetDeltaTime();
     std::list<Collider*> collisions = GetCollider()->GetCollision();
@@ -181,7 +185,6 @@ void FireAttack::Update()
         }
     }
 
-    HitEffectUpdate(); //エフェクトのアップデート
 }
 
 FireEffect::FireEffect(Fire* parent)

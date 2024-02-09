@@ -30,7 +30,6 @@ private:
 	//static CollMngr* coll_mngr_;
 	//static ProjectileMngr* projectile_mngr_;
 	//static SkillOrbMngr *orb_mngr_;
-	float timer_ = 120.0f;
 	int timer_tex_ = -1;
 	//skip first time collider update
 	bool first_update_ = true;
@@ -41,8 +40,12 @@ private:
 
 	//Result
 	int result_tex_ = 0;
-	int button_restart_ = 0;
-	int button_title_ = 0;
+	int button_a_ = 0;
+	int button_b_ = 0;
+	int button_yes_ = 0;
+	int button_no_ = 0;
+	int ui_training_ = 0;
+	int black_back_ = 0;
 	bool result_ = false;
 
 	//bgm

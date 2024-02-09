@@ -207,7 +207,7 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
                                                5 * GameObject::SIZE_, parent->GetPlayer()->GetPos().y), 0.0f,
                                            LoadTexture(Asset::GetAsset(dark_attack)), Vector2::Zero),PlayerAttack(10000)
 {
-    SetScale(size_);
+    SetScale(Vector2(SIZE_,SIZE_*3));
     SetType(OBJ_ATTACK);
     SetDamage(parent->GetState()->atk);
     damage_cd_ = parent->GetState()->atkCoolTime;

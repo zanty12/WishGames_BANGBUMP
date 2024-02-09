@@ -195,27 +195,6 @@ void Game::UpdateNormal()
     {
         change_scene_ = 2;
     }
-    /*if (GetChangeScene() == 1)
-    {
-        scene_mngr_->ChangeScene(SCENE_RESULT);
-    }*/
-
-    //timer
-    timer_ -= Time::GetDeltaTime();
-    if (timer_ <= 0.0f)
-    {
-        delete mapmngr_;
-        coll_mngr_->CheckDiscard();
-        renderer_->CheckDiscard();
-        mapmngr_ = new MapMngr(Asset::GetAsset(single_stage_2).c_str(), this);
-        timer_ = 500.0f;
-        GetPlayer()->SetPos(mapmngr_->GetPlayerSpawn());
-        GetPlayer()->SetMapMngr(mapmngr_);
-        delete camera_;
-        camera_ = new Camera(GetPlayer()->GetPos(),
-                             Vector2(mapmngr_->GetMap()->GetWidth(), mapmngr_->GetMap()->GetHeight()));
-        first_update_ = true;
-    }
 
 }
 
@@ -234,12 +213,7 @@ void Game::DrawNormal()
     camera_->Draw();
     renderer_->Draw(camera_);
 
-    //UI
-    DrawSpriteLeftTop(timer_tex_, Vector2(Graphical::GetWidth() / 2, 50), 0.0f, Vector2(250, 100),
-                      Color(1.0f, 1.0f, 1.0f, 1.0f));
-    int itimeer = static_cast<int>(timer_);
-    std::wstring time = std::to_wstring(itimeer);
-    Text::WriteText(time.c_str(), text_format_, brush_, Graphical::GetWidth() / 2 - 45, 25, 180, 50);
+
 }
 
 void Game::UpdateResult()
@@ -256,8 +230,12 @@ void Game::UpdateResult()
     if (!changed)
     {
         changed = true;
-        button_title_ = LoadTexture("data/texture/UI/button_title.png");
-        button_restart_ = LoadTexture("data/texture/UI/button_restart.png");
+        ui_training_ = LoadTexture("data/texture/UI/UI_training_text.png");
+        button_yes_ = LoadTexture("data/texture/UI/UI_yes_text.png");
+        button_no_ = LoadTexture("data/texture/UI/UI_no_text.png");
+        button_a_ = LoadTexture("data/texture/UI/A.png");
+        button_b_ = LoadTexture("data/texture/UI/B.png");
+        black_back_ = LoadTexture("data/texture/UI/fade.png");
     }
 
     //‘I‘ð‰æ–Ê•`‰æ
@@ -286,10 +264,19 @@ void Game::DrawResult()
 {
     camera_->Draw();
     renderer_->Draw(camera_);
-    DrawSprite(result_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2 + 200), 0.0f, Vector2(327, 100),
+    DrawSpriteLeftTop(black_back_, Vector2(Vector2::Zero), 0.0f, Vector2(1920*2, 1080*2),
+        Color(1.0f, 1.0f, 1.0f, 0.5f));
+
+    DrawSprite(ui_training_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2 + 200), 0.0f, Vector2(600, 400),
+        Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    DrawSprite(button_yes_, Vector2(Graphical::GetWidth() / 2 - 200, Graphical::GetHeight() / 2-100), 0.0f, Vector2(200, 200),
+        Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(button_no_, Vector2(Graphical::GetWidth() / 2 + 200, Graphical::GetHeight() / 2-100), 0.0f, Vector2(200, 200),
                Color(1.0f, 1.0f, 1.0f, 1.0f));
-    DrawSprite(button_title_, Vector2(Graphical::GetWidth() / 2 - 200, Graphical::GetHeight() / 2 - 200), 0.0f,
-               Vector2(120, 68), Color(1.0f, 1.0f, 1.0f, 1.0f));
-    DrawSprite(button_restart_, Vector2(Graphical::GetWidth() / 2 + 200, Graphical::GetHeight() / 2 - 200), 0.0f,
-               Vector2(120, 68), Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    DrawSprite(button_a_, Vector2(Graphical::GetWidth() / 2 - 200, Graphical::GetHeight() / 2 - 200), 0.0f,
+               Vector2(120, 120), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(button_b_, Vector2(Graphical::GetWidth() / 2 + 200, Graphical::GetHeight() / 2 - 200), 0.0f,
+               Vector2(120, 120), Color(1.0f, 1.0f, 1.0f, 1.0f));
 }
