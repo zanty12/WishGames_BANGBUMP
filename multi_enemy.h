@@ -42,12 +42,17 @@ protected:
 	MultiAnimator waterDamageEffect;						// 水ダメージエフェクト
 	MultiAnimator thunderDamageEffect;						// 雷ダメージエフェクト
 	MultiAnimator windDamageEffect;							// 風ダメージエフェクト
+
+	int deathSeNo = -1;
 public:
 
 	EnemyClientSide(Transform transform, std::wstring enemyName) : ClientMovableGameObject(transform) {
 		radius = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"radius");
 		transform.scale = Vector2::One * radius;
 		deathAnim = MultiAnimator(LoadTexture(Asset::GetAsset(textures::effect_enemydead)), 5, 6, 0, 29, false);
+
+		deathSeNo = LoadSound("data/sound/SE/enemy_death.wav");
+		std::cout << deathSeNo << std::endl;
 
 		// ダメージエフェクト
 		allDamageEffect = MultiAnimator(LoadTexture("data/texture/Effect/effect_hit_all.png"), 5, 2, 0, 7, false);

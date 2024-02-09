@@ -37,7 +37,11 @@ int main()
     }
     else {
         MSG msg;
+#ifdef MOVIE
         Graphical::Initialize(1920, 1080, MOVIE);
+#else
+        Graphical::Initialize(1920, 1080, TRUE);
+#endif
         DebugUI::Initialize();
         Text::CreateResources();
         WIN::Window window = Graphical::GetHwnd();

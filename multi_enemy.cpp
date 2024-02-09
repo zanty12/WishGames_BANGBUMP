@@ -1,5 +1,6 @@
 #include "multi_enemy.h"
 #include "multiplay.h"
+#include "multi_se.h"
 
 void EnemyServerSide::Damage(AttackServerSide *attack) {
 	if (attack->GetType() == MULTI_ATTACK_ENEMY2) {
@@ -59,6 +60,7 @@ void EnemyClientSide::DamageEffectUpdate(void) {
 }
 
 void EnemyClientSide::Release(void) {
+	PlaySE(deathSeNo, Vector2(Graphical::GetWidth(), Graphical::GetHeight()) * 0.5f + MultiPlayClient::offset, transform.position);
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(deathAnim, transform.position, 0.0f, Vector2::One * radius * 1.5f);
 }
 
