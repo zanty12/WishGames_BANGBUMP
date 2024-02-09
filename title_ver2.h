@@ -123,10 +123,12 @@ private:
     {
     private:
         bool first_ = true;
-        const float title_scale_start_ = 10.0f;
+        const float title_scale_start_ = 3.0f;
         float title_scale_ = title_scale_start_;
         float don_timer_ = 0.0f;
         bool don_played_ = false;
+        const float base_rot_ =  -10.0f / 180.0f * M_PI;
+        float base_rot_angle_ = base_rot_;
 
     public:
         TitleStart(Title2* title) : TitleVer2_State(title)
