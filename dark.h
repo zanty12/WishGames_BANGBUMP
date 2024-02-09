@@ -9,7 +9,7 @@
 //--------------------------------------------------------------------------------
 #pragma once
 #include "attribute.h"
-#include "thunder.h"
+#include "playerattack.h"
 
 class DarkAttack;
 class DarkIndicator;

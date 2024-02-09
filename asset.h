@@ -126,6 +126,8 @@ enum textures
 enum sounds
 {
     //bgm
+    BGM_practicemode,
+
     //se
     SE_1,
     SE_2,
@@ -134,6 +136,13 @@ enum sounds
     SE_5,
     SE_6,
 
+    SE_fire_move,
+    SE_fire_attack,
+    SE_dark_move,
+    SE_dark_attack,
+    SE_thunder_attack,
+    SE_wind_move,
+    SE_wind_attack,
 };
 
 enum maps

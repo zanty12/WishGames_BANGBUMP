@@ -117,12 +117,24 @@ const std::map<textures, std::string> Asset::textures_ = {
 };
 
 const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::string>{
+    // bgm
+    {sounds::BGM_practicemode,"data/sound/BGM/practicemode_BGM.wav"},
+
+    // se
     {sounds::SE_1,"data/sound/enemy_damage_1.wav"},
     {sounds::SE_2,"data/sound/enemy_damage_2.wav"},
     {sounds::SE_3,"data/sound/enemy_atk.wav"},
     {sounds::SE_4,"data/sound/enemy_destroy.wav"},
     {sounds::SE_5,"data/sound/point_falling_1.wav"},
     {sounds::SE_6,"data/sound/point_falling_2.wav"},
+
+    {sounds::SE_fire_move,"data/sound/SE/fireidou.wav"},
+    {sounds::SE_fire_attack,"data/sound/SE/firekougeki.wav"},
+    {sounds::SE_dark_move,"data/sound/SE/mizuidou.wav"},
+    {sounds::SE_dark_attack,"data/sound/SE/mizukougeki.wav"},
+    {sounds::SE_thunder_attack,"data/sound/SE/kaminarikougeki.wav"},
+    {sounds::SE_wind_move,"data/sound/SE/kazeidou.wav"},
+    {sounds::SE_wind_attack,"data/sound/SE/kazekougeki.wav"},
 };
 
 const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{

@@ -77,7 +77,7 @@ void ImageDataDictionary::InitDictionary()
 	//attibute_attack
 	img_data_[fire_attack] = IMAGE_DATA(LoadTexture(Asset::GetAsset(fire_attack)), 5, 6);
 	img_data_[dark_attack] = IMAGE_DATA(LoadTexture(Asset::GetAsset(dark_attack)), 5, 6);
-	img_data_[thunder_attack] = IMAGE_DATA(LoadTexture(Asset::GetAsset(thunder_attack)), 5, 6);
+	img_data_[thunder_attack] = IMAGE_DATA(LoadTexture(Asset::GetAsset(thunder_attack)), 5, 2);
 	img_data_[wind_attack] = IMAGE_DATA(LoadTexture(Asset::GetAsset(wind_attack)), 5, 6);
 
 	//enemy
