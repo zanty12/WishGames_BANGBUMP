@@ -41,6 +41,25 @@ void MultiAnimator::Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool is
 	DrawSprite(texNo, pos, rot, scl, col, uv, uvScale);
 }
 
+void MultiAnimator::Draw(int idx, Vector2 pos, float rot, Vector2 scl, Color col, bool isReverseX, bool isReverseY) {
+	// UVílÇÃåvéZ
+	Vector2 uv = ToUV(idx);
+	Vector2 uvScale = Vector2(1.0f / width, 1.0f / height);
+
+	// îΩì]èàóù
+	if (isReverseX) {
+		uv.x += uvScale.x;
+		uvScale.x = -uvScale.x;
+	}
+	if (isReverseY) {
+		uv.y += uvScale.y;
+		uvScale.y = -uvScale.y;
+	}
+
+	// ï`âÊÇ∑ÇÈ
+	DrawSprite(texNo, pos, rot, scl, col, uv, uvScale);
+}
+
 MultiAnimator MultiAnimator::GetPlayerInitialize(int playerIdx, ATTRIBUTE_TYPE move, ATTRIBUTE_TYPE attack) {
 	std::stringstream path;
 	int width = 5;

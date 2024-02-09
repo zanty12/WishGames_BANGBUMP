@@ -6,11 +6,11 @@
 
 class MultiAnimator {
 private:
-	int idx = 0;
 	DWORD startTime = 0;
 	DWORD frameTime = 1000 / 30;
 
 public:
+	int idx = 0;
 	int texNo = 0;
 	int width = 1;
 	int height = 1;
@@ -40,6 +40,7 @@ public:
 	Vector2 ToUV(int x, int y) { return Vector2(x / (float)width, y / (float)height); }
 
 	void Draw(Vector2 pos, float rot, Vector2 scl, Color col, bool isReverseX = false, bool isReverseY = false);
+	void Draw(int idx, Vector2 pos, float rot, Vector2 scl, Color col, bool isReverseX = false, bool isReverseY = false);
 
 	void SetFrame(DWORD frameTime) { this->frameTime = frameTime; }
 	void SetEndShow(bool isEndShow) { this->isEndShow = isEndShow; }

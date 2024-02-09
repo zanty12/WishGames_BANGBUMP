@@ -158,7 +158,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 	else if (gameMode_) {
 
 		// マップの描画
-		gameMode_->map_->Draw(offset);
+		gameMode_->map_->Draw(offset, gameMode_->isBlockShow);
 
 		// ゲームのスタートの画面
 		if (res.time < gameMode_->startTime_) {
