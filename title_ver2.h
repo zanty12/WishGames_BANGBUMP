@@ -1,4 +1,6 @@
 #pragma once
+#include "gameobject.h"
+#include "movableobj.h"
 #include "sprite.h"
 #include "scene.h"
 #include "scenemngr.h"
@@ -118,7 +120,34 @@ private:
         void Update() override;
         void Draw() override;
     };
-
+    class AnimatorLite : public MovableObj
+    {
+    public:
+        AnimatorLite(Vector2 pos, float rot, int tex, Vector2 size)
+            : MovableObj(pos, rot, tex,Vector2::Zero)
+        {
+            SetType(OBJ_VOID);
+            SetScale(size);
+            SetColor(Color(1, 1, 1, 1));
+            delete GetCollider();
+            SetCollider(nullptr);
+            GetAnimator()->SetTexNo(tex);
+            GetAnimator()->SetTexenum(effect_EX);
+            GetAnimator()->SetLoopAnim(EFFECT_EX_ANIM);
+            GetAnimator()->SetIsAnim(true);
+            GetAnimator()->SetLoopStart(Vector2::Zero);
+            GetAnimator()->SetLoopEnd(Vector2(4, 5));
+        }
+        ~AnimatorLite() override = default;
+        void Update() override
+        {
+            GetAnimator()->Update();
+        }
+        void Draw()
+        {
+            GetAnimator()->Draw(Vector2::Zero);
+        }
+    };
     class TitleStart : public TitleVer2_State
     {
     private:
@@ -129,10 +158,13 @@ private:
         bool don_played_ = false;
         const float base_rot_ =  -10.0f / 180.0f * M_PI;
         float base_rot_angle_ = base_rot_;
+        AnimatorLite* revolve_effect_;
+        float revolve_timer_ = 1.0f;
 
     public:
         TitleStart(Title2* title) : TitleVer2_State(title)
         {
+            revolve_effect_ = new AnimatorLite(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3),0.0f, LoadTexture(Asset::GetAsset(effect_EX)), Vector2(700, 700));
         };
         ~TitleStart() override = default;
         void Update() override;

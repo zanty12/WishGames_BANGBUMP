@@ -244,6 +244,9 @@ public:
 
 
     static void InitDictionary(void);  //辞書登録
+
+    void SetLoopStart(Vector2 start){loop_start_x_ = start.x; loop_start_y_ = start.y; }
+    void SetLoopEnd(Vector2 end){loop_end_x_ = end.x; loop_end_y_ = end.y; }
 private:
     void LoopAnimation(void);
     void Reset(void);
