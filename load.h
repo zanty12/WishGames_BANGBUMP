@@ -9,9 +9,7 @@ class Load
 private:
 	static Video* video_;
 public:
-	Load()
-	{
-	}
+	Load()= default;
 	~Load()
 	{
 		delete video_;
