@@ -59,7 +59,7 @@ void ClientSkillOrb::Loop(void) {
 
 void ClientSkillOrb::Release(void) {
 	// Œø‰Ê‰¹
-	PlaySE(haveSeNo, transform.position + MultiPlayClient::offset, player->transform.position);
+	PlaySE(haveSeNo, Vector2(Graphical::GetWidth(), Graphical::GetHeight()) * 0.5f + MultiPlayClient::offset, transform.position);
 }
 
 ClientSkillOrbSmall::ClientSkillOrbSmall() : ClientSkillOrb(Vector2::One * 80) { 

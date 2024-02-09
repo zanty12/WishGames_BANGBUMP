@@ -203,12 +203,12 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 			}
 
 			// •`‰æ
-			characters[id].Draw(charFrameTexNo, charFramePTexNo[id % 4], playerTexNo[id % 4], bootTexNo[iterator->moveAttributeType], handTexNo[iterator->attackAttributeType],
+			characters[id].Draw(charFrameTexNo, charFramePTexNo[id % 4], charSelectArrow, playerTexNo[id % 4], bootTexNo[iterator->moveAttributeType], handTexNo[iterator->attackAttributeType],
 				true, width, height, gap, iterator->moveAttributeType, iterator->attackAttributeType);
 		}
 		// ˜g‚Ì‚Ý•\Ž¦
 		else {
-			characters[id].Draw(charFrameTexNo, charFramePTexNo[id % 4], playerTexNo[id % 4], bootTexNo[ATTRIBUTE_TYPE_FIRE], handTexNo[ATTRIBUTE_TYPE_FIRE],
+			characters[id].Draw(charFrameTexNo, charFramePTexNo[id % 4], charSelectArrow, playerTexNo[id % 4], bootTexNo[ATTRIBUTE_TYPE_FIRE], handTexNo[ATTRIBUTE_TYPE_FIRE],
 				false, width, height, gap, ATTRIBUTE_TYPE_FIRE, ATTRIBUTE_TYPE_FIRE);
 		}
 	}
