@@ -894,9 +894,17 @@ void ClientThunder::Attack(void) {
 		// レベルによってテクスチャの変更
 		if (player->GetLv() < 6) {
 			attackAnim.texNo = attackTexNo;
+			attackAnim.width = 5;
+			attackAnim.height = 2;
+			attackAnim.begin = 0;
+			attackAnim.end = 9;
 		}
 		else {
 			attackAnim.texNo = attack2TexNo;
+			attackAnim.width = 5;
+			attackAnim.height = 5;
+			attackAnim.begin = 0;
+			attackAnim.end = 29;
 			rot += 90.0f * MATH::Deg2Rad;
 		}
 
