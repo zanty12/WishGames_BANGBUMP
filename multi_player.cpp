@@ -4,6 +4,7 @@
 #include "multiplay.h"
 #include "multi_skillorb.h"
 #include "multiplay.h"
+#include "multi_ui.h"
 #include "sound.h"
 
 
@@ -116,6 +117,12 @@ ClientPlayer::ClientPlayer(int id, ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_T
 	lvUpUI = MultiAnimator(LoadTexture("data/texture/UI/UI_levelup.png"), 5, 6, 0, 29, false);
 	lvDownUI = MultiAnimator(LoadTexture("data/texture/UI/UI_leveldown.png"), 5, 6, 0, 29, false);
 
+	// サウンド
+	//seLvUpNo = LoadSound("")
+
+
+
+
 	exEffect.SetFrame(1000 / 42);
 	exEffect.MoveEnd();
 	lvUpEffect.MoveEnd();
@@ -135,9 +142,6 @@ ClientPlayer::ClientPlayer(int id, ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_T
 void ClientPlayer::Loop(void) {
 	// 属性がないなら消す
 	if (!moveAttribute || !attackAttribute) return;
-
-	// 表示状態
-	//entryType = SHOW;
 
 	// 回転リセット
 	if (!isRotationAttributeControl) transform.rotation = 0.0f;
@@ -230,6 +234,11 @@ void ClientPlayer::DrawUI(void) {
 		0.0f,
 		Vector2(25, 25),
 		Color::White);
+
+	lvUpEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
+	lvDownEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
+	lvUpUI.Draw(CalcIconPosition(id, MultiPlayClient::clients.size()) + Vector2(0.0f, 45.0f), 0.0f, transform.scale, Color::White);
+	lvDownUI.Draw(CalcIconPosition(id, MultiPlayClient::clients.size()) + Vector2(0.0f, 45.0f), 0.0f, transform.scale, Color::White);
 }
 
 void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attackAttribute, MultiAnimator *anim) {
@@ -306,15 +315,12 @@ void ClientPlayer::Update(ClientAttribute *moveAttribute, ClientAttribute *attac
 	if (preLv < lv) {
 		lvUpEffect.MoveBegin();
 		lvUpUI.MoveBegin();
+
 	}
 	else if (lv < preLv) {
 		lvDownEffect.MoveBegin();
 		lvDownUI.MoveBegin();
 	}
-	lvUpEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
-	lvDownEffect.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale * 1.5f, Color::White);
-	lvUpUI.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
-	lvDownUI.Draw(transform.position - MultiPlayClient::offset, 0.0f, transform.scale, Color::White);
 	preLv = lv;
 }
 

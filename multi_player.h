@@ -128,6 +128,8 @@ private:
 	MultiAnimator lvDownEffect;								// レベルダウンエフェクト
 	MultiAnimator lvUpUI;									// レベルアップUIエフェクト
 	MultiAnimator lvDownUI;									// レベルダウンUIエフェクト
+	int seLvUpNo = -1;										// レベルアップSE
+	int seLvDownNo = -1;									// レベルダウンSE
 
 public:
 	int skillPoint = 0;										// スキルポイント
