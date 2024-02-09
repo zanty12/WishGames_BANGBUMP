@@ -76,7 +76,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 	// 送信
 	header.command = HEADER::RESPONSE_LOGIN;
 	SendTo(this->sockfd_, (char *)&header, sizeof(HEADER), 0, clientAddr);
-	std::cout << "Res >> ID:" << id << " Login" << std::endl;
+	std::cout << "Res >> ID:" << header.id << " Login" << std::endl;
 
 
 
@@ -86,7 +86,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 #endif
 	//lock_.Unlock();
 
-	return id;
+	return header.id;
 }
 
 void MultiPlayServer::Unregister(int id) {
@@ -495,11 +495,6 @@ int MultiPlayClient::Register(std::string serverAddress) {
 		if (tmp.Contains(sockfd_)) {
 			Recv(sockfd_, (char *)&header, sizeof(HEADER), 0);
 			if (header.command = HEADER::RESPONSE_LOGIN) break;
-		}
-		// 10秒間入出できないなら強制終了
-		else if (10000ul < timer.GetNowTime()) {
-			Unregister();
-			return -1;
 		}
 	}
 

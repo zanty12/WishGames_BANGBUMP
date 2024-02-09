@@ -29,6 +29,8 @@ MultiPlayModeServerSide *MultiPlayFlowServerSide::CreateMode(MULTI_MODE mode) {
 }
 
 void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) {
+	if (clients.size() == 0) return;
+
 	// ゲームモードがないなら終了
 	if (gameMode_ == nullptr) return;
 	// 制限時間が来たなら、次のモードへ移行
