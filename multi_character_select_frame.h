@@ -10,5 +10,5 @@ public:
 	Follow moveSmooth = 0.0f;
 	Follow attackSmooth = 0.0f;
 
-	void Draw(int frameTexNo, int framePTexNo, int playerTexNo, int bootTexNo, int handTexNo, bool isShow, float width, float height, float gap, int moveAttribute, int attackAttribute);
+	void Draw(int frameTexNo, int framePTexNo, int arrowTexNo, int playerTexNo, int bootTexNo, int handTexNo, bool isShow, float width, float height, float gap, int moveAttribute, int attackAttribute);
 };

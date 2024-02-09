@@ -296,9 +296,20 @@ void MultiPlayServer::OpenTerminal(void) {
 	startTime = currentTime = timeGetTime();
 	onceFrameTime = 1000 / 60;
 
+	char serverName[96] = {};
+	gethostname(serverName, 96);;
+
+	struct hostent *phe = gethostbyname(serverName);
+	for (int i = 0; phe->h_addr_list[i] != 0; ++i) {
+		struct in_addr addr;
+		memcpy(&addr, phe->h_addr_list[i], sizeof(struct in_addr));
+		std::cout << "Address " << i << ": " << inet_ntoa(addr) << std::endl;
+	}
+
+
 
 	// SendUpdate()をスレッドを立てて関数を呼び出す
-	std::thread sendUpdateFunc(&MultiPlayServer::SendUpdate, this);
+	//std::thread sendUpdateFunc(&MultiPlayServer::SendUpdate, this);
 
 
 
@@ -406,7 +417,7 @@ void MultiPlayServer::OpenTerminal(void) {
 		recvBuff = nullptr;
 	}
 
-	sendUpdateFunc.join();
+	//sendUpdateFunc.join();
 }
 
 

@@ -327,7 +327,6 @@ int MultiMap::Collision(Vector2 &position, Vector2 scale, Vector2 *velocity, Vec
 	if (position.y < cellSize * 0.5f) position.y = cellSize * 2.0f;
 	else if (cellSize * height - cellSize * 0.5f < position.y) position.y = cellSize * height - cellSize * 2.0f;
 	if (MultiPlayServer::GetGameMode()->GetGame()->mode == MultiPlayModeServerSide::START && 2 <= isLoadStartAreaCount) {
-	std::cout << startAreaLeftBottom.x << ", " << startAreaLeftBottom.y << " ~ " << startAreaRightTop.x << ", " << startAreaRightTop.y << std::endl;
 		if (position.x < startAreaLeftBottom.x + cellSize * 0.5f) position.x = startAreaLeftBottom.x + cellSize * 0.5f;
 		else if (startAreaRightTop.x - cellSize * 0.5f < position.x) position.x = startAreaRightTop.x - cellSize * 0.5f;
 		if (position.y < startAreaLeftBottom.y + cellSize * 0.5f) position.y = startAreaLeftBottom.y + cellSize * 0.5f;
