@@ -144,7 +144,7 @@ void Title2::VideoBase::Draw()
     title_->title_video_base_->DrawAsResource(Color(1.0f, 1.0f, 1.0f, 1.0f));
     DrawSprite(title_->title_base_tex_, Vector2(Graphical::GetWidth() / 2,
                                                 Graphical::GetHeight() * 2 / 3), 0.0f,
-               Vector2(1000, 1000) * title_scale_, Color(0.0f, 0.0f, 0.0f, 1.0f));
+               Vector2(960, 960) * title_scale_, Color(0.0f, 0.0f, 0.0f, 1.0f));
     DrawSprite(title_->overlay_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2), 0.0f,
                Vector2(1920 * scale_x, 1080 * scale_y), Color(1.0f, 1.0f, 1.0f, 0.8));
 }
@@ -169,7 +169,7 @@ void Title2::Flash::Draw()
     const float scale_y = static_cast<float>(Graphical::GetHeight()) / 1080;
     title_->title_video_base_->DrawAsResource(Color(1.0f, 1.0f, 1.0f, 1.0f));
     DrawSprite(title_->title_base_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
-               Vector2(1000 * scale_x, 1000 * scale_y), Color(1.0f, 1.0f, 1.0f, title_->logo_alpha_));
+               Vector2(960 * scale_x, 960 * scale_y), Color(1.0f, 1.0f, 1.0f, title_->logo_alpha_));
     DrawSprite(title_->flash_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2), 0.0f,
                Vector2(1920 * scale_x, 1080 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha_));
 }
@@ -197,8 +197,12 @@ void Title2::TitleStart::Update()
     }
     if (don_timer_ > 1.0f && !don_played_ && base_rot_angle_ < 0.0f)
     {
-        //td::cout<<base_rot_angle_<<std::endl;
         base_rot_angle_ += abs(base_rot_) * Time::GetDeltaTime() * 10.0f;
+    }
+    if(don_played_ && revolve_timer_ > 0.0f)
+    {
+        revolve_timer_ -= Time::GetDeltaTime();
+        revolve_effect_->Update();
     }
     if ((Input::GetKeyDown(0, Input::A) || Input::GetKeyDown(0, Input::B) || Input::GetKeyDown(0, Input::X) ||
         Input::GetKeyDown(0, Input::Y) || Input::GetKeyDown(0, Input::L) || Input::GetKeyDown(0, Input::R) ||
@@ -222,9 +226,13 @@ void Title2::TitleStart::Draw()
 {
     title_->title_video_->DrawAsResource(Color(1.0f, 1.0f, 1.0f, 1.0f));
     DrawSprite(title_->title_base_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), base_rot_angle_,
-               Vector2(1000, 1000) * title_scale_, Color(1.0f, 1.0f, 1.0f, 1.0f));
+               Vector2(960, 960), Color(1.0f, 1.0f, 1.0f, 1.0f));
     DrawSprite(title_->title_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3), 0.0f,
-               Vector2(1000, 1000) * title_scale_, Color(1.0f, 1.0f, 1.0f, 1.0f));
+               Vector2(960, 960) * title_scale_, Color(1.0f, 1.0f, 1.0f, 1.0f));
+    if(don_played_ && revolve_timer_ > 0.0f)
+    {
+        revolve_effect_->Draw();
+    }
     if (!title_->game_start_)
         DrawSprite(title_->press_button_tex_, Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 3), 0.0f,
                    Vector2(999, 100.3), Color(1.0f, 1.0f, 1.0f, title_->AlphaAnimation()));
