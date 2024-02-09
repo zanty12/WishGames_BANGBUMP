@@ -1,6 +1,5 @@
 #include "multi_skillorb.h"
 #include "multiplay.h"
-#pragma comment(lib, "lib/debug_lib.lib")
 
 void ServerSkillOrb::Initialize(void) {
 	timer.Start();

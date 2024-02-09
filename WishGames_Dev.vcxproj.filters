@@ -50,6 +50,15 @@
     <Filter Include="Multiplay\src\mode">
       <UniqueIdentifier>{3836fadc-fc6d-4077-b698-4be7e6b82461}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library">
+      <UniqueIdentifier>{6fc86628-a3f6-412b-8929-e79c056312ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\head">
+      <UniqueIdentifier>{a635d4a6-67b9-4938-bbdb-241ee70e9522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\src">
+      <UniqueIdentifier>{5839c807-3ea7-4303-8ccb-c91db4eb5a91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -306,6 +315,111 @@
     </ClCompile>
     <ClCompile Include="multi_area_capture_mode.cpp">
       <Filter>Multiplay\src\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\win_input.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\win_time.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\win_window.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\behavior.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\buffer.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\collider2d.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\color.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\complex.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx_matrix.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_blend.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_buffer.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_constant_buffer.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_depthstencil.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_depthstencilview.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_device3d.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_index_buffer.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_inputlayout.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_pixel_shader.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_rasterizer.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_renderer.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_rtv.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_sampler.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_swapchain.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_texture.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_vertex_shader.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dx11_viewport.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dxs11_font.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dxs11_gpu_access.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dxs11_shader.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\dxs11_texture.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\en_collider2d.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\math.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\network.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\scene.cpp">
+      <Filter>Library\src</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\vector.cpp">
+      <Filter>Library\src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -641,6 +755,168 @@
     </ClInclude>
     <ClInclude Include="multi_character_select_frame.h">
       <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\applib.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\behavior.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\buffer.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\collider2d.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\color.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\complex.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx_device_model.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx_dxparts.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx_matrix.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx_shader.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_blend.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_buffer.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_constant_buffer.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_depthstencil.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_depthstencilview.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_device3d.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_index_buffer.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_inputlayout.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_pixel_shader.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_primitive.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_primitive_buffer.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_rasterizer.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_renderer.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_rtv.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_sampler.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_swapchain.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_texture.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_vertex_buffer.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_vertex_shader.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_vertex_struct.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dx11_viewport.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dxlib.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dxs11_font.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dxs11_gpu_access.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dxs11_resource.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dxs11_shader.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\dxs11_texture.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\en_collider2d.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\errormsg.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\get_set.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\list.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\math.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\matrix.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\network.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\rect.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\scene.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\stdlib.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\string.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\switch_check.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\vector.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\win_input.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\win_time.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\win_window.h">
+      <Filter>Library\head</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\winlib.h">
+      <Filter>Library\head</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
