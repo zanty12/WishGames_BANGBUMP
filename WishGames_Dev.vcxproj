@@ -188,6 +188,7 @@
     <ClCompile Include="multi_character_select_frame.cpp" />
     <ClCompile Include="multi_character_select_mode.cpp" />
     <ClCompile Include="multi_enemy.cpp" />
+    <ClCompile Include="multi_last_result_mode.cpp" />
     <ClCompile Include="multi_map.cpp" />
     <ClCompile Include="multi_mode.cpp" />
     <ClCompile Include="multi_mode_flow.cpp" />
