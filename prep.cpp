@@ -108,7 +108,7 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
 
 
     //sound
-    bgm_ = LoadSound("data/sound/bgm/select_element_BGM.wav");
+    bgm_ = LoadSound("data/sound/bgm/practice_prep.wav");
     select_se_= LoadSound("data/sound/se/attribute_select.wav");
     back_se_ = LoadSound("data/sound/se/back.wav");
 
