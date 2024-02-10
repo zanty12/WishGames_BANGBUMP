@@ -57,7 +57,7 @@ void MultiPlayCharacterSelectModeServerSide::PlayerUpdate(std::map<int, CLIENT_D
 		}
 
 
-		// スキップしない
+		// スキップ
 		client.isSkip = refStatus == 2;
 		if (client.isSkip == false) isSkip = false;
 	}

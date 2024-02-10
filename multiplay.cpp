@@ -386,6 +386,7 @@ void MultiPlayServer::OpenTerminal(void) {
 					PlayerUpdate();
 				}
 				SendUpdate();
+				Time::Update();
 
 				// スキルオールチートシート
 				for (int i = 0; i < 10; i++) {
@@ -412,7 +413,6 @@ void MultiPlayServer::OpenTerminal(void) {
 			break;
 		}
 
-		Time::Update();
 
 		recvBuff = nullptr;
 	}
