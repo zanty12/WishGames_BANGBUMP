@@ -33,8 +33,9 @@ void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int a
 	float col = MATH::Leap(1.0f, 0.25f, okRate * okRate);
 
 	// 割合からアニメーションを決める（ソード編）
-	float swordRate = stateSmooth - 1.0f;
+	float swordRate = stateSmooth -1.0f;
 	if (swordRate < 0.0f) swordAnim.MoveBegin();
+	std::cout << stateSmooth << std::endl;
 
 
 
@@ -47,7 +48,7 @@ void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int a
 	if (isShow) {
 		Vector2 scale = Vector2::One * height;
 		// フレーム
-		DrawSprite(framePTexNo, Vector2(x, y), 0.0f, Vector2::One * (height + 300) * scl, Color(1,1,1, alpha));
+		DrawSprite(framePTexNo, Vector2(x, y), 0.0f, Vector2::One * (height + 300) * scl, Color(1, 1, 1, alpha));
 		// キャラ
 		DrawSprite(playerTexNo, Vector2(x, y + 40), 0.0f, Vector2::One * height * scl, Color(1, 1, 1, alpha) * col);
 		// 足
@@ -60,6 +61,6 @@ void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int a
 		DrawSprite(arrowTexNo, Vector2(x + 160, y - 180), 0.0f, Vector2::One * 50 * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col);
 		DrawSprite(arrowTexNo, Vector2(x - 160, y - 180), 3.1415f, Vector2::One * 50 * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col, Vector2(0.0f, 1.0f), Vector2(1.0f, -1.0f));
 		// ソード
-		if (0.0f < swordRate) swordAnim.Draw(Vector2(x, y), 0.0f, Vector2::One * (height) * scl * scaleAttackAttributeRate, Color(1, 1, 1, 1));
+		if (0.0f < swordRate) swordAnim.Draw(Vector2(x, y), 0.0f, Vector2::One * (height)*scl * scaleAttackAttributeRate, Color(1, 1, 1, 1));
 	}
 }

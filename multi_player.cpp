@@ -207,6 +207,7 @@ void ClientPlayer::ShowEntry() {
 
 	timer.Start();
 	entryType = ENTRY;
+	animType = ANIMATION_TYPE_IDLE;
 
 	// アニメーション
 	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_spawn.png"), 5, 3, 0, 9, false);

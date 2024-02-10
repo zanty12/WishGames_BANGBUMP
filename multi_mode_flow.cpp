@@ -84,6 +84,7 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 		// ゲームモードの更新
 		else if (gameMode_->time_ < gameMode_->startTime_ + absPlayTime ||
 			gameMode_->playTime_ <= 0.0f && gameMode_->isSkip == false) {
+			gameMode_->mode = MultiPlayModeServerSide::PLAY;
 			gameMode_->Update(clients);
 
 			if (GetAsyncKeyState(VK_RETURN)) {

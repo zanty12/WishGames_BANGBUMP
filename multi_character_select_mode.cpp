@@ -64,7 +64,11 @@ void MultiPlayCharacterSelectModeServerSide::PlayerUpdate(std::map<int, CLIENT_D
 
 	// ‘SˆõOK‚È‚çƒXƒLƒbƒv‚·‚é
 	if (isSkip) {
-		this->isSkip = isSkip;
+		moveNextSceneTime += Time::GetDeltaTime();
+		if(3 < moveNextSceneTime) this->isSkip = isSkip;
+	}
+	else {
+		this->isSkip = false;
 	}
 }
 
@@ -173,13 +177,12 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 	ATTRIBUTE_TYPE moveAttributeType, attackAttributeType;
 
 	for (int id = 0; id < MAX_MEMBER; id++) {
-
 		float width = 600.0f;
 		float height = 600.0f;
 		float gap = -120.0f;
 
 
-			
+		
 
 		// “o˜^‚³‚ê‚Ä‚¢‚é‚©’²‚×‚é
 		auto iterator = res.characters.end();
@@ -201,6 +204,7 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 				moveAttributeType = iterator->moveAttributeType;
 				attackAttributeType = iterator->attackAttributeType;
 			}
+
 
 			// •`‰æ
 			characters[id].Draw(charFrameTexNo, charFramePTexNo[id % 4], charSelectArrow, playerTexNo[id % 4], bootTexNo[iterator->moveAttributeType], handTexNo[iterator->attackAttributeType], charReadyTexNo,
