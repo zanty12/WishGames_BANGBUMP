@@ -4,6 +4,7 @@
 #include "player.h"
 #include "attribute_type.h"
 
+#include "sound.h"
 
 class Player;
 class Attribute
@@ -14,6 +15,10 @@ protected:
 
 	AttributeState* state_ = nullptr;
 	AttributeState state_lv_[10] = {};
+
+protected:
+	int move_sound_ = 0;	//移動サウンド
+	void LoadMoveSound(sounds sound) { move_sound_ = LoadSound(Asset::GetAsset(sound).c_str()); }
 
 public:
 	Attribute() = delete;
@@ -35,6 +40,9 @@ public:
 	virtual void Action() = 0;
 
 	virtual void DebugMenu() = 0;
+
+	//がっちゃんこシステム
+	virtual void Gatchanko(bool is_attack) = 0;
 
 	Player* GetPlayer() { return player_; }
 
@@ -58,4 +66,6 @@ public:
 			return L"";
 		}
 	}
+
+	void StopSE(void) { StopSound(move_sound_); }
 };

@@ -30,6 +30,7 @@ public:
     Vector2 Move() override;
     void Action() override;
     void DebugMenu() override;
+    void Gatchanko(bool is_attack) override;
 };
 
 class FireAttack : public MovableObj,public PlayerAttack
@@ -41,6 +42,7 @@ public:
     FireAttack(Fire* parent);
     ~FireAttack() override = default;
     void Update() override;
+    void SetSize(Vector2 size) { size_ = size; }
 };
 
 class FireEffect : public MovableObj

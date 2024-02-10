@@ -69,11 +69,13 @@ void Animator::InitDictionary(void)
     DICTIONARY_[EFFECT_ENEMYDEAD_ANIM] = ANIM_DATA(effect_enemydead);
     DICTIONARY_[EFFECT_SPAWN_ANIM] = ANIM_DATA(effect_spawn);
     DICTIONARY_[EFFECT_WATER_INDICATOR] = ANIM_DATA(effect_water_indicator);
+    DICTIONARY_[EFFECT_WATER_ATK_INDICATOR] = ANIM_DATA(effect_water_atk_indicator);
     DICTIONARY_[EFFECT_HIT_ANIM] = ANIM_DATA(effect_hit);
     DICTIONARY_[EFFECT_HIT_FIRE_ANIM] = ANIM_DATA(effect_hit_fire);
     DICTIONARY_[EFFECT_HIT_DARK_ANIM] = ANIM_DATA(effect_hit_dark);
     DICTIONARY_[EFFECT_HIT_THUNDER_ANIM] = ANIM_DATA(effect_hit_thunder);
     DICTIONARY_[EFFECT_HIT_WIND_ANIM] = ANIM_DATA(effect_hit_wind);
+    DICTIONARY_[EFFECT_EX_ANIM] = ANIM_DATA(effect_EX);
 
 
 
@@ -92,7 +94,6 @@ Animator::Animator(GameObject* game_object)
     : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), loop_anim_(ANIM_NONE), loop_anim_next_(ANIM_NONE),
     now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false), invert_(1)//初期化
 {
-
     if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }

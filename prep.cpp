@@ -19,81 +19,109 @@ std::map<ATTRIBUTE_ACTION, std::string> video_file_map =
 std::list<attribute_select> move_list;
 std::list<attribute_select> attack_list;
 
-constexpr float x_radius = 300.0f;
-constexpr float y_radius = 80.0f;
+struct uv_set
+{
+    Vector2 start;
+    Vector2 end;
+};
+
+std::map<int,uv_set> bg_uv = {
+    //divide the texture into 4 parts
+    {0,{{0,0},{0.5,0.5}}},
+    {1,{{0.5,0},{1,0.5}}},
+    {2,{{0,0.5},{0.5,1}}},
+    {3,{{0.5,0.5},{1,1}}}
+};
+
+constexpr float x_radius = 500.0f;
+constexpr float y_radius = 120.0f;
 
 Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
 {
     SetNewVideo(move_);
-    SetNewVideo(attack_);
     //通常テキスチャー
     character_ = LoadTexture("data/texture/UI/practice_prep/player1_base.png");
     move_list = {
         {
             FIRE_MOVE, 1, (1 + 2) % 4 * M_PI_2, (1 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_boot1.png"),
-            Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius,
+            Vector2(Graphical::GetWidth() / 2 + cos((1 + 2) % 4 * M_PI_2) * x_radius,
                     1080 / 2 + (sin(((1 + 2) % 4) * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos(((1 + 2) % 4) * M_PI_2) * x_radius,
+            Vector2(Graphical::GetWidth() / 2 + cos(((1 + 2) % 4) * M_PI_2) * x_radius,
                     1080 / 2 + (sin(((1 + 2) % 4) * M_PI_2) + 1) * y_radius)
         },
         {
             WIND_MOVE, 2, (2 + 2) % 4 * M_PI_2, (2 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_boot4.png"),
-            Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((2 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((2 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             THUNDER_MOVE, 3, (3 + 2) % 4 * M_PI_2, (3 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_boot3.png"),
-            Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((3 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() /2+ cos((3 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             DARK_MOVE, 4, (4 + 2) % 4 * M_PI_2, (4 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_boot2.png"),
-            Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((4 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((4 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
         }
     };
     attack_list = {
         {
             FIRE_ATTACK, 1, (1 + 2) % 4 * M_PI_2, (1 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_hand1.png"),
-            Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((1 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((1 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((1 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((1 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             WIND_ATTACK, 2, (2 + 2) % 4 * M_PI_2, (2 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_hand4.png"),
-            Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((2 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((2 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((2 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((2 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             THUNDER_ATTACK, 3, (3 + 2) % 4 * M_PI_2, (3 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_hand3.png"),
-            Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((3 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((3 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((3 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((3 + 2) % 4 * M_PI_2) + 1) * y_radius)
         },
         {
             DARK_ATTACK, 4, (4 + 2) % 4 * M_PI_2, (4 + 2) % 4 * M_PI_2,
             LoadTexture("data/texture/UI/practice_prep/player_hand2.png"),
-            Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
-            Vector2(540 + cos((4 + 2) % 4 * M_PI_2) * x_radius, 1080 / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
+            Vector2(Graphical::GetWidth() / 2 + cos((4 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius),
+            Vector2(Graphical::GetWidth() / 2 + cos((4 + 2) % 4 * M_PI_2) * x_radius, Graphical::GetHeight() / 2 + (sin((4 + 2) % 4 * M_PI_2) + 1) * y_radius)
         }
     };
 
     //uiテキスチャー
-    tex_bg_ = LoadTexture("data/texture/UI/practice_prep/prep_bg.png");
-    //tex_select_arrow_ = LoadTexture("data/texture/UI/practice_prep/select_arrow.png");
+    tex_bg_ = LoadTexture("data/texture/UI/UI_elemental_BG.png");
+    tex_select_arrow_ = LoadTexture("data/texture/UI/UI_elemental_select.png");
+    return_tex_ = LoadTexture("data/texture/UI/back.png");
+    b_tex_ = LoadTexture("data/texture/UI/b.png");
+    confirm_tex_ = LoadTexture("data/texture/UI/go.png");
+    a_tex_ = LoadTexture("data/texture/UI/a.png");
+    select_tex_ = LoadTexture((char*)"data/TEXTURE/UI/select.png");
+    stick_tex_ = LoadTexture((char*)"data/TEXTURE/UI/stick.png");
+
 
     //sound
+    bgm_ = LoadSound("data/sound/bgm/practice_prep.wav");
     select_se_= LoadSound("data/sound/se/attribute_select.wav");
     back_se_ = LoadSound("data/sound/se/back.wav");
+
 }
 
 void Prep::Update()
 {
+    if(first_update_)
+    {
+        SetVolume(bgm_,0.4f);
+        PlaySound(bgm_,-1);
+        first_update_ = false;
+    }
     //キー入力
     if (Input::GetStickLeft(0).x < -0.8)
     {
@@ -173,8 +201,9 @@ void Prep::Update()
         if (is_move_)
         {
             delete video_;
+            video_ = nullptr;
             move_ = move_next_;
-            SetNewVideo(move_);
+            //SetNewVideo(move_);
         }
     }
     if (attack_ != attack_next_)
@@ -198,8 +227,9 @@ void Prep::Update()
         if (!is_move_)
         {
             delete video_;
+            video_ = nullptr;
             attack_ = attack_next_;
-            SetNewVideo(attack_);
+            //SetNewVideo(attack_);
         }
     }
 
@@ -225,7 +255,7 @@ void Prep::Update()
                     move.rot = 2 * M_PI;
                 }
             }
-            move.pos = Vector2(540 + cos(move.rot) * x_radius, 1080 / 2 + (sin(move.rot) + 1) * y_radius);
+            move.pos = Vector2(Graphical::GetWidth()/2 + cos(move.rot) * x_radius, Graphical::GetHeight() / 2 + (sin(move.rot) + 1) * y_radius);
         }
         else
         {
@@ -253,7 +283,7 @@ void Prep::Update()
                     attack.rot = 2 * M_PI;
                 }
             }
-            attack.pos = Vector2(540 + cos(attack.rot) * x_radius, 1080 / 2 + (sin(attack.rot) + 1) * y_radius);
+            attack.pos = Vector2(Graphical::GetWidth()/2 + cos(attack.rot) * x_radius, Graphical::GetHeight() / 2 + (sin(attack.rot) + 1) * y_radius);
         }
         else
         {
@@ -261,7 +291,8 @@ void Prep::Update()
         }
     }
 
-    video_->Update();
+    //video_->Update();
+
     if (Input::GetKeyDown(0, Input::A)) //Aボタン
     {
         {
@@ -318,7 +349,7 @@ void Prep::Draw()
     //背景
     DrawSprite(tex_bg_, Vector2(static_cast<float>(Graphical::GetWidth()) / 2,
                                 static_cast<float>(Graphical::GetHeight()) / 2), 0.0f,
-               Vector2(1920 * scale_x, 1080 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
+               Vector2(1920 * scale_x, 1080 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0));
 
     //移動と攻撃選択
     auto move_it = move_list.rbegin();
@@ -330,30 +361,53 @@ void Prep::Draw()
         if (is_move_ && i == 1)
             alpha = 1.0f;
         else
-            alpha = 0.5f;
+            alpha = 0.6f;
 
         DrawSprite(move_it->tex, Vector2(move_it->pos.x * scale_x, move_it->pos.y * scale_y), 0.0f,
-                   Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));
+                   Vector2(900 * scale_x, 900 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));
 
         if (!is_move_ && i == 1)
             alpha = 1.0f;
         else
-            alpha = 0.5f;
+            alpha = 0.6f;
 
         DrawSprite(attack_it->tex, Vector2(attack_it->pos.x * scale_x, attack_it->pos.y * scale_y), 0.0f,
-                   Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));
+                   Vector2(900 * scale_x, 900 * scale_y), Color(1.0f, 1.0f, 1.0f, alpha));
 
         if (i == 3)
             //キャラクター
-            DrawSprite(character_, Vector2(540 * scale_x, 1080 / 2 * scale_y), 0.0f,
-                       Vector2(768 * scale_x, 768 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
+            DrawSprite(character_, Vector2(Graphical::GetWidth() / 2 * scale_x, Graphical::GetHeight() / 2 * scale_y), 0.0f,
+                       Vector2(900 * scale_x, 900 * scale_y), Color(1.0f, 1.0f, 1.0f, 1.0f));
 
         ++move_it;
         ++attack_it;
     }
 
+    //arrows
+    DrawSprite(tex_select_arrow_,Vector2(1183,1080-428),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2::Zero,Vector2(1.0f,1.0f));
+    DrawSprite(tex_select_arrow_,Vector2(679,1080-428),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2(1.0f,1.0f),Vector2(-1.0f,-1.0f));
+    DrawSprite(tex_select_arrow_,Vector2(1183,1080-827),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2::Zero,Vector2(1.0f,1.0f));
+    DrawSprite(tex_select_arrow_,Vector2(679,1080-827),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2(1.0f,1.0f),Vector2(-1.0f,-1.0f));
+
+    //右下操作説明
+    //戻る
+    DrawSprite(return_tex_, Vector2(((Graphical::GetWidth() -100) ), 80), 0.0f,
+               Vector2(80.0f , 80.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(b_tex_, Vector2(((Graphical::GetWidth() -160)), 80), 0.0f,
+               Vector2(100.0f , 100.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    //決定
+    DrawSprite(confirm_tex_, Vector2(((Graphical::GetWidth() -240) ), 80), 0.0f,
+               Vector2(80.0f , 80.0f), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(a_tex_, Vector2(((Graphical::GetWidth() -305) ), 80), 0.0f,
+               Vector2(100.0f , 100.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    //選択
+    DrawSprite(select_tex_, Vector2(((Graphical::GetWidth() -390) ), 80), 0.0f,
+               Vector2(80.0f , 80.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
+    DrawSprite(stick_tex_, Vector2(((Graphical::GetWidth() -475) ), 82), 0.0f,
+               Vector2(115.0f , 118.0f ), Color(1.0f, 1.0f, 1.0f, 1.0f));
+
     //動画
-    video_->Draw();
+    //video_->DrawAsResource();
 }
 
 void Prep::DebugMenu()

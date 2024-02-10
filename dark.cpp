@@ -17,6 +17,8 @@
 Dark::Dark(Player* player)
     : Attribute(player, ATTRIBUTE_TYPE_DARK),move_effect_(new DarkEffect(this))
 {
+    LoadMoveSound(SE_dark_move);
+    SetVolume(move_sound_, 1.0f);
 }
 
 Vector2 Dark::Move()
@@ -73,13 +75,19 @@ Vector2 Dark::Move()
     }
     if (Input::GetKeyUp(0, Input::LThumb))
     {
+        //SE再生
+        PlaySound(move_sound_, 0);
+
         move_effect_->Move();
 
         Vector2 stick = Input::GetStickLeft(0);
         stick = stick.Normalize();
         stick.y *= -1;
         Vector2 warpDirection = stick * warpDistance_;
-        warpPosition = move_indicator_->GetPos();
+        if (move_indicator_)
+        {
+            warpPosition = move_indicator_->GetPos();
+        }
 
         player_->SetPos(warpPosition);
         delete move_indicator_;
@@ -106,7 +114,7 @@ void Dark::Action()
     {
         if (attack_indicator_ == nullptr)
         {
-            attack_indicator_ = new ThunderIndicator();
+            attack_indicator_ = new DarkAttackIndicator();
             attack_indicator_->GetAnimator()->SetColor(Color(0.0f, 0.0f, 1.0f, 1.0f));
         }
         Vector2 dir = stick.Normalize();
@@ -116,6 +124,11 @@ void Dark::Action()
         pos = player_->GetPos() + pos;
         attack_indicator_->SetPos(pos);
         attack_indicator_->SetRot(angle);
+    }
+    else
+    {
+        delete attack_indicator_;
+        attack_indicator_ = nullptr;
     }
     if (attack_)
         attack_->Update();
@@ -175,6 +188,26 @@ void Dark::DebugMenu()
     ImGui::End();
 }
 
+void Dark::Gatchanko(bool is_attack)
+{
+    //アタック時は移動エフェクトを消す
+    if (is_attack)
+    {
+        delete move_indicator_;
+        move_indicator_ = nullptr;
+        move_effect_->DispUninit();
+    }
+    //移動時なら攻撃エフェクトおよびオブジェクトを消す。移動エフェクトの再表示
+    else
+    {
+        delete attack_;
+        attack_ = nullptr;
+        delete attack_indicator_;
+        attack_indicator_ = nullptr;
+        move_effect_->DispInit();
+    }
+}
+
 DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
                                        MovableObj(
                                            Vector2(
@@ -182,7 +215,7 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
                                                5 * GameObject::SIZE_, parent->GetPlayer()->GetPos().y), 0.0f,
                                            LoadTexture(Asset::GetAsset(dark_attack)), Vector2::Zero),PlayerAttack(10000)
 {
-    SetScale(size_);
+    SetScale(Vector2(SIZE_*3, SIZE_ * 6));
     SetType(OBJ_ATTACK);
     SetDamage(parent->GetState()->atk);
     damage_cd_ = parent->GetState()->atkCoolTime;
@@ -191,6 +224,11 @@ DarkAttack::DarkAttack(Dark* parent) : parent_(parent),
     GetAnimator()->SetTexenum(dark_attack);
     GetAnimator()->SetLoopAnim(DARK_ATTACK_ANIM);
     GetAnimator()->SetDrawPriority(75);
+
+    //サウンド
+    LoadAttackSound(SE_dark_attack);
+    //SE再生
+    PlaySound(attack_sound_, -1);
 }
 
 void DarkAttack::Update()
@@ -215,8 +253,7 @@ void DarkAttack::Update()
                         cd_timer_ = damage_cd_;
                         enemy->SetHp(enemy->GetHp() - GetDamage());
 
-                        //エフェクトの生成★エネミー３の位置とか色々バグっているので生成するとエラー
-                        if (!enemy->GetDiscard() && enemy->GetEnemyType() != TYPE__PHANTOM)
+                        if (!enemy->GetDiscard())
                         {
                             Vector2 pos = enemy->GetPos();
                             Vector2 scale = enemy->GetScale();
@@ -377,4 +414,17 @@ void DarkEffect::Charge()
     SetPos(pos);
 
     parent_->GetPlayer()->GetAnimator()->SetLoopAnim(PLAYER_FD_MOVE_ANIM);
+}
+
+DarkAttackIndicator::DarkAttackIndicator()
+    : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Asset::GetAsset(effect_water_atk_indicator)), Vector2::Zero)
+{
+    GetCollider()->Discard();
+    SetCollider(nullptr);
+
+    SetType(OBJ_VOID);
+    SetColor(Color(1, 1, 1, 1));
+    GetAnimator()->SetDrawPriority(25);
+    GetAnimator()->SetTexenum(effect_water_atk_indicator);
+    GetAnimator()->SetLoopAnim(EFFECT_WATER_ATK_INDICATOR);
 }

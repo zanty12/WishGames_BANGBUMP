@@ -68,11 +68,12 @@ private:
 public:
     Wind(Player* player);
 
-    ~Wind() override = default;
+    ~Wind() override { StopSound(move_sound_); }
     bool StickTrigger(Vector2 stick, Vector2 previousStick);
     Vector2 Move(void) override;
     void Action(void) override;
     void DebugMenu(void) override;
+    void Gatchanko(bool is_attack) override;
 };
 
 class WindAttack : public MovableObj,public PlayerAttack

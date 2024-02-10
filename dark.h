@@ -9,10 +9,11 @@
 //--------------------------------------------------------------------------------
 #pragma once
 #include "attribute.h"
-#include "thunder.h"
+#include "playerattack.h"
 
 class DarkAttack;
 class DarkIndicator;
+class DarkAttackIndicator;
 class DarkEffect;
 class Dark : public Attribute
 {
@@ -23,7 +24,7 @@ class Dark : public Attribute
 	const float responseMinStickDistance = 0.2f;	// スティックの傾けたときに判定する最小値
 	DarkAttack* attack_ = nullptr;
 	DarkIndicator* move_indicator_ = nullptr;
-	ThunderIndicator* attack_indicator_ = nullptr;
+	DarkAttackIndicator* attack_indicator_ = nullptr;
 	DarkEffect* move_effect_ = nullptr;
 	//ここからは調整用のためconst抜き
 	float maxSpeedFalling = -0.5f;
@@ -41,6 +42,8 @@ public:
 	Vector2 Move() override;
 	void Action() override;
 	void DebugMenu() override;
+
+	void Gatchanko(bool is_attack) override;
 };
 
 class DarkAttack : public MovableObj,public PlayerAttack
@@ -63,6 +66,14 @@ public:
 	~DarkIndicator() override = default;
 	void Update() override;
 	void SetTargetPos(Vector2 pos) { target_pos_ = pos; }
+};
+
+class DarkAttackIndicator : public MovableObj
+{
+public:
+	DarkAttackIndicator();
+	~DarkAttackIndicator() override = default;
+	void Update() override {};
 };
 
 class DarkEffect : public MovableObj

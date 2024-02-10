@@ -2,6 +2,7 @@
 
 PlayerAttack::~PlayerAttack()
 {
+	StopSound(attack_sound_);
 	for (auto effect : hit_effects_)
 	{
 		delete effect;

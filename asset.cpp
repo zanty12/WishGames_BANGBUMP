@@ -92,12 +92,18 @@ const std::map<textures, std::string> Asset::textures_ = {
      {textures::effect_enemydead,"data/texture/Effect/effect_enemydead.png"},
      {textures::effect_spawn,"data/texture/Effect/effect_spawn.png"},
      {textures::effect_water_indicator,"data/texture/Effect/UI_water_indicator.png"},
+     {textures::effect_water_atk_indicator,"data/texture/Effect/UI_water_indicator2.png"},
      {textures::effect_hit,"data/texture/Effect/HitEffect/effect_hit_all.png"},
      {textures::effect_hit_fire,"data/texture/Effect/HitEffect/effect_hit_fire.png"},
      {textures::effect_hit_dark,"data/texture/Effect/HitEffect/effect_hit_water.png"},
      {textures::effect_hit_thunder,"data/texture/Effect/HitEffect/effect_hit_thunder.png"},
      {textures::effect_hit_wind,"data/texture/Effect/HitEffect/effect_hit_wind.png"},
-
+     {textures::effect_hit,"data/texture/Effect/effect_hit_all.png"},
+     {textures::effect_hit_fire,"data/texture/Effect/effect_hit_fire.png"},
+     {textures::effect_hit_dark,"data/texture/Effect/effect_hit_water.png"},
+     {textures::effect_hit_thunder,"data/texture/Effect/effect_hit_thunder.png"},
+     {textures::effect_hit_wind,"data/texture/Effect/effect_hit_wind.png"},
+     {textures::effect_EX,"data/texture/Effect/effect_EX.png"},
 
     {textures::skill_orb, "data/texture/blocks/skillorb.png"},
     {textures::bg_stage1_front, "data/texture/bg/BG_stage1_front.png"},
@@ -111,12 +117,24 @@ const std::map<textures, std::string> Asset::textures_ = {
 };
 
 const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::string>{
+    // bgm
+    {sounds::BGM_practicemode,"data/sound/BGM/practicemode_BGM.wav"},
+
+    // se
     {sounds::SE_1,"data/sound/enemy_damage_1.wav"},
     {sounds::SE_2,"data/sound/enemy_damage_2.wav"},
     {sounds::SE_3,"data/sound/enemy_atk.wav"},
     {sounds::SE_4,"data/sound/enemy_destroy.wav"},
     {sounds::SE_5,"data/sound/point_falling_1.wav"},
     {sounds::SE_6,"data/sound/point_falling_2.wav"},
+
+    {sounds::SE_fire_move,"data/sound/SE/fireidou.wav"},
+    {sounds::SE_fire_attack,"data/sound/SE/firekougeki.wav"},
+    {sounds::SE_dark_move,"data/sound/SE/mizuidou.wav"},
+    {sounds::SE_dark_attack,"data/sound/SE/mizukougeki.wav"},
+    {sounds::SE_thunder_attack,"data/sound/SE/kaminarikougeki.wav"},
+    {sounds::SE_wind_move,"data/sound/SE/kazeidou.wav"},
+    {sounds::SE_wind_attack,"data/sound/SE/kazekougeki.wav"},
 };
 
 const std::map<maps, std::string> Asset::maps_ = std::map<maps, std::string>{
