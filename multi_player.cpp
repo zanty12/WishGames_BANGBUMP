@@ -88,6 +88,8 @@ void ServerPlayer::SkillOrbDrop(int drop) {
 
 ClientPlayer::ClientPlayer(int id, ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform) :
 	ClientMovableGameObject(transform) {
+	if (id == -1) return;
+
 	// id‚Ìİ’è
 	this->id = id;
 
