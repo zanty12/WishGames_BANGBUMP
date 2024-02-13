@@ -20,6 +20,7 @@ class MultiPlayCharacterSelectModeServerSide : public MultiPlayModeServerSide {
 private:
 	MultiPlayServer *game_ = nullptr;
 	std::map<int, int> status;
+	float moveNextSceneTime = 0.0f;
 
 private:
 	/// <summary>

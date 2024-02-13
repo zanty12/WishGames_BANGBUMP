@@ -80,7 +80,7 @@ public:
 
 
 	void Draw(RESPONSE_PLAYER &players, Vector2 offset) override;
-	//void DrawStart(RESPONSE_PLAYER &players, Vector2 offset) override { };
+	void DrawStart(RESPONSE_PLAYER &players, Vector2 offset) override;
 
 	void ParseResponse(Storage &in) override {
 

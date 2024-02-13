@@ -88,6 +88,8 @@ void ServerPlayer::SkillOrbDrop(int drop) {
 
 ClientPlayer::ClientPlayer(int id, ATTRIBUTE_TYPE moveAttributeType, ATTRIBUTE_TYPE attackAttributeType, Transform transform) :
 	ClientMovableGameObject(transform) {
+	if (id == -1) return;
+
 	// idの設定
 	this->id = id;
 
@@ -207,6 +209,7 @@ void ClientPlayer::ShowEntry() {
 
 	timer.Start();
 	entryType = ENTRY;
+	animType = ANIMATION_TYPE_IDLE;
 
 	// アニメーション
 	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_spawn.png"), 5, 3, 0, 9, false);
