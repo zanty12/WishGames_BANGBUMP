@@ -19,7 +19,6 @@ extern std::wstring ParamPath;
 #define MAX_BUFF (1024 * 10)
 
 
-#define MOVIE FALSE
 using namespace Network;
 
 /*******************************************************
@@ -88,6 +87,7 @@ public:
 
 class MultiPlayClient {
 private:
+	int filterTexNo = -1;
 	static int id;										// ID
 	static MultiPlayFlowClientSide *gameMode;			// ゲームモード
 	Socket sockfd_;										// ソケット

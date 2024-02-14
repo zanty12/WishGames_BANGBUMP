@@ -9,14 +9,67 @@
 #include "time.h"
 #include "sound.h"
 
-bool debug_mode = true;
+bool debug_mode = false;
 //#define SERVER
+//#define CLIENT
+#define DEVELOPMENT
 
 int main()
 {
     Time::Initialize();
     srand(time(NULL));
 
+#ifdef DEVELOPMENT
+    int mode = -1;
+    std::cin >> mode;
+    if (mode == 0)
+    {
+        Graphical::Initialize(1920 * 0.5f, 1080 * 0.5f, TRUE);
+        DebugUI::Initialize();
+        Text::CreateResources();
+        WIN::Window window = Graphical::GetHwnd();
+        const HWND hWnd = window.GetHwnd();
+        InitSound(hWnd);
+        MultiPlayServer server;
+        server.OpenTerminal();
+    }
+    else
+    {
+        std::string ip;
+        std::cout << "ip: ";
+        std::cin >> ip;
+        MSG msg;
+        Graphical::Initialize(1920, 1080, TRUE);
+        DebugUI::Initialize();
+        Text::CreateResources();
+        WIN::Window window = Graphical::GetHwnd();
+        const HWND hWnd = window.GetHwnd();
+        InitSound(hWnd);
+
+        MultiPlayClient client;
+        client.Register(ip);
+
+        while (!client.isFinish)
+        {
+            // ???b?Z?[?W
+            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+            {
+                if (msg.message == WM_QUIT)
+                {
+                    break;
+                }
+                else
+                {
+                    TranslateMessage(&msg);
+                    DispatchMessage(&msg);
+                }
+            }
+        }
+        client.Unregister();
+    }
+
+
+#endif
 #ifdef SERVER
     Graphical::Initialize(1920 * 0.5f, 1080 * 0.5f, TRUE);
     DebugUI::Initialize();
@@ -26,7 +79,8 @@ int main()
     InitSound(hWnd);
     MultiPlayServer server;
     server.OpenTerminal();
-#else
+
+#elif defined(CLIENT)
     MSG msg;
     Graphical::Initialize(1920, 1080,true);
     DebugUI::Initialize();
@@ -52,7 +106,6 @@ int main()
         }
         else
         {
-            //WTF?
             Graphical::Clear(Color(1, 1, 1, 1) * 0.5f);
 
             //update
@@ -96,13 +149,13 @@ int main()
             Graphical::Present();
         }
     }
-    UninitSound();
     delete scene_mngr;
+#endif
+
     Text::DiscardResources();
     DebugUI::Release();
     Graphical::Release();
-#endif
-
+    UninitSound();
     Time::Release();
-    std::cout << "END\n"; //Šî–{
+    std::cout<<"END\n"; //Šî–{
 }

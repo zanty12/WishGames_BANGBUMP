@@ -108,7 +108,7 @@ Prep::Prep(SceneMngr* scene_mngr) : scene_mngr_(scene_mngr)
 
 
     //sound
-    bgm_ = LoadSound("data/sound/bgm/select_element_BGM.wav");
+    bgm_ = LoadSound("data/sound/bgm/practice_prep.wav");
     select_se_= LoadSound("data/sound/se/attribute_select.wav");
     back_se_ = LoadSound("data/sound/se/back.wav");
 
@@ -382,6 +382,12 @@ void Prep::Draw()
         ++move_it;
         ++attack_it;
     }
+
+    //arrows
+    DrawSprite(tex_select_arrow_,Vector2(1183,1080-428),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2::Zero,Vector2(1.0f,1.0f));
+    DrawSprite(tex_select_arrow_,Vector2(679,1080-428),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2(1.0f,1.0f),Vector2(-1.0f,-1.0f));
+    DrawSprite(tex_select_arrow_,Vector2(1183,1080-827),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2::Zero,Vector2(1.0f,1.0f));
+    DrawSprite(tex_select_arrow_,Vector2(679,1080-827),0.0f,Vector2(100.0f,100.0f),Color(1.0f,1.0f,1.0f,1.0f),Vector2(1.0f,1.0f),Vector2(-1.0f,-1.0f));
 
     //âEâ∫ëÄçÏê‡ñæ
     //ñﬂÇÈ

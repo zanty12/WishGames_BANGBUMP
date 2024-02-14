@@ -32,7 +32,7 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 	// ゲームモードがないなら終了
 	if (gameMode_ == nullptr) return;
 	// 制限時間が来たなら、次のモードへ移行
-	if (gameMode_->maxTime_ < gameMode_->time_) {
+	if (gameMode_->maxTime_ < gameMode_->time_ || gameMode_->playTime_ <= 0.0f && gameMode_->isSkip) {
 		// 現在のモードの取得
 		MULTI_MODE mode_ = GetMode();
 
@@ -70,29 +70,31 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 	}
 	else {
 		// 時間の更新
-		float deltaTime = (timeGetTime() - preTime) * 0.001f;
+		float deltaTime = Time::GetDeltaTime();
 		if (gameMode_->startTime_ <= gameMode_->time_ && gameMode_->playTime_ < 0.0f && !gameMode_->isSkip) deltaTime = 0.0f;
 		gameMode_->time_ += deltaTime;
 
+		float absPlayTime = MATH::Abs(gameMode_->playTime_);
 
 		// ゲームのスタートの更新
 		if (gameMode_->time_ < gameMode_->startTime_) {
 			gameMode_->mode = MultiPlayModeServerSide::START;
 			gameMode_->UpdateStart(clients);
 		}
-		// ゲームのリザルトの更新
-		else if (0.0f < gameMode_->time_ - gameMode_->maxTime_ + gameMode_->resultTime_) {
-			gameMode_->mode = MultiPlayModeServerSide::RESULT;
-			gameMode_->UpdateResult(clients);
-		}
 		// ゲームモードの更新
-		else {
+		else if (gameMode_->time_ < gameMode_->startTime_ + absPlayTime ||
+			gameMode_->playTime_ <= 0.0f && gameMode_->isSkip == false) {
 			gameMode_->mode = MultiPlayModeServerSide::PLAY;
 			gameMode_->Update(clients);
 
 			if (GetAsyncKeyState(VK_RETURN)) {
-				if(0.0f <= gameMode_->playTime_)gameMode_->time_ = gameMode_->startTime_ + gameMode_->playTime_;
+				if (0.0f <= gameMode_->playTime_)gameMode_->time_ = gameMode_->startTime_ + gameMode_->playTime_;
 			}
+		}
+		// ゲームのリザルトの更新
+		else {
+			gameMode_->mode = MultiPlayModeServerSide::RESULT;
+			gameMode_->UpdateResult(clients);
 		}
 		gameMode_->preMode = gameMode_->mode;
 		preTime = timeGetTime();
@@ -119,9 +121,21 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 	case AREA_CAPTURE: return new MultiPlayAreaCaptureModeClientSide();
 	case ENEMY_RUSH: return new MultiPlayEnemyRushModeClientSide();
 	case FINAL_BATTLE: return new MultiPlayFinalBattleModeClientSide();
-	case LAST_RESULT: return new MultiPlayLastResultModeClientSide();
+	case LAST_RESULT: return new MultiPlayLastResultModeClientSide(game_);
 	}
 	return nullptr;
+}
+
+MultiPlayFlowClientSide::MultiPlayFlowClientSide(MultiPlayClient *game) : game_(game) {
+	if (game->GetID() == -1) return;
+	std::ostringstream path;
+	path << "data/texture/UI/" << "UI_icon_" << ((game->GetID() % 4) + 1) << ".png";
+	icon[0] = LoadTexture("data/texture/UI/UI_icon_1.png");
+	icon[1] = LoadTexture("data/texture/UI/UI_icon_2.png");
+	icon[2] = LoadTexture("data/texture/UI/UI_icon_3.png");
+	icon[3] = LoadTexture("data/texture/UI/UI_icon_4.png");
+	icon2 = LoadTexture("data/texture/UI/UI_icon_base.png");
+	icon3 = LoadTexture("data/texture/UI/UI_icon_gauge.png");
 }
 
 void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
@@ -158,7 +172,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 	else if (gameMode_) {
 
 		// マップの描画
-		gameMode_->map_->Draw(offset);
+		gameMode_->map_->Draw(offset, gameMode_->isBlockShow);
 
 		// ゲームのスタートの画面
 		if (res.time < gameMode_->startTime_) {
@@ -258,8 +272,8 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		Vector2 uv = Vector2::Zero;
 		Vector2 uvScale = Vector2::One;
 		Vector2 pos = CalcIconPosition(idx, maxMembers);
-		Vector2 scl = Vector2(200, 100);
-		DrawSprite(icon3,
+		Vector2 scl = Vector2(300, 300);
+		DrawSprite(icon2,
 			pos, 0.0f, scl,
 			Color::White,
 			uv, uvScale
@@ -280,13 +294,16 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 			
 
 			float x = pos.x - scl.x * 0.5f;
-			DrawSprite(icon2,
+			//DrawSpriteBoxEffectLeftToRight(
+			//	icon3, pos, scl, Color::White, t
+			//);
+			DrawSprite(icon3,
 				Vector2(x + scl.x * t * 0.5f, pos.y), 0.0f, Vector2(scl.x * t, scl.y),
 				Color::White,
 				uv, Vector2(t, 1.0f)
 			);
 		};
-		DrawSprite(icon,
+		DrawSprite(icon[idx % 4],
 			pos, 0.0f, scl,
 			Color::White,
 			uv, uvScale

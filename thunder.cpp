@@ -65,6 +65,7 @@ Vector2 Thunder::Move()
 
     move_effect_->Update();
 
+
     if (stick.x < 0.0f)
     {
         player_->GetAnimator()->DirRight();
@@ -101,10 +102,10 @@ Vector2 Thunder::Move()
             move_indicator_ = new ThunderIndicator();
         }
         float angle = atan2(previousStick.y, -previousStick.x);
-        Vector2 pos = Vector2(cos(angle), -sin(angle)) * (player_->GetScale().x / 2 + move_indicator_->GetScale().x / 2);
+        Vector2 pos = Vector2(cos(angle), sin(angle)) * (player_->GetScale().x / 2 + move_indicator_->GetScale().x / 2);
         pos = player_->GetPos() + pos;
         move_indicator_->SetPos(pos);
-        move_indicator_->SetRot(angle);
+        move_indicator_->SetRot(-angle);
 
         move_effect_->Charge();
     }
@@ -112,6 +113,7 @@ Vector2 Thunder::Move()
     if (move_charge_ > move_trigger_min_ && stick_distance < responseMinStickDistance && move_cd_ <= 0.0f)
     {
         move_dir_ = -previousStick.Normalize();
+        move_dir_.y *= -1;
         //move_charge_ = 0.0f;
         move_cd_ = 1.0f;
         delete move_indicator_;
@@ -122,7 +124,11 @@ Vector2 Thunder::Move()
     }
     if (moving_)
     {
-        Vector2 direction = move_dir_ * movePower * Time::GetDeltaTime();
+        if (move_dir_ == Vector2::Zero||movePower <= 0.0f)
+        {
+            return Vector2::Zero;
+        }
+        Vector2 direction = move_dir_ * movePower * 0.01f;
         player_->SetGravityState(GRAVITY_NONE);
         move_charge_ -= move_charge_max_ * Time::GetDeltaTime();
         if (move_charge_ < 0.0f)

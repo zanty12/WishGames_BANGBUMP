@@ -1,4 +1,6 @@
 #pragma once
+#include "gameobject.h"
+#include "movableobj.h"
 #include "sprite.h"
 #include "scene.h"
 #include "scenemngr.h"
@@ -119,6 +121,57 @@ private:
         void Draw() override;
     };
 
+    class AnimatorLite
+    {
+    private:
+        float time_ = 0.0f;
+        float frame_time_ = 24.0f / 30.0f / 30.0f;
+        Vector2 pos_;
+        int tex_;
+        Vector2 size_;
+        Vector2 start_uv_ = Vector2::Zero;
+        Vector2 end_uv_ = Vector2::Zero;
+        Vector2 matrix_ = Vector2::Zero;
+
+    public:
+        AnimatorLite(Vector2 pos, int tex, Vector2 size, Vector2 matrix) : pos_(pos), tex_(tex), size_(size),
+                                                                           matrix_(matrix)
+        {
+            end_uv_ = Vector2(1.0f / matrix_.x, 1.0f / matrix_.y);
+        }
+
+        ~AnimatorLite() = default;
+
+        void Update()
+        {
+            //move uv according to matrix and frame time
+            time_ += Time::GetDeltaTime();
+            if (time_ > frame_time_)
+            {
+                time_ = 0.0f;
+                start_uv_.x += 1.0f / matrix_.x;
+                end_uv_.x += 1.0f / matrix_.x;
+                if (start_uv_.x >= 1.0f)
+                {
+                    start_uv_.x = 0.0f;
+                    end_uv_.x = 1.0f / matrix_.x;
+                    start_uv_.y += 1.0f / matrix_.y;
+                    end_uv_.y += 1.0f / matrix_.y;
+                    if (start_uv_.y >= 1.0f)
+                    {
+                        start_uv_.y = 0.0f;
+                        end_uv_.y = 1.0f / matrix_.y;
+                    }
+                }
+            }
+        }
+
+        void Draw()
+        {
+            DrawSprite(tex_, pos_, 0.0f, size_, Color(1.0f, 1.0f, 1.0f, 0.9f), start_uv_, end_uv_ - start_uv_);
+        }
+    };
+
     class TitleStart : public TitleVer2_State
     {
     private:
@@ -127,12 +180,17 @@ private:
         float title_scale_ = title_scale_start_;
         float don_timer_ = 0.0f;
         bool don_played_ = false;
-        const float base_rot_ =  -10.0f / 180.0f * M_PI;
+        const float base_rot_ = -10.0f / 180.0f * M_PI;
         float base_rot_angle_ = base_rot_;
+        AnimatorLite* revolve_effect_;
+        float revolve_timer_ = 24.0f / 30.0f;
 
     public:
         TitleStart(Title2* title) : TitleVer2_State(title)
         {
+            revolve_effect_ = new AnimatorLite(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() * 2 / 3),
+                                               LoadTexture(Asset::GetAsset(effect_EX)), Vector2(750.0f, 750.0f),
+                                               Vector2(5, 6));
         };
         ~TitleStart() override = default;
         void Update() override;

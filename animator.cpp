@@ -94,7 +94,6 @@ Animator::Animator(GameObject* game_object)
     : parent_(game_object), pos_(game_object->GetPos()), scale_(game_object->GetScale()), texNo_(game_object->GetTexNo()), loop_anim_(ANIM_NONE), loop_anim_next_(ANIM_NONE),
     now_matrix_number_(0), u_(0.0f), v_(0.0f), isAnim_(false), invert_(1)//初期化
 {
-
     if (!GameBase::GetRenderer()->Add(this))
         std::cout << "error creating animator for obj at " << pos_.x << ", " << pos_.y << std::endl;
 }

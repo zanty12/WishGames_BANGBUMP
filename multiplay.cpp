@@ -10,10 +10,6 @@
 #include <windows.h>
 #include <thread>
 
-//#define DEBUG_LINK
-//#define DEBUG_INPUT
-//#define DEBUG_LOCKED;
-//#define DEBUG_SENDLEN
 std::wstring ParamPath;
 std::map<int, CLIENT_DATA_SERVER_SIDE> MultiPlayServer::clients_;
 
@@ -30,12 +26,6 @@ MultiPlayServer::MultiPlayServer() {
 }
 
 int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd) {
-	// ロック
-	//lock_.Lock();
-#ifdef DEBUG_LOCKED
-	std::cout << "REGISTER LOCK";
-#endif
-
 	// プレイヤー作成
 	Vector2 pos = Vector2(200, 200);
 	float rot = 0.0f;
@@ -80,23 +70,11 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 
 
 
-	// ロック解除
-#ifdef DEBUG_LOCKED
-	std::cout << " - REGISTER UNLOCK" << std::endl;
-#endif
-	//lock_.Unlock();
 
 	return id;
 }
 
 void MultiPlayServer::Unregister(int id) {
-	// ロック
-	//lock_.Lock();
-#ifdef DEBUG_LOCKED
-	std::cout << "UNREGISTER LOCK";
-#endif
-
-
 	// 解除
 	clients_[id].header.command = HEADER::RESPONSE_LOGOUT;
 	clients_[id].sockfd_.Close();
@@ -111,14 +89,6 @@ void MultiPlayServer::Unregister(int id) {
 	// 削除
 	delete clients_[id].player_;
 	clients_.erase(id);
-
-
-
-	// ロック解除
-#ifdef DEBUG_LOCKED
-	std::cout << " - UNREGISTER UNLOCK" << std::endl;
-#endif
-	//lock_.Unlock();
 }
 
 void MultiPlayServer::AllUnregister(void) {
@@ -129,12 +99,6 @@ void MultiPlayServer::AllUnregister(void) {
 }
 
 void MultiPlayServer::PlayerUpdate(void) {
-	// ロック
-	//lock_.Lock();
-#ifdef DEBUG_LOCKED
-	std::cout << "UPD LOCK";
-#endif
-
 	if (gameMode->GetGame()->IsPlayerMove()) {
 		// プレイヤーの更新
 		for (auto &kvp : clients_) {
@@ -149,13 +113,6 @@ void MultiPlayServer::PlayerUpdate(void) {
 
 			// 移動させる
 			player->transform.position += player->velocity + player->blownVelocity + player->gravityVelocity;
-
-#ifdef DEBUG_INPUT
-			std::cout << Input::GetStickLeft(0).x << ", " << Input::GetStickLeft(0).y << std::endl;
-#endif
-#ifdef DEBUG_LINK
-			std::cout << player->transform.position.x << ", " << player->transform.position.y << std::endl;
-#endif
 		}
 
 		// スキルオーブの更新
@@ -172,13 +129,6 @@ void MultiPlayServer::PlayerUpdate(void) {
 	}
 	// ゲームモードの更新
 	gameMode->Update(clients_);
-
-
-	// ロック解除
-#ifdef DEBUG_LOCKED
-	std::cout << " - UPD UNLOCK" << std::endl;
-#endif
-	//lock_.Unlock();
 }
 
 void MultiPlayServer::RecvUpdate(void) {
@@ -187,12 +137,6 @@ void MultiPlayServer::RecvUpdate(void) {
 	req.ParseRequest(recvBuff);
 
 
-
-	// ロック
-	//lock_.Lock();
-#ifdef DEBUG_LOCKED
-	std::cout << "RCV LOCK";
-#endif
 
 	// プレイヤーの検索
 	auto iterator = clients_.find(req.input.id);
@@ -203,19 +147,7 @@ void MultiPlayServer::RecvUpdate(void) {
 		// 入力情報を設定
 		data.currentInput = req.input.curInput;
 		data.previousInput = req.input.preInput;
-
-#ifdef DEBUG_INPUT
-		Input::SetState(1, data.currentInput);
-		Input::SetPreviousState(1, data.previousInput);
-		std::cout << Input::GetStickLeft(1).x << ", " << Input::GetPreviousStickLeft(1).y << std::endl;
-#endif
 	}
-
-	// ロック解除
-#ifdef DEBUG_LOCKED
-	std::cout << " - RCV UNLOCK" << std::endl;
-#endif
-	//lock_.Unlock();
 }
 
 void MultiPlayServer::SendUpdate(void) {
@@ -267,21 +199,10 @@ void MultiPlayServer::SendUpdate(void) {
 		header.command = HEADER::RESPONSE_UPDATE;
 		memcpy(&sendBuff[0], &header, sizeof(HEADER));
 
-#ifdef DEBUG_SENDLEN
-		std::cout << "SENDBUFF : " << sendBuff.Length() << std::endl;
-#endif
 
 		// 送信
 		SendTo(sockfd_, sendBuff, sendBuff.Length(), 0, client.clientAddr_);
 	}
-
-	// ロック解除
-#ifdef DEBUG_LOCKED
-	std::cout << " - SND UNLOCK" << std::endl;
-#endif
-	//lock_.Unlock();
-//}
-//}
 }
 
 void MultiPlayServer::OpenTerminal(void) {
@@ -308,8 +229,6 @@ void MultiPlayServer::OpenTerminal(void) {
 
 
 
-	// SendUpdate()をスレッドを立てて関数を呼び出す
-	//std::thread sendUpdateFunc(&MultiPlayServer::SendUpdate, this);
 
 
 
@@ -386,6 +305,7 @@ void MultiPlayServer::OpenTerminal(void) {
 					PlayerUpdate();
 				}
 				SendUpdate();
+				Time::Update();
 
 				// スキルオールチートシート
 				for (int i = 0; i < 10; i++) {
@@ -412,12 +332,9 @@ void MultiPlayServer::OpenTerminal(void) {
 			break;
 		}
 
-		Time::Update();
 
 		recvBuff = nullptr;
 	}
-
-	//sendUpdateFunc.join();
 }
 
 
@@ -454,6 +371,8 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// シーン遷移アニメーションの初期化
 	MoveScene::Initialize();
+
+	filterTexNo = LoadTexture("data/texture/filter.png");
 }
 
 int MultiPlayClient::Register(std::string serverAddress) {
@@ -535,7 +454,6 @@ void MultiPlayClient::Unregister(void) {
 }
 
 void MultiPlayClient::PlayerUpdate(void) {
-
 	// カメラ座標の計算
 	if (res_.clients.size()) {
 		float posY = res_.clients.begin()->position.y;		// プレイヤーのY座標
@@ -588,20 +506,14 @@ void MultiPlayClient::PlayerUpdate(void) {
 	// ライトエフェクトの描画
 	lightEffect.Draw(offset);
 
-#ifndef MOVIE
 	// UIの描画
 	gameMode->DrawUI(res_);
 
 	// プレイヤーUIの描画
 	for (auto kvp : MultiPlayClient::clients) if (kvp.second->entryType == ClientPlayer::ENTRY) kvp.second->DrawUI();
-#endif
+
 	// シーン遷移アニメーション
 	MoveScene::Loop();
-
-
-#ifdef DEBUG_LINK
-	if (res.clients.size()) std::cout << res.clients.begin()->position.x << ", " << res.clients.begin()->position.y << std::endl;
-#endif
 }
 
 void MultiPlayClient::SendUpdate(void) {
@@ -617,8 +529,6 @@ void MultiPlayClient::SendUpdate(void) {
 			// リクエストの作成
 			REQUEST_PLAYER req;
 			req.input = { id, Input::GetState(0), Input::GetPreviousState(0), move_, action_ };
-			//req.input.curInput.sThumbLX = (GetAsyncKeyState('A') - GetAsyncKeyState('D')) * +16384;
-			//req.input.curInput.sThumbLY = (GetAsyncKeyState('W') - GetAsyncKeyState('S')) * -16384;
 			req.CreateRequest(sendBuff, id);
 
 			// 送信
