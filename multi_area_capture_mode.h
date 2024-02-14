@@ -16,6 +16,7 @@ public:
 	};
 
 private:
+	std::list<int> inOrder;
 	std::list<Area> areas;
 	std::list<Area> activeAreas;
 	float radius = 5.0f;							// ”¼Œa

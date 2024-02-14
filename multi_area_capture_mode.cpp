@@ -29,7 +29,7 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 	// エリア
 	for (auto &area : activeAreas) {
 		Vertex1 areaCollider = Vertex1(area.position, area.radius);			// エリアのコライダー
-		CLIENT_DATA_SERVER_SIDE *pTouchClient = nullptr;					// エリアに触れているプレイヤー
+		//CLIENT_DATA_SERVER_SIDE *pTouchClient = nullptr;					// エリアに触れているプレイヤー
 		int inPlayerNum = 0;												// 領域に入っているプレイヤーの数
 
 
@@ -37,42 +37,55 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 		for (auto &kvp : clients) {
 			auto &client = kvp.second;
 			auto &player = client.player_;
+			auto touchIterator = inOrder.begin();
 			Vertex1 clientCollider = Vertex1(player->transform.position, 0.0f);	// プレイヤーのコライダー
 
-			// 衝突判定
-			if (Collider2D::Touch(areaCollider, clientCollider)) {
-				int id = client.header.id;									// プレイヤーのID
-				inPlayerNum++;
-
-				if (area.id == id ||	// 自分のエリアなら
-					area.id == -1 ||	// だれのエリアでもないなら
-					pTouchClient == nullptr) {	// 誰もいないなら
-					pTouchClient = &client;		// 更新する
-					area.id = id;
+			// すでにエリアに含まれているか
+			for (auto iterator = inOrder.begin(); iterator != inOrder.end(); iterator++) {
+				if (*iterator == player->id) {
+					touchIterator = iterator;
+					break;
 				}
 			}
+
+			// 衝突判定なら入った順にID登録
+			if (Collider2D::Touch(areaCollider, clientCollider)) {
+				// ID登録
+				if (touchIterator == inOrder.end()) inOrder.push_back(player->id);
+				//int id = client.header.id;									// プレイヤーのID
+				//inPlayerNum++;
+
+				//
+				//if (area.id == id ||	// 自分のエリアなら
+				//	area.id == -1 ||	// だれのエリアでもないなら
+				//	pTouchClient == nullptr) {	// 誰もいないなら
+				//	pTouchClient = &client;		// 更新する
+				//	area.id = id;
+				//}
+			}
+			// エリアから離れたなら消す
+			else if (touchIterator != inOrder.end())inOrder.erase(touchIterator);
 		}
 
 		// だれも触れていないなら
-		if (pTouchClient == nullptr) continue;
+		//if (pTouchClient == nullptr) continue;
 
 		// 占領し続けているならゲージの更新
-		if (area.id == pTouchClient->header.id) {
+		if (inOrder.size()) {
 			area.captureNowTime += (curTime - preTime) * 0.001f;
-		}
-		// 別のプレイヤーに占領されたなら初期化
-		else {
-			area.id = pTouchClient->header.id;
+			area.id = inOrder.front();
+
+			area.captureRatio = area.captureNowTime / area.captureMaxTime;		// 割合計算
+
+			// 占領完了したなら得点
+			if (1.0f <= area.captureRatio) {
+				clients[inOrder.front()].player_->score++;
+				// スキルオーブをドロップさせる
+				map_->DropSkillOrb(15, area.position, 10.0f);
+			}
 		}
 
-		area.captureRatio = area.captureNowTime / area.captureMaxTime;		// 割合計算
 
-		// 占領完了したなら得点
-		if (1.0f <= area.captureRatio) {
-			pTouchClient->player_->score++;
-			// スキルオーブをドロップさせる
-			map_->DropSkillOrb(15, area.position, 10.0f);
-		}
 	}
 }
 // 占領削除
