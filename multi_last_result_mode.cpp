@@ -1,6 +1,8 @@
 #include "multi_last_result_mode.h"
+#include "move_scene_anim.h"
 
 void MultiPlayLastResultModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {
+	MoveScene::Move(Color::White * 0.0f);
 
 	// “®‰æ‚Ì•`‰æ
 	video->DrawAsResource();
@@ -40,7 +42,6 @@ void MultiPlayLastResultModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 o
 		float height = 150.0f;
 		Vector2 scl = Vector2(800, 800);
 		Vector2 pos = Vector2(screen.x - scl.x * 0.5f - 200, center.y - floatY * height);
-		std::cout << floatY << std::endl;
 
 		DrawSprite(barTexNo[id], pos, 0.0f, scl, Color::White);
 		DrawSprite(nameTexNo[client.id % 4], pos, 0.0f, scl, Color::White);
@@ -58,4 +59,8 @@ void MultiPlayLastResultModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 o
 	if (game && Input::GetKeyDown(0, Input::A)) {
 		game->Unregister();
 	}
+}
+
+void MultiPlayLastResultModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
+	MoveScene::Move(Color::White * 0.0f);
 }

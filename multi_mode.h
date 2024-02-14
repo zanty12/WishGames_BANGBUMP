@@ -37,7 +37,7 @@ public:
 		startTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"startTime");
 		resultTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"resultTime");
 		playTime_ = ini::GetFloat(PARAM_PATH + L"mode.ini", modeName.c_str(), L"playTime");
-		maxTime_ = (0.0f < playTime_ ? playTime_ : -playTime_) + startTime_ + resultTime_;
+		maxTime_ = startTime_ + MATH::Abs(playTime_) + resultTime_;
 
 		std::string mapPath = ini::GetString(PARAM_PATH + L"mode.ini", modeName.c_str(), L"path");
 		map_ = new MultiMap(MAP_PATH + mapPath, MULTIPLAY_RUN_TYPE_SERVER);

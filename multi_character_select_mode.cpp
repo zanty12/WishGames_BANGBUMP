@@ -57,14 +57,18 @@ void MultiPlayCharacterSelectModeServerSide::PlayerUpdate(std::map<int, CLIENT_D
 		}
 
 
-		// スキップしない
+		// スキップ
 		client.isSkip = refStatus == 2;
 		if (client.isSkip == false) isSkip = false;
 	}
 
 	// 全員OKならスキップする
 	if (isSkip) {
-		this->isSkip = isSkip;
+		moveNextSceneTime += Time::GetDeltaTime();
+		if(3 < moveNextSceneTime) this->isSkip = isSkip;
+	}
+	else {
+		this->isSkip = false;
 	}
 }
 
@@ -173,13 +177,12 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 	ATTRIBUTE_TYPE moveAttributeType, attackAttributeType;
 
 	for (int id = 0; id < MAX_MEMBER; id++) {
-
 		float width = 600.0f;
 		float height = 600.0f;
 		float gap = -120.0f;
 
 
-			
+		
 
 		// 登録されているか調べる
 		auto iterator = res.characters.end();
@@ -201,6 +204,7 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 				moveAttributeType = iterator->moveAttributeType;
 				attackAttributeType = iterator->attackAttributeType;
 			}
+
 
 			// 描画
 			characters[id].Draw(charFrameTexNo, charFramePTexNo[id % 4], charSelectArrow, playerTexNo[id % 4], bootTexNo[iterator->moveAttributeType], handTexNo[iterator->attackAttributeType], charReadyTexNo,

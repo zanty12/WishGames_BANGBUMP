@@ -32,7 +32,7 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 	// ゲームモードがないなら終了
 	if (gameMode_ == nullptr) return;
 	// 制限時間が来たなら、次のモードへ移行
-	if (gameMode_->maxTime_ < gameMode_->time_) {
+	if (gameMode_->maxTime_ < gameMode_->time_ || gameMode_->playTime_ <= 0.0f && gameMode_->isSkip) {
 		// 現在のモードの取得
 		MULTI_MODE mode_ = GetMode();
 
@@ -70,29 +70,31 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 	}
 	else {
 		// 時間の更新
-		float deltaTime = (timeGetTime() - preTime) * 0.001f;
+		float deltaTime = Time::GetDeltaTime();
 		if (gameMode_->startTime_ <= gameMode_->time_ && gameMode_->playTime_ < 0.0f && !gameMode_->isSkip) deltaTime = 0.0f;
 		gameMode_->time_ += deltaTime;
 
+		float absPlayTime = MATH::Abs(gameMode_->playTime_);
 
 		// ゲームのスタートの更新
 		if (gameMode_->time_ < gameMode_->startTime_) {
 			gameMode_->mode = MultiPlayModeServerSide::START;
 			gameMode_->UpdateStart(clients);
 		}
-		// ゲームのリザルトの更新
-		else if (0.0f < gameMode_->time_ - gameMode_->maxTime_ + gameMode_->resultTime_) {
-			gameMode_->mode = MultiPlayModeServerSide::RESULT;
-			gameMode_->UpdateResult(clients);
-		}
 		// ゲームモードの更新
-		else {
+		else if (gameMode_->time_ < gameMode_->startTime_ + absPlayTime ||
+			gameMode_->playTime_ <= 0.0f && gameMode_->isSkip == false) {
 			gameMode_->mode = MultiPlayModeServerSide::PLAY;
 			gameMode_->Update(clients);
 
 			if (GetAsyncKeyState(VK_RETURN)) {
-				if(0.0f <= gameMode_->playTime_)gameMode_->time_ = gameMode_->startTime_ + gameMode_->playTime_;
+				if (0.0f <= gameMode_->playTime_)gameMode_->time_ = gameMode_->startTime_ + gameMode_->playTime_;
 			}
+		}
+		// ゲームのリザルトの更新
+		else {
+			gameMode_->mode = MultiPlayModeServerSide::RESULT;
+			gameMode_->UpdateResult(clients);
 		}
 		gameMode_->preMode = gameMode_->mode;
 		preTime = timeGetTime();

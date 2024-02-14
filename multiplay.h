@@ -19,7 +19,6 @@ extern std::wstring ParamPath;
 #define MAX_BUFF (1024 * 10)
 
 
-#define MOVIE FALSE
 using namespace Network;
 
 /*******************************************************
