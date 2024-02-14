@@ -127,9 +127,6 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 }
 
 MultiPlayFlowClientSide::MultiPlayFlowClientSide(MultiPlayClient *game) : game_(game) {
-	if (game->GetID() == -1) return;
-	std::ostringstream path;
-	path << "data/texture/UI/" << "UI_icon_" << ((game->GetID() % 4) + 1) << ".png";
 	icon[0] = LoadTexture("data/texture/UI/UI_icon_1.png");
 	icon[1] = LoadTexture("data/texture/UI/UI_icon_2.png");
 	icon[2] = LoadTexture("data/texture/UI/UI_icon_3.png");
