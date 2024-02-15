@@ -65,14 +65,27 @@ Vector2 Thunder::Move()
 
     move_effect_->Update();
 
-
-    if (stick.x < 0.0f)
+    if (moving_)
     {
-        player_->GetAnimator()->DirRight();
+        if (player_->GetVel().x < 0.0f)
+        {
+            player_->GetAnimator()->DirLeft();
+        }
+        else if (player_->GetVel().x > 0.0f)
+        {
+            player_->GetAnimator()->DirRight();
+        }
     }
-    else if (stick.x > 0.0f)
+    else
     {
-        player_->GetAnimator()->DirLeft();
+        if (stick.x < 0.0f)
+        {
+            player_->GetAnimator()->DirRight();
+        }
+        else if (stick.x > 0.0f)
+        {
+            player_->GetAnimator()->DirLeft();
+        }
     }
 
     Vector2 stickR = Input::GetStickRight(0);
@@ -112,8 +125,8 @@ Vector2 Thunder::Move()
     //release
     if (move_charge_ > move_trigger_min_ && stick_distance < responseMinStickDistance && move_cd_ <= 0.0f)
     {
-        move_dir_ = -previousStick.Normalize();
-        move_dir_.y *= -1;
+        move_dir_ = previousStick.Normalize();
+        move_dir_.x *= -1;
         //move_charge_ = 0.0f;
         move_cd_ = 1.0f;
         delete move_indicator_;
@@ -121,14 +134,15 @@ Vector2 Thunder::Move()
         moving_ = true;
 
         move_effect_->Move();
+
+        if (previousStick == Vector2::Zero)
+        {
+            move_dir_ = Vector2::Zero;
+        }
     }
     if (moving_)
     {
-        if (move_dir_ == Vector2::Zero||movePower <= 0.0f)
-        {
-            return Vector2::Zero;
-        }
-        Vector2 direction = move_dir_ * movePower * 0.01f;
+        move_vel_ = move_dir_ * movePower * 0.01f;
         player_->SetGravityState(GRAVITY_NONE);
         move_charge_ -= move_charge_max_ * Time::GetDeltaTime();
         if (move_charge_ < 0.0f)
@@ -137,7 +151,10 @@ Vector2 Thunder::Move()
             moving_ = false;
             player_->SetGravityState(GRAVITY_FULL);
         }
-        return direction;
+        //std::cout << "previousStick " << "X " << previousStick.x << "  Y " << previousStick.y << std::endl;
+        //std::cout << "move_dir_     " << "X " << move_dir_.x << "  Y " << move_dir_.y << std::endl;
+        //std::cout << "move_vel_     " << "X " << move_vel_.x << "  Y " << move_vel_.y << std::endl;
+        return move_vel_;
     }
     else
     {
@@ -145,7 +162,8 @@ Vector2 Thunder::Move()
         if (move_cd_ < 0.0f)
             move_cd_ = 0.0f;
     }
-    return player_->GetVel();
+    move_vel_ *= 0.9f;  //徐々に速度を減らす
+    return move_vel_;
 }
 
 void Thunder::Action()
@@ -211,13 +229,21 @@ void Thunder::Action()
     //release
     if (attack_charge_ > atttack_trigger_min_ && stick_distance < responseMinStickDistance && attack_cd_ <= 0.0f)
     {
+        Vector2 attack_dir = previousStick.Normalize();
+        attack_dir.x *= -1;
+
         for (int i = 0; i < 5; i++)
         {
+            if (previousStick == Vector2::Zero)
+            {
+                break;
+            }
+
             if (attack_[i] == nullptr)
             {
                 float range = 1 + (attack_charge_ - atttack_trigger_min_) / (attack_charge_max_- atttack_trigger_min_)*(15 + 1) * GameObject::SIZE_;
                 //15の後はレベル変動値
-                attack_[i] = new ThunderAttack(this, Vector2(-previousStick.x,previousStick.y).Normalize(),
+                attack_[i] = new ThunderAttack(this, attack_dir,
                                                17 * GameObject::SIZE_ * Time::GetDeltaTime(),range);
                 attack_charge_ = 0.0f;
                 attack_cd_ = 1.0f;
@@ -265,7 +291,7 @@ void Thunder::Gatchanko(bool is_attack)
     {
         delete attack_indicator_;
         attack_indicator_ = nullptr;
-        for (auto attack : attack_)
+        for (auto& attack : attack_)
         {
             delete attack;
             attack = nullptr;
