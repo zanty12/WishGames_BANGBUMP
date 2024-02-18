@@ -107,7 +107,7 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 		float y = MATH::Bezier(centerY + 150.0f, centerY + 50.0f, centerY - 25.0f, centerY - 50.0f, t);
 		float a = MATH::Bezier(0.0f, 1.0f, 0.7f, 0.0f, t);
 		
-		DrawSprite(stageNameTexNo, Vector2(centerX, y), 0.0f, Vector2::One * 200.0f, Color::White * a);
+		DrawSprite(stageNameTexNo, Vector2(centerX, y), 0.0f, Vector2(1200.0f, 500.0f) * 0.75f, Color::White * a);
 	}
 
 	// カウントダウン

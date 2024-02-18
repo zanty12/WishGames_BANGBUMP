@@ -262,6 +262,21 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		Number(Vector2(centerX, 100.0f), Vector2(100, 100), res.maxTime - gameMode_->resultTime_ - res.time);
 	}
 
+
+	//// カウントダウン
+	//float countDown = startTime_ - time;
+	//if (countDown < 4.0f) {
+	//	float vh = 1.0f / 4.0f;
+	//	float v = (int)countDown * vh;
+	//	float centerX = Graphical::GetWidth() * 0.5f;
+	//	float centerY = Graphical::GetHeight() * 0.5f;
+	//	float t = countDown - (int)countDown;
+	//	float rate = MATH::Leap(0.4f, 1.0f, t * t);
+
+	//	DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
+	//		Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
+	//}
+
 	// スコアの描画
 	int maxMembers = res.clients.size();				// プレイヤー人数
 	for (auto &client : res.clients) {
