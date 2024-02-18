@@ -32,18 +32,17 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 		//CLIENT_DATA_SERVER_SIDE *pTouchClient = nullptr;					// エリアに触れているプレイヤー
 		int inPlayerNum = 0;												// 領域に入っているプレイヤーの数
 
-
+		int loop = 0;
 		// プレイヤー
 		for (auto &kvp : clients) {
 			auto &client = kvp.second;
 			auto &player = client.player_;
-			auto touchIterator = inOrder.begin();
+			auto touchIterator = inOrder.end();
 			Vertex1 clientCollider = Vertex1(player->transform.position, 0.0f);	// プレイヤーのコライダー
 
 			// すでにエリアに含まれているか
-			for (auto iterator = inOrder.begin(); iterator != inOrder.end(); iterator++) {
-				if (*iterator == player->id) {
-					touchIterator = iterator;
+			for (touchIterator = inOrder.begin(); touchIterator != inOrder.end(); touchIterator++) {
+				if (*touchIterator == player->id) {
 					break;
 				}
 			}
