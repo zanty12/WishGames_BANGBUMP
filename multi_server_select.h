@@ -41,7 +41,7 @@ public:
         bg_video_->SetLoop(true);
         bg_video_->SetWindowPos(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2));
         bg_video_->SetSize(Vector2(Graphical::GetWidth(), Graphical::GetHeight()));
-        bgm_ = LoadSound("data/sound/bgm/serverselect.wav");
+        bgm_ = LoadSound("data/sound/BGM/serverselect.wav");
         confirm_se_ = LoadSound("data/sound/SE/confirm.wav");
         back_se_ = LoadSound("data/sound/SE/back.wav");
         font_ = ImGui::GetIO().Fonts->Fonts[1];
