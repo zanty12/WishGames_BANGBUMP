@@ -67,4 +67,14 @@ public:
     void SetWeight(int weight) { weight_ = weight; }
     int GetWeight() const { return weight_; }
 
+    //対象のコライダーをリストから外す
+    void RemoveCollision(Collider* collider) {
+        collision_.remove_if([collider](Collider* col) {
+            if (col->GetParent() == collider->GetParent()) {
+                return true;
+            }
+            return false;
+            }
+        );
+    }
 };

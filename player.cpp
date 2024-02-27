@@ -120,12 +120,19 @@ void Player::Update(void)
 		not_stick_working_ = 0;
 	}
 
+	CollisionAction();
 
 	bool affected_gravity = false;	//d—Í‚ðŽó‚¯‚½‚©‚Ç‚¤‚©
 
 	if (attack_attribute_ != nullptr)
 	{
 		attack_attribute_->Action();
+	}
+
+	//
+	if (player_state_ == TOUCH_GROUND)
+	{
+		SetVel(Vector2::Zero);
 	}
 
 	Vector2 next_vel = GetVel();
@@ -158,7 +165,7 @@ void Player::Update(void)
 
 	AddVel(GetVel());
 
-	CollisionAction();
+
 
 	Invincibility();
 

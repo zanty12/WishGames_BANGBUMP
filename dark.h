@@ -43,6 +43,8 @@ public:
 	void Action() override;
 	void DebugMenu() override;
 
+	float GetWarpDistance(void) const { return warpDistance_; }
+
 	void Gatchanko(bool is_attack) override;
 };
 
@@ -61,11 +63,14 @@ class DarkIndicator : public MovableObj
 {
 private:
 	Vector2 target_pos_;
+	Attribute* parent_ = nullptr;
+
 public:
 	DarkIndicator();
-	~DarkIndicator() override = default;
+	~DarkIndicator() = default;
 	void Update() override;
 	void SetTargetPos(Vector2 pos) { target_pos_ = pos; }
+	void SetParent(Attribute* parent) { parent_ = parent; }
 };
 
 class DarkAttackIndicator : public MovableObj

@@ -79,7 +79,7 @@ void Enemy1::CollisionAction(void)
 				//Player* player = dynamic_cast<Player*>(obj);
 				//player->HpDown(300);
 
-				Flashing();
+
 			}
 
 			break;

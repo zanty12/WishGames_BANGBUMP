@@ -46,22 +46,31 @@ Vector2 Dark::Move()
 
     if (stick != Vector2::Zero)
     {
+
+        //移動インジケーター生成
         if (move_indicator_ == nullptr)
         {
             move_indicator_ = new DarkIndicator();
+            move_indicator_->SetParent(this);
+            move_indicator_->SetPos(player_->GetPos());
         }
         Vector2 dir = stick.Normalize();
 
+        //移動インジケーターアップデート
         Vector2 target_pos = player_->GetPos() + dir * warpDistance_ / 2;
-        move_indicator_->SetPos(player_->GetPos());
         move_indicator_->SetTargetPos(target_pos);
+        move_indicator_->SetVel(dir * 5); //進む速さ
         move_indicator_->Update();
     }
 
     else
     {
-        delete move_indicator_;
-        move_indicator_ = nullptr;
+        if (move_indicator_)
+        {
+            move_indicator_->GetCollider()->Discard();
+            delete move_indicator_;
+            move_indicator_ = nullptr;
+        }
     }
     if (Input::GetKey(0, Input::LThumb))
     {
@@ -90,8 +99,12 @@ Vector2 Dark::Move()
         }
 
         player_->SetPos(warpPosition);
-        delete move_indicator_;
-        move_indicator_ = nullptr;
+        if (move_indicator_)
+        {
+            move_indicator_->GetCollider()->Discard();
+            delete move_indicator_;
+            move_indicator_ = nullptr;
+        }
     }
     else warpPosition = Vector2::Zero;
 
@@ -193,8 +206,12 @@ void Dark::Gatchanko(bool is_attack)
     //アタック時は移動エフェクトを消す
     if (is_attack)
     {
-        delete move_indicator_;
-        move_indicator_ = nullptr;
+        if (move_indicator_)
+        {
+            move_indicator_->GetCollider()->Discard();
+            delete move_indicator_;
+            move_indicator_ = nullptr;
+        }
         move_effect_->DispUninit();
     }
     //移動時なら攻撃エフェクトおよびオブジェクトを消す。移動エフェクトの再表示
@@ -285,6 +302,27 @@ DarkIndicator::DarkIndicator() : MovableObj(Vector2::Zero, 0.0f, LoadTexture(Ass
 
 void DarkIndicator::Update()
 {
+
+    int height = parent_->GetPlayer()->GetMapMngr()->GetMap()->GetHeight();
+    int width = parent_->GetPlayer()->GetMapMngr()->GetMap()->GetWidth();
+    if (target_pos_.y >= SIZE_ * (height - 2))
+    {
+        target_pos_.y = SIZE_ * (height - 2);
+    }
+    if (target_pos_.y <= SIZE_ * 2)
+    {
+        target_pos_.y = SIZE_ * 2;
+    }
+    if (target_pos_.x >= SIZE_ * (width - 2))
+    {
+        target_pos_.x = SIZE_ * (width - 2);
+    }
+    if (target_pos_.x <= SIZE_ * 2)
+    {
+        target_pos_.x = SIZE_ * 2;
+    }
+
+    /*
     bool hit = false;
     //try collision at target_pos_
     ColliderRect* target_collider = dynamic_cast<ColliderRect*>(GetCollider());
@@ -330,8 +368,26 @@ void DarkIndicator::Update()
                 }
             }
         }
+
+        //今までのは夢だったのさ……
+        for (auto col : collision)
+        {
+            col->RemoveCollision(GetCollider());
+        }
     }
     SetPos(GetCollider()->GetPos());
+    */
+
+    AddVel(GetVel());
+
+    Vector2 vec2dist = GetPos() - parent_->GetPlayer()->GetPos();
+    float dist = vec2dist.Distance();   //インジケーターとプレイヤーの距離
+    vec2dist = target_pos_ - parent_->GetPlayer()->GetPos();
+    float maxDist = vec2dist.Distance() ; //最大距離
+    if (abs(dist) > abs(maxDist))
+    {
+        SetPos(target_pos_);
+    }
 }
 
 
