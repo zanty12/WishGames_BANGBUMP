@@ -42,8 +42,8 @@ public:
         bg_video_->SetWindowPos(Vector2(Graphical::GetWidth() / 2, Graphical::GetHeight() / 2));
         bg_video_->SetSize(Vector2(Graphical::GetWidth(), Graphical::GetHeight()));
         bgm_ = LoadSound("data/sound/bgm/serverselect.wav");
-        confirm_se_ = LoadSound("data/sound/se/confirm.wav");
-        back_se_ = LoadSound("data/sound/se/back.wav");
+        confirm_se_ = LoadSound("data/sound/SE/confirm.wav");
+        back_se_ = LoadSound("data/sound/SE/back.wav");
         font_ = ImGui::GetIO().Fonts->Fonts[1];
     }
 
