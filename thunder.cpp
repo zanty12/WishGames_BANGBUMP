@@ -359,6 +359,11 @@ void ThunderAttack::Update()
                 }
             }
             break;
+        case OBJ_SOLID:
+        {
+            Discard();
+            break;
+        }
         default:
             break;
         }
