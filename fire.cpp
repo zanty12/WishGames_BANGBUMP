@@ -54,7 +54,7 @@ Vector2 Fire::Move()
         move_effect_->Update();
 
         Vector2 dir = stick.Normalize();
-        Vector2 vel = dir * state_->maxPower * GameObject::SIZE_ * Time::GetDeltaTime();
+        Vector2 vel = dir * state_->maxPower * GameObject::SIZE_ * 1.0f/60;
 
         player_->SetGravityState(GRAVITY_NONE);
         return vel;

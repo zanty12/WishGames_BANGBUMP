@@ -140,6 +140,7 @@ enum sounds
     SE_fire_attack,
     SE_dark_move,
     SE_dark_attack,
+    SE_thunder_move,
     SE_thunder_attack,
     SE_wind_move,
     SE_wind_attack,

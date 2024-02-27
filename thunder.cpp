@@ -16,6 +16,8 @@
 Thunder::Thunder(Player* player)
     : Attribute(player, ATTRIBUTE_TYPE_THUNDER),move_effect_(new ThunderEffect(this))
 {
+    LoadMoveSound(SE_thunder_move);
+    SetVolume(move_sound_, 1.0f);
 }
 
 Thunder::~Thunder()
@@ -134,6 +136,7 @@ Vector2 Thunder::Move()
         moving_ = true;
 
         move_effect_->Move();
+        PlaySound(move_sound_, 0);
 
         if (previousStick == Vector2::Zero)
         {
