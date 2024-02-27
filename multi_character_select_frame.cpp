@@ -47,7 +47,7 @@ void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int a
 	// 描画（キャラ）
 	if (isShow) {
 		Vector2 scale = Vector2::One * height;
-		Vector2 position = Vector2(x + 5, y + 40);
+		Vector2 position = Vector2(x + 50, y + 40);
 		// フレーム
 		DrawSprite(framePTexNo, Vector2(x, y), 0.0f, Vector2::One * (height + 300) * scl, Color(1, 1, 1, alpha));
 		// キャラ

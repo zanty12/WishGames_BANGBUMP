@@ -87,8 +87,11 @@ public:
             client.Unregister();
             start_ = true;
         }
-        if (start_)
+        if (start_) {
             scene_mngr_->ChangeScene(SCENE_MENU);
+            return;
+        }
+            
         if (Input::GetKeyDown(0, Input::A) || GetKeyState(VK_RETURN) & 0x8000)
         {
             connect_ = true;
