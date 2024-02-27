@@ -125,6 +125,16 @@ public:
 		sendBuff.Release();
 		recvBuff.Release();
 
+		// ‰ğ•ú
+		for (auto &client : clients) delete client.second;
+		clients.clear();
+
+		if (gameMode) {
+			delete gameMode;
+			gameMode = nullptr;
+		}
+
+
 		// “o˜^‰ğœ
 		Unregister();
 
