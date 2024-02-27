@@ -40,10 +40,6 @@ void MultiPlayCharacterSelectModeServerSide::PlayerUpdate(std::map<int, CLIENT_D
 		Input::SetState(0, client.currentInput);
 		Input::SetPreviousState(0, client.previousInput);
 
-		// 選択する
-		AttributeSelect(Input::GetStickLeft(0), Input::GetPreviousStickLeft(0), client.moveAttributeType);
-		AttributeSelect(Input::GetStickRight(0), Input::GetPreviousStickRight(0), client.attackAttributeType);
-
 		int &refStatus = status[client.player_->id];
 		// 決定
 		if (Input::GetKeyDown(0, Input::A)) {
@@ -54,6 +50,13 @@ void MultiPlayCharacterSelectModeServerSide::PlayerUpdate(std::map<int, CLIENT_D
 		else if (Input::GetKeyDown(0, Input::B)) {
 			refStatus--;
 			if (refStatus < 0) refStatus = 0;			
+		}
+
+		// 選択モードなら
+		if (refStatus == 1) {
+			// 選択する
+			AttributeSelect(Input::GetStickLeft(0), Input::GetPreviousStickLeft(0), client.moveAttributeType);
+			AttributeSelect(Input::GetStickRight(0), Input::GetPreviousStickRight(0), client.attackAttributeType);
 		}
 
 

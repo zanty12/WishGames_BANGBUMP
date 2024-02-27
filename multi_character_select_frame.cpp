@@ -47,20 +47,21 @@ void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int a
 	// 描画（キャラ）
 	if (isShow) {
 		Vector2 scale = Vector2::One * height;
+		Vector2 position = Vector2(x + 5, y + 40);
 		// フレーム
 		DrawSprite(framePTexNo, Vector2(x, y), 0.0f, Vector2::One * (height + 300) * scl, Color(1, 1, 1, alpha));
 		// キャラ
-		DrawSprite(playerTexNo, Vector2(x, y + 40), 0.0f, Vector2::One * height * scl, Color(1, 1, 1, alpha) * col);
+		DrawSprite(playerTexNo, position, 0.0f, Vector2::One * height * scl, Color(1, 1, 1, alpha) * col);
 		// 足
-		DrawSprite(bootTexNo, Vector2(x, y + 40), 0.0f, Vector2::One * height * scl * scaleMoveAttributeRate, Color(1, 1, 1, alpha) * col);
+		DrawSprite(bootTexNo, position, 0.0f, Vector2::One * height * scl * scaleMoveAttributeRate, Color(1, 1, 1, alpha) * col);
 		// 腕
-		DrawSprite(handTexNo, Vector2(x, y + 40), 0.0f, Vector2::One * height * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col);
+		DrawSprite(handTexNo, position, 0.0f, Vector2::One * height * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col);
 		// 矢印
 		DrawSprite(arrowTexNo, Vector2(x + 160, y + 40), 0.0f, Vector2::One * 50 * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col);
 		DrawSprite(arrowTexNo, Vector2(x - 160, y + 40), 3.1415f, Vector2::One * 50 * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col, Vector2(0.0f, 1.0f), Vector2(1.0f, -1.0f));
-		DrawSprite(arrowTexNo, Vector2(x + 160, y - 180), 0.0f, Vector2::One * 50 * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col);
-		DrawSprite(arrowTexNo, Vector2(x - 160, y - 180), 3.1415f, Vector2::One * 50 * scl * scaleAttackAttributeRate, Color(1, 1, 1, alpha) * col, Vector2(0.0f, 1.0f), Vector2(1.0f, -1.0f));
+		DrawSprite(arrowTexNo, Vector2(x + 160, y - 180), 0.0f, Vector2::One * 50 * scl * scaleMoveAttributeRate, Color(1, 1, 1, alpha) * col);
+		DrawSprite(arrowTexNo, Vector2(x - 160, y - 180), 3.1415f, Vector2::One * 50 * scl * scaleMoveAttributeRate, Color(1, 1, 1, alpha) * col, Vector2(0.0f, 1.0f), Vector2(1.0f, -1.0f));
 		// ソード
-		if (0.0f < swordRate) swordAnim.Draw(Vector2(x, y), 0.0f, Vector2::One * (height)*scl * scaleAttackAttributeRate, Color(1, 1, 1, 1));
+		if (0.0f < swordRate) swordAnim.Draw(Vector2(x, y), 0.0f, Vector2::One * height * scl * 0.75f, Color(1, 1, 1, 1));
 	}
 }
