@@ -127,9 +127,6 @@ MultiPlayModeClientSide *MultiPlayFlowClientSide::CreateMode(MULTI_MODE mode) {
 }
 
 MultiPlayFlowClientSide::MultiPlayFlowClientSide(MultiPlayClient *game) : game_(game) {
-	if (game->GetID() == -1) return;
-	std::ostringstream path;
-	path << "data/texture/UI/" << "UI_icon_" << ((game->GetID() % 4) + 1) << ".png";
 	icon[0] = LoadTexture("data/texture/UI/UI_icon_1.png");
 	icon[1] = LoadTexture("data/texture/UI/UI_icon_2.png");
 	icon[2] = LoadTexture("data/texture/UI/UI_icon_3.png");
@@ -264,6 +261,21 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	else {
 		Number(Vector2(centerX, 100.0f), Vector2(100, 100), res.maxTime - gameMode_->resultTime_ - res.time);
 	}
+
+
+	//// カウントダウン
+	//float countDown = startTime_ - time;
+	//if (countDown < 4.0f) {
+	//	float vh = 1.0f / 4.0f;
+	//	float v = (int)countDown * vh;
+	//	float centerX = Graphical::GetWidth() * 0.5f;
+	//	float centerY = Graphical::GetHeight() * 0.5f;
+	//	float t = countDown - (int)countDown;
+	//	float rate = MATH::Leap(0.4f, 1.0f, t * t);
+
+	//	DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
+	//		Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
+	//}
 
 	// スコアの描画
 	int maxMembers = res.clients.size();				// プレイヤー人数

@@ -16,6 +16,7 @@ public:
 	};
 
 private:
+	std::list<int> inOrder;
 	std::list<Area> areas;
 	std::list<Area> activeAreas;
 	float radius = 5.0f;							// ”¼Œa
@@ -73,7 +74,7 @@ public:
 		anim = MultiAnimator(areaTexNo, 1, 1, 0, 0);
 		soNo = LoadSound("data/sound/BGM/stage1_BGM.wav");
 
-		stageNameTexNo = LoadTexture("data/texture/UI/title/UI_finalstage.png");
+		stageNameTexNo = LoadTexture("data/texture/UI/title/UI_stage1.png");
 	}
 
 	void Draw(RESPONSE_PLAYER &players, Vector2 offset) override;
