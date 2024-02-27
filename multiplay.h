@@ -140,6 +140,9 @@ public:
 
 		// クリーンアップ
 		Cleanup();
+
+		// 音をすべて止める
+		StopSoundAll();
 	}
 
 	// 登録
