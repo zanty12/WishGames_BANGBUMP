@@ -19,6 +19,12 @@ Dark::Dark(Player* player)
 {
     LoadMoveSound(SE_dark_move);
     SetVolume(move_sound_, 1.0f);
+
+    //一回目が重すぎるので空読み込み
+    attack_ = new DarkAttack(this);
+    attack_->Update();
+    delete attack_;
+    attack_ = nullptr;
 }
 
 Vector2 Dark::Move()
