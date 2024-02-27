@@ -34,8 +34,8 @@ void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int a
 
 	// 割合からアニメーションを決める（ソード編）
 	float swordRate = stateSmooth -1.0f;
-	if (swordRate <= 0.0f || stateSmooth.get_tilt() < 0.0f) swordAnim.MoveBegin();
-	std::cout << stateSmooth << std::endl;
+	if (swordRate < 0.0f) swordAnim.MoveBegin();
+	if (stateSmooth.get_tilt() < 0.0f) swordAnim.MoveEnd();
 
 
 
