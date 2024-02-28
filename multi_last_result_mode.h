@@ -5,6 +5,7 @@
 #include "time.h"
 #include "asset.h"
 #include "video.h"
+#include "move_scene_anim.h"
 
 
 /*******************************************************

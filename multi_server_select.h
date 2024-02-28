@@ -88,8 +88,11 @@ public:
             start_ = true;
         }
         if (start_)
+        {
             scene_mngr_->ChangeScene(SCENE_MENU);
-        if (Input::GetKeyDown(0, Input::A) || GetKeyState(VK_RETURN) & 0x8000)
+        }
+
+        if ((Input::GetKeyDown(0, Input::A) || GetKeyState(VK_RETURN) & 0x8000) && !connect_)
         {
             connect_ = true;
             PlaySound(confirm_se_, 0);
