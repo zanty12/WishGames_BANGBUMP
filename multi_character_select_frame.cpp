@@ -1,6 +1,7 @@
 #include "multi_character_select_frame.h"
+#include "sound.h"
 
-void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int arrowTexNo, int playerTexNo, int bootTexNo, int handTexNo, int swordTexNo, bool isShow, float width, float height, float gap, int moveAttribute, int attackAttribute) {
+void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int arrowTexNo, int playerTexNo, int bootTexNo, int handTexNo, int swordTexNo, bool isShow, float width, float height, float gap, int moveAttribute, int attackAttribute, int character_select_so) {
 	const float SCREEN_WIDTH = Graphical::GetWidth();					// 画面の幅
 	const float SCREEN_HEIGHT = Graphical::GetHeight();					// 画面の高さ
 	const float center = (float)maxNum - (float)maxNum * 0.5f - 0.5f;	// 中央
@@ -34,8 +35,14 @@ void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int a
 
 	// 割合からアニメーションを決める（ソード編）
 	float swordRate = stateSmooth -1.0f;
-	if (swordRate < 0.0f) swordAnim.MoveBegin();
-	if (stateSmooth.get_tilt() < 0.0f) swordAnim.MoveEnd();
+	if (prevState == 1 && state == 2) {
+		swordAnim.MoveBegin();
+		PlaySound(character_select_so, 0);
+	}
+	//else if (state == 1 == prevState == 2) {
+	//	swordAnim.MoveEnd();
+	//}
+	//if (stateSmooth.get_tilt() < 0.0f) swordAnim.MoveEnd();
 
 
 
@@ -62,6 +69,8 @@ void CharacterSelectFrameClientSide::Draw(int frameTexNo, int framePTexNo, int a
 		DrawSprite(arrowTexNo, Vector2(x + 160, y - 180), 0.0f, Vector2::One * 50 * scl * scaleMoveAttributeRate, Color(1, 1, 1, alpha) * col);
 		DrawSprite(arrowTexNo, Vector2(x - 160, y - 180), 3.1415f, Vector2::One * 50 * scl * scaleMoveAttributeRate, Color(1, 1, 1, alpha) * col, Vector2(0.0f, 1.0f), Vector2(1.0f, -1.0f));
 		// ソード
-		if (0.0f < swordRate) swordAnim.Draw(Vector2(x, y), 0.0f, Vector2::One * height * scl * 0.75f, Color(1, 1, 1, 1));
+		if (0.0f < swordRate && 0.0f < stateSmooth.get_tilt()) swordAnim.Draw(Vector2(x, y), 0.0f, Vector2::One * height * scl * 0.75f, Color(1, 1, 1, 1));
 	}
+
+	prevState = state;
 }

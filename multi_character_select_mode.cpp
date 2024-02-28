@@ -200,6 +200,7 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 			// ステータスの更新
 			auto &character = characters[id];
 			character.stateSmooth = iterator->status;
+			character.state = iterator->status;
 
 
 			// 自分のIDなら属性を記録する
@@ -211,12 +212,12 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 
 			// 描画
 			characters[id].Draw(charFrameTexNo, charFramePTexNo[id % 4], charSelectArrow, playerTexNo[id % 4], bootTexNo[iterator->moveAttributeType], handTexNo[iterator->attackAttributeType], charReadyTexNo,
-				true, width, height, gap, iterator->moveAttributeType, iterator->attackAttributeType);
+				true, width, height, gap, iterator->moveAttributeType, iterator->attackAttributeType, character_select_so);
 		}
 		// 枠のみ表示
 		else {
 			characters[id].Draw(charFrameTexNo, charFramePTexNo[id % 4], charSelectArrow, playerTexNo[id % 4], bootTexNo[ATTRIBUTE_TYPE_FIRE], handTexNo[ATTRIBUTE_TYPE_FIRE], charReadyTexNo,
-				false, width, height, gap, ATTRIBUTE_TYPE_FIRE, ATTRIBUTE_TYPE_FIRE);
+				false, width, height, gap, ATTRIBUTE_TYPE_FIRE, ATTRIBUTE_TYPE_FIRE, character_select_so);
 		}
 	}
 

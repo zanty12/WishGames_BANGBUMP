@@ -214,7 +214,7 @@ void ClientPlayer::ShowEntry() {
 	// アニメーション
 	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_spawn.png"), 5, 3, 0, 9, false);
 	// 落雷を降らす
-	float height = 1100.0f;
+	float height = 1650.0f;
 	Vector2 localPos = Vector2(0.0f, height * 0.15f);
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
 
@@ -230,7 +230,7 @@ void ClientPlayer::ShowExit() {
 	// アニメーション
 	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_transfer.png"), 5, 6, 0, 25, false);
 	// 落雷を降らす
-	float height = 1100.0f;
+	float height = 1650.0f;
 	Vector2 localPos = Vector2(0.0f, height * 0.15f);
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
 }

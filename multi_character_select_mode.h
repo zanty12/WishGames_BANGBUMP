@@ -87,6 +87,8 @@ private:
 	int stick_tex_ = -1;										// テクスチャ（スティック）
 	int match_tex_ = -1;										// テクスチャ（マッチメイキング）
 
+	int character_select_so = -1;								// キャラクター選択時の音
+
 private:
 	void CharacterDraw(int id, int maxIdx, bool isShow, float width, float height, float gap, int moveAttribute, int attackAttribute, float moveAttributeSmooth, float attackAttributeSmooth);
 
@@ -127,11 +129,12 @@ public:
 		charFramePTexNo[3] = LoadTexture("data/texture/UI/UI_frame_player4.png");
 
 		soNo = LoadSound("data/sound/BGM/select_element_BGM.wav");
+		character_select_so = LoadSound("data/sound/SE/select_finish.wav");
 
 
 		// ブロック非表示
 		isBlockShow = false;
-
+			
 
 		video = new Video("./data/video/fire_move.mp4");
 		video->SetSize(Vector2(853.3 * static_cast<float>(Graphical::GetWidth()) / 1920,
