@@ -132,6 +132,7 @@ const std::map<sounds, std::string> Asset::sounds_ = std::map<sounds, std::strin
     {sounds::SE_fire_attack,"data/sound/SE/firekougeki.wav"},
     {sounds::SE_dark_move,"data/sound/SE/mizuidou.wav"},
     {sounds::SE_dark_attack,"data/sound/SE/mizukougeki.wav"},
+    {sounds::SE_thunder_move,"data/sound/SE/kaminariidou.wav"},
     {sounds::SE_thunder_attack,"data/sound/SE/kaminarikougeki.wav"},
     {sounds::SE_wind_move,"data/sound/SE/kazeidou.wav"},
     {sounds::SE_wind_attack,"data/sound/SE/kazekougeki.wav"},

@@ -38,6 +38,8 @@ public:
         default:
             break;
         }
+
+        SetType(OBJ_SPIKE);
     }
 
     ~Spike() override = default;

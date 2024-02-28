@@ -28,6 +28,7 @@ class Thunder : public Attribute
     float move_cd_ = 1.0f;
     const float move_cd_max_ = 1.0f;
     Vector2 move_dir_;
+    Vector2 move_vel_;
     bool moving_ = false;
     ThunderIndicator* move_indicator_ = nullptr;
     //attack

@@ -16,6 +16,7 @@
 #include "enemy.h"
 #include "xinput.h"
 #include "bullet.h"
+#include "sound.h"
 
 #define LV_NUM (10)
 
@@ -53,6 +54,8 @@ Player::Player(Vector2 pos, float rot, Vector2 vel, MapMngr* map_mangr)
 	hit_effect_ = new PlayerHitEffect();
 	//•\Ž¦—Dæ“xÝ’è
 	GetAnimator()->SetDrawPriority(50);
+
+	damage_sound_ = LoadSound("data/sound/SE/takedamage.wav");
 }
 
 Player::~Player()
@@ -120,12 +123,19 @@ void Player::Update(void)
 		not_stick_working_ = 0;
 	}
 
+	CollisionAction();
 
 	bool affected_gravity = false;	//d—Í‚ðŽó‚¯‚½‚©‚Ç‚¤‚©
 
 	if (attack_attribute_ != nullptr)
 	{
 		attack_attribute_->Action();
+	}
+
+	//
+	if (player_state_ == TOUCH_GROUND)
+	{
+		SetVel(Vector2::Zero);
 	}
 
 	Vector2 next_vel = GetVel();
@@ -158,7 +168,7 @@ void Player::Update(void)
 
 	AddVel(GetVel());
 
-	CollisionAction();
+
 
 	Invincibility();
 
@@ -304,6 +314,7 @@ void Player::CollisionAction(void)
 		{
 			CollisionSpike();
 			GameObject* gameObj = collision->GetParent();
+			PlaySound(damage_sound_, 0);
 			break;
 		}
 		case OBJ_PLAYER:
@@ -312,12 +323,14 @@ void Player::CollisionAction(void)
 		{
 			GameObject* gameObj = collision->GetParent();
 			CollisionEnemy(gameObj);
+			PlaySound(damage_sound_, 0);
 			break;
 		}
 		case OBJ_BULLET:
 		{
 			GameObject* gameObj = collision->GetParent();
 			CollisionBullet(gameObj);
+			PlaySound(damage_sound_, 0);
 			break;
 		}
 		case OBJ_ITEM:

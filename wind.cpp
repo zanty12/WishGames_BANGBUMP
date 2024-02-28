@@ -192,6 +192,7 @@ WindAttack::WindAttack(Wind* parent) : parent_(parent), MovableObj(parent->GetPl
 
     //サウンド
     LoadAttackSound(SE_wind_attack);
+    SetVolume(attack_sound_, 0.5f);
     PlaySound(attack_sound_, -1);
 }
 

@@ -73,6 +73,8 @@ private:
     GRAVITY_STATE gravity_state_ = GRAVITY_FULL;
     RevolveEffect* revolve_effect_ = nullptr;
 
+    int damage_sound_ = 0;
+
 protected:
     PlayerDeadEffect* dead_effect_ = nullptr;
     PlayerHitEffect* hit_effect_ = nullptr;
