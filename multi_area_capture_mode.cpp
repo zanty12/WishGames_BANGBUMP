@@ -152,7 +152,7 @@ void MultiPlayAreaCaptureModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 
 		Vector2 scl = Vector2(area.radius, area.radius) * 2.0f;
 		Color col = Color::White * 0.5f;
 		anim.Draw(pos, rot, scl, col);
-		DrawSpriteCircleEffect(anim.texNo, pos, rot, scl, col, Vector2::Zero, Vector2::One, area.captureRatio);
+		DrawSpriteCircleEffect(anim.texNo, pos, rot, scl, col, anim.ToUV(), Vector2(1.0f / 5, 1.0f / 6), area.captureRatio);
 		anim.SetActive(false);
 	}
 }
