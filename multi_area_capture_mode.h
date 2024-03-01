@@ -73,6 +73,7 @@ public:
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_front));
 		anim = MultiAnimator(areaTexNo, 5, 6, 0, 29, true);
 		soNo = LoadSound("data/sound/BGM/stage1_BGM.wav");
+		descTexNo = LoadTexture("data/texture/description/areacapture_description.png");
 
 		stageNameTexNo = LoadTexture("data/texture/UI/title/UI_stage1.png");
 	}

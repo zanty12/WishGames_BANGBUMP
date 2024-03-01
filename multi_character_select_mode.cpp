@@ -225,8 +225,10 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 	if (0.75f < Input::GetTriggerLeft(0) && 0.75f < Input::GetTriggerRight(0)) {
 		DebugUI::BeginDraw();
 		Text::TextStart();
-		video->Update();
-		video->Draw();
+		moveAttributeVideo[moveAttributeType]->Update();
+		moveAttributeVideo[moveAttributeType]->Draw();
+		attackAttributeVideo[attackAttributeType]->Update();
+		attackAttributeVideo[attackAttributeType]->Draw();
 		Text::TextEnd();
 		DebugUI::EndDraw();
 	}

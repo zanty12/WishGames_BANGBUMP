@@ -69,7 +69,8 @@ private:
 	RESPONSE_CHARACTER_SELECT res;
 	std::map<int, CharacterSelectFrameClientSide> characters;
 	MultiPlayClient *game_ = nullptr;
-	Video *video = nullptr;
+	Video *moveAttributeVideo[4]= {};
+	Video *attackAttributeVideo[4]= {};
 	int bootTexNo[ATTRIBUTE_TYPE_NUM] = {};
 	int handTexNo[ATTRIBUTE_TYPE_NUM] = {};
 	int playerTexNo[4] = {};									// キャラ画像
@@ -134,18 +135,63 @@ public:
 
 		// ブロック非表示
 		isBlockShow = false;
-			
+		
+		// ビデオの描画設定
+		Vector2 screenScale = Vector2(static_cast<float>(Graphical::GetWidth()), static_cast<float>(Graphical::GetHeight()));
+		Vector2 screenCenter = screenScale * 0.5f;
+		Vector2 videoScale = Vector2(853.3 * screenScale.x / 1920, 480 * screenScale.y / 1080);
+		Vector2 moveVideoPos = Vector2(screenCenter.x + videoScale.x * 0.5f, screenCenter.y);
+		Vector2 attackVideoPos = Vector2(screenCenter.x - videoScale.x * 0.5f, screenCenter.y);
 
-		video = new Video("./data/video/fire_move.mp4");
-		video->SetSize(Vector2(853.3 * static_cast<float>(Graphical::GetWidth()) / 1920,
-			480 * static_cast<float>(Graphical::GetHeight()) / 1080));
-		video->SetLoop(true);
-		video->SetWindowPos(Vector2(1400 * static_cast<float>(Graphical::GetWidth()) / 1920,
-			1000 / 2 * static_cast<float>(Graphical::GetHeight()) / 1080));
+		// 移動ビデオ
+		for (int i = 0; i < ATTRIBUTE_TYPE_NUM; i++) {
+			// ビデオのロード
+			Video *video = nullptr;
+			switch (i) {
+			case ATTRIBUTE_TYPE_FIRE: video = new Video("./data/video/fire_move.mp4"); break;
+			case ATTRIBUTE_TYPE_DARK: video = new Video("./data/video/dark_move.mp4"); break;
+			case ATTRIBUTE_TYPE_THUNDER: video = new Video("./data/video/thunder_move.mp4"); break;
+			case ATTRIBUTE_TYPE_WIND: video = new Video("./data/video/wind_move.mp4"); break;
+			}
+
+			// ビデオの設定
+			video->SetSize(videoScale);
+			video->SetLoop(true);
+			video->SetWindowPos(moveVideoPos);
+
+			moveAttributeVideo[i] = video;
+		}
+		// 攻撃ビデオ
+		for (int i = 0; i < ATTRIBUTE_TYPE_NUM; i++) {
+			// ビデオのロード
+			Video *video = nullptr;
+			switch (i) {
+			case ATTRIBUTE_TYPE_FIRE: video = new Video("./data/video/fire_attack.mp4"); break;
+			case ATTRIBUTE_TYPE_DARK: video = new Video("./data/video/dark_attack.mp4"); break;
+			case ATTRIBUTE_TYPE_THUNDER: video = new Video("./data/video/thunder_attack.mp4"); break;
+			case ATTRIBUTE_TYPE_WIND: video = new Video("./data/video/wind_attack.mp4"); break;
+			}
+
+			// ビデオの設定
+			video->SetSize(videoScale);
+			video->SetLoop(true);
+			video->SetWindowPos(attackVideoPos);
+
+			attackAttributeVideo[i] = video;
+		}
 	}
 
 	~MultiPlayCharacterSelectModeClientSide() {
-		delete video;
+		for (int i = 0; i < ATTRIBUTE_TYPE_NUM; i++) {
+			if (moveAttributeVideo[i]) {
+				delete moveAttributeVideo[i];
+			}
+		}
+		for (int i = 0; i < ATTRIBUTE_TYPE_NUM; i++) {
+			if (attackAttributeVideo[i]) {
+				delete attackAttributeVideo[i];
+			}
+		}
 	}
 
 	void DrawStart(RESPONSE_PLAYER &players, Vector2 offset) override;

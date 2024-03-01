@@ -89,6 +89,12 @@ void MultiPlayServer::Unregister(int id) {
 	// 削除
 	delete clients_[id].player_;
 	clients_.erase(id);
+
+
+	// サーバーにいる数が0人ならサーバーを初期化
+	if (clients_.size() == 0) {
+		gameMode->SwapMode(CHARACTER_SELECT, clients_);
+	}
 }
 
 void MultiPlayServer::AllUnregister(void) {
@@ -99,6 +105,8 @@ void MultiPlayServer::AllUnregister(void) {
 }
 
 void MultiPlayServer::PlayerUpdate(void) {
+	if (gameMode->GetGame() == nullptr) return;
+
 	if (gameMode->GetGame()->IsPlayerMove()) {
 		// プレイヤーの更新
 		for (auto &kvp : clients_) {
@@ -326,11 +334,10 @@ void MultiPlayServer::OpenTerminal(void) {
 		}
 
 
-
-		if (GetAsyncKeyState(VK_ESCAPE)) {
-			isFinish = true;
-			break;
-		}
+		//if (GetAsyncKeyState(VK_ESCAPE)) {
+		//	isFinish = true;
+		//	break;
+		//}
 
 
 		recvBuff = nullptr;

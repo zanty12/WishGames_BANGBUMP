@@ -80,6 +80,15 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 
 	float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
 
+	// カウントダウンが無いなら説明を表示
+	float countDown = startTime_ - time;
+	float centerX = Graphical::GetWidth() * 0.5f;
+	float centerY = Graphical::GetHeight() * 0.5f;
+	if (4.0f <= countDown) {
+		DrawSprite(descTexNo, Vector2(centerX, centerY), 0.0f, Vector2(1000, 527),
+			Color(1, 1, 1), Vector2::Zero, Vector2::One);
+	}
+
 	// スポーンさせる
 	if (MoveScene::Move(Color::White * 0.0f) && SPAWN_ANIMATION_START_TIME + spawnSpanTime * clientSpawnCount <= time) {
 
@@ -100,23 +109,23 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 	// ステージ名
 	else if (STAGE_NAME_ANIMATION_START_TIME <= time) {
 		float t = (time - STAGE_NAME_ANIMATION_START_TIME) / STAGE_NAME_ANIMATION_TIME;
-		float centerX = Graphical::GetWidth() * 0.5f;
-		float centerY = Graphical::GetHeight() * 0.5f;
+
+		if (t <= 1.0f) {
+			float centerX = Graphical::GetWidth() * 0.5f;
+			float centerY = Graphical::GetHeight() * 0.5f;
 
 
-		float y = MATH::Bezier(centerY + 150.0f, centerY + 50.0f, centerY - 25.0f, centerY - 50.0f, t);
-		float a = MATH::Bezier(0.0f, 1.0f, 0.7f, 0.0f, t);
-		
-		DrawSprite(stageNameTexNo, Vector2(centerX, y), 0.0f, Vector2(1200.0f, 500.0f) * 0.75f, Color::White * a);
+			float y = MATH::Bezier(centerY + 150.0f, centerY + 50.0f, centerY - 25.0f, centerY - 50.0f, t);
+			float alpha = MATH::Bezier(0.0f, 2.0f, 1.5f, 0.0f, t);
+
+			DrawSprite(stageNameTexNo, Vector2(centerX, y), 0.0f, Vector2(1200.0f, 500.0f) * 0.75f, Color::White * alpha);
+		}
 	}
 
 	// カウントダウン
-	float countDown = startTime_ - time;
 	if (countDown < 4.0f) {
 		float vh = 1.0f / 4.0f;
 		float v = (int)countDown * vh;
-		float centerX = Graphical::GetWidth() * 0.5f;
-		float centerY = Graphical::GetHeight() * 0.5f;
 		float t = countDown - (int)countDown;
 		float rate = MATH::Leap(0.4f, 1.0f, t * t);
 

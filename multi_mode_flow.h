@@ -36,8 +36,8 @@ public:
 	}
 
 	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
-
 	void CreateResponse(Storage &out);
+	void SwapMode(MULTI_MODE mode, std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
 
 	MultiMap *GetMap(void) const { return gameMode_ ? gameMode_->map_ : nullptr; }
 	MULTI_MODE GetMode(void) const { return gameMode_ ? gameMode_->GetMode() : MULTI_MODE::NONE; }

@@ -80,6 +80,7 @@ public:
 	int soNo = -1;										// BGM
 	int stageNameTexNo = -1;							// ステージ名テクスチャ
 	int countDownTexNo = -1;							// カウントダウンテクスチャ
+	int descTexNo = -1;									// 説明テクスチャ
 	bool isBlockShow = true;
 
 
