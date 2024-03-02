@@ -307,6 +307,12 @@
     <ClCompile Include="multi_area_capture_mode.cpp">
       <Filter>Multiplay\src\mode</Filter>
     </ClCompile>
+    <ClCompile Include="multi_last_result_mode.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_ranking_animation.cpp">
+      <Filter>Multiplay\src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graphical.h">
@@ -640,6 +646,9 @@
       <Filter>Multiplay\head</Filter>
     </ClInclude>
     <ClInclude Include="multi_character_select_frame.h">
+      <Filter>Multiplay\head</Filter>
+    </ClInclude>
+    <ClInclude Include="multi_ranking_animation.h">
       <Filter>Multiplay\head</Filter>
     </ClInclude>
   </ItemGroup>

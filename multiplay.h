@@ -87,7 +87,6 @@ public:
 
 class MultiPlayClient {
 private:
-	int filterTexNo = -1;
 	static int id;										// ID
 	static MultiPlayFlowClientSide *gameMode;			// ゲームモード
 	Socket sockfd_;										// ソケット

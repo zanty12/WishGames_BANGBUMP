@@ -378,8 +378,6 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 
 	// シーン遷移アニメーションの初期化
 	MoveScene::Initialize();
-
-	filterTexNo = LoadTexture("data/texture/filter.png");
 }
 
 int MultiPlayClient::Register(std::string serverAddress) {

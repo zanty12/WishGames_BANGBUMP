@@ -165,8 +165,8 @@ MultiPlayFlowClientSide::MultiPlayFlowClientSide(MultiPlayClient *game) : game_(
 	icon[1] = LoadTexture("data/texture/UI/UI_icon_2.png");
 	icon[2] = LoadTexture("data/texture/UI/UI_icon_3.png");
 	icon[3] = LoadTexture("data/texture/UI/UI_icon_4.png");
-	icon2 = LoadTexture("data/texture/UI/UI_icon_base.png");
-	icon3 = LoadTexture("data/texture/UI/UI_icon_gauge.png");
+	icon_base = LoadTexture("data/texture/UI/UI_icon_base.png");
+	icon_gage = LoadTexture("data/texture/UI/UI_icon_gauge.png");
 }
 
 void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
@@ -319,7 +319,7 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		Vector2 uvScale = Vector2::One;
 		Vector2 pos = CalcIconPosition(idx, maxMembers);
 		Vector2 scl = Vector2(300, 300);
-		DrawSprite(icon2,
+		DrawSprite(icon_base,
 			pos, 0.0f, scl,
 			Color::White,
 			uv, uvScale
@@ -343,7 +343,7 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 			//DrawSpriteBoxEffectLeftToRight(
 			//	icon3, pos, scl, Color::White, t
 			//);
-			DrawSprite(icon3,
+			DrawSprite(icon_gage,
 				Vector2(x + scl.x * t * 0.5f, pos.y), 0.0f, Vector2(scl.x * t, scl.y),
 				Color::White,
 				uv, Vector2(t, 1.0f)
@@ -359,8 +359,8 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		float centerX = Graphical::GetWidth() * 0.5f;
 		float height = Graphical::GetHeight();
 		switch (idx) {
-		case 0: Number(Vector2(centerX - 215, 78.0f), Vector2::One * 60.0f, 100/*client.score*/); break;
-		case 1: Number(Vector2(centerX -  97, 83.0f), Vector2::One * 60.0f, 100/*client.score*/); break;
+		case 0: Number(Vector2(centerX - 215, 78.0f), Vector2::One * 60.0f, client.score); break;
+		case 1: Number(Vector2(centerX -  97, 83.0f), Vector2::One * 60.0f, client.score); break;
 		case 2: Number(Vector2(centerX +  97, 83.0f), Vector2::One * 60.0f, client.score); break;
 		case 3: Number(Vector2(centerX + 215, 78.0f), Vector2::One * 60.0f, client.score); break;
 		}

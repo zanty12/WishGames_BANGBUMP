@@ -3,6 +3,7 @@
 #include "multi_runenum.h"
 #include "multi_map.h"
 #include "multi_result_skillorb.h"
+#include "multi_ranking_animation.h"
 #include "sound.h"
 #include "time.h"
 
@@ -20,6 +21,8 @@ protected:
 	bool isSkip = false;				// スキップ
 	bool isPlayerMove = false;			// プレイヤーの移動制限
 	MultiMap *map_ = nullptr;
+
+
 	friend MultiPlayFlowServerSide;
 
 
@@ -73,6 +76,7 @@ protected:
 	std::list<ResultSkillOrb> rstSkillOrb;				// リザルト時のスキルオーブ
 	WIN::Time dropSkillOrbCoolTimer;					// リザルト時のスキルオーブドロップアニメーションで使うタイマー
 	bool isNoTimer = false;								// 時間計測をしない
+	RankingAnimator rankAnim[4];
 	friend MultiPlayFlowClientSide;
 
 
@@ -137,8 +141,16 @@ public:
 
 		std::string mapPath = ini::GetString(PARAM_PATH + L"mode.ini", modeName.c_str(), L"path");
 		map_ = new MultiMap(MAP_PATH + mapPath, MULTIPLAY_RUN_TYPE_CLIENT);
-
 		countDownTexNo = LoadTexture("data/texture/UI/321Go.png");
+
+		rankAnim[0] = MultiAnimator(LoadTexture("data/texture/UI/UI_1st_anim.png"), 5, 6, 0, 29, true);
+		rankAnim[0].anim.isEndShow = true;
+		rankAnim[1] = MultiAnimator(LoadTexture("data/texture/UI/UI_2nd.png"), 1, 1, 0, 0, false);
+		rankAnim[1].anim.isEndShow = true;
+		rankAnim[2] = MultiAnimator(LoadTexture("data/texture/UI/UI_3rd.png"), 1, 1, 0, 0, false);
+		rankAnim[2].anim.isEndShow = true;
+		rankAnim[3] = MultiAnimator(LoadTexture("data/texture/UI/UI_4th.png"), 1, 1, 0, 0, false);
+		rankAnim[3].anim.isEndShow = true;
 	};
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 

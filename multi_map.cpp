@@ -160,8 +160,8 @@ void MultiMap::Draw(Vector2 offset, bool isBlockShow) {
 
 	// 描画（背景）
 	DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, screen.y * 0.5f), 0.0f, Vector2(screen.x, screen.y), Color::White);
-	DrawBG(middleBGTexNo, offset, 1620.0f / 1920.0f);
-	DrawBG(frontBGTexNo, offset, 5400.0f / 1920.0f);
+	//DrawBG(middleBGTexNo, offset, 1620.0f / 1920.0f);
+	//DrawBG(frontBGTexNo, offset, 5400.0f / 1920.0f);
 
 	if (isBlockShow == false) return;
 	// 描画（ブロック）

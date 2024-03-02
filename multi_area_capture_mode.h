@@ -68,9 +68,9 @@ public:
 	MultiPlayAreaCaptureModeClientSide() : 
 		areaTexNo(LoadTexture("data/texture/area_capture.png")),
 		MultiPlayModeClientSide(L"AreaCapture") {
-		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
-		map_->middleBGTexNo = LoadTexture("data/texture/BG/BG_stage1_middle.png");
-		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_front));
+		map_->backBGTexNo = LoadTexture("data/texture/BG/__BG_stage1_back.png");//"Asset::textures_.at(textures::bg_stage1_back));
+		map_->middleBGTexNo = LoadTexture("data/texture/BG/__BG_stage1_middle.png");
+		map_->frontBGTexNo = LoadTexture("data/texture/BG/__BG_stage1_front.png");//Asset::textures_.at(textures::bg_stage1_front));
 		anim = MultiAnimator(areaTexNo, 5, 6, 0, 29, true);
 		soNo = LoadSound("data/sound/BGM/stage1_BGM.wav");
 		descTexNo = LoadTexture("data/texture/description/areacapture_description.png");

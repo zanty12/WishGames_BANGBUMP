@@ -34,13 +34,19 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 			}
 		);
 
-
-		int rank = 0;
-		int preScore = -1;
 		int addRank = 1;
-		for (auto player : ranking) {
-			if (player->score == preScore) addRank++;
-			else addRank = 1;
+		int rank = -1;
+		int prevScore = -1;
+		for (auto &player : ranking) {
+			if (player->score == prevScore) {
+				addRank++;
+			}
+			else {
+				rank += addRank;
+				addRank = 1;
+			}
+			prevScore = player->score;
+
 
 			int expRange = player->GetLvMaxSkillOrb() - player->GetLvMinSkillOrb();
 			switch (rank) {
@@ -142,9 +148,10 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 	if (time < 0.0f) return;
 
 	const float FADE_ANIMATION = 0.5f;
-	const float DROP_ANIMATION = 2.5f;
-	const float STAY_ANIMATION = 3.5f;
-	const float WARP_ANIMATION = 9.5f;
+	const float RANK_ANIMATION = 3.5f;
+	const float DROP_ANIMATION = 5.5f;
+	const float STAY_ANIMATION = 7.5f;
+	const float WARP_ANIMATION = 11.5f;
 
 
 
@@ -156,6 +163,63 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 	if (time <= FADE_ANIMATION) {
 		MoveScene::Move(Color::Black * 0.5f);
 		clientSpawnCount = 0;
+	}
+
+	// ランキングアニメーション
+	else if (time <= RANK_ANIMATION) {
+		// ランキング
+		std::list<ClientPlayer *> ranking;
+		for (auto &kvp : MultiPlayClient::clients) ranking.push_back(kvp.second);
+
+		// ソート
+		ranking.sort([](ClientPlayer *a, ClientPlayer *b) {
+			return a->score > b->score;
+			}
+		);
+
+		const float RANK_TIME = (time - FADE_ANIMATION);
+		const float ONCE_RANK_TIME = 0.5f;
+
+		// アニメーション
+		int addRank = 1;
+		int rank = -1;
+		int prevScore = -1;
+		for (auto &player : ranking) {
+			if (player->score == prevScore) {
+				addRank++;
+			}
+			else {
+				rank += addRank;
+				addRank = 1;
+			}
+			prevScore = player->score;
+
+
+			if (ONCE_RANK_TIME * rank < time) {
+
+				// アイコンの座標を取得
+				Vector2 position = CalcIconPosition(player->id % 4, ranking.size());
+				Vector2 scale = Vector2(600.0f, 400.0f);
+				switch (rank) {
+				case 0: scale *= 0.5f; break;
+				case 1: scale *= 0.125f; break;
+				case 2: scale *= 0.09375f; break;
+				case 3: scale *= 0.0625f; break;
+				}
+
+
+				Vector2 pos1 = Vector2(0.0f, 0.0f);
+				Vector2 pos2 = Vector2(0.0f, 20.0f);
+				Vector2 pos3 = Vector2(0.0f, 80.0f);
+				Vector2 pos4 = Vector2(0.0f, 100.0f);
+				Color col1 = Color(1.0f, 1.0f, 1.0f, 0.0f);
+				Color col2 = Color(1.0f, 1.0f, 1.0f, 0.2f);
+				Color col3 = Color(1.0f, 1.0f, 1.0f, 0.8f);
+				Color col4 = Color(1.0f, 1.0f, 1.0f, 1.0f);
+				float addRate = 0.02f;
+				rankAnim[rank].Draw(position, scale, pos1, pos2, pos3, pos4, col1, col2, col3, col4, addRate);
+			}
+		}
 	}
 
 	// ドロップアニメーション
@@ -183,13 +247,19 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 
 		// 0.5秒ごとにスキルオーブをドロップ
 		if (100 < dropSkillOrbCoolTimer.GetNowTime()) {
-			int rank = 0;
-			int preScore = -1;
 			int addRank = 1;
-			int dropNum = 5;
-			for (auto player : ranking) {
-				if (player->score == preScore) addRank++;
-				else addRank = 1;
+			int rank = -1;
+			int prevScore = -1;
+			for (auto &player : ranking) {
+				if (player->score == prevScore) {
+					addRank++;
+				}
+				else {
+					rank += addRank;
+					addRank = 1;
+				}
+				prevScore = player->score;
+				int dropNum = 5;
 
 				int expRange = player->GetLvMaxSkillOrb() - player->GetLvMinSkillOrb();
 				switch (rank) {
@@ -198,8 +268,6 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 				case 2: dropOrb(player->id, dropNum * 0.25f, 30.0f); break;
 				case 3: dropOrb(player->id, dropNum * 0.0f, 30.0f); break;
 				}
-				rank += addRank;
-				preScore = player->score;
 			}
 			dropSkillOrbCoolTimer.Start();
 		}

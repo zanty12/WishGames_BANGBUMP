@@ -62,8 +62,8 @@ private:
 	int numTexNo = LoadTexture("data/texture/UI/number.png");
 	int timerTexNo = LoadTexture("data/texture/UI/multi_timer.png");
 	int icon[4] = {};
-	int icon2 = -1;
-	int icon3 = -1;
+	int icon_base = -1;
+	int icon_gage = -1;
 
 private:
 	MultiPlayModeClientSide *CreateMode(MULTI_MODE mode);
