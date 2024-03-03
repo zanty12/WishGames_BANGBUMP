@@ -761,6 +761,7 @@ void ServerThunder::Attack(void) {
 					attack->transform.position = player->transform.position + localPos;
 					attack->direction = direction.Normalize() * state->atkDistance;
 					attack->velocity = CalcVector(direction) * state->powerAttackRatio;
+					attack->radius = state->atkRange;
 					attack->atk = state->atk;
 					attack->atkDrop = state->atkDrop;
 					attack->knockbackRate = state->knockbackRate;
@@ -934,8 +935,10 @@ void ServerThunderAttack::Loop(void) {
 	transform.position += velocity;
 
 	// •Ç‚ÉG‚ê‚½‚È‚çíœ
-	if (MultiPlayServer::GetGameMode()->GetMap()->Collision(transform.position, radius) != -1)
+	int id = MultiPlayServer::GetGameMode()->GetMap()->Collision(transform.position, radius * 0.25f);
+	if (id != -1) {
 		Destroy();
+	}
 }
 void ServerThunderAttack::KnockBack(ServerMovableGameObject *object) {
 	object->blownVelocity = (object->transform.position - transform.position).Normalize() * knockbackRate;

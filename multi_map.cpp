@@ -403,8 +403,6 @@ void MultiMap::AttackUpdate(void) {
 				// アタックが発射物なら削除
 				if (attack->isProjectile) {
 					attack->Destroy();
-
-					std::cout << "DAMAGE" << std::endl;
 				}
 			}
 		}
@@ -436,7 +434,6 @@ void MultiMap::AttackUpdate(void) {
 				// アタックが発射物なら削除
 				if (attack->isProjectile) {
 					attack->Destroy();
-					std::cout << "DAMAGE" << std::endl;
 				}
 			}
 		}

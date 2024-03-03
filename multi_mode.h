@@ -77,6 +77,7 @@ protected:
 	WIN::Time dropSkillOrbCoolTimer;					// リザルト時のスキルオーブドロップアニメーションで使うタイマー
 	bool isNoTimer = false;								// 時間計測をしない
 	RankingAnimator rankAnim[4];
+	MultiAnimator timeupAnim;							// タイムアップ
 	friend MultiPlayFlowClientSide;
 
 
@@ -142,6 +143,7 @@ public:
 		std::string mapPath = ini::GetString(PARAM_PATH + L"mode.ini", modeName.c_str(), L"path");
 		map_ = new MultiMap(MAP_PATH + mapPath, MULTIPLAY_RUN_TYPE_CLIENT);
 		countDownTexNo = LoadTexture("data/texture/UI/321Go.png");
+		timeupAnim = MultiAnimator(LoadTexture("data/texture/UI/UI_timeup.png"), 5, 7, 0, 39);
 
 		rankAnim[0] = MultiAnimator(LoadTexture("data/texture/UI/UI_1st_anim.png"), 5, 6, 0, 29, true);
 		rankAnim[0].anim.isEndShow = true;
@@ -155,7 +157,7 @@ public:
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 
 	virtual void Draw(RESPONSE_PLAYER &players, Vector2 offset) { };
-	virtual void DrawUI(RESPONSE_PLAYER &players) {};
+	virtual void DrawUI(RESPONSE_PLAYER &players);
 	virtual void DrawStart(RESPONSE_PLAYER &players, Vector2 offset);
 	virtual void DrawResult(RESPONSE_PLAYER &players, Vector2 offset);
 	virtual void ParseResponse(Storage& in) { };

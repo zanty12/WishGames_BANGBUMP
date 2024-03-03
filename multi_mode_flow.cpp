@@ -293,7 +293,8 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	}
 	// ƒQ[ƒ€ƒ‚[ƒh
 	else {
-		Number(Vector2(centerX, 107.0f), Vector2(75, 75), res.maxTime - gameMode_->resultTime_ - res.time);
+		float time = res.maxTime - gameMode_->resultTime_ - res.time;
+		Number(Vector2(centerX, 107.0f), Vector2(75, 75), time);
 	}
 
 
@@ -340,9 +341,6 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 			
 
 			float x = pos.x - scl.x * 0.5f;
-			//DrawSpriteBoxEffectLeftToRight(
-			//	icon3, pos, scl, Color::White, t
-			//);
 			DrawSprite(icon_gage,
 				Vector2(x + scl.x * t * 0.5f, pos.y), 0.0f, Vector2(scl.x * t, scl.y),
 				Color::White,

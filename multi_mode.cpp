@@ -57,7 +57,6 @@ void MultiPlayModeServerSide::UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE
 			}
 
 			rank += addRank;
-			preScore = player->score;
 		}
 	}
 }
@@ -68,6 +67,32 @@ void MultiPlayModeServerSide::Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &cl
 		auto player = kvp.second.player_;
 		player->animType = ANIMATION_TYPE_IDLE;
 		player->attackVelocity = player->chargeVelocity = player->blownVelocity = player->velocity = Vector2::Zero;
+	}
+}
+
+void MultiPlayModeClientSide::DrawUI(RESPONSE_PLAYER &players) 
+{
+	//timeupTexNo
+	float countDown = players.maxTime - resultTime_ - players.time;
+	// カウントダウン
+	if (countDown < 4.0f) {
+		float centerX = Graphical::GetWidth() * 0.5f;
+		float centerY = Graphical::GetHeight() * 0.5f;
+
+		float vh = 1.0f / 4.0f;
+		float v = (int)countDown * vh;
+		float t = countDown - (int)countDown;
+		float rate = MATH::Leap(0.4f, 1.0f, t * t);
+
+
+		if (1.0f < countDown) {
+			DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
+				Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
+		}
+		// タイムアップ
+		else {
+			timeupAnim.Draw(Vector2(centerX, centerY), 0.0f, Vector2(800, 800), Color::White);
+		}
 	}
 }
 
