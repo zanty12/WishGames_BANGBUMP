@@ -11,8 +11,8 @@
 
 bool debug_mode = false;
 //#define SERVER
-#define CLIENT
-//#define DEVELOPMENT
+//#define CLIENT
+#define DEVELOPMENT
 
 int main()
 {
