@@ -300,13 +300,16 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 				uv, Vector2(t, 1.0f)
 			);
 
-			Number(Vector2(pos.x + 127, Graphical::GetHeight() - 75), Vector2(17, 17), player->GetLv() + 1);
 		};
 		DrawSprite(icon[idx % 4],
 			pos, 0.0f, scl,
 			Color::White,
 			uv, uvScale
 		);
+
+		// レベル
+		//Number(Vector2(pos.x + 127, Graphical::GetHeight() - 75), Vector2(17, 17), player->GetLv() + 1);
+		Number(Vector2(pos.x + 127, Graphical::GetHeight() - 120), Vector2::One * 30, player->GetLv() + 1);
 
 		// スコア
 		float centerX = Graphical::GetWidth() * 0.5f;
