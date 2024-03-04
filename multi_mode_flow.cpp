@@ -177,7 +177,7 @@ void MultiPlayFlowClientSide::Draw(RESPONSE_PLAYER &res, Vector2 offset) {
 		}
 		// ゲームのリザルトの描画
 		else if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {
-			gameMode_->DrawResult(res, offset);
+			//gameMode_->DrawResult(res, offset);
 		}
 		// ゲームモードの描画
 		else {
@@ -191,6 +191,7 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 
 	// ゲームモードの描画（UI）
 	gameMode_->DrawUI(res);
+
 
 	// プレイ時間がない（キャラ選択 or リザルト）
 	if (gameMode_->playTime_ < 0.0f) return;
@@ -261,6 +262,11 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	else {
 		float time = res.maxTime - gameMode_->resultTime_ - res.time;
 		Number(Vector2(centerX, 107.0f), Vector2(75, 75), time);
+	}
+
+	// ゲームのリザルトの描画
+	if (0.0f < res.time - res.maxTime + gameMode_->resultTime_) {
+		gameMode_->DrawResult(res, MultiPlayClient::offset);
 	}
 
 

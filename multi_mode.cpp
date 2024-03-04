@@ -299,11 +299,11 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 		// ÉhÉçÉbÉvä÷êî
 		auto dropOrb = [&](int idx, int dropNum, float velocity) {
 			for (int i = 0; i < dropNum; i++) {
-				float rad = MATH::Rand(-MATH::PI, MATH::PI);
+				float rad = MATH::Rand(0.0f, MATH::PI);
 				rstSkillOrb.push_back(ResultSkillOrb(
 					CalcTimePosition(),
 					CalcIconPosition(idx, ranking.size()),
-					Vector2(std::sin(rad), std::cosf(rad) * velocity)));
+					Vector2(std::cos(rad) * velocity * 0.5f, std::sin(rad) * velocity)));
 			}
 		};
 
@@ -325,10 +325,10 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 
 				int expRange = player->GetLvMaxSkillOrb() - player->GetLvMinSkillOrb();
 				switch (rank) {
-				case 0: dropOrb(player->id, dropNum * 1.5f, 30.0f); break;
-				case 1: dropOrb(player->id, dropNum * 0.5f, 30.0f); break;
-				case 2: dropOrb(player->id, dropNum * 0.25f, 30.0f); break;
-				case 3: dropOrb(player->id, dropNum * 0.0f, 30.0f); break;
+				case 0: dropOrb(player->id, dropNum * 1.5f, 10.0f); break;
+				case 1: dropOrb(player->id, dropNum * 0.5f, 10.0f); break;
+				case 2: dropOrb(player->id, dropNum * 0.25f, 10.0f); break;
+				case 3: dropOrb(player->id, dropNum * 0.0f, 10.0f); break;
 				}
 			}
 			dropSkillOrbCoolTimer.Start();
