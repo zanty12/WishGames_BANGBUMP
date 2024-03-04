@@ -795,6 +795,9 @@ void ServerThunder::Attack(void) {
 					attack->atk = state->atk;
 					attack->atkDrop = state->atkDrop;
 					attack->knockbackRate = state->knockbackRate;
+					// 攻撃ベクトルの指定
+					player->attackVelocity = attack->direction;
+
 				}
 			}
 		}
@@ -973,7 +976,7 @@ void ServerThunderAttack::Loop(void) {
 	}
 }
 void ServerThunderAttack::KnockBack(ServerMovableGameObject *object) {
-	object->blownVelocity = (object->transform.position - transform.position).Normalize() * knockbackRate;
+	object->blownVelocity = self->Cast<ServerPlayer>()->attackVelocity * knockbackRate;
 }
 
 void ClientThunderAttack::Loop(void) {
