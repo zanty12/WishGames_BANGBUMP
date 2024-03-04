@@ -127,8 +127,12 @@ void MultiPlayModeClientSide::DrawUI(RESPONSE_PLAYER &players)
 		float centerX = Graphical::GetWidth() * 0.5f;
 		float centerY = Graphical::GetHeight() * 0.5f;
 		if (4.0f <= countDown) {
-			DrawSprite(descTexNo, Vector2(centerX, centerY), 0.0f, Vector2(1000, 527),
-				Color(1, 1, 1), Vector2::Zero, Vector2::One);
+			Vector2 pos = Vector2(centerX, centerY);
+			Vector2 scl = Vector2(1000, 527);
+			float rot = 0.0f;
+			DrawSprite(descBGTexNo, pos, rot, scl, Color(1, 1, 1, 0.75f), Vector2::Zero, Vector2::One);
+			DrawSprite(descFrameTexNo, pos, rot, scl, Color(1, 1, 1), Vector2::Zero, Vector2::One);
+			DrawSprite(descTexNo, pos, rot, scl, Color(1, 1, 1), Vector2::Zero, Vector2::One);
 		}
 	}
 

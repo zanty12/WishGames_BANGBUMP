@@ -86,6 +86,8 @@ public:
 	int stageNameTexNo = -1;							// ステージ名テクスチャ
 	int countDownTexNo = -1;							// カウントダウンテクスチャ
 	int descTexNo = -1;									// 説明テクスチャ
+	int descFrameTexNo = -1;							// 説明フレームテクスチャ
+	int descBGTexNo = -1;								// 説明背景テクスチャ
 	bool isBlockShow = true;
 
 
@@ -153,6 +155,8 @@ public:
 		rankAnim[2].anim.isEndShow = true;
 		rankAnim[3] = MultiAnimator(LoadTexture("data/texture/UI/UI_4th.png"), 1, 1, 0, 0, false);
 		rankAnim[3].anim.isEndShow = true;
+		descBGTexNo = LoadTexture("data/texture/description/bg.png");
+		descFrameTexNo = LoadTexture("data/texture/description/frame.png");
 	};
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 
