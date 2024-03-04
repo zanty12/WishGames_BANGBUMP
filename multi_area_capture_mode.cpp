@@ -51,23 +51,10 @@ void MultiPlayAreaCaptureModeServerSide::CaptureUpdate(std::map<int, CLIENT_DATA
 			if (Collider2D::Touch(areaCollider, clientCollider)) {
 				// ID登録
 				if (touchIterator == inOrder.end()) inOrder.push_back(player->id);
-				//int id = client.header.id;									// プレイヤーのID
-				//inPlayerNum++;
-
-				//
-				//if (area.id == id ||	// 自分のエリアなら
-				//	area.id == -1 ||	// だれのエリアでもないなら
-				//	pTouchClient == nullptr) {	// 誰もいないなら
-				//	pTouchClient = &client;		// 更新する
-				//	area.id = id;
-				//}
 			}
 			// エリアから離れたなら消す
 			else if (touchIterator != inOrder.end())inOrder.erase(touchIterator);
 		}
-
-		// だれも触れていないなら
-		//if (pTouchClient == nullptr) continue;
 
 		// 占領し続けているならゲージの更新
 		if (inOrder.size()) {

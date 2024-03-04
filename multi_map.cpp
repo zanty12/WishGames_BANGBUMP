@@ -150,7 +150,6 @@ void MultiMap::DrawBG(int bgTexNo, Vector2 offset, Vector2 texScale) {
 
 	float maxY = height * cellSize;
 	float t = offset.y / maxY;
-	std::cout << t << std::endl;
 	float y = MATH::Leap(halfTexY, screen.y - halfTexY, t);
 	DrawSprite(bgTexNo, Vector2(screen.x * 0.5f, y), 0.0f, texScale, Color::White);
 }
