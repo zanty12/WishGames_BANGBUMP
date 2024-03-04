@@ -35,40 +35,6 @@ void MultiPlayFlowServerSide::Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &cli
 	if (gameMode_->maxTime_ < gameMode_->time_ || gameMode_->playTime_ <= 0.0f && gameMode_->isSkip) {
 		MULTI_MODE mode_ = GetMode();
 		SwapMode((MULTI_MODE)((int)mode_ + 1), clients);
-		//// 現在のモードの取得
-		//MULTI_MODE mode_ = GetMode();
-
-		//// 現在のモードの削除
-		//if (gameMode_) {
-		//	// 現在のモードのリリース関数を呼び出す
-		//	gameMode_->Release(clients);
-
-		//	delete gameMode_;
-		//}
-
-		//// 次のモードを計算
-		//mode_ = (MULTI_MODE)((int)mode_ + 1);
-
-		//// 次のモードの作成
-		//gameMode_ = CreateMode(mode_);
-
-		//// プレイヤーの移動
-		//if (gameMode_ && gameMode_->map_->startPosition.size()) {
-		//	auto spawnPosIterator = gameMode_->map_->startPosition.begin();
-		//	for (auto &client : clients) {
-		//		// 移動する
-		//		auto &player = client.second.player_;
-		//		player->transform.position = *spawnPosIterator;
-
-		//		// スタート地点を1つずらす
-		//		spawnPosIterator++;
-
-		//		// もしスタート地点がないなら、リストの最初からにする
-		//		if (gameMode_->map_->startPosition.end() == spawnPosIterator) {
-		//			spawnPosIterator = gameMode_->map_->startPosition.begin();
-		//		}
-		//	}
-		//}
 	}
 	else {
 		// 時間の更新
@@ -298,19 +264,6 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 	}
 
 
-	//// カウントダウン
-	//float countDown = startTime_ - time;
-	//if (countDown < 4.0f) {
-	//	float vh = 1.0f / 4.0f;
-	//	float v = (int)countDown * vh;
-	//	float centerX = Graphical::GetWidth() * 0.5f;
-	//	float centerY = Graphical::GetHeight() * 0.5f;
-	//	float t = countDown - (int)countDown;
-	//	float rate = MATH::Leap(0.4f, 1.0f, t * t);
-
-	//	DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
-	//		Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
-	//}
 
 	// スコアの描画
 	int maxMembers = res.clients.size();				// プレイヤー人数
@@ -346,6 +299,8 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 				Color::White,
 				uv, Vector2(t, 1.0f)
 			);
+
+			Number(Vector2(pos.x + 127, Graphical::GetHeight() - 75), Vector2(17, 17), player->GetLv() + 1);
 		};
 		DrawSprite(icon[idx % 4],
 			pos, 0.0f, scl,

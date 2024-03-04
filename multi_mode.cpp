@@ -88,6 +88,7 @@ void MultiPlayModeClientSide::DrawUI(RESPONSE_PLAYER &players)
 		if (1.0f < countDown) {
 			DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
 				Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
+			timeupAnim.MoveBegin();
 		}
 		// タイムアップ
 		else {
