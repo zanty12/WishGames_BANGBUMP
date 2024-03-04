@@ -33,7 +33,7 @@ int main()
     else {
         //#else
         MSG msg;
-        Graphical::Initialize(1920, 1080, TRUE);
+        Graphical::Initialize(1920, 1080, FALSE);
         DebugUI::Initialize();
         Text::CreateResources();
         WIN::Window window = Graphical::GetHwnd();
