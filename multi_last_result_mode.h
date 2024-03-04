@@ -65,6 +65,11 @@ public:
 		defeatTexNo = LoadTexture("data/texture/UI/result/DEFEAT.png");
 		frameTexNo = LoadTexture("data/texture/UI/result/UI_result_frame.png");
 
+		map_->backBGColor = Color::White;
+		map_->middleBGColor = Color::White;
+		map_->frontBGColor = Color::White;
+
+
 		isBlockShow = false;
 
 

@@ -31,7 +31,7 @@ public:
 	const static int cellSize = 64;
 	std::list<Vector2> startPosition;
 	int frontBGTexNo = -1, middleBGTexNo = -1, backBGTexNo = -1;
-
+	Color frontBGColor = Color::White, middleBGColor = Color::White, backBGColor = Color::White;
 
 
 public:
@@ -43,7 +43,7 @@ public:
 	void Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType);
 	Vector2Int ToIndex(Vector2 pos) { return Vector2Int(pos.x / cellSize, pos.y / cellSize); }
 	Vector2 ToPosition(Vector2Int idx) { return Vector2(idx.x * cellSize, idx.y * cellSize); }
-	void DrawBG(int bgTexNo, Vector2 offset, Vector2 texScale);
+	void DrawBG(int bgTexNo, Vector2 offset, Vector2 texScale, Color color);
 	void Draw(Vector2 offset, bool isBlockShow = true);
 	void AttackUpdate(void);
 	int Collision(Vector2 &position, float radius, Vector2 *velocity = nullptr);

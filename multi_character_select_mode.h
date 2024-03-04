@@ -132,6 +132,10 @@ public:
 		soNo = LoadSound("data/sound/BGM/select_element_BGM.wav");
 		character_select_so = LoadSound("data/sound/SE/select_finish.wav");
 
+		map_->backBGColor = Color::White;
+		map_->middleBGColor = Color::White;
+		map_->frontBGColor = Color::White;
+
 
 		// ブロック非表示
 		isBlockShow = false;
