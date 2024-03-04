@@ -401,7 +401,7 @@ void MultiMap::AttackUpdate(void) {
 			}
 
 			// ダメージ
-			if (attack->Touch(player)) {
+			if (attack->Touch(player, attack->localPosition)) {
 				player->Damage(attack);
 				// アタックが発射物なら削除
 				if (attack->isProjectile) {
@@ -431,7 +431,7 @@ void MultiMap::AttackUpdate(void) {
 			}
 
 			// ダメージ
-			if (attack->Touch(enemy)) {
+			if (attack->Touch(enemy, attack->localPosition)) {
 				enemy->damageEffectAttributeType = attack->GetType();
 				enemy->Damage(attack);
 				// アタックが発射物なら削除

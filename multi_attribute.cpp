@@ -789,14 +789,15 @@ void ServerThunder::Attack(void) {
 					if (0.0f > localPos.y) localPos *= -1.0f;
 
 					attack->transform.position = player->transform.position + localPos;
-					attack->direction = direction.Normalize() * state->atkDistance;
+					//attack->direction = direction.Normalize() * state->atkDistance;
 					attack->velocity = CalcVector(direction) * state->powerAttackRatio;
-					attack->radius = state->atkRange;
+					attack->radius = state->atkRange * 1.5f;
 					attack->atk = state->atk;
 					attack->atkDrop = state->atkDrop;
 					attack->knockbackRate = state->knockbackRate;
+					attack->localPosition = direction.Normalize() * -state->atkDistance * 0.5f;
 					// 攻撃ベクトルの指定
-					player->attackVelocity = attack->direction;
+					player->attackVelocity = direction.Normalize();
 
 				}
 			}

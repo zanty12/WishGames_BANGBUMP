@@ -19,6 +19,7 @@ public:
 	bool isProjectile = false;
 	std::map<GameObjectServerSide*, WIN::Time> touchGameObjects;
 	Vector2 direction;
+	Vector2 localPosition;
 
 
 
