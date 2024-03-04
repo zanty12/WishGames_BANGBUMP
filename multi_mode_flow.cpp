@@ -308,8 +308,7 @@ void MultiPlayFlowClientSide::DrawUI(RESPONSE_PLAYER &res) {
 		);
 
 		// レベル
-		//Number(Vector2(pos.x + 127, Graphical::GetHeight() - 75), Vector2(17, 17), player->GetLv() + 1);
-		Number(Vector2(pos.x + 127, Graphical::GetHeight() - 120), Vector2::One * 30, player->GetLv() + 1);
+		Number(Vector2(pos.x + 127, Graphical::GetHeight() - 113), Vector2::One * 27, player->GetLv() + 1);
 
 		// スコア
 		float centerX = Graphical::GetWidth() * 0.5f;
