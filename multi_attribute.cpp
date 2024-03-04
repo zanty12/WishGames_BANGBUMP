@@ -304,9 +304,9 @@ void ClientFire::Attack(void) {
 	attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
 }
 void ClientFire::DrawUI(void) {
-	Vector2 localPos = Vector2(0.0f, player->transform.scale.y * 0.5f);
+	Vector2 localPos = Vector2(0, player->transform.scale.y * 0.5f + 3);
 	Vector2 pos = player->transform.position - MultiPlayClient::offset;
-	Vector2 scl = Vector2::One * 30.0f;
+	Vector2 scl = Vector2(35, 15);
 
 	float ratio = (float)mp / (float)state->maxMp;
 	DrawSpriteBoxEffectLeftToRight(frameUITexNo, pos + localPos, scl, Color::White, 1.0f);
@@ -518,7 +518,7 @@ void ClientWater::Attack(void) {
 	}
 
 	// Žè‚ÉˆÚ“®
-	Vector2 localPos = Vector2(-12.0f, 35.0f);
+	Vector2 localPos = Vector2(-25.0f, 25.0f);
 
 	// ƒgƒ‰ƒ“ƒXƒtƒH[ƒ}[
 	Vector2 pos = player->transform.position;
@@ -551,6 +551,22 @@ void ClientWater::Attack(void) {
 
 
 
+		// ”½“]‚µ‚½ŠG‚É‡‚í‚¹‚ÄˆÊ’u‚à”½“]
+		if (player->isReverseX) {
+			float tmpRot = MATH::PI * 0.5f - rot;
+			float rotX = std::cos(tmpRot) * -localPos.x - std::sin(tmpRot) * localPos.y;
+			float rotY = std::sin(tmpRot) * -localPos.x + std::cos(tmpRot) * localPos.y;
+			localPos.x = rotX;
+			localPos.y = rotY;
+		}
+		else {
+			float tmpRot = MATH::PI + MATH::PI * 0.5f - rot;
+			float rotX = std::cos(tmpRot) * localPos.x - std::sin(tmpRot) * localPos.y;
+			float rotY = std::sin(tmpRot) * localPos.x + std::cos(tmpRot) * localPos.y;
+			localPos.x = rotX;
+			localPos.y = rotY;
+		}
+
 		// •`‰æ‚·‚é
 		attackAnim.Draw(pos + direction + localPos - MultiPlayClient::offset, rot, scl, Color::White);
 		attackSplashAnim.Draw(
@@ -559,9 +575,6 @@ void ClientWater::Attack(void) {
 			Vector2::One * state->showAttackX * 0.5f,
 			Color::White
 		);
-
-		// ”½“]‚µ‚½ŠG‚É‡‚í‚¹‚ÄˆÊ’u‚à”½“]
-		if (player->isReverseX) localPos.x *= -1.0f;
 
 
 
@@ -583,6 +596,23 @@ void ClientWater::Attack(void) {
 		else if (direction.x > 0.0f) {
 			player->isReverseX = true;
 			player->transform.rotation -= MATH::Deg2Rad * 90.0f;
+		}
+
+
+		// ”½“]‚µ‚½ŠG‚É‡‚í‚¹‚ÄˆÊ’u‚à”½“]
+		if (player->isReverseX) {
+			float tmpRot = MATH::PI * 0.5f - rot;
+			float rotX = std::cos(tmpRot) * -localPos.x - std::sin(tmpRot) * localPos.y;
+			float rotY = std::sin(tmpRot) * -localPos.x + std::cos(tmpRot) * localPos.y;
+			localPos.x = -rotX;
+			localPos.y = rotY;
+		}
+		else {
+			float tmpRot = MATH::PI + MATH::PI * 0.5f - rot;
+			float rotX = std::cos(tmpRot) * localPos.x - std::sin(tmpRot) * localPos.y;
+			float rotY = std::sin(tmpRot) * localPos.x + std::cos(tmpRot) * localPos.y;
+			localPos.x = rotX;
+			localPos.y = rotY;
 		}
 
 
@@ -621,7 +651,7 @@ void ClientWater::Idle(void) {
 	}
 }
 void ClientWater::DrawUI(void) {
-	Vector2 localPos = Vector2(0.0f, player->transform.scale.y * 0.5f);
+	Vector2 localPos = Vector2(player->transform.scale.y * 0.15f, player->transform.scale.y * 0.5f);
 	Vector2 pos = player->transform.position - MultiPlayClient::offset;
 	Vector2 scl = Vector2::One * 20.0f;
 	Color col = Color::White;
@@ -913,17 +943,19 @@ void ClientThunder::Attack(void) {
 	}
 }
 void ClientThunder::DrawUI(void) {
-	Vector2 localPos = Vector2(-10.0f, player->transform.scale.y * 0.55f);
+	Vector2 localPos = Vector2(0, player->transform.scale.y * 0.5f + 3);
 	Vector2 pos = player->transform.position - MultiPlayClient::offset;
-	Vector2 scl = Vector2::One * 15.0f;
+	Vector2 scl = Vector2(9, 9);
 
 	int num = mp;
 	int maxNum = state->maxMp;
-	int width = 8.0f;
+	int width = 10.0f;
 	
+	float x = -maxNum * 0.5f + 0.5f;
 	for (int i = 0; i < maxNum; i++) {
-		if (i < num) DrawSprite(uiTexNo, pos + localPos + Vector2(width, 0.0f) * i, 0.0f, scl, Color::White);
-		else DrawSprite(frameUITexNo, pos + localPos + Vector2(width, 0.0f) * i, 0.0f, scl, Color::White);
+		if (i < num) DrawSprite(uiTexNo, pos + localPos + Vector2(width, 0.0f) * x, 0.0f, scl, Color::White);
+		DrawSprite(frameUITexNo, pos + localPos + Vector2(width, 0.0f) * x, 0.0f, scl, Color::White);
+		x += 1.0f;
 	}
 }
 
@@ -1173,9 +1205,9 @@ void ClientWind::Idle(void) {
 	}
 }
 void ClientWind::DrawUI(void) {
-	Vector2 localPos = Vector2(0.0f, player->transform.scale.y * 0.5f);
+	Vector2 localPos = Vector2(player->transform.scale.y * 0.15f, player->transform.scale.y * 0.5f);
 	Vector2 pos = player->transform.position - MultiPlayClient::offset;
-	Vector2 scl = Vector2::One * 20.0f;
+	Vector2 scl = Vector2::One * 30.0f;
 
 	float ratio = (float)mp / (float)state->maxMp;
 	DrawSpriteCircleEffect(frameUITexNo, pos + localPos, 0.0f, scl, Color::White, Vector2::Zero, Vector2::One, 1.0f);

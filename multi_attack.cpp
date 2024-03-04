@@ -19,7 +19,7 @@ bool AttackServerSide::Touch(GameObjectServerSide *object, Vector2 localPosition
 	}
 	// カプセル判定
 	else {
-		Vector2 seg = -this->direction;												// 線分の向き
+		Vector2 seg = this->direction;												// 線分の向き
 		Vector2 segNor = seg.Normalize();											// 線分の単位ベクトル
 		float segDistance = seg.Distance();											// 線分の長さ
 

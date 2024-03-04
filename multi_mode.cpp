@@ -72,27 +72,54 @@ void MultiPlayModeServerSide::Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &cl
 
 void MultiPlayModeClientSide::DrawUI(RESPONSE_PLAYER &players) 
 {
-	//timeupTexNo
-	float countDown = players.maxTime - resultTime_ - players.time;
-	// カウントダウン
-	if (countDown < 4.0f) {
+	{
+		float countDown = players.maxTime - resultTime_ - players.time;
+		// カウントダウン
+		if (countDown < 4.0f) {
+			float centerX = Graphical::GetWidth() * 0.5f;
+			float centerY = Graphical::GetHeight() * 0.5f;
+
+			float vh = 1.0f / 4.0f;
+			float v = (int)countDown * vh;
+			float t = countDown - (int)countDown;
+			float rate = MATH::Leap(0.4f, 1.0f, t * t);
+
+
+			if (1.0f < countDown) {
+				DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
+					Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
+				timeupAnim.MoveBegin();
+			}
+			// タイムアップ
+			else {
+				timeupAnim.Draw(Vector2(centerX, centerY), 0.0f, Vector2(800, 800), Color::White);
+			}
+		}
+	}
+
+	{
+
+		float time = players.time;
+
+
+		const float SPAWN_ANIMATION_START_TIME = 2.0f;			// 登場表示開始
+		const float STAGE_NAME_ANIMATION_START_TIME = 5.0f;		// ステージ名表示開始
+
+		const float SPAWN_ANIMATION_TIME = 3.0f;				// 登場中
+		const float STAGE_NAME_ANIMATION_TIME = 4.0f;			// ステージ名表示中
+
+
+
+
+		float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
+
+		// カウントダウンが無いなら説明を表示
+		float countDown = startTime_ - time;
 		float centerX = Graphical::GetWidth() * 0.5f;
 		float centerY = Graphical::GetHeight() * 0.5f;
-
-		float vh = 1.0f / 4.0f;
-		float v = (int)countDown * vh;
-		float t = countDown - (int)countDown;
-		float rate = MATH::Leap(0.4f, 1.0f, t * t);
-
-
-		if (1.0f < countDown) {
-			DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
-				Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
-			timeupAnim.MoveBegin();
-		}
-		// タイムアップ
-		else {
-			timeupAnim.Draw(Vector2(centerX, centerY), 0.0f, Vector2(800, 800), Color::White);
+		if (4.0f <= countDown) {
+			DrawSprite(descTexNo, Vector2(centerX, centerY), 0.0f, Vector2(1000, 527),
+				Color(1, 1, 1), Vector2::Zero, Vector2::One);
 		}
 	}
 }
@@ -116,13 +143,13 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 	float countDown = startTime_ - time;
 	float centerX = Graphical::GetWidth() * 0.5f;
 	float centerY = Graphical::GetHeight() * 0.5f;
-	if (4.0f <= countDown) {
-		DrawSprite(descTexNo, Vector2(centerX, centerY), 0.0f, Vector2(1000, 527),
-			Color(1, 1, 1), Vector2::Zero, Vector2::One);
-	}
+	//if (4.0f <= countDown) {
+	//	DrawSprite(descTexNo, Vector2(centerX, centerY), 0.0f, Vector2(1000, 527),
+	//		Color(1, 1, 1), Vector2::Zero, Vector2::One);
+	//}
 
 	// スポーンさせる
-	if (MoveScene::Move(Color::White * 0.0f) && SPAWN_ANIMATION_START_TIME + spawnSpanTime * clientSpawnCount <= time) {
+	if (AllMoveScene.Move(Color::White * 0.0f) && UIMoveScene.Move(Color::White * 0.0f) && SPAWN_ANIMATION_START_TIME + spawnSpanTime * clientSpawnCount <= time) {
 
 		// イテレータ
 		auto iterator = players.clients.begin();
@@ -187,7 +214,7 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 		}
 	);
 	if (time <= FADE_ANIMATION) {
-		MoveScene::Move(Color::Black * 0.5f);
+		UIMoveScene.Move(Color::Black * 0.75);
 		clientSpawnCount = 0;
 	}
 
@@ -325,7 +352,7 @@ void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offse
 		}
 	}
 	else {
-		MoveScene::Move(Color::White * 1.0f);
+		AllMoveScene.Move(Color::White * 1.0f);
 	}
 
 	for (auto &skillOrb : rstSkillOrb) {

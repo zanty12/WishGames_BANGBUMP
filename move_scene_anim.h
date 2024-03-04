@@ -4,15 +4,19 @@
 
 class MoveScene {
 private:
-	static Color rate;
-	static Color dstRate;
+	Color rate = Color(0.0f, 0.0f, 0.0f, 0.0f);
+	Color dstRate = Color(0.0f, 0.0f, 0.0f, 0.0f);
 	static int sceneTexNo;
 	static int loadingTexNo;
 	static bool isLoadingShow;
-	static MultiAnimator loadingAnim;
+	MultiAnimator loadingAnim;
 
 public:
-	static void Initialize(void);
-	static void Loop(void);
-	static bool Move(Color dstRate, bool isLoadingShow = false);
+	void Initialize(void);
+	void Loop(void);
+	bool Move(Color dstRate, bool isLoadingShow = false);
 };
+
+
+extern MoveScene AllMoveScene;
+extern MoveScene UIMoveScene;

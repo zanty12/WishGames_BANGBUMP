@@ -377,7 +377,8 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	recvTmpBuff = new char[MAX_BUFF];
 
 	// シーン遷移アニメーションの初期化
-	MoveScene::Initialize();
+	AllMoveScene.Initialize();
+	UIMoveScene.Initialize();
 }
 
 int MultiPlayClient::Register(std::string serverAddress) {
@@ -511,14 +512,17 @@ void MultiPlayClient::PlayerUpdate(void) {
 	// ライトエフェクトの描画
 	lightEffect.Draw(offset);
 
-	// UIの描画
-	gameMode->DrawUI(res_);
+	// シーン遷移アニメーション
+	UIMoveScene.Loop();
 
 	// プレイヤーUIの描画
 	for (auto kvp : MultiPlayClient::clients) if (kvp.second->entryType == ClientPlayer::ENTRY) kvp.second->DrawUI();
 
+	// UIの描画
+	gameMode->DrawUI(res_);
+
 	// シーン遷移アニメーション
-	MoveScene::Loop();
+	AllMoveScene.Loop();
 }
 
 void MultiPlayClient::SendUpdate(void) {

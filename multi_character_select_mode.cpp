@@ -169,11 +169,13 @@ void MultiPlayCharacterSelectModeClientSide::CharacterDraw(int id, int maxIdx, b
 }
 
 void MultiPlayCharacterSelectModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
-	MoveScene::Move(Color::White * 0.0f);
+	AllMoveScene.Move(Color::White * 0.0f);
+	UIMoveScene.Move(Color::White * 0.0f);
 }
 
 void MultiPlayCharacterSelectModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offset) {
-	MoveScene::Move(Color::Black, true);
+	AllMoveScene.Move(Color::Black, true);
+	UIMoveScene.Move(Color::Black, true);
 }
 
 void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {

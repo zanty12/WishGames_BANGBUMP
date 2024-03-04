@@ -2,7 +2,8 @@
 #include "move_scene_anim.h"
 
 void MultiPlayLastResultModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {
-	MoveScene::Move(Color::White * 0.0f);
+	AllMoveScene.Move(Color::White * 0.0f);
+	UIMoveScene.Move(Color::White * 0.0f);
 
 	// ìÆâÊÇÃï`âÊ
 	video->DrawAsResource();
@@ -30,13 +31,12 @@ void MultiPlayLastResultModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 o
 	// VICTORY
 	{
 		Vector2 scl = Vector2(1899, 324) * 0.5f;
-		DrawSprite(victoryTexNo, Vector2(screen.x - scl.x * 0.5f, screen.y - scl.y * 0.5 - 15), 0.0f, scl, Color::White);
-		DrawSprite(defeatTexNo, Vector2(scl.x * 0.5f, scl.y * 0.5 + 15), 0.0f, scl, Color::White);
+		DrawSprite(victoryTexNo, Vector2(screen.x - scl.x * 0.5f, screen.y - scl.y * 0.5 - 20), 0.0f, scl, Color::White);
+		DrawSprite(defeatTexNo, Vector2(scl.x * 0.5f, scl.y * 0.5 + 20), 0.0f, scl, Color::White);
 	}
 
 	// ÉoÅ[
 	int id = 0;
-	std::cout << ranking.size() << std::endl;
 	for (auto &client : ranking) {
 		float floatY = id - ranking.size() * 0.5f - 0.5f;
 		float height = 150.0f;
@@ -45,7 +45,6 @@ void MultiPlayLastResultModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 o
 
 		DrawSprite(barTexNo[id], pos, 0.0f, scl, Color::White);
 		DrawSprite(nameTexNo[client.id % 4], pos, 0.0f, scl, Color::White);
-		//DrawSprite(iconTexNo[i], pos, 0.0f, scl, Color::White);
 		id++;
 	}
 
@@ -62,5 +61,6 @@ void MultiPlayLastResultModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 o
 }
 
 void MultiPlayLastResultModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
-	MoveScene::Move(Color::White * 0.0f);
+	AllMoveScene.Move(Color::White * 0.0f);
+	UIMoveScene.Move(Color::White * 0.0f);
 }

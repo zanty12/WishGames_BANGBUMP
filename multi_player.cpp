@@ -237,7 +237,7 @@ void ClientPlayer::ShowExit() {
 void ClientPlayer::DrawUI(void) {
 	if (curAttackAttribute) curAttackAttribute->DrawUI();
 	DrawSprite(iconTexNo,
-		transform.position + Vector2(0.0f, transform.scale.y * 0.75f) - MultiPlayClient::offset,
+		transform.position + Vector2(0.0f, transform.scale.y * 0.65f) - MultiPlayClient::offset,
 		0.0f,
 		Vector2(25, 25),
 		Color::White);

@@ -2,15 +2,13 @@
 #include "texture.h"
 #include "sprite.h"
 
-Color MoveScene::rate = Color(0.0f,0.0f, 0.0f, 0.0f);
-Color MoveScene::dstRate = Color(0.0f, 0.0f, 0.0f, 0.0f);
 int MoveScene::sceneTexNo = -1;
 int MoveScene::loadingTexNo = -1;
 bool MoveScene::isLoadingShow = false;
-MultiAnimator MoveScene::loadingAnim;
 
 
-
+MoveScene AllMoveScene;
+MoveScene UIMoveScene;
 
 void MoveScene::Initialize(void) {
 	sceneTexNo = LoadTexture("data/texture/white.jpg");
@@ -53,3 +51,4 @@ bool MoveScene::Move(Color dstRate, bool isLoadingShow) {
 	if (distance <= 0.05f) return true;
 	else return false;
 }
+
