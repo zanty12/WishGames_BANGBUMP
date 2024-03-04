@@ -48,7 +48,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 
 	// ヘッダーの更新
 	header.command = HEADER::RESPONSE_LOGIN;
-	header.id = id;
+	player->id = header.id = id;
 
 	// クライアントデータの作成
 	CLIENT_DATA_SERVER_SIDE clientData = {
@@ -102,6 +102,7 @@ void MultiPlayServer::AllUnregister(void) {
 	{
 		Unregister(clients_.begin()->second.header.id);
 	}
+	clients_.clear();
 }
 
 void MultiPlayServer::PlayerUpdate(void) {

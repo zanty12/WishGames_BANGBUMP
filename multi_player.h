@@ -130,6 +130,8 @@ private:
 	MultiAnimator lvDownUI;									// レベルダウンUIエフェクト
 	int seLvUpNo = -1;										// レベルアップSE
 	int seLvDownNo = -1;									// レベルダウンSE
+	float vibration = 0.0f;									// 振動
+	float vibrationFriction = 0.75f;						// 振動減衰度
 
 public:
 	int skillPoint = 0;										// スキルポイント
@@ -198,6 +200,7 @@ public:
 		int max = lv < MAX_LV - 1 ? lvupPoint[lv + 1] : -1;
 		return max;
 	}
+	void SetVibration(float vibration);
 	ClientAttribute *GetMoveAttribute(void) { return moveAttribute; }
 	ClientAttribute *GetAttackAttribute(void) { return attackAttribute; }
 };

@@ -47,6 +47,8 @@ public:
 		// ‰ğ•ú
 		sendBuff.Release();
 		recvBuff.Release();
+		if (gameMode) delete gameMode;
+		gameMode = nullptr;
 
 		// “o˜^‰ğœ
 		AllUnregister();
@@ -119,14 +121,15 @@ public:
 		sendUpdateFunc.join();
 		recvUpdateFunc.join();
 
-		//delete gameMode;
 		delete recvTmpBuff;
 		sendBuff.Release();
 		recvBuff.Release();
 
 		// ‰ğ•ú
 		for (auto &client : clients) delete client.second;
+		for (auto &object : objects) delete object.second;
 		clients.clear();
+		objects.clear();
 
 		if (gameMode) {
 			delete gameMode;
@@ -142,6 +145,9 @@ public:
 
 		// ‰¹‚ğ‚·‚×‚Ä~‚ß‚é
 		StopSoundAll();
+
+		// ID‚Ì‰Šú‰»
+		id = -1;
 	}
 
 	// “o˜^
