@@ -72,11 +72,11 @@ void MultiPlayModeServerSide::Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &cl
 
 void MultiPlayModeClientSide::DrawUI(RESPONSE_PLAYER &players) 
 {
-	// カウントダウン（開始時）
+	// カウントダウン（終了時）
 	{
 		float countDown = players.maxTime - resultTime_ - players.time;
 		// カウントダウン
-		if (countDown < 4.0f) {
+		if (0.0f <= countDown && countDown < 4.0f) {
 			float centerX = Graphical::GetWidth() * 0.5f;
 			float centerY = Graphical::GetHeight() * 0.5f;
 
@@ -98,22 +98,29 @@ void MultiPlayModeClientSide::DrawUI(RESPONSE_PLAYER &players)
 		}
 	}
 
-	// カウントダウン（終了時）
+	// カウントダウン（開始時）
 	{
-
 		float time = players.time;
 
+		// カウントダウンが無いなら説明を表示
+		float countDown = startTime_ - time;
+		float centerX = Graphical::GetWidth() * 0.5f;
+		float centerY = Graphical::GetHeight() * 0.5f;
 
-		const float SPAWN_ANIMATION_START_TIME = 2.0f;			// 登場表示開始
-		const float STAGE_NAME_ANIMATION_START_TIME = 5.0f;		// ステージ名表示開始
+		if (0.0f <= countDown && countDown < 4.0f) {
+			float vh = 1.0f / 4.0f;
+			float v = (int)countDown * vh;
+			float t = countDown - (int)countDown;
+			float rate = MATH::Leap(0.4f, 1.0f, t * t);
 
-		const float SPAWN_ANIMATION_TIME = 3.0f;				// 登場中
-		const float STAGE_NAME_ANIMATION_TIME = 4.0f;			// ステージ名表示中
+			DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
+				Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
+		}
+	}
 
-
-
-
-		float spawnSpanTime = SPAWN_ANIMATION_TIME / players.clients.size();	// スポーンさせる間隔
+	// 情報
+	{
+		float time = players.time;
 
 		// カウントダウンが無いなら説明を表示
 		float countDown = startTime_ - time;
@@ -188,16 +195,7 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 
 
 
-	//// カウントダウン
-	//if (countDown < 4.0f) {
-	//	float vh = 1.0f / 4.0f;
-	//	float v = (int)countDown * vh;
-	//	float t = countDown - (int)countDown;
-	//	float rate = MATH::Leap(0.4f, 1.0f, t * t);
 
-	//	DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
-	//		Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
-	//}
 }
 
 void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offset) {
