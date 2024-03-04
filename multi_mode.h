@@ -145,9 +145,9 @@ public:
 		std::string mapPath = ini::GetString(PARAM_PATH + L"mode.ini", modeName.c_str(), L"path");
 		map_ = new MultiMap(MAP_PATH + mapPath, MULTIPLAY_RUN_TYPE_CLIENT);
 		countDownTexNo = LoadTexture("data/texture/UI/321Go.png");
-		timeupAnim = MultiAnimator(LoadTexture("data/texture/UI/UI_timeup.png"), 5, 7, 0, 39, false);
+		timeupAnim = MultiAnimator(LoadTexture("data/texture/UI/UI_timeup.png"), 5, 5, 0, 39, false);
 
-		rankAnim[0] = MultiAnimator(LoadTexture("data/texture/UI/UI_1st_anim.png"), 5, 6, 0, 29, true);
+		rankAnim[0] = MultiAnimator(LoadTexture("data/texture/UI/UI_1st_anim.png"), 5, 6, 0, 29, false);
 		rankAnim[0].anim.isEndShow = true;
 		rankAnim[1] = MultiAnimator(LoadTexture("data/texture/UI/UI_2nd.png"), 1, 1, 0, 0, false);
 		rankAnim[1].anim.isEndShow = true;
