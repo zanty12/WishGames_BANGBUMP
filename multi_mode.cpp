@@ -72,6 +72,7 @@ void MultiPlayModeServerSide::Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &cl
 
 void MultiPlayModeClientSide::DrawUI(RESPONSE_PLAYER &players) 
 {
+	// カウントダウン（開始時）
 	{
 		float countDown = players.maxTime - resultTime_ - players.time;
 		// カウントダウン
@@ -97,6 +98,7 @@ void MultiPlayModeClientSide::DrawUI(RESPONSE_PLAYER &players)
 		}
 	}
 
+	// カウントダウン（終了時）
 	{
 
 		float time = players.time;
@@ -122,6 +124,28 @@ void MultiPlayModeClientSide::DrawUI(RESPONSE_PLAYER &players)
 				Color(1, 1, 1), Vector2::Zero, Vector2::One);
 		}
 	}
+
+	// ステージ名の描画
+	{
+		float time = players.time;
+		const float STAGE_NAME_ANIMATION_START_TIME = 5.0f;		// ステージ名表示開始
+		const float STAGE_NAME_ANIMATION_TIME = 4.0f;			// ステージ名表示中
+		// ステージ名
+		if (STAGE_NAME_ANIMATION_START_TIME <= time && time <= STAGE_NAME_ANIMATION_START_TIME + STAGE_NAME_ANIMATION_TIME) {
+			float t = (time - STAGE_NAME_ANIMATION_START_TIME) / STAGE_NAME_ANIMATION_TIME;
+
+			if (t <= 1.0f) {
+				float centerX = Graphical::GetWidth() * 0.5f;
+				float centerY = Graphical::GetHeight() * 0.5f;
+
+
+				float y = MATH::Bezier(centerY + 150.0f, centerY + 50.0f, centerY - 25.0f, centerY - 50.0f, t);
+				float alpha = MATH::Bezier(0.0f, 2.0f, 1.5f, 0.0f, t);
+
+				DrawSprite(stageNameTexNo, Vector2(centerX, y), 0.0f, Vector2(1200.0f, 500.0f) * 0.75f, Color::White * alpha);
+			}
+		}
+	}
 }
 
 void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
@@ -129,10 +153,7 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 
 
 	const float SPAWN_ANIMATION_START_TIME = 2.0f;			// 登場表示開始
-	const float STAGE_NAME_ANIMATION_START_TIME = 5.0f;		// ステージ名表示開始
-
 	const float SPAWN_ANIMATION_TIME = 3.0f;				// 登場中
-	const float STAGE_NAME_ANIMATION_TIME = 4.0f;			// ステージ名表示中
 
 
 
@@ -165,32 +186,18 @@ void MultiPlayModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset
 		clientSpawnCount++;
 	}
 
-	// ステージ名
-	else if (STAGE_NAME_ANIMATION_START_TIME <= time) {
-		float t = (time - STAGE_NAME_ANIMATION_START_TIME) / STAGE_NAME_ANIMATION_TIME;
-
-		if (t <= 1.0f) {
-			float centerX = Graphical::GetWidth() * 0.5f;
-			float centerY = Graphical::GetHeight() * 0.5f;
 
 
-			float y = MATH::Bezier(centerY + 150.0f, centerY + 50.0f, centerY - 25.0f, centerY - 50.0f, t);
-			float alpha = MATH::Bezier(0.0f, 2.0f, 1.5f, 0.0f, t);
+	//// カウントダウン
+	//if (countDown < 4.0f) {
+	//	float vh = 1.0f / 4.0f;
+	//	float v = (int)countDown * vh;
+	//	float t = countDown - (int)countDown;
+	//	float rate = MATH::Leap(0.4f, 1.0f, t * t);
 
-			DrawSprite(stageNameTexNo, Vector2(centerX, y), 0.0f, Vector2(1200.0f, 500.0f) * 0.75f, Color::White * alpha);
-		}
-	}
-
-	// カウントダウン
-	if (countDown < 4.0f) {
-		float vh = 1.0f / 4.0f;
-		float v = (int)countDown * vh;
-		float t = countDown - (int)countDown;
-		float rate = MATH::Leap(0.4f, 1.0f, t * t);
-
-		DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
-			Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
-	}
+	//	DrawSprite(countDownTexNo, Vector2(centerX, centerY), 0.0f, Vector2(800, 800) * rate,
+	//		Color(1, 1, 1, rate), Vector2(0.0f, v), Vector2(1.0, vh));
+	//}
 }
 
 void MultiPlayModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offset) {

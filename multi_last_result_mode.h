@@ -68,7 +68,7 @@ public:
 		isBlockShow = false;
 
 
-		video = new Video("./data/video/UI_result_BG.mp4");
+		video = new Video("data/video/UI_result_BG.mp4");
 		Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());
 		video->SetSize(screen);
 		video->SetWindowPos(screen * 0.5f);
@@ -81,6 +81,7 @@ public:
 
 	void Draw(RESPONSE_PLAYER &players, Vector2 offset) override;
 	void DrawStart(RESPONSE_PLAYER &players, Vector2 offset) override;
+	void DrawUI(RESPONSE_PLAYER &players) override;
 
 	void ParseResponse(Storage &in) override {
 

@@ -143,12 +143,16 @@ void MultiMap::Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType) {
 	file.close();
 }	
 
-void MultiMap::DrawBG(int bgTexNo, Vector2 offset, float aspectRatio) {
+void MultiMap::DrawBG(int bgTexNo, Vector2 offset, Vector2 texScale) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());                        // 画面のサイズ
+	float aspectRatio = texScale.y / texScale.x;
+	float halfTexY = texScale.y * 0.5f;
+
 	float maxY = height * cellSize;
 	float t = offset.y / maxY;
-	float y = MATH::Leap(maxY, 0.0f, t) - maxY * 0.5f;
-	DrawSprite(bgTexNo, Vector2(screen.x * 0.5f, y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
+	std::cout << t << std::endl;
+	float y = MATH::Leap(halfTexY, screen.y - halfTexY, t);
+	DrawSprite(bgTexNo, Vector2(screen.x * 0.5f, y), 0.0f, texScale, Color::White);
 }
 
 void MultiMap::Draw(Vector2 offset, bool isBlockShow) {
@@ -160,8 +164,8 @@ void MultiMap::Draw(Vector2 offset, bool isBlockShow) {
 
 	// 描画（背景）
 	DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, screen.y * 0.5f), 0.0f, Vector2(screen.x, screen.y), Color::White);
-	DrawBG(middleBGTexNo, offset, 1620.0f / 1920.0f);
-	DrawBG(frontBGTexNo, offset, 5400.0f / 1920.0f);
+	DrawBG(middleBGTexNo, offset, Vector2(1920.0f, 1620.0f));
+	DrawBG(frontBGTexNo, offset, Vector2(1920.0f, 5400.0f));
 
 	if (isBlockShow == false) return;
 	// 描画（ブロック）

@@ -307,11 +307,11 @@
     <ClCompile Include="multi_area_capture_mode.cpp">
       <Filter>Multiplay\src\mode</Filter>
     </ClCompile>
-    <ClCompile Include="multi_last_result_mode.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="multi_ranking_animation.cpp">
       <Filter>Multiplay\src</Filter>
+    </ClCompile>
+    <ClCompile Include="multi_last_result_mode.cpp">
+      <Filter>Multiplay\src\mode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

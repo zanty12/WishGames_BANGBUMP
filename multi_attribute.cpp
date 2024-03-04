@@ -867,7 +867,7 @@ void ClientThunder::Move(void) {
 			player->transform.rotation += MATH::Deg2Rad * 180.0f;
 		}
 
-		MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(moveAnim, pos, rot, scl);
+		//MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(moveAnim, pos, rot, scl);
 	}
 
 	if (IsPlayerAnimMoveCharge(player->preAnimType)) {
