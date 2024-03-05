@@ -82,7 +82,7 @@ int main()
 
 #elif defined(CLIENT)
     MSG msg;
-    Graphical::Initialize(1920, 1080,true);
+    Graphical::Initialize(1920, 1080,false);
     DebugUI::Initialize();
     Text::CreateResources();
     WIN::Window window = Graphical::GetHwnd();
