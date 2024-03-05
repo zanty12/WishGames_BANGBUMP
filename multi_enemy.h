@@ -24,7 +24,6 @@ protected:
 	float speed = 2.0f;
 	EnemyAttackServerSide attack;
 
-public:
 	int hp = 5;
 	int atkDrop = 5;
 	int deathDrop = 5;
