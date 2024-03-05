@@ -129,7 +129,7 @@ public:
 };
 class AttackEnemy2ServerSide : public AttackServerSide {
 public:
-	AttackEnemy2ServerSide(Enemy2ServerSide *self) : AttackServerSide(1, self->atkDrop, 0.0f, self->blownFriction, 50.0f, self) { transform.position = self->transform.position; isProjectile = true; }
+	AttackEnemy2ServerSide(Enemy2ServerSide *self) : AttackServerSide(1, self->GetAttack()->atkDrop, 0.0f, self->blownFriction, 50.0f, self) { transform.position = self->transform.position; isProjectile = true; }
 
 	void Loop(void) override;
 	void KnockBack(ServerMovableGameObject *object) override;
