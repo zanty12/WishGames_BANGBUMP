@@ -17,6 +17,7 @@ public:
 
 	GameObjectServerSide() = default;
 	GameObjectServerSide(Transform transform) : transform(transform) { }
+	virtual bool CircleTouch(GameObjectServerSide *object);
 	virtual MULTI_OBJECT_TYPE GetType(void) = 0;
 };
 

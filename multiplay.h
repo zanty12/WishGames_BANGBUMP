@@ -47,6 +47,8 @@ public:
 		// 解放
 		sendBuff.Release();
 		recvBuff.Release();
+		if (gameMode) delete gameMode;
+		gameMode = nullptr;
 
 		// 登録解除
 		AllUnregister();
@@ -87,7 +89,6 @@ public:
 
 class MultiPlayClient {
 private:
-	int filterTexNo = -1;
 	static int id;										// ID
 	static MultiPlayFlowClientSide *gameMode;			// ゲームモード
 	Socket sockfd_;										// ソケット
@@ -120,16 +121,33 @@ public:
 		sendUpdateFunc.join();
 		recvUpdateFunc.join();
 
-		//delete gameMode;
 		delete recvTmpBuff;
 		sendBuff.Release();
 		recvBuff.Release();
+
+		// 解放
+		for (auto &client : clients) delete client.second;
+		for (auto &object : objects) delete object.second;
+		clients.clear();
+		objects.clear();
+
+		if (gameMode) {
+			delete gameMode;
+			gameMode = nullptr;
+		}
+
 
 		// 登録解除
 		Unregister();
 
 		// クリーンアップ
 		Cleanup();
+
+		// 音をすべて止める
+		StopSoundAll();
+
+		// IDの初期化
+		id = -1;
 	}
 
 	// 登録

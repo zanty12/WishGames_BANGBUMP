@@ -185,13 +185,33 @@ void ClientPlayer::Loop(void) {
 	preMoveAttributeType = moveAttributeType;
 	preAttackAttributeType = attackAttributeType;
 
+	// ダメージ＆バイブレーション
 	if (damageEffectAttributeType != -1) {
-		MultiAnimator *anim = &allDamageEffect;
-		if (damageEffectAttributeType == MULTI_ATTACK_FIRE) anim = &fireDamageEffect;
-		else if (damageEffectAttributeType == MULTI_ATTACK_WATER) anim = &waterDamageEffect;
-		else if (damageEffectAttributeType == MULTI_ATTACK_THUNDER) anim = &thunderDamageEffect;
-		else if (damageEffectAttributeType == MULTI_ATTACK_WIND) anim = &windDamageEffect;
-		else if (damageEffectAttributeType == MULTI_ATTACK_ENEMY2) anim = &allDamageEffect;
+		MultiAnimator *anim = nullptr;
+		if (damageEffectAttributeType == MULTI_ATTACK_FIRE) {
+			anim = &fireDamageEffect;
+			SetVibration(0.5f);
+		}
+		else if (damageEffectAttributeType == MULTI_ATTACK_WATER) {
+			anim = &waterDamageEffect;
+			SetVibration(0.75f);
+		}
+		else if (damageEffectAttributeType == MULTI_ATTACK_THUNDER) {
+			anim = &thunderDamageEffect;
+			SetVibration(1.0f);
+		}
+		else if (damageEffectAttributeType == MULTI_ATTACK_WIND) {
+			anim = &windDamageEffect;
+			SetVibration(0.1f);
+		}
+		else if (damageEffectAttributeType == MULTI_ATTACK_ENEMY2) {
+			anim = &allDamageEffect;
+			SetVibration(0.5f);
+		}
+		else {
+			anim = &allDamageEffect;
+			SetVibration(0.5f);
+		}
 
 		// ダメージエフェクト
 		if (MultiPlayClient::GetGameMode())MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(
@@ -201,6 +221,15 @@ void ClientPlayer::Loop(void) {
 			Vector2::One * transform.scale.x,
 			Color::White
 		);
+	}
+	// 振動減衰
+	else {
+		vibration *= vibrationFriction;
+	}
+
+	// 振動
+	if (id == MultiPlayClient::GetID()) {
+		Input::Vibration(0, vibration, vibration);
 	}
 }
 
@@ -214,7 +243,7 @@ void ClientPlayer::ShowEntry() {
 	// アニメーション
 	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_spawn.png"), 5, 3, 0, 9, false);
 	// 落雷を降らす
-	float height = 1100.0f;
+	float height = 1650.0f;
 	Vector2 localPos = Vector2(0.0f, height * 0.15f);
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
 
@@ -230,14 +259,14 @@ void ClientPlayer::ShowExit() {
 	// アニメーション
 	MultiAnimator anim = MultiAnimator(LoadTexture("data/texture/Effect/effect_transfer.png"), 5, 6, 0, 25, false);
 	// 落雷を降らす
-	float height = 1100.0f;
+	float height = 1650.0f;
 	Vector2 localPos = Vector2(0.0f, height * 0.15f);
 	MultiPlayClient::GetGameMode()->GetMap()->GetEffects()->AddEffect(anim, transform.position + localPos, 0.0f, Vector2::One * height, Color::White);
 }
 void ClientPlayer::DrawUI(void) {
 	if (curAttackAttribute) curAttackAttribute->DrawUI();
 	DrawSprite(iconTexNo,
-		transform.position + Vector2(0.0f, transform.scale.y * 0.75f) - MultiPlayClient::offset,
+		transform.position + Vector2(0.0f, transform.scale.y * 0.65f) - MultiPlayClient::offset,
 		0.0f,
 		Vector2(25, 25),
 		Color::White);
@@ -363,6 +392,19 @@ void ClientPlayer::SetAttackAttribute(ClientAttribute *attackAttribute) {
 	if (moveAttribute) {
 		anim = MultiAnimator::GetPlayerInitialize(id % 4, moveAttribute->GetAttribute(), attackAttribute->GetAttribute());
 		reverseAnim = MultiAnimator::GetPlayerInitialize(id % 4, attackAttribute->GetAttribute(), moveAttribute->GetAttribute());
+	}
+}
+
+void ClientPlayer::SetVibration(float vibration) {
+	if (vibration < 0.0f) {
+		vibration = 0.0f;
+	}
+	else if (1.0f < vibration) {
+		vibration = 1.0f;
+	}
+
+	if (this->vibration < vibration) {
+		this->vibration = vibration;
 	}
 }
 

@@ -36,8 +36,8 @@ public:
 	}
 
 	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
-
 	void CreateResponse(Storage &out);
+	void SwapMode(MULTI_MODE mode, std::map<int, CLIENT_DATA_SERVER_SIDE> &clients);
 
 	MultiMap *GetMap(void) const { return gameMode_ ? gameMode_->map_ : nullptr; }
 	MULTI_MODE GetMode(void) const { return gameMode_ ? gameMode_->GetMode() : MULTI_MODE::NONE; }
@@ -62,8 +62,8 @@ private:
 	int numTexNo = LoadTexture("data/texture/UI/number.png");
 	int timerTexNo = LoadTexture("data/texture/UI/multi_timer.png");
 	int icon[4] = {};
-	int icon2 = -1;
-	int icon3 = -1;
+	int icon_base = -1;
+	int icon_gage = -1;
 
 private:
 	MultiPlayModeClientSide *CreateMode(MULTI_MODE mode);

@@ -7,6 +7,8 @@ class CharacterSelectFrameClientSide {
 public:
 	int id = 0;
 	int maxNum = 4;
+	int state = 0;
+	int prevState = 0;
 	Follow stateSmooth = 0.0f;
 	Follow moveSmooth = 0.0f;
 	Follow attackSmooth = 0.0f;
@@ -22,5 +24,5 @@ public:
 		swordAnim.MoveEnd();
 	}
 
-	void Draw(int frameTexNo, int framePTexNo, int arrowTexNo, int playerTexNo, int bootTexNo, int handTexNo, int swordTexNo, bool isShow, float width, float height, float gap, int moveAttribute, int attackAttribute);
+	void Draw(int frameTexNo, int framePTexNo, int arrowTexNo, int playerTexNo, int bootTexNo, int handTexNo, int swordTexNo, bool isShow, float width, float height, float gap, int moveAttribute, int attackAttribute, int character_select_so);
 };

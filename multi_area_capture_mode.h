@@ -16,6 +16,7 @@ public:
 	};
 
 private:
+	std::list<int> inOrder;
 	std::list<Area> areas;
 	std::list<Area> activeAreas;
 	float radius = 5.0f;							// ”¼Œa
@@ -67,13 +68,22 @@ public:
 	MultiPlayAreaCaptureModeClientSide() : 
 		areaTexNo(LoadTexture("data/texture/area_capture.png")),
 		MultiPlayModeClientSide(L"AreaCapture") {
-		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_back));
-		map_->middleBGTexNo = LoadTexture("data/texture/BG/BG_stage1_middle.png");
-		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage1_front));
-		anim = MultiAnimator(areaTexNo, 1, 1, 0, 0);
-		soNo = LoadSound("data/sound/BGM/stage1_BGM.wav");
 
-		stageNameTexNo = LoadTexture("data/texture/UI/title/UI_finalstage.png");
+		// ”wŒiÝ’è
+		map_->backBGTexNo = LoadTexture("data/texture/BG/BG_stage1_back.png");//"Asset::textures_.at(textures::bg_stage1_back));
+		map_->middleBGTexNo = LoadTexture("data/texture/BG/BG_stage1_middle.png");
+		map_->frontBGTexNo = LoadTexture("data/texture/BG/BG_stage1_front.png");//Asset::textures_.at(textures::bg_stage1_front));
+		float col = 0.5f;
+		map_->backBGColor = Color(col, col, col);
+		map_->middleBGColor = Color(col, col, col);
+		map_->frontBGColor = Color(col, col, col);
+
+
+		anim = MultiAnimator(areaTexNo, 5, 6, 0, 29, true);
+		soNo = LoadSound("data/sound/BGM/stage1_BGM.wav");
+		descTexNo = LoadTexture("data/texture/description/areacapture_description.png");
+
+		stageNameTexNo = LoadTexture("data/texture/UI/title/UI_stage1.png");
 	}
 
 	void Draw(RESPONSE_PLAYER &players, Vector2 offset) override;

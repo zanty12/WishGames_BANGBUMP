@@ -48,7 +48,7 @@ int MultiPlayServer::Register(Address clientAddr, HEADER &header, Socket sockfd)
 
 	// ヘッダーの更新
 	header.command = HEADER::RESPONSE_LOGIN;
-	header.id = id;
+	player->id = header.id = id;
 
 	// クライアントデータの作成
 	CLIENT_DATA_SERVER_SIDE clientData = {
@@ -89,6 +89,12 @@ void MultiPlayServer::Unregister(int id) {
 	// 削除
 	delete clients_[id].player_;
 	clients_.erase(id);
+
+
+	// サーバーにいる数が0人ならサーバーを初期化
+	if (clients_.size() == 0) {
+		gameMode->SwapMode(CHARACTER_SELECT, clients_);
+	}
 }
 
 void MultiPlayServer::AllUnregister(void) {
@@ -96,9 +102,12 @@ void MultiPlayServer::AllUnregister(void) {
 	{
 		Unregister(clients_.begin()->second.header.id);
 	}
+	clients_.clear();
 }
 
 void MultiPlayServer::PlayerUpdate(void) {
+	if (gameMode->GetGame() == nullptr) return;
+
 	if (gameMode->GetGame()->IsPlayerMove()) {
 		// プレイヤーの更新
 		for (auto &kvp : clients_) {
@@ -326,11 +335,10 @@ void MultiPlayServer::OpenTerminal(void) {
 		}
 
 
-
-		if (GetAsyncKeyState(VK_ESCAPE)) {
-			isFinish = true;
-			break;
-		}
+		//if (GetAsyncKeyState(VK_ESCAPE)) {
+		//	isFinish = true;
+		//	break;
+		//}
 
 
 		recvBuff = nullptr;
@@ -370,9 +378,8 @@ MultiPlayClient::MultiPlayClient() : texNo(LoadTexture("data/texture/player.png"
 	recvTmpBuff = new char[MAX_BUFF];
 
 	// シーン遷移アニメーションの初期化
-	MoveScene::Initialize();
-
-	filterTexNo = LoadTexture("data/texture/filter.png");
+	AllMoveScene.Initialize();
+	UIMoveScene.Initialize();
 }
 
 int MultiPlayClient::Register(std::string serverAddress) {
@@ -506,14 +513,17 @@ void MultiPlayClient::PlayerUpdate(void) {
 	// ライトエフェクトの描画
 	lightEffect.Draw(offset);
 
-	// UIの描画
-	gameMode->DrawUI(res_);
+	// シーン遷移アニメーション
+	UIMoveScene.Loop();
 
 	// プレイヤーUIの描画
 	for (auto kvp : MultiPlayClient::clients) if (kvp.second->entryType == ClientPlayer::ENTRY) kvp.second->DrawUI();
 
+	// UIの描画
+	gameMode->DrawUI(res_);
+
 	// シーン遷移アニメーション
-	MoveScene::Loop();
+	AllMoveScene.Loop();
 }
 
 void MultiPlayClient::SendUpdate(void) {

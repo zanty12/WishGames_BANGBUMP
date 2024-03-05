@@ -143,12 +143,15 @@ void MultiMap::Load(std::string path, MULTIPLAY_RUN_TYPE multiplayType) {
 	file.close();
 }	
 
-void MultiMap::DrawBG(int bgTexNo, Vector2 offset, float aspectRatio) {
+void MultiMap::DrawBG(int bgTexNo, Vector2 offset, Vector2 texScale, Color color) {
 	Vector2 screen = Vector2(Graphical::GetWidth(), Graphical::GetHeight());                        // 画面のサイズ
+	float aspectRatio = texScale.y / texScale.x;
+	float halfTexY = texScale.y * 0.5f;
+
 	float maxY = height * cellSize;
 	float t = offset.y / maxY;
-	float y = MATH::Leap(maxY, 0.0f, t) - maxY * 0.5f;
-	DrawSprite(bgTexNo, Vector2(screen.x * 0.5f, y * 0.5f), 0.0f, Vector2(screen.x, screen.x * aspectRatio), Color::White);
+	float y = MATH::Leap(halfTexY, screen.y - halfTexY, t);
+	DrawSprite(bgTexNo, Vector2(screen.x * 0.5f, y), 0.0f, texScale, color);
 }
 
 void MultiMap::Draw(Vector2 offset, bool isBlockShow) {
@@ -159,9 +162,9 @@ void MultiMap::Draw(Vector2 offset, bool isBlockShow) {
 	leftBottomIdx.y--;
 
 	// 描画（背景）
-	DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, screen.y * 0.5f), 0.0f, Vector2(screen.x, screen.y), Color::White);
-	DrawBG(middleBGTexNo, offset, 1620.0f / 1920.0f);
-	DrawBG(frontBGTexNo, offset, 5400.0f / 1920.0f);
+	DrawSprite(backBGTexNo, Vector2(screen.x * 0.5f, screen.y * 0.5f), 0.0f, Vector2(screen.x, screen.y), backBGColor);
+	DrawBG(middleBGTexNo, offset, Vector2(1920.0f, 1620.0f), middleBGColor);
+	DrawBG(frontBGTexNo, offset, Vector2(1920.0f, 5400.0f), frontBGColor);
 
 	if (isBlockShow == false) return;
 	// 描画（ブロック）
@@ -398,13 +401,11 @@ void MultiMap::AttackUpdate(void) {
 			}
 
 			// ダメージ
-			if (attack->Touch(player)) {
+			if (attack->Touch(player, attack->localPosition)) {
 				player->Damage(attack);
 				// アタックが発射物なら削除
 				if (attack->isProjectile) {
 					attack->Destroy();
-
-					std::cout << "DAMAGE" << std::endl;
 				}
 			}
 		}
@@ -430,13 +431,39 @@ void MultiMap::AttackUpdate(void) {
 			}
 
 			// ダメージ
-			if (attack->Touch(enemy)) {
+			if (attack->Touch(enemy, attack->localPosition)) {
 				enemy->damageEffectAttributeType = attack->GetType();
 				enemy->Damage(attack);
 				// アタックが発射物なら削除
 				if (attack->isProjectile) {
 					attack->Destroy();
-					std::cout << "DAMAGE" << std::endl;
+				}
+			}
+
+
+			// プレイヤーとの判定
+			for (auto &kvp : MultiPlayServer::clients_) {
+
+				auto &player = kvp.second.player_;
+
+
+				// イテレータの取得
+				auto iterator = attack->touchGameObjects.find(player);
+
+				// ダメージを与えてもいい時間ではないなら終了
+				if (iterator != attack->touchGameObjects.end()) {
+					if (iterator->second.GetNowTime() * 0.001f < attack->spanTime) continue;
+					else iterator->second.Start();
+				}
+				// 計測開始
+				else {
+					attack->touchGameObjects[enemy] = WIN::Time();
+					attack->touchGameObjects[enemy].Start();
+				}
+
+				// ダメージ
+				if (player->CircleTouch(enemy)) {
+					player->Damage(enemy->GetAttack());
 				}
 			}
 		}

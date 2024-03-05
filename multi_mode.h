@@ -3,6 +3,7 @@
 #include "multi_runenum.h"
 #include "multi_map.h"
 #include "multi_result_skillorb.h"
+#include "multi_ranking_animation.h"
 #include "sound.h"
 #include "time.h"
 
@@ -20,6 +21,8 @@ protected:
 	bool isSkip = false;				// スキップ
 	bool isPlayerMove = false;			// プレイヤーの移動制限
 	MultiMap *map_ = nullptr;
+
+
 	friend MultiPlayFlowServerSide;
 
 
@@ -73,6 +76,8 @@ protected:
 	std::list<ResultSkillOrb> rstSkillOrb;				// リザルト時のスキルオーブ
 	WIN::Time dropSkillOrbCoolTimer;					// リザルト時のスキルオーブドロップアニメーションで使うタイマー
 	bool isNoTimer = false;								// 時間計測をしない
+	RankingAnimator rankAnim[4];
+	MultiAnimator timeupAnim;							// タイムアップ
 	friend MultiPlayFlowClientSide;
 
 
@@ -80,6 +85,9 @@ public:
 	int soNo = -1;										// BGM
 	int stageNameTexNo = -1;							// ステージ名テクスチャ
 	int countDownTexNo = -1;							// カウントダウンテクスチャ
+	int descTexNo = -1;									// 説明テクスチャ
+	int descFrameTexNo = -1;							// 説明フレームテクスチャ
+	int descBGTexNo = -1;								// 説明背景テクスチャ
 	bool isBlockShow = true;
 
 
@@ -136,13 +144,24 @@ public:
 
 		std::string mapPath = ini::GetString(PARAM_PATH + L"mode.ini", modeName.c_str(), L"path");
 		map_ = new MultiMap(MAP_PATH + mapPath, MULTIPLAY_RUN_TYPE_CLIENT);
-
 		countDownTexNo = LoadTexture("data/texture/UI/321Go.png");
+		timeupAnim = MultiAnimator(LoadTexture("data/texture/UI/UI_timeup.png"), 5, 5, 0, 39, false);
+
+		rankAnim[0] = MultiAnimator(LoadTexture("data/texture/UI/UI_1st_anim.png"), 5, 6, 0, 29, false);
+		rankAnim[0].anim.isEndShow = true;
+		rankAnim[1] = MultiAnimator(LoadTexture("data/texture/UI/UI_2nd.png"), 1, 1, 0, 0, false);
+		rankAnim[1].anim.isEndShow = true;
+		rankAnim[2] = MultiAnimator(LoadTexture("data/texture/UI/UI_3rd.png"), 1, 1, 0, 0, false);
+		rankAnim[2].anim.isEndShow = true;
+		rankAnim[3] = MultiAnimator(LoadTexture("data/texture/UI/UI_4th.png"), 1, 1, 0, 0, false);
+		rankAnim[3].anim.isEndShow = true;
+		descBGTexNo = LoadTexture("data/texture/description/bg.png");
+		descFrameTexNo = LoadTexture("data/texture/description/frame.png");
 	};
 	~MultiPlayModeClientSide() { if (map_) delete map_; }
 
 	virtual void Draw(RESPONSE_PLAYER &players, Vector2 offset) { };
-	virtual void DrawUI(RESPONSE_PLAYER &players) {};
+	virtual void DrawUI(RESPONSE_PLAYER &players);
 	virtual void DrawStart(RESPONSE_PLAYER &players, Vector2 offset);
 	virtual void DrawResult(RESPONSE_PLAYER &players, Vector2 offset);
 	virtual void ParseResponse(Storage& in) { };

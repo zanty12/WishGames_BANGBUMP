@@ -82,8 +82,8 @@ public:
 	Vector2 operator-= (Vector2 v);
 	friend Vector2 operator*= (Vector2 &v, float scaler) { return Vector2(v.x *= scaler, v.y *= scaler); }
 	friend Vector2 operator/= (Vector2 &v, float scaler) { return Vector2(v.x /= scaler, v.y /= scaler); }
-	friend Vector2 operator*= (float scaler, Vector2 v) { return Vector2(scaler *= v.x, scaler *= v.y); }
-	friend Vector2 operator/= (float scaler, Vector2 v) { return Vector2(scaler /= v.x, scaler /= v.y); }
+	friend Vector2 operator*= (float scaler, Vector2 &v) { return Vector2(scaler *= v.x, scaler *= v.y); }
+	friend Vector2 operator/= (float scaler, Vector2 &v) { return Vector2(scaler /= v.x, scaler /= v.y); }
 
 	bool operator== (Vector2 v);
 	bool operator!= (Vector2 v);
@@ -132,10 +132,10 @@ public:
 	Vector3 operator+ (Vector3 v);
 	Vector3 operator- (Vector3 v);
 	float operator* (Vector3 v);
-	friend Vector3 operator* (Vector3 v, float scaler) { return Vector3(v.x * scaler, v.y * scaler, v.z * scaler); }
-	friend Vector3 operator/ (Vector3 v, float scaler) { return Vector3(v.x / scaler, v.y / scaler, v.z / scaler); }
-	friend Vector3 operator* (float scaler, Vector3 v) { return Vector3(scaler * v.x, scaler * v.y, scaler * v.z); }
-	friend Vector3 operator/ (float scaler, Vector3 v) { return Vector3(scaler / v.x, scaler / v.y, scaler / v.z); }
+	friend Vector3 operator* (Vector3 &v, float scaler) { return Vector3(v.x * scaler, v.y * scaler, v.z * scaler); }
+	friend Vector3 operator/ (Vector3 &v, float scaler) { return Vector3(v.x / scaler, v.y / scaler, v.z / scaler); }
+	friend Vector3 operator* (float scaler, Vector3 &v) { return Vector3(scaler * v.x, scaler * v.y, scaler * v.z); }
+	friend Vector3 operator/ (float scaler, Vector3 &v) { return Vector3(scaler / v.x, scaler / v.y, scaler / v.z); }
 
 	Vector3 operator+= (Vector3 v);
 	Vector3 operator-= (Vector3 v);

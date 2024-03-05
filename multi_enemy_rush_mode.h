@@ -34,12 +34,21 @@ class MultiPlayEnemyRushModeClientSide : public MultiPlayModeClientSide {
 public:
 	MultiPlayEnemyRushModeClientSide() :
 		MultiPlayModeClientSide(L"EnemyRush") {
+
+		// ”wŒiÝ’è
 		map_->backBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_back));
 		map_->middleBGTexNo = LoadTexture("data/texture/BG/BG_stage2_middle.png");
 		map_->frontBGTexNo = LoadTexture(Asset::textures_.at(textures::bg_stage2_front));
-		soNo = LoadSound("data/sound/BGM/stage2_BGM.wav");
+		float col = 0.5f;
+		map_->backBGColor = Color(col, col, col);
+		map_->middleBGColor = Color(col, col, col);
+		map_->frontBGColor = Color(col, col, col);
 
-		stageNameTexNo = LoadTexture("data/texture/UI/title/UI_finalstage.png");
+
+		soNo = LoadSound("data/sound/BGM/stage2_BGM.wav");
+		descTexNo = LoadTexture("data/texture/description/enemyrush_description.png");
+
+		stageNameTexNo = LoadTexture("data/texture/UI/title/UI_stage2.png");
 	};
 
 

@@ -24,7 +24,7 @@ void Graphical::Initialize(int width, int height, BOOL windowed) {
 	// デバイスの作成
 	device.Create();
 	// レンダラーの作成
-	renderer.Create(window, windowed, device);
+	renderer.Create(window, windowed, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, device);
 
 
 	// レンダラーの更新

@@ -36,6 +36,7 @@ public:
 		: texNo(texNo), width(width), height(height), begin(begin), end(end), isLoop(isLoop), loopBegin(loopBegin), loopEnd(loopEnd), startTime(timeGetTime()), idx(begin) { };
 
 	int ToIndex(int x, int y) { return x + y * width; }
+	Vector2 ToUV(void) { return Vector2((idx % width) / (float)width, (idx / width) / (float)height); }
 	Vector2 ToUV(int idx) { return Vector2((idx % width) / (float)width, (idx / width) / (float)height); }
 	Vector2 ToUV(int x, int y) { return Vector2(x / (float)width, y / (float)height); }
 

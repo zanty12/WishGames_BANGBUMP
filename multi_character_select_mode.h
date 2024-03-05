@@ -41,7 +41,6 @@ public:
 	}
 
 	void Release(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override;
-
 	void Update(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override;
 	void UpdateResult(std::map<int, CLIENT_DATA_SERVER_SIDE> &clients) override;
 	void CreateResponse(Storage &out) override;
@@ -70,7 +69,8 @@ private:
 	RESPONSE_CHARACTER_SELECT res;
 	std::map<int, CharacterSelectFrameClientSide> characters;
 	MultiPlayClient *game_ = nullptr;
-	Video *video = nullptr;
+	Video *moveAttributeVideo[4]= {};
+	Video *attackAttributeVideo[4]= {};
 	int bootTexNo[ATTRIBUTE_TYPE_NUM] = {};
 	int handTexNo[ATTRIBUTE_TYPE_NUM] = {};
 	int playerTexNo[4] = {};									// キャラ画像
@@ -87,6 +87,8 @@ private:
 	int select_tex_ = -1;										// テクスチャ（選択）
 	int stick_tex_ = -1;										// テクスチャ（スティック）
 	int match_tex_ = -1;										// テクスチャ（マッチメイキング）
+
+	int character_select_so = -1;								// キャラクター選択時の音
 
 private:
 	void CharacterDraw(int id, int maxIdx, bool isShow, float width, float height, float gap, int moveAttribute, int attackAttribute, float moveAttributeSmooth, float attackAttributeSmooth);
@@ -128,22 +130,72 @@ public:
 		charFramePTexNo[3] = LoadTexture("data/texture/UI/UI_frame_player4.png");
 
 		soNo = LoadSound("data/sound/BGM/select_element_BGM.wav");
+		character_select_so = LoadSound("data/sound/SE/select_finish.wav");
+
+		map_->backBGColor = Color::White;
+		map_->middleBGColor = Color::White;
+		map_->frontBGColor = Color::White;
 
 
 		// ブロック非表示
 		isBlockShow = false;
+		
+		// ビデオの描画設定
+		Vector2 screenScale = Vector2(static_cast<float>(Graphical::GetWidth()), static_cast<float>(Graphical::GetHeight()));
+		Vector2 screenCenter = screenScale * 0.5f;
+		Vector2 videoScale = Vector2(853.3 * screenScale.x / 1920, 480 * screenScale.y / 1080);
+		Vector2 moveVideoPos = Vector2(screenCenter.x + videoScale.x * 0.5f, screenCenter.y);
+		Vector2 attackVideoPos = Vector2(screenCenter.x - videoScale.x * 0.5f, screenCenter.y);
 
+		// 移動ビデオ
+		for (int i = 0; i < ATTRIBUTE_TYPE_NUM; i++) {
+			// ビデオのロード
+			Video *video = nullptr;
+			switch (i) {
+			case ATTRIBUTE_TYPE_FIRE: video = new Video("./data/video/fire_move.mp4"); break;
+			case ATTRIBUTE_TYPE_DARK: video = new Video("./data/video/dark_move.mp4"); break;
+			case ATTRIBUTE_TYPE_THUNDER: video = new Video("./data/video/thunder_move.mp4"); break;
+			case ATTRIBUTE_TYPE_WIND: video = new Video("./data/video/wind_move.mp4"); break;
+			}
 
-		video = new Video("./data/video/fire_move.mp4");
-		video->SetSize(Vector2(853.3 * static_cast<float>(Graphical::GetWidth()) / 1920,
-			480 * static_cast<float>(Graphical::GetHeight()) / 1080));
-		video->SetLoop(true);
-		video->SetWindowPos(Vector2(1400 * static_cast<float>(Graphical::GetWidth()) / 1920,
-			1000 / 2 * static_cast<float>(Graphical::GetHeight()) / 1080));
+			// ビデオの設定
+			video->SetSize(videoScale);
+			video->SetLoop(true);
+			video->SetWindowPos(moveVideoPos);
+
+			moveAttributeVideo[i] = video;
+		}
+		// 攻撃ビデオ
+		for (int i = 0; i < ATTRIBUTE_TYPE_NUM; i++) {
+			// ビデオのロード
+			Video *video = nullptr;
+			switch (i) {
+			case ATTRIBUTE_TYPE_FIRE: video = new Video("./data/video/fire_attack.mp4"); break;
+			case ATTRIBUTE_TYPE_DARK: video = new Video("./data/video/dark_attack.mp4"); break;
+			case ATTRIBUTE_TYPE_THUNDER: video = new Video("./data/video/thunder_attack.mp4"); break;
+			case ATTRIBUTE_TYPE_WIND: video = new Video("./data/video/wind_attack.mp4"); break;
+			}
+
+			// ビデオの設定
+			video->SetSize(videoScale);
+			video->SetLoop(true);
+			video->SetWindowPos(attackVideoPos);
+
+			attackAttributeVideo[i] = video;
+		}
 	}
 
 	~MultiPlayCharacterSelectModeClientSide() {
-		delete video;
+		for (int i = 0; i < ATTRIBUTE_TYPE_NUM; i++) {
+			if (moveAttributeVideo[i]) {
+				delete moveAttributeVideo[i];
+			}
+		}
+		for (int i = 0; i < ATTRIBUTE_TYPE_NUM; i++) {
+			if (attackAttributeVideo[i]) {
+				delete attackAttributeVideo[i];
+			}
+		}
 	}
 
 	void DrawStart(RESPONSE_PLAYER &players, Vector2 offset) override;

@@ -40,10 +40,6 @@ void MultiPlayCharacterSelectModeServerSide::PlayerUpdate(std::map<int, CLIENT_D
 		Input::SetState(0, client.currentInput);
 		Input::SetPreviousState(0, client.previousInput);
 
-		// 選択する
-		AttributeSelect(Input::GetStickLeft(0), Input::GetPreviousStickLeft(0), client.moveAttributeType);
-		AttributeSelect(Input::GetStickRight(0), Input::GetPreviousStickRight(0), client.attackAttributeType);
-
 		int &refStatus = status[client.player_->id];
 		// 決定
 		if (Input::GetKeyDown(0, Input::A)) {
@@ -54,6 +50,13 @@ void MultiPlayCharacterSelectModeServerSide::PlayerUpdate(std::map<int, CLIENT_D
 		else if (Input::GetKeyDown(0, Input::B)) {
 			refStatus--;
 			if (refStatus < 0) refStatus = 0;			
+		}
+
+		// 選択モードなら
+		if (refStatus == 1) {
+			// 選択する
+			AttributeSelect(Input::GetStickLeft(0), Input::GetPreviousStickLeft(0), client.moveAttributeType);
+			AttributeSelect(Input::GetStickRight(0), Input::GetPreviousStickRight(0), client.attackAttributeType);
 		}
 
 
@@ -166,11 +169,13 @@ void MultiPlayCharacterSelectModeClientSide::CharacterDraw(int id, int maxIdx, b
 }
 
 void MultiPlayCharacterSelectModeClientSide::DrawStart(RESPONSE_PLAYER &players, Vector2 offset) {
-	MoveScene::Move(Color::White * 0.0f);
+	AllMoveScene.Move(Color::White * 0.0f);
+	UIMoveScene.Move(Color::White * 0.0f);
 }
 
 void MultiPlayCharacterSelectModeClientSide::DrawResult(RESPONSE_PLAYER &players, Vector2 offset) {
-	MoveScene::Move(Color::Black, true);
+	AllMoveScene.Move(Color::Black, true);
+	UIMoveScene.Move(Color::Black, true);
 }
 
 void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vector2 offset) {
@@ -197,6 +202,7 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 			// ステータスの更新
 			auto &character = characters[id];
 			character.stateSmooth = iterator->status;
+			character.state = iterator->status;
 
 
 			// 自分のIDなら属性を記録する
@@ -208,12 +214,12 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 
 			// 描画
 			characters[id].Draw(charFrameTexNo, charFramePTexNo[id % 4], charSelectArrow, playerTexNo[id % 4], bootTexNo[iterator->moveAttributeType], handTexNo[iterator->attackAttributeType], charReadyTexNo,
-				true, width, height, gap, iterator->moveAttributeType, iterator->attackAttributeType);
+				true, width, height, gap, iterator->moveAttributeType, iterator->attackAttributeType, character_select_so);
 		}
 		// 枠のみ表示
 		else {
 			characters[id].Draw(charFrameTexNo, charFramePTexNo[id % 4], charSelectArrow, playerTexNo[id % 4], bootTexNo[ATTRIBUTE_TYPE_FIRE], handTexNo[ATTRIBUTE_TYPE_FIRE], charReadyTexNo,
-				false, width, height, gap, ATTRIBUTE_TYPE_FIRE, ATTRIBUTE_TYPE_FIRE);
+				false, width, height, gap, ATTRIBUTE_TYPE_FIRE, ATTRIBUTE_TYPE_FIRE, character_select_so);
 		}
 	}
 
@@ -221,8 +227,10 @@ void MultiPlayCharacterSelectModeClientSide::Draw(RESPONSE_PLAYER &players, Vect
 	if (0.75f < Input::GetTriggerLeft(0) && 0.75f < Input::GetTriggerRight(0)) {
 		DebugUI::BeginDraw();
 		Text::TextStart();
-		video->Update();
-		video->Draw();
+		moveAttributeVideo[moveAttributeType]->Update();
+		moveAttributeVideo[moveAttributeType]->Draw();
+		attackAttributeVideo[attackAttributeType]->Update();
+		attackAttributeVideo[attackAttributeType]->Draw();
 		Text::TextEnd();
 		DebugUI::EndDraw();
 	}
