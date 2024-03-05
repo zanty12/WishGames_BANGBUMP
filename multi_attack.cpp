@@ -16,9 +16,12 @@ bool AttackServerSide::Touch(GameObjectServerSide *object, Vector2 localPosition
 	if (this->direction == Vector2::Zero) {
 		Vector2 direction = object->transform.position - transform.position;	// オブジェクトの向き
 		float distanceSq = direction.DistanceSq();
-		if (distanceSq <= maxRadiusSq) {
-			int i = 0;
+
+		if (object->GetType() == MULTI_OBJECT_TYPE::MULTI_PLAYER && GetType() == MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER || GetType() == MULTI_OBJECT_TYPE::MULTI_ATTACK_THUNDER2) {
+			maxRadius = object->radius * 2.0f + radius;
+			maxRadiusSq = maxRadius * maxRadius;
 		}
+
 		return distanceSq <= maxRadiusSq;
 	}
 	// カプセル判定
