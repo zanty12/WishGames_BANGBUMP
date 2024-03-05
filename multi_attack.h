@@ -24,6 +24,7 @@ public:
 
 
 public:
+	AttackServerSide() = default;
 	AttackServerSide(int atk, int atkDrop, float spanTime, float knockbackRate, float radius, GameObjectServerSide *self) : self(self), atk(atk), atkDrop(atkDrop), spanTime(spanTime), knockbackRate(knockbackRate) { this->radius = radius; }
 	bool Touch(GameObjectServerSide *object, Vector2 localPosition = Vector2::Zero);
 

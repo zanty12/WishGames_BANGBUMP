@@ -6,10 +6,23 @@
 #include "multi_anim.h"
 
 class MultiMap;
+class EnemyAttackServerSide : public AttackServerSide {
+public:
+
+	EnemyAttackServerSide() = default;
+	EnemyAttackServerSide(int atk, int atkDrop, float spanTime, float knockbackRate, float radius, GameObjectServerSide *self) : AttackServerSide(atk, atkDrop, spanTime, knockbackRate, radius, self) { }
+
+	MULTI_OBJECT_TYPE GetType(void) override {
+		return MULTI_ATTACK_ENEMY2;
+	};
+
+};
+
 class EnemyServerSide : public ServerMovableGameObject {
 protected:
 	MultiMap *map = nullptr;
 	float speed = 2.0f;
+	EnemyAttackServerSide attack;
 
 public:
 	int hp = 5;
@@ -28,9 +41,11 @@ public:
 		atkDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"atkDrop");
 		deathDrop = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"drop");
 		knockbackRate = ini::GetFloat(PARAM_PATH + L"enemy.ini", enemyName, L"knockbackRate");
+		attack = EnemyAttackServerSide(0, atkDrop, 0, knockbackRate, radius, this);
 	}
 	void Damage(AttackServerSide *attack) override;
 	void BlownPlayers(void);
+	AttackServerSide *GetAttack(void) { return &attack; }
 };
 class EnemyClientSide : public ClientMovableGameObject {
 protected:

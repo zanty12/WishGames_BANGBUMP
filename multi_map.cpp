@@ -439,6 +439,33 @@ void MultiMap::AttackUpdate(void) {
 					attack->Destroy();
 				}
 			}
+
+
+			// プレイヤーとの判定
+			for (auto &kvp : MultiPlayServer::clients_) {
+
+				auto &player = kvp.second.player_;
+
+
+				// イテレータの取得
+				auto iterator = attack->touchGameObjects.find(player);
+
+				// ダメージを与えてもいい時間ではないなら終了
+				if (iterator != attack->touchGameObjects.end()) {
+					if (iterator->second.GetNowTime() * 0.001f < attack->spanTime) continue;
+					else iterator->second.Start();
+				}
+				// 計測開始
+				else {
+					attack->touchGameObjects[enemy] = WIN::Time();
+					attack->touchGameObjects[enemy].Start();
+				}
+
+				// ダメージ
+				if (player->CircleTouch(enemy)) {
+					player->Damage(enemy->GetAttack());
+				}
+			}
 		}
 	}
 }
